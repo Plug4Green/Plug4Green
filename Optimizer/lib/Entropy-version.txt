@@ -1,0 +1,4 @@
+Entropy-2.1.0-fh 3350
+modified:
+- renamed BoolVarNot -> BoolVarNot2 because of name clash
+- commented 4 lignes on scheduling in ShutdownableNodeActionModel

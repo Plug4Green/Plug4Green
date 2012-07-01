@@ -1,0 +1,16 @@
+# In this file the directories containing configuration files and models
+# can be listed.
+#
+# Notation:
+#   title=location
+#
+# Note that the title may not contain spaces.
+#
+# When deploying for tomcat, please put this property file in the folder
+# /tomcat6/common/classes/config
+
+Configuration=/home/fit4green/Fit4Green/tomcat6/common/classes/resources
+Properties=/home/fit4green/Fit4Green/tomcat6/common/classes/config
+
+#important: keep an empty line at the end of the config file
+

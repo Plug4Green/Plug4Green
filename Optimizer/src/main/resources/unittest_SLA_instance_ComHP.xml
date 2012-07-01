@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opticon:FIT4GreenOptimizerConstraint id="" scenario="single" xmlns:f4g="http://www.f4g.org/schema/MetaModel" xmlns:opticon="http://www.f4g.org/schema/constraints/OptimizerConstraints" xmlns:p="http://www.f4g.org/schema/CommonTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.f4g.org/schema/constraints/OptimizerConstraints ../../../../Schemas/src/main/schema/SlaClusterConstraints.xsd ">
+  <VirtualMachines>
+    <VMType>
+      <name>m1.small</name>
+      <capacity>
+        <vCpus>1</vCpus>
+        <vRam>1</vRam>
+        <vHardDisk>1</vHardDisk>
+      </capacity>
+      <expectedLoad>
+        <vCpuLoad>50.0</vCpuLoad>
+        <vRamUsage>50.0</vRamUsage>
+        <vDiskLoad>5.0</vDiskLoad>
+        <vNetworkLoad>1.0</vNetworkLoad>
+      </expectedLoad>
+    </VMType>
+     <VMType>
+      <name>c1.medium</name>
+      <capacity>
+        <vCpus>1</vCpus>
+        <vRam>1</vRam>
+        <vHardDisk>2</vHardDisk>
+      </capacity>
+      <expectedLoad>
+        <vCpuLoad>60.0</vCpuLoad>
+        <vRamUsage>50.0</vRamUsage>
+        <vDiskLoad>5.0</vDiskLoad>
+        <vNetworkLoad>1.0</vNetworkLoad>
+      </expectedLoad>
+    </VMType>
+     <VMType>
+      <name>m1.large</name>
+      <capacity>
+        <vCpus>1</vCpus>
+        <vRam>2</vRam>
+        <vHardDisk>5</vHardDisk>
+      </capacity>
+      <expectedLoad>
+        <vCpuLoad>50.0</vCpuLoad>
+        <vRamUsage>70.0</vRamUsage>
+        <vDiskLoad>5.0</vDiskLoad>
+        <vNetworkLoad>1.0</vNetworkLoad>
+      </expectedLoad>
+    </VMType>
+     <VMType>
+      <name>m1.xlarge</name>
+      <capacity>
+        <vCpus>2</vCpus>
+        <vRam>4</vRam>
+        <vHardDisk>10</vHardDisk>
+      </capacity>
+      <expectedLoad>
+        <vCpuLoad>60.0</vCpuLoad>
+        <vRamUsage>70.0</vRamUsage>
+        <vDiskLoad>5.0</vDiskLoad>
+        <vNetworkLoad>1.0</vNetworkLoad>
+      </expectedLoad>
+    </VMType>
+     <VMType>
+      <name>c1.xlarge</name>
+      <capacity>
+        <vCpus>4</vCpus>
+        <vRam>4</vRam>
+        <vHardDisk>10</vHardDisk>
+      </capacity>
+      <expectedLoad>
+        <vCpuLoad>80.0</vCpuLoad>
+        <vRamUsage>50.0</vRamUsage>
+        <vDiskLoad>5.0</vDiskLoad>
+        <vNetworkLoad>1.0</vNetworkLoad>
+      </expectedLoad>
+    </VMType>
+  </VirtualMachines>
+  <FIT4GreenCluster>
+    <Cluster id="ID1">
+      <Name>CLUSTER_10</Name>
+      <NodeController>
+        <NodeName>BL11</NodeName>
+        <NodeName>BL12</NodeName>
+        <NodeName>BL13</NodeName>
+        <NodeName>BL14</NodeName>
+      </NodeController>
+      <BoundedSLAs>
+        <SLA idref="ID11"/>
+      </BoundedSLAs>
+      <BoundedPolicies>
+        <Policy idref="ID21"/>
+      </BoundedPolicies>
+    </Cluster>
+    <Cluster id="ID2">
+      <Name>CLUSTER_20</Name>
+      <NodeController>
+        <NodeName>BL21</NodeName>
+        <NodeName>BL22</NodeName>
+        <NodeName>BL23</NodeName>
+        <NodeName>BL24</NodeName>
+      </NodeController>
+      <BoundedSLAs>
+        <SLA idref="ID11"/>
+      </BoundedSLAs>
+      <BoundedPolicies>
+        <Policy idref="ID21"/>
+      </BoundedPolicies>
+    </Cluster>
+  </FIT4GreenCluster>
+  <ListOfSLA>
+    <SLA id="ID11">
+      <HardwareMetrics/>
+      <CommonQoSRelatedMetrics>
+        <MaxVirtualCPUPerCore>1</MaxVirtualCPUPerCore>
+        <!-- MaxServerAvg_vCPUperCore>2</MaxServerAvg_vCPUperCore>
+        <MaxServerAvg_vRAMperPhyRAM>1</MaxServerAvg_vRAMperPhyRAM>
+        <Max_vRAMperPhyRAM>1</Max_vRAMperPhyRAM>
+        <MaxVMperServer>30</MaxVMperServer-->
+      </CommonQoSRelatedMetrics>
+      <AdditionalMetrics/>
+    </SLA>
+  </ListOfSLA>
+  <ListOfPolicies>
+    <policy id="ID21">
+      <PeriodVMThreshold>
+        <Starts>2011-05-04T11:51:36Z</Starts>
+        <Ends>2013-05-04T11:51:36Z</Ends>
+        <Load>
+          <VMnameRef>m1.xlarge</VMnameRef>
+          <lowVMSlotsThreshold>800</lowVMSlotsThreshold>
+          <highVMSlotsThreshold>6</highVMSlotsThreshold>
+        </Load>
+      </PeriodVMThreshold>      
+      <!--DelayBetweenMove>2</DelayBetweenMove-->
+    </policy>
+  </ListOfPolicies>
+  <ListOfPlacementConstraints>
+    <PlacementConstraint id="ID31"></PlacementConstraint>
+  </ListOfPlacementConstraints>
+  
+</opticon:FIT4GreenOptimizerConstraint>

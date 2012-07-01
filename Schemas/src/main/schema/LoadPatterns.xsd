@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<xsd:schema xmlns:lpn="http://www.f4g.org/schema/LoadPatterns" 
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+           xmlns:f4g="http://www.f4g.org/schema/MetaModel"
+           targetNamespace="http://www.f4g.org/schema/LoadPatterns">
+           
+	<xsd:import namespace="http://www.f4g.org/schema/MetaModel" schemaLocation="MetaModel.xsd"/>
+	
+	<!--Attribute groups and simple types used within this schema-->
+	<xsd:attributeGroup name="DCAttributes">
+		<xsd:attribute name="style" type="f4g:DCComputingStyleType" use="required" />
+		<xsd:attribute name="scenario" type="f4g:ScenarioType" use="required" /> 
+	    	<xsd:attribute name="location" type="f4g:LocationType" use="required" />
+	</xsd:attributeGroup>
+	
+	<xsd:attributeGroup name="IDAttribute">
+		<xsd:attribute name="id" type="xsd:string" use="required" />
+	</xsd:attributeGroup>
+	
+	<xsd:attributeGroup name="PriorityAttribute">
+		<xsd:attribute name="priority" type="xsd:string" use="optional" />
+	</xsd:attributeGroup>
+	
+	<xsd:simpleType name="RepeatsType">
+    		<xsd:restriction base="xsd:string">
+      			<xsd:enumeration value="DAILY"/>
+      			<xsd:enumeration value="WEEKLY"/>
+      			<xsd:enumeration value="MONTHLY"/>
+      			<xsd:enumeration value="YEARLY"/>
+    		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:group name="TraditionalParameters">
+		<xsd:sequence>
+			<xsd:choice>
+				<xsd:element name="CPUUsageRate" type="f4g:CpuUsageType"/>
+				<xsd:element name="AmountMemoryUsage" type="f4g:MemoryUsageType"/>
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:group>
+	
+	<xsd:group name="CloudParameters">
+		<xsd:sequence>
+			<!--CLOUD_VM: appropriate VM image as defined in WorkloadConstraints-->
+			<xsd:element name="Resource" type="xsd:string"/>
+			<xsd:element name="ResourceType" type="xsd:string"/>
+			<xsd:element name="InstancesMean" type="xsd:positiveInteger"/>
+			<xsd:element name="InstancesDeviation" type="xsd:positiveInteger" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+
+	<!--Main body-->
+
+	<xsd:complexType name="LoadType">
+		<xsd:sequence >
+			<xsd:choice>
+				<xsd:group ref="lpn:TraditionalParameters"/>
+				<xsd:group ref="lpn:CloudParameters"/>
+			</xsd:choice>
+		</xsd:sequence>
+		<xsd:attributeGroup ref="lpn:IDAttribute"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="PeriodType" >
+		<xsd:sequence >
+			<!--based on ISO 8601 for date, time and duration format-->
+			<!-- dateTime: YYYY-MM-DDTHH:MM:SSZ
+			       example: 2011-05-04T11:51:36Z-->
+			<xsd:element name="Starts" type="xsd:dateTime"/>
+			<xsd:element name="Ends" type="xsd:dateTime"/>
+			<!--duration: PnYnMnDTnHnMnS
+			      example: P1DT2H30M or PT26H30M or PT26,5H-->
+			<xsd:element name="Duration" type="xsd:duration" minOccurs="0"/>
+			<xsd:element name="Repeats" type="lpn:RepeatsType" minOccurs="0"/>
+    			<xsd:element name="Load" type="lpn:LoadType" maxOccurs="unbounded"/>
+    		</xsd:sequence>
+    		<xsd:attributeGroup ref="lpn:IDAttribute"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="LoadPatternType">
+		<xsd:sequence >
+    			<xsd:element name="Period" type="lpn:PeriodType" maxOccurs="unbounded"/>
+    		</xsd:sequence>
+    		<xsd:attributeGroup ref="lpn:IDAttribute"/>
+    		<xsd:attributeGroup ref="lpn:PriorityAttribute"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="DCType" >
+  		<xsd:sequence >
+    			<xsd:element  name="LoadPattern" type="lpn:LoadPatternType" maxOccurs="unbounded"/>
+    		</xsd:sequence>
+    		<xsd:attributeGroup ref="lpn:DCAttributes"/>
+	</xsd:complexType> 
+	
+	<xsd:complexType name="LoadPatternsType" >
+  		<xsd:sequence >
+    			<xsd:element  name="DataCenter" type="lpn:DCType" maxOccurs="unbounded"/>
+    		</xsd:sequence>
+	</xsd:complexType> 
+	
+	<xsd:element name="LoadPatterns" type="lpn:LoadPatternsType" />
+
+</xsd:schema>

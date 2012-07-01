@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opticon:FIT4GreenOptimizerConstraint
+	id="" scenario="single" xmlns:f4g="http://www.f4g.org/schema/MetaModel"
+	xmlns:opticon="http://www.f4g.org/schema/constraints/OptimizerConstraints"
+	xmlns:p="http://www.f4g.org/schema/CommonTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.f4g.org/schema/constraints/OptimizerConstraints SlaClusterConstraints.xsd ">
+	<VirtualMachines>
+		<VMType>
+			<name>m1.small</name>
+			<capacity>
+				<vCpus>2</vCpus>
+				<vRam>8.0</vRam>
+				<vHardDisk>20.0</vHardDisk>
+			</capacity>
+			<expectedLoad>
+				<vCpuLoad>20</vCpuLoad>
+				<vRamUsage>90</vRamUsage>
+				<vDiskLoad>60</vDiskLoad>
+				<vNetworkLoad>1.0</vNetworkLoad>
+			</expectedLoad>
+		</VMType>
+	</VirtualMachines>
+	<!-- <FIT4GreenFederation>
+		<Name>Federation1</Name>
+		<BoundedCluster>
+			<Cluster idref="IDcluster1" />
+		</BoundedCluster>
+		<BoundedPolicies>
+			<Policy idref="IDPolicy1" />
+		</BoundedPolicies> 
+	</FIT4GreenFederation>-->
+	<FIT4GreenCluster>
+		<Cluster id="IDcluster1">
+			<Name>Cluster1</Name>
+			<NodeController>
+				<NodeName>id0</NodeName>
+				<NodeName>id100000</NodeName>
+			</NodeController>
+			<BoundedSLAs>
+				<SLA idref="IDSLA1" />
+			</BoundedSLAs>
+			<BoundedPolicies>
+				<Policy idref="IDPolicy1" />
+			</BoundedPolicies>
+		</Cluster>
+	</FIT4GreenCluster>
+	<!-- <FIT4GreenServerGroup>
+		 <ServerGroup>
+			<Name>SG1</Name>
+			<NodeController>
+				<NodeName>id0</NodeName>
+			</NodeController>
+			<BoundedSLAs>
+				<SLA idref="IDSLA1" />
+			</BoundedSLAs>
+			<BoundedPlacementConstraints>
+				<PlacementConstraint idref="IDPC1" />
+			</BoundedPlacementConstraints>
+		</ServerGroup> 
+	</FIT4GreenServerGroup>-->
+	<ListOfSLA>
+		<SLA id="IDSLA1">
+			<HardwareMetrics>
+				<!-- <HDDCapacity priority="1">200</HDDCapacity> <NbOfCores priority="1">2</NbOfCores> 
+					<CompPowerGHz priority="1">1.7</CompPowerGHz> <MemorySpaceGB priority="1">8</MemorySpaceGB> 
+					<NbOfGPUCores priority="1">0</NbOfGPUCores> <GPUFreqGHz priority="1">0.0</GPUFreqGHz> 
+					<RAIDLevel priority="1">0</RAIDLevel> -->
+			</HardwareMetrics>
+			<CommonQoSRelatedMetrics>
+				<!-- <MaxServerCPULoad priority="1">0.8</MaxServerCPULoad> -->
+			<!--	 <MaxVirtualLoadPerCore priority="1">1.7</MaxVirtualLoadPerCore> 
+				<MaxVirtualCPUPerCore priority="1">1.2</MaxVirtualCPUPerCore> 
+			 	<MaxServerAvg_vCPUperCore priority="1">1.5</MaxServerAvg_vCPUperCore> 
+		  <MaxServerAvg_vRAMperPhyRAM priority="1">1.5</MaxServerAvg_vRAMperPhyRAM> -->
+				<Max_vRAMperPhyRAM priority="1">1.0</Max_vRAMperPhyRAM> 
+			<!--	<Bandwidth priority="1">2</Bandwidth> 
+				<MaxVMperServer priority="1">5</MaxVMperServer> -->
+			</CommonQoSRelatedMetrics>
+			<AdditionalMetrics>
+				<!-- <DedicatedServer priority="1">false</DedicatedServer> <SecureAccessPossibility 
+					priority="1">false</SecureAccessPossibility> -->
+			</AdditionalMetrics>
+		</SLA>
+	</ListOfSLA>
+	<ListOfPolicies>
+		<policy id="IDPolicy1">			
+			<DelayBetweenMove>0</DelayBetweenMove>
+			<VMMigrationPaybacktime>0</VMMigrationPaybacktime>
+		</policy>
+	</ListOfPolicies>
+	<ListOfPlacementConstraints>
+		<PlacementConstraint id="IDPC1">
+			<!-- <Ban> <VMName>VMName</VMName> </Ban> -->
+			<Capacity>
+				<MaxNbOfVMs>10</MaxNbOfVMs>
+			</Capacity>
+			<!-- <Fence> <VMName>VMName</VMName> </Fence> <Gather> <VMName>VMName</VMName> 
+				</Gather> <Lonely> <VMName>VMName</VMName> </Lonely> <Root> <VMName>VMName</VMName> 
+				</Root> <Split> <VMGroup1> <VMName>VMName</VMName> </VMGroup1> <VMGroup2> 
+				<VMName>VMName</VMName> </VMGroup2> </Split> <Spread> <VMName>VMName</VMName> 
+				</Spread> -->
+		</PlacementConstraint>
+	</ListOfPlacementConstraints>
+</opticon:FIT4GreenOptimizerConstraint>

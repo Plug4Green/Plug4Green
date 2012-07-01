@@ -1,0 +1,108 @@
+<html>
+
+	<head>
+		<title>FIT4Green 3.0::Configuration at ENI</title>
+	</head>
+	
+	<body style="font-family:sans-serif;">
+
+		<img src="../img/F4GLogo.jpg">
+		
+		<h1>Communication module related to the service/enterprise portal at Eni</h1>
+		
+		<a name="top"></a>
+		
+		<p>
+		
+		<h4><a href="#Q1">How do I configure the plug-in for use at ENI?</a></h4>
+		
+		<h4><a href="#Q2">How do I encrypt the user names and passwords?</a></h4>
+		
+		<p>
+		<p>
+
+		<h2><a name="Q1"></a>How do I configure the plug-in for use at ENI?</h2>
+		
+		<p>You have to configure the FIT4Green properties file 
+		<font face="Courier New">f4gconfig.properties</font> as follows:</p>
+		
+		<ul>
+			<li> Section: COM NAMES MAPPING
+				<ol>
+					<li> comNames=comENI
+					<li> comEni=org.f4g.com.ComEni
+				</ol>
+		</ul>
+		
+		<p>You have to configure the ComEni properties file <font face="Courier New">ComEni.properties</font> 
+		as follows: </p>
+		
+		<ul>
+			<li> Section: ENI Configuration, configure the data to access the VMWare Web Services of the 
+			Data Centres
+				<ol>
+					<li> datacenter=<i>number_of_Data_Centres</i>
+					; the number of Data Centres with different VMWare Web Services configurations
+					<li> datacenter_0=<i>name_of_the_Data_Centre</i>
+					; the name of the Data Centre
+					<li>url_<i>name_of_Data_Centre</i>=<i>URL_of_Web_Services</i>
+					; the URL for the Web Services.
+					<li>username_<i>name_of_Data_Centre</i>=<i>user_name_encrypted</i>
+					<li>password_<i>name_of_Data_Centre</i>=<i>password_encrypted</i>
+					; the user name and password used to access the VMWare Web Services 
+					<li>isSimulated=<i>boolean</i>
+					; the flag used to set the ENI communication module in simulation mode (not implemented)
+					<li>interval=<i>milliseconds</i>
+					; the interval for taking values from VMWare
+					<li>port=<i>port_number</i>
+					; the port used for the SSH server inside ENI communication module
+					<li>keystore= <i>path_to_file</i>
+					; the file with the keys to secure accessing the Web Services
+					<li>keystorePass==<i>keystore_password_encrypted</i>
+					; the password for the keystore file
+					<li>RetryCount=<i>number_of_retries</i>
+					; the number of retries when losing connection with the Web Services before 
+					communicate the lost of connection to FIT4Green plug-in
+				</ol>
+		</ul>
+		
+		<ul>
+			<li> Section: Servers configuration, configure the data to access to the ILOs of each server on 
+			the Data Centre
+				<ol>
+					<li>hostPort=<i>port_number</i>
+					; the port for SSH to connect with the servers ILOs
+					<li><i>server_name</i>_ILO=<i>ILO_IP</i>
+					; the IP of the server's ILO
+					<li><i>server_name</i>_DC=<i>Data_Cenre_name</i> 
+					; the name of the Data Centre where the server is located.
+					<li>user_<i>server_name</i>_ILO=<i>user_encrypted</i>
+					; the user name to connect to the server's ILO
+					<li>pass_<i>server_name</i>_ILO=<i>password_encrypted</i>
+					; the password to connect to the server's ILO
+				</ol>	
+		</ul>
+		
+		<p><a href="#top">top</a>
+		
+		<p>
+
+		<h2><a name="Q2"></a>How do I encrypt the user names and passwords?</h2>
+		
+		<p>You can encrypt the user names and passwords by using the tool 
+		<font face="Courier New">EncryptString</font>. Run this tool with the command:
+		<pre>java EncryptString <i>word_to_encrypt</i> </pre>
+		
+		<p>The result printed on the screen is the word encrypted.</p>
+		
+		<p><b>Remember:</b> Use only alphanumeric characters within the words that you want to encrypt.
+		
+		<p>This tool is located at the root of the FIT4Green code repository.</p>
+		
+		<p><a href="#top">top</a>
+		
+		<p>
+
+	</body>
+
+</html> 

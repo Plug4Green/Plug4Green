@@ -1,0 +1,11 @@
+#for windows
+#tomcat.home=C:/Program Files/Apache Software Foundation/Tomcat 6.0
+#tomcat.lib=${tomcat.home}/common/lib
+
+#for linux
+#tomcat.home=/var/lib/tomcat6
+#tomcat.lib=${tomcat.home}/common
+
+#for live cd
+tomcat.home=/home/fit4green/Fit4Green/tomcat6
+tomcat.lib=/home/fit4green/Fit4Green/tomcat6/common/lib

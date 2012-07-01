@@ -1,0 +1,1419 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:f4g="http://www.f4g.org/schema/MetaModel"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:version="2.0" targetNamespace="http://www.f4g.org/schema/MetaModel">
+	<xsd:annotation>
+		<xsd:appinfo>
+			<jaxb:globalBindings mapSimpleTypeDef="true" />
+		</xsd:appinfo>
+	</xsd:annotation>
+
+	<xsd:element name="FIT4Green" type="f4g:FIT4GreenType" />
+	<xsd:element name="Site" type="f4g:SiteType" />
+	<xsd:element name="Datacenter" type="f4g:DatacenterType" />
+	<xsd:element name="Rack" type="f4g:RackType" />
+	<xsd:element name="Server" type="f4g:ServerType" />
+	<xsd:element name="CPU" type="f4g:CPUType" />
+	<xsd:element name="Controller" type="f4g:ControllerType" />
+	<xsd:element name="RAMStick" type="f4g:RAMStickType" />
+	<xsd:element name="HardDisk" type="f4g:HardDiskType" />
+	<xsd:element name="StorageUnit" type="f4g:StorageUnitType" />
+	<xsd:element name="Mainboard" type="f4g:MainboardType" />
+	<xsd:element name="PSU" type="f4g:PSUType" />
+	<xsd:element name="Fan" type="f4g:FanType" />
+	<xsd:element name="RAID" type="f4g:RAIDType" />
+	<xsd:element name="RAIDDisk" type="f4g:RAIDDiskType" />
+	<xsd:element name="Cache" type="f4g:CacheType" />
+	<xsd:element name="Core" type="f4g:CoreType" />
+	<xsd:element name="SolidStateDisk" type="f4g:SolidStateDiskType" />
+	<xsd:element name="TowerServer" type="f4g:TowerServerType" />
+	<xsd:element name="BladeServer" type="f4g:BladeServerType" />
+	<xsd:element name="RackableServer" type="f4g:RackableServerType" />
+	<xsd:element name="Enclosure" type="f4g:EnclosureType" />
+	<xsd:element name="SAN" type="f4g:SANType" />
+	<xsd:element name="NAS" type="f4g:NASType" />
+	<xsd:element name="PDU" type="f4g:PDUType" />
+	<xsd:element name="NetworkNode" type="f4g:NetworkNodeType" />
+	<xsd:element name="EthernetNIC" type="f4g:NICType" />
+	<xsd:element name="FiberchannelNIC" type="f4g:NICType" />
+	<xsd:element name="GPU" type="f4g:GPUType" />	
+	<xsd:element name="NetworkPort" type="f4g:NetworkPortType" />
+	<xsd:element name="ATM" type="f4g:ATMType" />
+	<xsd:element name="VPN" type="f4g:VPNType" />
+	<xsd:element name="BoxSwitch" type="f4g:BoxSwitchType" />
+	<xsd:element name="BoxRouter" type="f4g:BoxRouterType" />
+	<xsd:element name="RackableSwitch" type="f4g:RackableSwitchType" />
+	<xsd:element name="RackableRouter" type="f4g:RackableRouterType" />
+	<xsd:element name="NativeOperatingSystem" type="f4g:NativeOperatingSystemType" />
+	<xsd:element name="OperatingSystem" type="f4g:OperatingSystemType" />
+	<xsd:element name="HostedHypervisor" type="f4g:HostedHypervisorType" />
+	<xsd:element name="NativeHypervisor" type="f4g:NativeHypervisorType" />
+	<xsd:element name="VirtualMachine" type="f4g:VirtualMachineType" />
+	<xsd:element name="FileSystem" type="f4g:FileSystemType" />
+	<xsd:element name="HostedOperatingSystem" type="f4g:HostedOperatingSystemType" />
+	<xsd:element name="SoftwareNetwork" type="f4g:SoftwareNetworkType" />
+	<xsd:element name="SoftwareRAID" type="f4g:SoftwareRAIDType" />
+	<xsd:element name="HardwareRAID" type="f4g:HardwareRAIDType" />
+	<xsd:element name="SoftwareApplication" type="f4g:SoftwareApplicationType" />
+	<xsd:element name="e80211x" type="f4g:e80211xType" />
+	<xsd:element name="Ethernet" type="f4g:EthernetType" />
+	<xsd:element name="Tunnel" type="f4g:TunnelType" />
+	<xsd:element name="SerialPPP" type="f4g:SerialPPPType" />
+	<xsd:element name="OpticalFDDI" type="f4g:OpticalFDDIType" />	
+	<xsd:element name="Job" type="f4g:JobType" />
+	<xsd:element name="Queue" type="f4g:QueueType" />
+	<xsd:element name="Role" type="f4g:RoleType" />
+	<xsd:element name="Node" type="f4g:NodeType" />
+	<xsd:element name="ClusterManagement" type="f4g:ClusterManagementType" />
+	<xsd:element name="FrameworkCapabilities" type="f4g:FrameworkCapabilitiesType" />
+	<xsd:element name="NodeActions" type="f4g:NodeActionsType" />
+	<xsd:element name="VMActions" type="f4g:VMActionsType" />
+	<xsd:element name="JobActions" type="f4g:JobActionsType" />
+	<xsd:element name="WaterCooler" type="f4g:WaterCoolerType" />
+	<xsd:element name="Link" type="f4g:LinkType" />
+	<xsd:element name="NetworkLoad" type="f4g:NetworkLoadType" />
+	<xsd:element name="Flow" type="f4g:FlowType" />
+	<xsd:element name="LogicalUnit" type="f4g:LogicalUnitType" />
+	<xsd:element name="LogicalVolume" type="f4g:LogicalVolumeType" />
+	
+	<xsd:element name="LUN" type="f4g:LUNType" />
+	<xsd:element name="ApplicationBenchmark" type="f4g:ApplicationBenchmarkType" />
+
+	<xsd:simpleType name="CPUArchitectureType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="INTEL" />
+			<xsd:enumeration value="AMD" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RAMTypeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="DDR" />
+			<xsd:enumeration value="DDR2" />
+			<xsd:enumeration value="DDR3" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ServerStatusType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ON" />
+			<xsd:enumeration value="OFF" />
+			<xsd:enumeration value="STANDBY" />
+			<xsd:enumeration value="POWERING_ON"/>
+			<xsd:enumeration value="POWERING_OFF"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+        <xsd:simpleType name="NetworkNodeStatusType">
+                <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="ON" />
+                        <xsd:enumeration value="OFF" />
+                        <xsd:enumeration value="STANDBY" />
+                </xsd:restriction>
+        </xsd:simpleType>
+	<xsd:simpleType name="NodePropType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="TO_BE_REVISED" />
+			<xsd:enumeration value="PROP2" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NodeStatusType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="DOWN" />
+			<xsd:enumeration value="IDLE" />
+			<xsd:enumeration value="RESERVED" />
+			<xsd:enumeration value="BUSY" />
+			<xsd:enumeration value="RUNNING" />
+			<xsd:enumeration value="STANDBY" />
+			<xsd:enumeration value="HYBERNATED" />
+			<xsd:enumeration value="OFF" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="JobPropOfNodesType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="TO_BE_REVISED" />
+			<xsd:enumeration value="PROP2" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="JobStatusType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="QUEUED" />
+			<xsd:enumeration value="RUNNING" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="QueuePossiblePropType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="TO_BE_REVISED" />
+			<xsd:enumeration value="PROP2" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="QueueForcedPropType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="TO_BE_REVISED" />
+			<xsd:enumeration value="PROP2" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ServerRoleType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="HPC_COMPUTE_NODE" />
+			<xsd:enumeration value="HPC_RESOURCE_MANAGEMENT" />
+			<xsd:enumeration value="CLOUD_CONTROLLER" />
+			<xsd:enumeration value="CLOUD_CLUSTER_CONTROLLER" />
+			<xsd:enumeration value="CLOUD_NODE_CONTROLLER" />
+			<xsd:enumeration value="TRADITIONAL_HOST" />
+			<xsd:enumeration value="OTHER" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="DCComputingStyleType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="SUPER" />
+			<xsd:enumeration value="TRADITIONAL" />
+			<xsd:enumeration value="CLOUD" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RAMTypeVendorType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="KINGSTON" />
+			<xsd:enumeration value="SAMSUNG" />
+			<xsd:enumeration value="HYNIX" />
+			<xsd:enumeration value="GENERIC" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="OperatingSystemTypeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="WINDOWS" />
+			<xsd:enumeration value="LINUX" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="NativeHypervisorNameType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ESX" />
+			<xsd:enumeration value="Hyper-V" />
+			<xsd:enumeration value="XenServer" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="HostedHypervisorNameType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="VirtualPC" />
+			<xsd:enumeration value="VirtualBox" />
+			<xsd:enumeration value="KVM" />
+			<xsd:enumeration value="Xen" />
+			<xsd:enumeration value="VMWare" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="BufferTypeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Buffered" />
+			<xsd:enumeration value="Unbuffered" />
+			<xsd:enumeration value="Registered" />
+			<xsd:enumeration value="Fully Buffered" />
+			<xsd:enumeration value="Other" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="FrameworkStatusType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Starting" />
+			<xsd:enumeration value="Running" />
+			<xsd:enumeration value="Stopped" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="PowerType"> <!--Watt -->
+		<xsd:restriction base="xsd:double" />
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="HitRatioType"> <!--Percent [0,1] -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="1" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="VoltageType"> <!--Volt -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="FrequencyType"> <!--For CPU/Core, it is in GHz and for RAM, it is in MHz -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>	
+	<xsd:simpleType name="StorageCapacityType"> <!--Byte-->
+    <xsd:restriction base="xsd:double">
+      <xsd:minInclusive value="0"/>
+    </xsd:restriction> 
+  </xsd:simpleType>
+	<xsd:simpleType name="IoRateType"> <!--Operation/Second -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BlockSizeType"> <!--kB -->
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="EfficiencyType">
+		<xsd:restriction base="xsd:double" />
+	</xsd:simpleType>
+	<xsd:simpleType name="CoreLoadType"> <!--percentage of NON-idle mode cycles (from 0.0 to 100.0) -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BandwidthType"> <!--bits/second -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NetworkTrafficType"> <!-- packet/second -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CpuUsageType"> <!-- percentage of NON-idle mode cycles, separate values for each cpu; this 
+			value will be “spread” evenly on all cores of the respective cpu; only if 
+			core load is not provided -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="StorageUsageType"> <!--GigaByte -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="MemoryUsageType"> <!--GigaByte allocated system memory by OS -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RAMSizeType"> <!--GigaByte -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NetworkUsageType"> <!-- packet/second -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PUEType">
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="1" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CUEType">
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="LithographyType">
+		<xsd:restriction base="xsd:int" />
+	</xsd:simpleType>
+	<xsd:simpleType name="IntPercentType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="100" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RPMType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>	
+	<xsd:simpleType name="NrOfCpusType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NrOfPstatesType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NrOfTransistorsType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>	
+	<xsd:simpleType name="PSULoadType">    <!-- Note: this is a percentage -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="100" />
+		</xsd:restriction>
+	</xsd:simpleType>	
+	<xsd:simpleType name="DimensionType">
+		<xsd:restriction base="xsd:int" />
+	</xsd:simpleType>
+	<xsd:simpleType name="RAIDLevelType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="OPType" >
+    	<xsd:restriction base="xsd:int">
+      		<xsd:minInclusive value="1"/>
+    	</xsd:restriction>
+  	</xsd:simpleType>
+  	<xsd:simpleType name="StripSizeType" >
+    	<xsd:restriction base="xsd:double">
+      		<xsd:minInclusive value="0"/>
+    	</xsd:restriction>
+  	</xsd:simpleType>	
+	<xsd:simpleType name="CacheLevelType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NrOfPortsType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NrOfLinksType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NrOfPlugsType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NetworkPortBufferSizeType">
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NetworkPortBufferOccupancyType">
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="FileSystemFragmentationType">
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="FileSystemSpaceType"> <!-- TBD: how is this expressed (bytes, MB, GB)? see type where it's used also -->
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SwitchFabricType">
+		<xsd:restriction base="xsd:int" />
+	</xsd:simpleType>
+	<xsd:simpleType name="NrOfNodesType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NrOfCoresType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="JobPriorityType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="JobTimeType">
+		<xsd:restriction base="xsd:long">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="JobLimitType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="QueuePriorityType">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PropagationDelayType">
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="BitErrorRateType">
+		<xsd:restriction base="xsd:double">
+			<xsd:minInclusive value="0" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ScenarioType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="single" />
+			<xsd:enumeration value="federated" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="LocationType">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+
+	<xsd:complexType name="FIT4GreenType">
+		<xsd:sequence>
+			<xsd:element ref="f4g:Site" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="description" type="xsd:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="version" type="xsd:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element name="Datetime" type="xsd:dateTime" minOccurs="0" 
+				maxOccurs= "1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SiteType">
+		<xsd:sequence>
+		  	<xsd:element name="name" type="xsd:string" minOccurs="0"
+				maxOccurs="1" />
+			<xsd:element name="PUE" type="f4g:PUEType" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element name="CUE" type="f4g:CUEType" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:Datacenter" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DatacenterType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="0"
+				maxOccurs="1" />
+			<xsd:element name="computingStyle" type="f4g:DCComputingStyleType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element ref="f4g:ApplicationBenchmark" minOccurs="0" maxOccurs="unbounded" />				
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:Rack" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:TowerServer" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:BoxRouter" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:BoxSwitch" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:FrameworkCapabilities" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:NetworkLoad" minOccurs="0"
+				maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RackType">
+		<xsd:sequence>
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:RackableServer" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:Fan" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:WaterCooler" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:RackableRouter" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:RackableSwitch" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:SAN" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:NAS" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="f4g:Enclosure" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:PDU" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ServerType">
+	<xsd:sequence>
+		<xsd:element name="name" type="f4g:ServerRoleType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="status" type="f4g:ServerStatusType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="frameworkID" type="xsd:string"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="computedPower" type="f4g:PowerType"
+			minOccurs="0" maxOccurs="1" />
+		<xsd:element name="measuredPower" type="f4g:PowerType"
+			minOccurs="0" maxOccurs="1" />
+		<xsd:element ref="f4g:LogicalVolume" minOccurs="0" maxOccurs="unbounded" />
+		<xsd:element ref="f4g:Mainboard" minOccurs="0" maxOccurs="unbounded" />
+		<xsd:choice minOccurs="0" maxOccurs="1">
+			<xsd:element ref="f4g:NativeOperatingSystem" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element ref="f4g:NativeHypervisor" minOccurs="1"
+				maxOccurs="1" />
+		</xsd:choice>
+	</xsd:sequence>
+	<xsd:attribute name="frameworkRef" type="xsd:IDREF" use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="CPUType">
+		<xsd:sequence>
+			<xsd:element name="frameworkID" type="xsd:string"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="architecture" type="f4g:CPUArchitectureType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="DVFS" type="xsd:boolean" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element name="lithography" type="f4g:LithographyType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerIdle" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerMax" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="cpuUsage" type="f4g:CpuUsageType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="transistorNumber" type="f4g:NrOfTransistorsType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element ref="f4g:Core" minOccurs="1" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:Cache" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RAMStickType">
+		<xsd:sequence>
+			<xsd:element name="voltage" type="f4g:VoltageType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="size" type="f4g:RAMSizeType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="type" type="f4g:RAMTypeType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="frequency" type="f4g:FrequencyType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="bufferType" type="f4g:BufferTypeType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="vendor" type="f4g:RAMTypeVendorType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="HardDiskType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:StorageUnitType">
+				<xsd:sequence>
+					<xsd:element name="rpm" type="f4g:RPMType" minOccurs="1"
+						maxOccurs="1" />			
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="StorageUnitType">
+		<xsd:sequence>
+			<xsd:element name="frameworkID" type="xsd:string"
+				minOccurs="0" maxOccurs="1" />		
+			<xsd:element name="storageCapacity" type="f4g:StorageCapacityType"
+				minOccurs="1" maxOccurs="1" />	
+			<xsd:element name="maxReadRate" type="f4g:IoRateType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="maxWriteRate" type="f4g:IoRateType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="readRate" type="f4g:IoRateType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="writeRate" type="f4g:IoRateType"
+				minOccurs="0" maxOccurs="1" />			
+			<xsd:element name="powerIdle" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerMax" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />			
+			<xsd:element ref="f4g:Cache" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="MainboardType">
+		<xsd:sequence>
+			<xsd:element name="frameworkID" type="xsd:string"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="powerIdle" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerMax" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="memoryUsage" type="f4g:MemoryUsageType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:EthernetNIC" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:FiberchannelNIC" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:HardwareRAID" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:SolidStateDisk" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:HardDisk" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:LUN" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:CPU" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:RAMStick" minOccurs="0" maxOccurs="unbounded" />	
+			<xsd:element ref="f4g:GPU" minOccurs="0" maxOccurs="unbounded" />		
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PSUType">
+		<xsd:sequence>
+			<xsd:element name="load" type="f4g:PSULoadType"
+				minOccurs="1" maxOccurs="1" />			
+			<xsd:element name="efficiency" type="f4g:EfficiencyType"
+				minOccurs="1" maxOccurs="1" />			
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="measuredPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:Fan" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:WaterCooler" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="FanType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:CoolingSystemType">
+				<xsd:sequence>
+					<xsd:element name="maxRPM" type="f4g:RPMType"
+						minOccurs="1" maxOccurs="1" />
+					<xsd:element name="actualRPM" type="f4g:RPMType"
+						minOccurs="1" maxOccurs="1" />					
+					<xsd:element name="powerMax" type="f4g:PowerType"
+						minOccurs="1" maxOccurs="1" />					
+					<xsd:element name="depth" type="f4g:DimensionType"
+						minOccurs="1" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CoolingSystemType">
+		<xsd:sequence>
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="measuredPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RAIDType">
+		<xsd:sequence>
+			<xsd:element name="level" type="f4g:RAIDLevelType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:SolidStateDisk" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:HardDisk" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="Id" type="xsd:ID" use="required" />
+	</xsd:complexType>
+	<xsd:complexType name="CacheType">
+		<xsd:sequence>
+			<xsd:element name="level" type="f4g:CacheLevelType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="size" type="f4g:RAMSizeType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="hitRatio" type="f4g:HitRatioType"
+				minOccurs="0" maxOccurs="1" />	
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CoreType">
+		<xsd:sequence>
+			<xsd:element name="frameworkID" type="xsd:string"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="voltage" type="f4g:VoltageType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="frequency" type="f4g:FrequencyType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="frequencyMin" type="f4g:FrequencyType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="frequencyMax" type="f4g:FrequencyType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="coreLoad" type="f4g:CoreLoadType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="totalPstates" type="f4g:NrOfPstatesType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="lastPstate" type="f4g:NrOfPstatesType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element ref="f4g:Cache" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SolidStateDiskType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:StorageUnitType">
+				<xsd:sequence>
+					<xsd:element name="powerByRead" type="f4g:PowerType"
+						minOccurs="1" maxOccurs="1" />
+					<xsd:element name="powerByWrite" type="f4g:PowerType"
+						minOccurs="1" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="TowerServerType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:ServerType">
+				<xsd:sequence>
+					<xsd:element ref="f4g:PSU" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element ref="f4g:Fan" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element ref="f4g:WaterCooler" minOccurs="0"
+						maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="BladeServerType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:ServerType">
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RackableServerType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:ServerType">
+				<xsd:sequence>
+					<xsd:element ref="f4g:PSU" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element ref="f4g:Fan" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element ref="f4g:WaterCooler" minOccurs="0"
+						maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="EnclosureType">
+		<xsd:sequence>
+			<xsd:element name="powerIdle" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerMax" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="frameworkID" type="xsd:string"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="measuredPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:BladeServer" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:EthernetNIC" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:FiberchannelNIC" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:PSU" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:Fan" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:WaterCooler" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="frameworkRef" type="xsd:IDREF" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="SANType">
+		<xsd:sequence>
+			<xsd:element name="powerIdle" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerMax" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="measuredPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="networkTrafficIn" type="f4g:NetworkTrafficType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="networkTrafficOut" type="f4g:NetworkTrafficType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:EthernetNIC" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:FiberchannelNIC" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:PSU" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:Fan" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:LogicalUnit" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="frameworkRef" type="xsd:IDREF" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="PDUType">
+		<xsd:sequence>
+			<xsd:element name="capacity" type="f4g:NrOfPlugsType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerIdle" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerMax" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />			
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="measuredPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="BoxNetworkType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:NetworkNodeType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NetworkNodeType">
+		<xsd:sequence>
+			<xsd:element name="processingBandwidth" type="f4g:BandwidthType"
+				minOccurs="1" maxOccurs="1" />
+                       <xsd:element name="status" type="f4g:NetworkNodeStatusType"
+                                minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerIdle" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerMax" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="forwardFlag" type="xsd:boolean"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="frameworkID" type="xsd:string"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="measuredPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:Fan" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:WaterCooler" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:PSU" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:NetworkPort" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="frameworkRef" type="xsd:IDREF" use="required" />
+		<xsd:attribute name="ID" type="xsd:ID" use="required" />
+	</xsd:complexType>
+	<xsd:complexType name="RackableNetworkType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:NetworkNodeType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NICType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:NetworkNodeType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+		<xsd:complexType name="GPUType">
+		<xsd:sequence>
+			<xsd:element name="coreFrequency" type="f4g:FrequencyType"
+				minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>	
+	<xsd:complexType name="NetworkPortType">
+		<xsd:sequence>
+			<xsd:element name="lineCapacity" type="f4g:NetworkTrafficType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerIdle" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerMax" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="portID" type="xsd:string" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element name="trafficIn" type="f4g:NetworkTrafficType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="trafficOut" type="f4g:NetworkTrafficType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="bufferSize" type="f4g:NetworkPortBufferSizeType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="bufferOccupancy" type="f4g:NetworkPortBufferOccupancyType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:Link" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="NetworkPortRef" type="xsd:string" 
+			minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="Id" type="xsd:ID" use="required" />
+	</xsd:complexType>
+	<xsd:complexType name="ATMType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:NetworkPortType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="VPNType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:NetworkPortType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RackableSwitchType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:RackableNetworkType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RackableRouterType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:RackableNetworkType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="BoxSwitchType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:BoxNetworkType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="BoxRouterType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:BoxNetworkType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NativeOperatingSystemType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:OperatingSystemType">
+				<xsd:sequence>
+					<xsd:element ref="f4g:SoftwareApplication" minOccurs="0"
+						maxOccurs="unbounded" />
+					<xsd:element ref="f4g:ClusterManagement" minOccurs="0"
+						maxOccurs="unbounded" />
+					<xsd:element ref="f4g:Node" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element ref="f4g:HostedHypervisor" minOccurs="0"
+						maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="OperatingSystemType">
+		<xsd:sequence>
+			<xsd:element name="name" type="f4g:OperatingSystemTypeType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="systemRAMBaseUsage" type="f4g:MemoryUsageType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:FileSystem" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:SoftwareRAID" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:SoftwareNetwork" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="HostedHypervisorType">
+		<xsd:sequence>
+			<xsd:element name="hypervisorName" type="f4g:HostedHypervisorNameType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="frameworkID" type="xsd:string"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element ref="f4g:VirtualMachine" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="NASType">
+		<xsd:sequence>
+			<xsd:element name="frameworkID" type="xsd:string"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="computedPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="measuredPower" type="f4g:PowerType"
+				minOccurs="0" maxOccurs="1" />
+				<xsd:element name="powerIdle" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="powerMax" type="f4g:PowerType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="constantFactor" type="f4g:PowerType" minOccurs="1" maxOccurs="1"/>
+			<xsd:element ref="f4g:Cache" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:Controller" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:RAIDDisk" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:Fan" minOccurs="0" maxOccurs="unbounded" />		
+			<xsd:element ref="f4g:PSU" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="f4g:EthernetNIC" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element ref="f4g:FiberchannelNIC" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element ref="f4g:SolidStateDisk" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element ref="f4g:HardDisk" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="frameworkRef" type="xsd:IDREF" use="required" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="ControllerType">
+	<xsd:complexContent>
+		<xsd:extension base="f4g:CPUType">
+			<xsd:sequence>
+				<xsd:element name="controllerId" type="xsd:ID" />
+				<xsd:element ref="f4g:NativeOperatingSystem" minOccurs="0" maxOccurs="1"/>
+				<xsd:element ref="f4g:NativeHypervisor" minOccurs="0" maxOccurs="1"/>
+			</xsd:sequence>
+		</xsd:extension>
+	</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="RAIDDiskType">
+	<xsd:sequence>
+		<xsd:element name="raidDiskId" type="xsd:ID" minOccurs="1"
+			maxOccurs="1" />
+		<xsd:element name="level" type="f4g:RAIDLevelType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="computedPower" type="f4g:PowerType"
+			minOccurs="0" maxOccurs="1" />
+		<xsd:element name="readRate" type="f4g:IoRateType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="writeRate" type="f4g:IoRateType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="maxReadRate" type="f4g:IoRateType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="maxWriteRate" type="f4g:IoRateType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="numberOfReadOps" type="f4g:OPType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="numberOfWriteOps" type="f4g:OPType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="blockSize" type="f4g:BlockSizeType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element ref="f4g:FileSystem" minOccurs="0" maxOccurs="1" />
+		<xsd:element ref="f4g:SolidStateDisk" minOccurs="0"
+			maxOccurs="unbounded" />
+		<xsd:element ref="f4g:HardDisk" minOccurs="0" maxOccurs="unbounded" />
+	</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="LogicalVolumeType">
+	<xsd:sequence>
+		<xsd:element name="logVolId" type="xsd:ID" minOccurs="1"
+			maxOccurs="1" />
+		<xsd:element name="level" type="f4g:RAIDLevelType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="computedPower" type="f4g:PowerType"
+			minOccurs="0" maxOccurs="1" />
+		<xsd:element name="readRate" type="f4g:IoRateType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="writeRate" type="f4g:IoRateType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="maxReadRate" type="f4g:IoRateType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="maxWriteRate" type="f4g:IoRateType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="numberOfReadOps" type="f4g:OPType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="numberOfWriteOps" type="f4g:OPType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element name="blockSize" type="f4g:BlockSizeType"
+			minOccurs="1" maxOccurs="1" />
+		<xsd:element ref="f4g:FileSystem" minOccurs="0" maxOccurs="1" />
+		<xsd:element ref="f4g:LogicalUnit" minOccurs="0" maxOccurs="unbounded" />
+	</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="NativeHypervisorType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:OperatingSystemType">
+				<xsd:sequence>
+					<xsd:element name="hypervisorName" type="f4g:NativeHypervisorNameType"
+						minOccurs="1" maxOccurs="1" />
+					<xsd:element ref="f4g:VirtualMachine" minOccurs="0"
+						maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="VirtualMachineType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="0"
+				maxOccurs="1" />
+			<xsd:element name="numberOfCPUs" type="f4g:NrOfCpusType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="actualCPUUsage" type="f4g:CpuUsageType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="actualStorageUsage" type="f4g:StorageUsageType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="actualDiskIORate" type="f4g:IoRateType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="actualMemoryUsage" type="f4g:MemoryUsageType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="actualNetworkUsage" type="f4g:NetworkUsageType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:HostedOperatingSystem" minOccurs="0"
+				maxOccurs="1" />
+			<xsd:element name="frameworkID" type="xsd:string"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="cloudVmImage" type="xsd:string"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="cloudVmType" type="xsd:string"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="startTimestamp" type="xsd:dateTime"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="endTimestamp" type="xsd:dateTime"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="lastMigrationTimestamp" type="xsd:dateTime"
+				minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="frameworkRef" type="xsd:IDREF" use="required" />
+	</xsd:complexType>
+	<xsd:complexType name="FileSystemType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element name="fragmentation" type="f4g:FileSystemFragmentationType"
+				minOccurs="1" maxOccurs="1" />
+			<!-- TBD: It seems that as of phase 2 no component is using these two: -->	
+			<xsd:element name="size" type="f4g:FileSystemSpaceType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="free" type="f4g:FileSystemSpaceType"
+				minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="RAIDRef" type="xsd:IDREF" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="HostedOperatingSystemType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:OperatingSystemType">
+				<xsd:sequence>
+					<xsd:element ref="f4g:SoftwareApplication" minOccurs="0"
+						maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SoftwareNetworkType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element name="switchFabricType" type="f4g:SwitchFabricType"
+				minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SoftwareRAIDType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:RAIDType">
+				<xsd:sequence>
+					<xsd:element name="name" type="xsd:string" minOccurs="1"
+						maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="HardwareRAIDType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:RAIDType">
+				<xsd:sequence>
+					<xsd:element ref="f4g:Cache" minOccurs="0" maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SoftwareApplicationType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element name="numberOfCPUs" type="f4g:NrOfCpusType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="actualCPUUsage" type="f4g:CpuUsageType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="actualStorageUsage" type="f4g:StorageUsageType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="actualDiskIORate" type="f4g:IoRateType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="actualMemoryUsage" type="f4g:MemoryUsageType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="actualNetworkUsage" type="f4g:NetworkUsageType"
+				minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="e80211xType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:NetworkPortType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="EthernetType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:NetworkPortType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="TunnelType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:NetworkPortType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SerialPPPType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:NetworkPortType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="OpticalFDDIType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:NetworkPortType" />
+		</xsd:complexContent>
+	</xsd:complexType>	
+	<xsd:complexType name="JobType">
+		<xsd:sequence>
+			<xsd:element name="numberOfNodes" type="f4g:NrOfNodesType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="propertiesOfNodes" type="f4g:JobPropOfNodesType"
+				minOccurs="1" maxOccurs="unbounded" />
+			<xsd:element name="neededMemory" type="f4g:MemoryUsageType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="neededCoresPerNode" type="f4g:NrOfCoresType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="neededCPUSpeed" type="f4g:FrequencyType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="wallTime" type="f4g:JobTimeType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="timeOfSubmission" type="f4g:JobTimeType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="timeOfStart" type="f4g:JobTimeType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="status" type="f4g:JobStatusType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="priority" type="f4g:JobPriorityType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="frameworkID" type="xsd:string"
+				minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="frameworkRef" type="xsd:IDREF" use="required" />
+		<xsd:attribute name="Id" type="xsd:ID" use="required" />
+	</xsd:complexType>
+	<xsd:complexType name="QueueType">
+		<xsd:sequence>
+			<xsd:element name="priority" type="f4g:QueuePriorityType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="possibleProperties" type="f4g:QueuePossiblePropType"
+				minOccurs="1" maxOccurs="unbounded" />
+			<xsd:element name="forcedProperties" type="f4g:QueueForcedPropType"
+				minOccurs="1" maxOccurs="unbounded" />
+			<xsd:element name="wallTimeLimit" type="f4g:JobLimitType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="numberOfNodesLimit" type="f4g:JobLimitType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="jobs" type="f4g:JobType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RoleType">
+		<xsd:sequence>
+			<xsd:element name="isMother" type="xsd:boolean"
+				minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="NodeType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:SoftwareApplicationType">
+				<xsd:sequence>
+					<xsd:element name="properties" type="f4g:NodePropType"
+						minOccurs="1" maxOccurs="1" />
+					<xsd:element name="status" type="f4g:NodeStatusType"
+						minOccurs="1" maxOccurs="1" />
+					<xsd:element name="coresInUse" type="f4g:NrOfCoresType"
+						minOccurs="1" maxOccurs="1" />
+					<xsd:element name="jobRef" type="xsd:IDREFS" minOccurs="0" maxOccurs="1"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="ClusterManagementType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:SoftwareApplicationType">
+				<xsd:sequence>
+					<xsd:element name="queue" type="f4g:QueueType"
+						minOccurs="1" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="FrameworkCapabilitiesType">
+		<xsd:sequence>
+			<xsd:element name="frameworkName" type="xsd:string"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="status" type="f4g:FrameworkStatusType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="node" type="f4g:NodeActionsType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="vm" type="f4g:VMActionsType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="job" type="f4g:JobActionsType"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="networkNode" type="f4g:NodeActionsType"
+				minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="NodeActionsType">
+		<xsd:sequence>
+			<xsd:element name="powerOn" type="xsd:boolean" minOccurs="1"
+				maxOccurs="1" />
+			<xsd:element name="powerOff" type="xsd:boolean"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="standBy" type="xsd:boolean"
+				minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="VMActionsType">
+		<xsd:sequence>
+			<xsd:element name="interLiveMigrate" type="xsd:boolean"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="intraLiveMigrate" type="xsd:boolean"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="interMoveVM" type="xsd:boolean"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="intraMoveVM" type="xsd:boolean"
+				minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="JobActionsType">
+		<xsd:sequence>
+			<xsd:element name="start" type="xsd:boolean" minOccurs="1"
+				maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="WaterCoolerType">
+		<xsd:complexContent>
+			<xsd:extension base="f4g:CoolingSystemType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="LinkType">
+		<xsd:sequence>
+			<xsd:element name="propagationDelay" type="f4g:PropagationDelayType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="bitErrorRate" type="f4g:BitErrorRateType"
+				minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="NetworkLoadType">
+		<xsd:sequence>
+			<xsd:element ref="f4g:Flow" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="FlowType">
+		<xsd:sequence>
+			<xsd:element name="sourceNetworkNodeRef" type="xsd:IDREF" />
+			<xsd:element name="destinationNetworkNodeRef" type="xsd:IDREF" />
+			<xsd:element name="bandwidth" type="f4g:BandwidthType"
+				minOccurs="1" maxOccurs="1" /> <!-- TBD: NOTE: changed from int to double, because used as double elsewhere 
+				(and I guess it is more correct) -->
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="LogicalUnitType">
+		<xsd:sequence>
+			<xsd:element name="lunId" type="xsd:ID" />
+			<xsd:element name="readRate" type="f4g:IoRateType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="writeRate" type="f4g:IoRateType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="maxReadRate" type="f4g:IoRateType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="maxWriteRate" type="f4g:IoRateType"
+				minOccurs="1" maxOccurs="1" />
+			 <xsd:element  name="numOfReadOP" type="f4g:OPType" minOccurs="1" maxOccurs="1"/>
+      		<xsd:element  name="numOfWriteOP" type="f4g:OPType" minOccurs="1" maxOccurs="1"/>
+	  		<xsd:element  name="stripSize" type="f4g:StripSizeType" minOccurs="1" maxOccurs="1"/>
+	  		<xsd:element name="computedPower" type="f4g:PowerType" minOccurs="0" maxOccurs="1" /> 	
+			<xsd:element ref="f4g:RAID" minOccurs="1" maxOccurs="1" />
+			<xsd:element ref="f4g:RAIDDisk" minOccurs="0" maxOccurs="1" />
+			<xsd:element ref="f4g:SolidStateDisk" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="f4g:HardDisk" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="LUNType">
+		<xsd:sequence>
+			<xsd:element name="readRate" type="f4g:IoRateType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="writeRate" type="f4g:IoRateType"
+				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="lunRef" type="xsd:IDREF" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ApplicationBenchmarkType">
+        <xsd:sequence>
+            <xsd:element name="benchmarkID" type="xsd:string"
+                minOccurs="1" maxOccurs="1" />
+            <xsd:element name="rank" type="f4g:IntAppRankType"
+                minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+    </xsd:complexType>
+	
+	<xsd:simpleType name="IntAppRankType">
+        <xsd:restriction base="xsd:int">
+            <xsd:minInclusive value="0" />
+            <xsd:maxInclusive value="100" />
+        </xsd:restriction>
+    </xsd:simpleType>
+	
+
+
+
+</xsd:schema>

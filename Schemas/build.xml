@@ -1,0 +1,77 @@
+<?xml version="1.0" standalone="yes"?>
+<project name="schemas" basedir="." default="package">
+
+	<property file="../Commons/build.properties" />
+	<property file="../Commons/local.build.properties" />
+	<property name="jar.name" value="f4g-${ant.project.name}.jar" />
+
+	<path id="classpath">
+		<pathelement path="src" />
+		<fileset dir="${lib.dir}" includes="*.jar" />
+	</path>
+
+	<target name="prepare">
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${tomcat.lib}" />
+		<mkdir dir="${java.src.dir}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${classes.dir}" />
+		<delete failonerror="false">
+			<fileset dir="${java.src.dir}/org/f4g/schema" includes="**/*.java"/>
+		</delete>
+	</target>
+
+	<taskdef name="xjc" classname="org.jvnet.jaxb2_commons.xjc.XJC2Task">
+		<classpath refid="classpath" />
+	</taskdef>
+		
+
+	<description>
+        Task for generating java classes related to a XML schema using the JAXB compiler
+  	</description>
+	<target name="generate" description="Generating all Java source files for schema">
+		<echo message="Compiling the schemas..." />
+		<xjc destdir="${java.src.dir}">
+			<schema  dir="${schema.dir}" includes="*.xsd"/>
+			<arg value="-Xcopyable" />
+			<arg value="-Xvalue-constructor" />
+		</xjc>
+		
+		<echo message="Workaround to fix: to have Visitor pattern in metamodel, we delete it and rebuild it only with -Xvisitor" />
+		<delete dir="${java.src.dir}/org/f4g/schema/metamodel" />
+		<echo message="Compiling MetaModel.xsd schema..." />
+		<xjc schema="${schema.dir}/MetaModel.xsd" package="${schema.package}.metamodel" destdir="${java.src.dir}">
+			<arg value="-Xvisitor" />
+			<arg value="-Xcopyable" />
+			<arg value="-Xvalue-constructor" />
+			<produces dir="${java.src.dir}/${schema.package.dir}/metamodel" includes="**/*.java" />
+		</xjc>
+	</target>
+
+	<target name="compile" depends="clean, prepare, generate" description="Compile the classes">
+		<javac srcdir="${java.src.dir}" destdir="${classes.dir}" debug="true" debuglevel="lines,vars,source">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="package" depends="compile">
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java" />
+		</copy>
+		<delete dir="${classes.dir}/java" />
+		<delete dir="${dist.dir}/java" />
+		<jar  basedir="${classes.dir}" destfile="${dist.dir}/${jar.name}" />
+	</target>
+
+	<target name="deploy" depends="package" description="Copy required libraries in common folder of the Tomcat installation">
+		<copy overwrite="true" todir="${tomcat.lib}" file="${dist.dir}/${jar.name}" />
+		<copy todir="${tomcat.lib}">
+			<fileset dir="${lib.dir}" /> 
+		</copy>
+	</target>
+
+
+</project>

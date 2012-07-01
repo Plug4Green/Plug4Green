@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone="yes"?>
+<project name="F4gGui" basedir="." >
+	<property file="../Commons/build.properties"/>
+	<property file="../Commons/local.build.properties" />
+
+	<property name="lib.dir" value="${tomcat.lib}"/>
+
+	<path id="classpath">
+		<pathelement path="src" />
+		<fileset dir="${lib.dir}" includes="*.jar" />
+	</path>
+	
+	<target name="package" >
+		<war basedir="${f4ggui.web.dir}" destfile="${ant.project.name}.war" >
+		</war>
+	</target>
+	
+	<target name="deploy" depends="package" description="Deploy the web application">
+		<copy overwrite="true" todir="${tomcat.home}/webapps" file="${ant.project.name}.war"/>
+	</target>
+
+
+</project>

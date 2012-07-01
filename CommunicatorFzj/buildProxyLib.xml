@@ -1,0 +1,47 @@
+<?xml version="1.0" standalone="yes"?>
+<project name="communicatorPBScommon" basedir="." default="package">
+
+	<property file="../Commons/build.properties" />
+	<property file="../Commons/local.build.properties" />
+	<property name="jar.name" value="f4g-${ant.project.name}.jar" />
+
+	<path id="classpath">
+		<pathelement path="src" />
+		<fileset dir="${commons.dist.dir}" includes="*.jar" />
+		<fileset dir="${commons.lib.dir}" includes="*.jar" />
+		<fileset dir="${schemas.dist.dir}" includes="*.jar" />
+	</path>
+
+	<target name="prepare">
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${tomcat.lib}" />
+	</target>
+	
+	<target name="clean">
+		<delete dir="${classes.dir}" />
+	</target>
+
+	<target name="compile" depends="clean,prepare" description="Compile the classes">
+		<echo message="... ${java.src.dir}"/>
+		<javac srcdir="${java.src.dir}" destdir="${classes.dir}" debug="true" debuglevel="lines,vars,source">
+			<include name="org/f4g/com/pbs/common/*.**" />			
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="package" depends="compile">
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java" />
+		</copy>
+		<delete dir="${classes.dir}/java" />
+		<delete dir="${dist.dir}/java" />
+		<jar basedir="${classes.dir}" destfile="${dist.dir}/${jar.name}" />
+	</target>
+
+	<target name="deploy" depends="package" description="Copy required libraries in common folder of the Tomcat instsallation">
+		<copy overwrite="true" todir="${tomcat.lib}" file="${dist.dir}/${jar.name}" />
+	</target>
+
+
+</project>

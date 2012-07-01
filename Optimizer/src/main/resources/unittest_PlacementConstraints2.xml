@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p:FIT4GreenConstraint date="2001-01-01" version="0.0" xmlns:f4g="http://www.f4g.org/schema/MetaModel" xmlns:p="http://www.f4g.org/schema/constraints/placement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.f4g.org/schema/constraints/placement PlacementConstraints.xsd ">
+  <p:DataCentre location="" scenario="single" style="SUPER">
+    <p:TargetSys id="idvalue0">
+      <p:Constraint>        
+        <p:Capacity>
+          <p:MaxNbOfVMs>2</p:MaxNbOfVMs>
+          <p:ServerName>id0</p:ServerName>
+          <p:ServerName>id100000</p:ServerName>
+          <p:ServerName>id200000</p:ServerName>
+        </p:Capacity>        
+      </p:Constraint>
+    </p:TargetSys>
+  </p:DataCentre>
+</p:FIT4GreenConstraint>

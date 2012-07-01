@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opticon:FIT4GreenOptimizerConstraint id="" scenario="single" style="SUPER" xmlns:f4g="http://www.f4g.org/schema/MetaModel" xmlns:opticon="http://www.f4g.org/schema/constraints/OptimizerConstraints" xmlns:p="http://www.f4g.org/schema/CommonTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.f4g.org/schema/constraints/OptimizerConstraints ../../../../Schemas/src/main/schema/SlaClusterConstraints.xsd ">
+  <VirtualMachines>
+    <VMType>
+      <name>name</name>
+      <capacity>
+        <vCpus>0</vCpus>
+        <vRam>0.0</vRam>
+        <vHardDisk>0.0</vHardDisk>
+      </capacity>
+      <expectedLoad>
+        <vCpuLoad>0.0</vCpuLoad>
+        <vRamUsage>0.0</vRamUsage>
+        <vDiskLoad>0.0</vDiskLoad>
+        <vNetworkLoad>0.0</vNetworkLoad>
+      </expectedLoad>
+    </VMType>
+    <imageName>imageName</imageName>
+    <imageDescription>imageDescription</imageDescription>
+  </VirtualMachines>
+  <FIT4GreenCluster>
+    <Cluster>
+      <Name>Name</Name>
+      <NodeController>
+        <NodeName>NodeName</NodeName>
+      </NodeController>
+      <BoundedSLAs>
+        <SLA idref="idvalue0"/>
+      </BoundedSLAs>
+      <BoundedPolicies>
+        <Policy idref="idvalue0"/>
+      </BoundedPolicies>
+    </Cluster>
+  </FIT4GreenCluster>
+  <ListOfSLA>
+    <SLA id="idvalue0">
+      <HardwareMetrics>
+        <HDDCapacity>0.0</HDDCapacity>
+        <NbOfCores>0</NbOfCores>
+        <CompPowerGHz>0.0</CompPowerGHz>
+        <MemorySpaceGB>0.0</MemorySpaceGB>
+        <NbOfGPUCores>0</NbOfGPUCores>
+        <GPUFreqGHz>0.0</GPUFreqGHz>
+        <RAIDLevel>0</RAIDLevel>
+      </HardwareMetrics>
+      <CommonQoSRelatedMetrics>
+        <MaxCPULoadPerVM>0.0</MaxCPULoadPerVM>
+        <MaxServerCPULoad>0.0</MaxServerCPULoad>
+        <MaxVirtualLoadPerCore>0.0</MaxVirtualLoadPerCore>
+        <MaxVirtualCPUPerCore>0.0</MaxVirtualCPUPerCore>
+        <Bandwidth>0.0</Bandwidth>
+        <NetworkLatency>0</NetworkLatency>
+        <StandardResponseTimes>1</StandardResponseTimes>
+        <Max_vRAMperPhyRAM>0.0</Max_vRAMperPhyRAM>
+        <Max_VMperServer>0</Max_VMperServer>
+      </CommonQoSRelatedMetrics>
+      <AdditionalMetrics>
+        <DedicatedServer>true</DedicatedServer>
+        <SecureAccessPossibility>true</SecureAccessPossibility>
+        <Location>Location</Location>
+        <MaxPUE>0.0</MaxPUE>
+      </AdditionalMetrics>
+      <Availability>
+        <SchedDownTimes>
+          <p:From>2001-12-31T12:00:00</p:From>
+          <p:To>2001-12-31T12:00:00</p:To>
+        </SchedDownTimes>
+        <Availability>1</Availability>
+        <DowntimeMaint>1</DowntimeMaint>
+        <DowntimeOutages>1</DowntimeOutages>
+      </Availability>
+    </SLA>
+  </ListOfSLA>
+  <ListOfPolicies>
+    <policy id="idvalue1">
+      <VMname>VMname</VMname>
+      <lowVMSlotsThreshold>0</lowVMSlotsThreshold>
+      <highVMSlotsThreshold>0</highVMSlotsThreshold>
+    </policy>
+  </ListOfPolicies>
+</opticon:FIT4GreenOptimizerConstraint>
