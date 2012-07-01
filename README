@@ -1,0 +1,86 @@
+﻿FIT4GREEN PLUG-IN
+
+Description:
+
+FIT4Green plug-in is an application that focuses on saving energy in Data Centres optimizing the ICT resources 
+and is meant to be used by Data Centres operators.
+This README explains the requisites and configuration to compile FIT4Green plug-in source code.
+
+
+Preliminary configuration:
+
+The following components/tools needs configuration before starting to develop on the F4G projects:
+*	The Java environment (at different levels : Tomcat, Eclipse, Ant Eclipse plugin).
+*	The Tomcat server 
+
+Java Environment settings:
+The JDK for java 1.6 includes natively a version of jaxb, but if is obsolete with respect to the latest version 
+of JAXB (v2.2.1), which is contained in the lib folder of the "Schemas" project.
+Therefore, for compatibility issues, it is required to put the jaxb-api.jar (contained in the lib folder of the 
+"Schemas" project) 
+in the "endorsed libs" folder of the jre used (both for the compilation in Eclipse and for the execution in Tomcat).
+To sum up:
+*	Detect the “JAVA_HOME” path for your environment
+*	Create (if not existing) the folder [“JAVA_HOME]/jre/lib/endorsed
+*	Copy there the file “jaxb-api.jar” contained in the lib folder of the "schemas" project
+
+Then, you must make sure that the Eclipse “Java Build path”configuration for each project is properly set to point 
+to that Java environment. By expanding the “JRE System Library” item you can verify that the “jaxb-api.jar” in the 
+endorsed lib is used by the Java environment.  
+ 
+Finally, you need to specify the same setting in the Ant Eclipse plugin used to build and deploy the projects.
+Right click on the “build.xml” file in the root of each project and select “Run As|External tools configurations…”.
+
+Select the “JRE” tab, and verify that it is using the expected Java environment containing the 
+“endorsed/jaxb-api.jar” lib.
+
+ 
+Tomcat:
+The jar resulting from the build of each F4G project will be deployed on the Tomcat server and will be accessed and 
+shared by one or more web applications. This requires that they are deployed in a specific folder as described 
+in the following.
+1.	If they do not exist, create the folders:
+*	[TOMCAT_HOME]/common/lib
+*	[TOMCAT_HOME]/common/classes (currently not used, might be needed in the future)
+
+2.	Configure the “catalina.properties” file as follows:
+*	Open the file [TOMCAT_HOME]/conf/catalina.properties
+*	Append  the following string to the  “common.loader” property:
+“,${catalina.home}/common/classes,${catalina.home}/common/lib/*.jar”
+
+Ant build.xml files:
+Inside the project Plugin_core contains "build-all.xml" that builds all the projects within FIT4Green plug-in.
+All the projects (except the “Ajax GUI Test”) contain a "build.xml" file in the project root, with some pre-configured targets 
+to clean, compile, package and deploy the project. 
+The “Schemas” project, in addition, contains a “generate” target to create java files from schema files. 
+The “InitServlet”  contains a target to package the web application into a war file.
+When the “Ant” task is executed on a “build.xml” file, it retrieves some global configuration data from the 
+“Commons/build.properties” file, contained in the root of the “Commons” project.
+The only element in the “build.properties” file that is dependent on the local configuration, is the entry: 
+"tomcat.home=[to be set to your tomcat home]"
+This entry is used by the ant target "deploy" to put the generated jars in the "${TOMCAT_HOME}/common/lib" of the Tomcat server.
+Rename "local.build.properties.template" to "local.build.properties" and configure this property in the "local.build.properties" 
+file in the “Commons” project.
+
+Eclipse:
+Configure your Runtime Environment located at windows -> preferences to your Tomcat installation.
+Ensure that every project is compiled with at least 1.6 Java version.	
+
+External libraries requierement:
+- F4Gui
+  This project needs GWT installed and you need to add the references to your installed GWT.
+
+Compile:
+Use the build-all.xml provided with the project Plugin_core. This will compile all the projects and will deploy the corresponding 
+files inside the correct folders.
+F4gGui has to be compiled with GWT. 
+Install GWT plug-in for eclipse and compile the project using run as... compile GWT Application with the F4gGui project.
+
+Usage:
+If Configured FIT4Green to start automatically then simply start your Tomcat and FIT4Green plug-in will start automatically.
+Open the web application F4gGui with: http://localhost:8080/F4gGui click the start button to start the plug-in.
+Use this web application to manage the FIT4Green plug-in.
+
+
+22th June 2012
+FIT4Green project.
