@@ -266,6 +266,13 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	 * 
 	 * This function updates the dynamic values for VMs from tha DataCenter
 	 * 
+	 * @param siteIndex
+	 * @param datacenterIndex
+	 * @param rackIndex
+	 * @param enclosureIndex
+	 * @param hostIndex
+	 * @param vmIndex
+	 * @param operationSet
 	 *
 	 * @author jclegea
 	 */
@@ -339,6 +346,20 @@ public class ComDemo  extends AbstractCom implements Runnable {
 		
 	}
 	
+	/**
+	 * 
+	 * Update the dynamic values from a host
+	 * 
+	 * @param siteIndex
+	 * @param datacenterIndex
+	 * @param rackIndex
+	 * @param enclosureIndex
+	 * @param hostIndex
+	 * @param operationSet
+	 * @param hostName
+	 *
+	 * @author jclegea
+	 */
 	private void updateHostDynamicValues(int siteIndex,int datacenterIndex, int rackIndex, int enclosureIndex,int hostIndex, ComOperationCollector operationSet, String hostName){
 		ComOperation operation;
 		double measuredPower;		
@@ -608,7 +629,7 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	@Override
 	public boolean powerOn(PowerOnActionType action) {
 		// Here include the code to power on a host
-		log.debug("POWERING ON: " + action.getFrameworkName());
+		log.debug("POWERING ON: " + action.getNodeName());
 		return false;
 	}
 
@@ -618,7 +639,7 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	@Override
 	public boolean powerOff(PowerOffActionType action) {
 		// Here include the code to power off a host
-		log.debug("POWERING OFF: " + action.getFrameworkName());
+		log.debug("POWERING OFF: " + action.getNodeName());
 		return false;
 	}
 
