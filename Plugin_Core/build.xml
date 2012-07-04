@@ -7,7 +7,6 @@
 
 	<path id="classpath">
 		<pathelement path="src" />
-		<fileset dir="${lib.dir}" includes="*.jar" />
 		<fileset dir="${commons.dist.dir}" includes="*.jar" />
 		<fileset dir="${commons.lib.dir}" includes="*.jar" />
 		<fileset dir="${schemas.dist.dir}" includes="*.jar" />

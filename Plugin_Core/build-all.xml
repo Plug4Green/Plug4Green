@@ -27,6 +27,10 @@
    <target name="buildComEni" depends="buildCoreComponents">
         <ant dir="../CommunicatorEni" target="deploy"/>
    </target>
+   
+   <target name="buildComDemo" depends="buildCoreComponents">
+        <ant dir="../CommunicatorDemo" target="deploy"/>
+   </target>
 
    <target name="buildPluginCore" depends="buildCoreComponents">
         <ant dir="../Plugin_Core" target="deploy"/>
@@ -38,7 +42,7 @@
 
    <target name="buildCoreComponents" depends="buildOptimizer, buildPowerCalculator, buildManager, buildCommons, buildSchema" />
 
-   <target name="buildComs" depends="buildComFzj, buildComEni" />
+   <target name="buildComs" depends="buildComFzj, buildComEni, buildComDemo" />
 
    <target name="buildall" depends="buildComs, buildInitServlet, buildPluginCore, buildCoreComponents"/>
 

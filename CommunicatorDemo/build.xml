@@ -7,7 +7,6 @@
 
 	<path id="classpath">
 		<pathelement path="src" />
-		<fileset dir="${lib.dir}" includes="*.jar" />
 		<fileset dir="${commons.dist.dir}" includes="*.jar" />
 		<fileset dir="${commons.lib.dir}" includes="*.jar" />		
 		<fileset dir="${schemas.dist.dir}" includes="*.jar" />		
@@ -39,10 +38,7 @@
 	</target>
 
 	<target name="deploy" depends="package" description="Copy required libraries in common folder of the Tomcat installation">
-		<copy overwrite="true" todir="${tomcat.lib}" file="${dist.dir}/${jar.name}" />
-		<copy todir="${tomcat.lib}">
-			<fileset dir="${lib.dir}" />
-		</copy>
+		<copy overwrite="true" todir="${tomcat.lib}" file="${dist.dir}/${jar.name}" />		
 		<copy overwrite="true" todir="${tomcat.home}/common/classes" >
 				    <fileset dir="${src.dir}" excludes="java/, schema"/>
 				</copy>
