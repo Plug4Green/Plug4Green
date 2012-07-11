@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import choco.cp.solver.variables.integer.BoolVarNot;
+import choco.cp.solver.variables.integer.BooleanVarImpl;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
@@ -27,7 +29,6 @@ import choco.Choco;
 import choco.cp.solver.constraints.reified.FastIFFEq;
 import choco.cp.solver.constraints.reified.FastImpliesEq;
 import choco.cp.solver.constraints.set.InverseSetInt;
-import choco.cp.solver.variables.integer.BoolVarNot2;
 import choco.kernel.memory.IEnvironment;
 import choco.kernel.solver.variables.Var;
 import choco.kernel.solver.variables.integer.IntDomainVar;
@@ -160,7 +161,7 @@ public class F4GMemoryOverbookingConstraint extends F4GConstraint {
 	    			               
 	        } else if (!core.getFutureOnlines().contains(n)){ //the server state is managed by Entropy
 	        	ManageableNodeActionModel action = (ManageableNodeActionModel) core.getAssociatedAction(n);
-	         	IntDomainVar isOffline = new BoolVarNot2(core, "offline(" + n.getName() + ")", action.getState());
+	         	IntDomainVar isOffline = new BoolVarNot(core, "offline(" + n.getName() + ")", (BooleanVarImpl)action.getState());
 	         	core.post(new FastImpliesEq(isOffline, capacities[i], 0));
 	        }
 	    }

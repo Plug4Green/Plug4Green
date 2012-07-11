@@ -11,7 +11,7 @@ import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.configuration.VirtualMachine;
-
+import entropy.plan.choco.ReconfigurationProblem;
 
 
 public class Utils {
@@ -43,7 +43,36 @@ public class Utils {
 			}
         }
     }
-    
+
+    //Compare two nodes and returns the one with less remaining space on CPU
+    public static class NodeCompareRemainingSpaceFast implements Comparator<Node> {
+        Configuration src;
+        List<VirtualMachine> vms;
+        IntDomainVar[] hosters;
+        List<Node> nodes;
+        ReconfigurationProblem rp;
+        NodeCompareRemainingSpaceFast (ReconfigurationProblem rp, Configuration mySrc, List<VirtualMachine> myVms, List<Node> myNodes, IntDomainVar[] myHosters) {
+            src = mySrc;
+            vms = myVms;
+            hosters = myHosters;
+            nodes = myNodes;
+            this.rp = rp;
+        }
+
+        @Override
+        public int compare(Node n1, Node n2) {
+            int remainingSpace1 = getRemainingSpaceFast(rp, n1, src, vms, hosters);
+            int remainingSpace2 = getRemainingSpaceFast(rp, n2, src, vms, hosters);
+            if (remainingSpace1 < remainingSpace2 ) {
+                return 1;
+            } else if (remainingSpace1 == remainingSpace2) {
+                return 0;
+            } else {
+                return -1;
+            }
+        }
+    }
+
     //Select the node wich hosts the VM
     public static class NodeCompareOriginal implements Comparator<Node> {
 
@@ -110,17 +139,22 @@ public class Utils {
     	
     	List<Node> nodes; 
     	IntDomainVar[] hosters;
-    	NodeCompareSelectTargets(List<Node> myNodes, IntDomainVar[] myHosters) {
+        ReconfigurationProblem rp;
+    	NodeCompareSelectTargets(ReconfigurationProblem rp, List<Node> myNodes, IntDomainVar[] myHosters) {
+            this.rp = rp;
     		nodes = myNodes;
     		hosters = myHosters;
     	}
     	
 		@Override
         public int compare(Node n1, Node n2) {
-			boolean target1 = isTarget(n1, nodes, hosters);
-			boolean target2 = isTarget(n2, nodes, hosters);
-			
-			if (target1 && !target2 ) {
+			//boolean target1 = isTarget(n1, nodes, hosters);
+			//boolean target2 = isTarget(n2, nodes, hosters);
+
+            boolean target1 = isTargetFast(rp, n1, nodes, hosters);
+            boolean target2 = isTargetFast(rp, n2, nodes, hosters);
+
+            if (target1 && !target2 ) {
 				return 1;
 			} else if (target1 == target2) {
 				return 0;
@@ -164,19 +198,50 @@ public class Utils {
 			}
         }
     }
-    
+
+    public static class VMCompareRemainingSpaceOnOriginFast implements Comparator<VirtualMachine> {
+        Configuration src;
+        List<VirtualMachine> vms;
+        IntDomainVar[] hosters;
+        List<Node> nodes;
+        ReconfigurationProblem rp;
+        VMCompareRemainingSpaceOnOriginFast(ReconfigurationProblem rp, Configuration mySrc, List<VirtualMachine> myVms, List<Node> myNodes, IntDomainVar[] myHosters) {
+            this.rp = rp;
+            src = mySrc;
+            vms = myVms;
+            hosters = myHosters;
+            nodes = myNodes;
+        }
+
+        @Override
+        public int compare(VirtualMachine vm1, VirtualMachine vm2) {
+            Node originNode1 = src.getLocation(vm1);
+            Node originNode2 = src.getLocation(vm2);
+            int remainingSpace1 = getRemainingSpaceFast(rp, originNode1, src, vms, hosters);
+            int remainingSpace2 = getRemainingSpaceFast(rp, originNode2, src, vms, hosters);
+            if (remainingSpace1 > remainingSpace2 ) {
+                return 1;
+            } else if (remainingSpace1 == remainingSpace2) {
+                return 0;
+            } else {
+                return -1;
+            }
+        }
+    }
 
     //allows to build a comparator out of several comparators
     public static class MultiComparator<T> implements Comparator<T> {
         private List<Comparator<T>> comparators;
+        private Comparator<T> [] comps;
 
         public MultiComparator(List<Comparator<T>> comparators) {
             this.comparators = comparators;
+            this.comps = (Comparator<T>[])comparators.toArray(new Comparator[comparators.size()]);
         }
 
         public int compare(T o1, T o2) {
-            for (Comparator<T> comparator : comparators) {
-                int comparison = comparator.compare(o1, o2);
+            for (int i = 0; i < comps.length; i++) {
+                int comparison = comps[i].compare(o1, o2);
                 if (comparison != 0) return comparison;
             }
             return 0;
@@ -205,7 +270,14 @@ public class Utils {
 		int remainingSpace = node.getCPUCapacity() - consummedSpace;
 		return remainingSpace;
 	}
-	
+
+    //compute the remaining space on the destination (initial VM + arriving VMs)
+    public static int getRemainingSpaceFast(ReconfigurationProblem rp, Node node, Configuration src, List<VirtualMachine> vms, IntDomainVar[] hosters) {
+        int lbUsed = rp.getUsedCPU(node).getInf();
+        return node.getCPUCapacity() - lbUsed;
+
+    }
+
 	public static boolean isTarget(Node n, List<Node> nodes, IntDomainVar[] hosters) {
 		int index = nodes.indexOf(n);
 		for(IntDomainVar h : hosters) {
@@ -216,6 +288,17 @@ public class Utils {
 		return false;
 	}
 
+    public static boolean isTargetFast(ReconfigurationProblem rp, Node n, List<Node> nodes, IntDomainVar[] hosters) {
+        IntDomainVar memUsed = rp.getUsedMem(n);
+        return memUsed.getInf() > 0;
+        /*int index = nodes.indexOf(n);
+        for(IntDomainVar h : hosters) {
+            if(h.isInstantiatedTo(index)) {
+                return true;
+            }
+        }
+        return false;*/
+    }
     
 }
 

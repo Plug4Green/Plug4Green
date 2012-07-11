@@ -5,10 +5,7 @@ package org.f4g.entropy.plan.search_heuristic;
 
 import choco.kernel.solver.search.integer.AbstractIntVarSelector;
 import choco.kernel.solver.variables.integer.IntDomainVar;
-import entropy.configuration.Configuration;
-import entropy.configuration.ManagedElementSet;
-import entropy.configuration.Node;
-import entropy.configuration.VirtualMachine;
+import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
 import entropy.plan.choco.constraint.pack.CustomPack;
 
@@ -41,7 +38,7 @@ public class LowestLoadHosterVarSelector extends AbstractIntVarSelector {
 	   	@Override
         public int compare(Node n1, Node n2) {return n1.getName().compareTo(n2.getName());}
     }
-    
+
     /**
      * Make a new heuristic.
      * By default, the heuristic doesn't touch the scheduling constraints.
@@ -53,22 +50,38 @@ public class LowestLoadHosterVarSelector extends AbstractIntVarSelector {
     	super(myPb);
     	log = Logger.getLogger(this.getClass().getName());
 		pb = myPb;
-		nodes = myNodes;
-		
-		vms = myPb.getSourceConfiguration().getRunnings(myNodes);
-		hosters = new IntDomainVar[vms.size()];
-		for(int i = 0; i < vms.size(); i++) {
-			VirtualMachine vm = vms.get(i);
-			hosters[i] = myPb.getAssociatedAction(vm).getDemandingSlice().hoster();
-		}
-		Collections.sort(nodes, new NodeCompareName());
-	   
+		nodes = myNodes.clone();
+
+		//Collections.sort(nodes, new NodeCompareName()); //WTF ?
+
+        org.f4g.entropy.plan.NodeFreeResourcesComparator cmp = new org.f4g.entropy.plan.NodeFreeResourcesComparator(myPb.getSourceConfiguration(), false, ResourcePicker.NodeRc.memoryCapacity);
+        Collections.sort(nodes, cmp);
+
+        vms = new SimpleManagedElementSet<VirtualMachine>();
+        for (Node n : nodes) {
+            vms.addAll(pb.getSourceConfiguration().getRunnings(n));
+        }
+
+        hosters = new IntDomainVar[vms.size()];
+        for(int i = 0; i < vms.size(); i++) {
+            VirtualMachine vm = vms.get(i);
+            hosters[i] = myPb.getAssociatedAction(vm).getDemandingSlice().hoster();
+        }
+
     }
-    
+
     //select the VMs on the servers with the minimum VMs
     @Override
+
     public IntDomainVar selectVar() {
-    	
+        for (int i = 0; i < hosters.length; i++) {
+            if (!hosters[i].isInstantiated()) {
+                return hosters[i];
+            }
+        }
+        return null;
+
+        /*
     	Predicate<VirtualMachine> isNotIntanciated = new Predicate<VirtualMachine>() { 
 		    @Override public boolean apply(VirtualMachine vm) { return !hosters[vms.indexOf(vm)].isInstantiated(); }};
 		    
@@ -78,10 +91,11 @@ public class LowestLoadHosterVarSelector extends AbstractIntVarSelector {
 			return null;
 		}
 		
-		Comparator<VirtualMachine> cmpRemSpace = new Utils.VMCompareRemainingSpaceOnOrigin(pb.getSourceConfiguration(), vms, nodes, hosters);
+		//Comparator<VirtualMachine> cmpRemSpace = new org.f4g.entropy.plan.search_heuristic.Utils.VMCompareRemainingSpaceOnOrigin(pb.getSourceConfiguration(), vms, nodes, hosters);
+        Comparator<VirtualMachine> cmpRemSpace = new org.f4g.entropy.plan.search_heuristic.Utils.VMCompareRemainingSpaceOnOriginFast(pb, pb.getSourceConfiguration(), vms, nodes, hosters);
 		VirtualMachine vm = Collections.max(moveable, cmpRemSpace);
-		log.debug("VM selected: " + vm.getName());
-		return hosters[vms.indexOf(vm)];
+		//log.debug("VM selected: " + vm.getName());
+		return hosters[vms.indexOf(vm)];   */
     		
     }
     		

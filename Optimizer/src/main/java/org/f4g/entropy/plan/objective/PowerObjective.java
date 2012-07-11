@@ -1,4 +1,3 @@
-
 package org.f4g.entropy.plan.objective;
 
 import java.util.ArrayList;
@@ -7,6 +6,7 @@ import java.util.HashMap;
 
 import choco.cp.solver.variables.integer.BoolVarNot2;
 
+import choco.cp.solver.variables.integer.BooleanVarImpl;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.power.IPowerCalculator;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;

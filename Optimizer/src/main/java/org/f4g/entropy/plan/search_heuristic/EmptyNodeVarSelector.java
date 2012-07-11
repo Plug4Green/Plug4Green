@@ -51,9 +51,9 @@ public class EmptyNodeVarSelector extends AbstractIntVarSelector {
 		   
 	        if(!pb.getFutureOnlines().contains(n) && !pb.getFutureOfflines().contains(n)) {
 	        	ManageableNodeActionModel action = (ManageableNodeActionModel) pb.getAssociatedAction(n);
-	        	log.debug("action.getState().isInstantiated():" + action.getState().isInstantiated());
+	        	//log.debug("action.getState().isInstantiated():" + action.getState().isInstantiated());
 	        	if(!action.getState().isInstantiated() && pb.getSourceConfiguration().isOnline(n)) {
-	        		log.debug("switch off node:" + n.getName());
+	        		//log.debug("switch off node:" + n.getName());
 	        		return action.getState();
 	        	}
 	        }    

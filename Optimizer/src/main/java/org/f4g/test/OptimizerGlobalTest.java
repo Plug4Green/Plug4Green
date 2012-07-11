@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
+
+import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.common.logging.Verbosity;
 import org.f4g.com.util.PowerData;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.optimizer.OptimizerEngine;
@@ -55,6 +58,7 @@ import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import org.junit.Test;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -91,7 +95,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		bpols.getPolicy().add(bpol);		
 		fed.setBoundedPolicies(bpols);
 		
-		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
+		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(),
 				        slaGenerator.createVirtualMachineType(), policies, fed);
 	    
 		//algo = new AlgoGlobal(new MockPowerCalculator(), new NetworkCost(), AlgoType.CLOUD);
@@ -115,8 +119,10 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	 * Specific to cloud: in cloud, only one VM is allowed per Core
 	 * @author cdupont
 	 */
+    @Test
 	public void testGlobalConstraintOnCPUUsage(){
 
+        ChocoLogging.setVerbosity(Verbosity.SOLUTION);
 		//generate one VM per server
 		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -1067,14 +1073,15 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	/**
 	 * Test with a very loaded configuration
 	 */
+    @Test
 	public void testGlobalChargedTraditional(){
-		
+        ChocoLogging.setVerbosity(Verbosity.SOLUTION);
 		//generate one VM per server
 		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(50);
-		modelGenerator.setNB_VIRTUAL_MACHINES(1);//4
-		modelGenerator.setRAM_SIZE(8000);
+		modelGenerator.setNB_SERVERS(2000); //Was 50
+		modelGenerator.setNB_VIRTUAL_MACHINES(1);//Was 1
+		modelGenerator.setRAM_SIZE(800); //was 8000
 		//servers settings
 		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(4); //4 cores
@@ -1156,8 +1163,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 			if (action.getValue() instanceof PowerOffActionType) 
 				powerOffs.add((PowerOffActionType)action.getValue());
 		}
-		
-             	
+
 		log.debug("moves=" + moves.size());
 		log.debug("powerOffs=" + powerOffs.size());
 

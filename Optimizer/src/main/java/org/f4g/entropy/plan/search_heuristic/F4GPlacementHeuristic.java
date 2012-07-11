@@ -84,7 +84,7 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
         
         //Now the VMs associated to group of nodes
         //ManagedElementSet<VirtualMachine> inGroup = new DefaultManagedElementSet<VirtualMachine>();
-        if (plan.getQueue().size() != 0) {
+        //if (plan.getQueue().size() != 0) {
 
         	//add heuristic for excluded VMs
         	//TODO: reactivate
@@ -95,7 +95,7 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
             //add heuritic for fixing broken constraints
             addStayFirst(plan, badActions, oldLocation);
            
-        }
+        //}
 
         //add heuritic for runs
         addStayFirst(plan, runActions, oldLocation);
