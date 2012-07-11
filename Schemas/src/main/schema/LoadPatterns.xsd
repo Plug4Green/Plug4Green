@@ -18,6 +18,7 @@
 		<xsd:attribute name="id" type="xsd:string" use="required" />
 	</xsd:attributeGroup>
 	
+	
 	<xsd:attributeGroup name="PriorityAttribute">
 		<xsd:attribute name="priority" type="xsd:string" use="optional" />
 	</xsd:attributeGroup>

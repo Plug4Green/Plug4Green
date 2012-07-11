@@ -3,8 +3,8 @@
 * file:          ModelGenerator.java
 * project:       FIT4Green/Optimizer
 * created:       26 nov. 2010 by cdupont
-* last modified: $LastChangedDate: 2012-05-04 12:45:41 +0200 (vie, 04 may 2012) $ by $LastChangedBy: vicky@almende.org $
-* revision:      $LastChangedRevision: 1427 $
+* last modified: $LastChangedDate: 2012-07-05 16:23:09 +0200 (jeu. 05 juil. 2012) $ by $LastChangedBy: f4g.cnit $
+* revision:      $LastChangedRevision: 1512 $
 * 
 * short description:
 *   Generate a random Model and eventuallysaves it to file.
@@ -19,6 +19,8 @@ package org.f4g.test;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -386,6 +388,7 @@ public class ModelGenerator {
 		frameworkCapability.setId(FWName);
 		frameworkCapability.setVm(vMActions);
 		frameworkCapability.setNode(nodeActions);
+		frameworkCapability.setStatus(FrameworkStatusType.RUNNING);
 		
 		datacenter.setComputingStyle(DCComputingStyleType.CLOUD);
 		datacenter.setComputedPower(new PowerType(0.0));
@@ -539,6 +542,7 @@ public class ModelGenerator {
 				core.setTotalPstates(new NrOfPstatesType(0));
 				CPU.getCore().add(core);
 				CPU.setTransistorNumber(new NrOfTransistorsType(0));
+				
 			}
 			mainboard.getCPU().add(CPU);
 		}
@@ -556,22 +560,31 @@ public class ModelGenerator {
 		
 		hardDisk.setMaxReadRate(new IoRateType(0));
 		hardDisk.setMaxWriteRate(new IoRateType(0));
-				
+		hardDisk.setReadRate(new IoRateType(0));
+		hardDisk.setWriteRate(new IoRateType(0));
+		hardDisk.setPowerIdle(new PowerType(0));
+		hardDisk.setPowerMax(new PowerType(0));
+		hardDisk.setRpm(new RPMType(0));
+		
 		NetworkPortType netPort = new NetworkPortType();
 		netPort.setPowerIdle(new PowerType(1.0));
 		netPort.setPowerMax(new PowerType(2.0));
 		netPort.setLineCapacity(new NetworkTrafficType(1.0));
+		netPort.setId("id" + String.valueOf(NIC_FRAMEWORK_ID + id + 10));
+		netPort.setPortID("PortID");
 		
-		
-		NIC.setFrameworkRef((Object)frameworkCapabilitie);
+		NIC.setFrameworkRef(frameworkCapabilitie);
 		//NIC.setSwitchingType(NNSwitchingType.TYPE_1);
 		NIC.setFrameworkID("id" + String.valueOf(NIC_FRAMEWORK_ID + id));
 		NIC.setID("id" + String.valueOf(NIC_FRAMEWORK_ID + id));
 		NIC.setForwardFlag(false);
 		NIC.getNetworkPort().add(netPort);
-		
+		NIC.setStatus(NetworkNodeStatusType.ON);
 		RAMStick.setType(RAMTypeType.DDR);
 		RAMStick.setVendor(RAMTypeVendorType.GENERIC);
+		RAMStick.setVoltage(new VoltageType(0));
+		RAMStick.setFrequency(new FrequencyType(0));
+		RAMStick.setBufferType(BufferTypeType.FULLY_BUFFERED);
 		
 		mainboard.getRAMStick().add(RAMStick);
 		mainboard.getHardDisk().add(hardDisk);
@@ -816,7 +829,14 @@ public class ModelGenerator {
 	 */
 	public FIT4GreenType getModel(String modelPathName) {
 		
-		InputStream isModel = ModelGenerator.class.getClassLoader().getResourceAsStream(modelPathName);
+		//InputStream isModel = ModelGenerator.class.getClassLoader().getResourceAsStream(modelPathName);
+		InputStream isModel = null;
+		try {
+			isModel = new FileInputStream(modelPathName);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		log.debug("modelPathName: " + modelPathName + ", isModel: " + isModel);
 		
@@ -880,8 +900,7 @@ public class ModelGenerator {
 		node.setFrameworkID("id" + String.valueOf(id));
 		node.setID("id" + String.valueOf(id));
 		node.setForwardFlag(true);
-		node.setStatus(NetworkNodeStatusType.ON);
-        
+		node.setStatus(NetworkNodeStatusType.ON);		
         node.setPowerIdle( defaultSwitchPowerIdle  );
         node.setPowerMax( defaultSwitchPowerMax );
         node.setProcessingBandwidth( defaultSwitchProcessingBandwidth );
@@ -902,7 +921,7 @@ public class ModelGenerator {
 		node.setFrameworkID("id" + String.valueOf(id));
 		node.setID("id" + String.valueOf(id));
 		node.setForwardFlag(true);
-							
+		node.setStatus(NetworkNodeStatusType.ON);				
         node.setPowerIdle( defaultRouterPowerIdle );
         node.setPowerMax( defaultRouterPowerMax );
         node.setProcessingBandwidth( defaultRouterProcessingBandwidth );

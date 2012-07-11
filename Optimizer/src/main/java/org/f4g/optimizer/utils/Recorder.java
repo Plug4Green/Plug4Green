@@ -3,8 +3,8 @@
 * file:          Recorder.java
 * project:       FIT4Green/Optimizer
 * created:       24 jan. 2011 by cdupont
-* last modified: $LastChangedDate: 2011-10-21 14:40:57 +0200 (vie, 21 oct 2011) $ by $LastChangedBy: f4g.cnit $
-* revision:      $LastChangedRevision: 923 $
+* last modified: $LastChangedDate: 2012-07-05 16:23:09 +0200 (jeu. 05 juil. 2012) $ by $LastChangedBy: f4g.cnit $
+* revision:      $LastChangedRevision: 1512 $
 * 
 * short description:
 *   recording facilities.
@@ -14,6 +14,7 @@
 package org.f4g.optimizer.utils;
 
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
@@ -65,6 +66,13 @@ public class Recorder {
 		}
 				
 	}
+	public Recorder(boolean myIsRecording, String myRecorderDirectory){
+		log = Logger.getLogger(Recorder.class.getName()); 
+			
+		isRecording = myIsRecording;
+		recorderDirectory = myRecorderDirectory;
+				
+	}
 	
 	
 	public void recordModel(FIT4GreenType model){
@@ -73,13 +81,19 @@ public class Recorder {
 			
 			log.debug("recording Model...");
 			
-			JAXBElement<FIT4GreenType> fIT4Green = (new ObjectFactory()).createFIT4Green(model);
-			
-			saveToXML(fIT4Green, 
-			          getFileName("F4G Model"), 
-			          Constants.METAMODEL_FILE_NAME, //../Schemas/src/main/schema/
-			          Constants.METAMODEL_PACKAGE_NAME);
+			boolean success = (new File(recorderDirectory)).mkdirs();
+			if (!success) {
+				log.debug("directory creation failed");
+			} 
+					JAXBElement<FIT4GreenType> fIT4Green = (new ObjectFactory()).createFIT4Green(model);
+					
+					saveToXML(fIT4Green, 
+					          getFileName("F4G Model"), 
+					          Constants.METAMODEL_FILE_NAME, //../Schemas/src/main/schema/
+					          Constants.METAMODEL_PACKAGE_NAME);
+				
 		}
+			
 		
 	}
 	

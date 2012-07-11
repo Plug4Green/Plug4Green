@@ -3,8 +3,8 @@
 * file:          OptimizerTest.java
 * project:       FIT4Green/Optimizer
 * created:       10 déc. 2010 by cdupont
-* last modified: $LastChangedDate: 2012-05-04 12:45:41 +0200 (vie, 04 may 2012) $ by $LastChangedBy: vicky@almende.org $
-* revision:      $LastChangedRevision: 1427 $
+* last modified: $LastChangedDate: 2012-07-05 16:23:09 +0200 (jeu. 05 juil. 2012) $ by $LastChangedBy: f4g.cnit $
+* revision:      $LastChangedRevision: 1512 $
 * 
 * short description:
 *   Integration with the power calculator tests
@@ -13,11 +13,17 @@
 package org.f4g.test;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
+import java.util.Random;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -26,11 +32,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import org.f4g.optimizer.CloudTraditional.SLAReader;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import org.f4g.optimizer.utils.OptimizerWorkload;
+import org.f4g.optimizer.utils.Recorder;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.optimizer.utils.OptimizerWorkload.CreationImpossible;
 import org.f4g.power.IPowerCalculator;
@@ -81,6 +89,14 @@ import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
+import org.f4g.schema.constraints.optimizerconstraints.VMTypeType.VMType;
+import org.f4g.util.Util;
+
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
+
+import entropy.configuration.Node;
 
 
 /**
@@ -389,7 +405,7 @@ public class IntegrationTest extends OptimizerTest {
 	/**
 	 * Test allocation with constraints not satisfied
 	 */
-	public void test() {
+	public void testconstraintnotsatisfied() {
 		
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -519,7 +535,7 @@ public class IntegrationTest extends OptimizerTest {
 		optimizer.setVmTypes(sla.getVMtypes());
 
 		
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
+		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.xlarge");
 		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().clear();
 		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
 	
@@ -531,7 +547,7 @@ public class IntegrationTest extends OptimizerTest {
 		assertNotNull(response.getResponse());
 		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
 		
-		//TEST 2
+		//TEST 2	
 		
 		optimizer.runGlobalOptimization(model);
 		try {
@@ -556,14 +572,40 @@ public class IntegrationTest extends OptimizerTest {
 		log.debug("moves=" + moves.size());
 		log.debug("powerOffs=" + powerOffs.size());
 	
-		assertEquals(powerOffs.size(), 6);
+		//assertEquals(powerOffs.size(), 6);
 	
 		//TEST 3
+		Date date = new Date();
+		GregorianCalendar gCalendar = new GregorianCalendar();
+		gCalendar.setTime(date);
+		XMLGregorianCalendar now = null;
+		try {
+			now = DatatypeFactory.newInstance().newXMLGregorianCalendar(gCalendar);
+		} catch (DatatypeConfigurationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		List<ServerType> servers = Utils.getAllServers(model);
-		VirtualMachineType VM = modelGenerator.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);		
-		servers.get(0).getNativeHypervisor().getVirtualMachine().add(VM);
-						
+		int maxVM = 9;
+		for(int i=0; i<maxVM; i++) {
+			VirtualMachineType VM = modelGenerator.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);		
+			servers.get(0).getNativeHypervisor().getVirtualMachine().add(VM);
+			VM.setCloudVmType("m1.small");
+			VM.setLastMigrationTimestamp(now);
+			VM.setFrameworkID("VMa" + i);
+		}
+//		maxVM = 16;
+//		for(int i=0; i<maxVM; i++) {
+//			VirtualMachineType VM = modelGenerator.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);		
+//			servers.get(1).getNativeHypervisor().getVirtualMachine().add(VM);
+//			VM.setCloudVmType("m1.xlarge");
+//			VM.setLastMigrationTimestamp(now);
+//			VM.setFrameworkID("VMb" + i);
+//		}
+		
+		//servers.get(2).setStatus(ServerStatusType.OFF);		
+		//servers.get(3).setStatus(ServerStatusType.OFF);	
 		optimizer.runGlobalOptimization(model);
 		try {
 			actionRequestAvailable.acquire();
@@ -591,4 +633,207 @@ public class IntegrationTest extends OptimizerTest {
 		
 	}
 	
+	
+	//generation nbConf random configurations with nbServers in the directory path given
+	public void generateConfigurations(int nbServers, int nbConf, String path){
+		
+		for(int i = 0; i < nbConf; i++) {
+			generateConfiguration(nbServers, path);
+		}
+	}
+		
+	//generation a random configuration with nbServers in the directory path given
+	public void generateConfiguration(int nbServers, String path){
+		
+		int NbVMsperServer = 6;
+		int NBVMsTotal = nbServers * NbVMsperServer;
+		int nbServers1 = nbServers / 2;
+		int nbServers2 = (nbServers % 2 == 0 ? nbServers / 2: nbServers / 2 + 1);
+				
+		ModelGenerator modelGenerator1 = new ModelGenerator();
+		//Server1:
+		//CPU Dual CPU, quad-core, Intel® Xeon® E5520 2.27 GHz
+		//Memory    24 GB (6 x 4 GB DIMMs)
+		//Hard disk  2 x 300 GB
+		modelGenerator1.setCPU(2);
+		modelGenerator1.setCORE(4);
+		modelGenerator1.setFREQUENCY(2.27);
+		modelGenerator1.setRAM_SIZE(24);
+		modelGenerator1.setSTORAGE_SIZE(600);
+		modelGenerator1.setNB_VIRTUAL_MACHINES(0);
+		modelGenerator1.setNB_SERVERS(nbServers1);
+		modelGenerator1.setNB_ROUTERS(0);
+		modelGenerator1.setNB_SWITCHES(0);
+		
+		modelGenerator1.SERVER_FRAMEWORK_ID = 100000;
+		
+		
+		ModelGenerator modelGenerator2 = new ModelGenerator();
+		//Server2:
+		//CPU Dual CPU, quad-core, Intel® Xeon® E5540 2.53 GHz
+		//Memory    24 GB (6 x 4 GB DIMMs)
+		//Hard disk  2 x 300 GB
+		modelGenerator2.setCPU(2);
+		modelGenerator2.setCORE(4);
+		modelGenerator2.setFREQUENCY(2.53);
+		modelGenerator2.setRAM_SIZE(24);
+		modelGenerator2.setSTORAGE_SIZE(600);
+		modelGenerator2.setNB_VIRTUAL_MACHINES(0);
+		modelGenerator2.setNB_SERVERS(nbServers2);
+		modelGenerator2.SERVER_FRAMEWORK_ID = 200000;
+		
+		FIT4GreenType model = modelGenerator1.createPopulatedFIT4GreenType();
+		FIT4GreenType model2 = modelGenerator2.createPopulatedFIT4GreenType();
+			
+		List<ServerType> servers = Utils.getAllServers(model);
+		List<ServerType> servers2 = Utils.getAllServers(model2);
+		
+		//all the servers of model2 are added in model 1. model2 will not be used anymore.
+		servers.addAll(servers2);
+		
+		String sep = System.getProperty("file.separator");
+		final SLAReader sla = new SLAReader("resources" + sep	+ "unittest_SLA_instance_ComHP.xml");
+
+				
+		//predicate to determine is a server is full according to our known constraints
+		Predicate<ServerType> isFull = new Predicate<ServerType>() { 
+		    @Override public boolean apply(ServerType server) { 
+		    	
+		    	List<VirtualMachineType> vms = Utils.getVMs(server);
+			
+		    	int sumCPUs = 0;
+		    	int sumCPUDemands = 0;
+		    	for(VirtualMachineType vm : vms){
+		    		VMType SLAVM = Util.findVMByName(vm.getCloudVmType(), sla.getVMtypes());
+		    		sumCPUs += SLAVM.getCapacity().getVCpus().getValue();
+		    		sumCPUDemands += SLAVM.getExpectedLoad().getVCpuLoad().getValue();
+		    	}
+			
+		    	//constraint MaxVMperServer=15
+		    	if(vms.size() >= 15)
+		    		return true;
+		    	//constraint MaxVirtualCPUPerCore=2
+		    	if(sumCPUs >= Utils.getNbCores(server) * 2)
+		    		return true;
+		    	//regular CPU consumption constraint
+		    	if(sumCPUDemands + 100 >= Utils.getNbCores(server) * 100)
+		    		return true;
+			
+		    	return false;
+			}
+		};
+			
+		
+		Date date = new Date();
+		GregorianCalendar gCalendar = new GregorianCalendar();
+		gCalendar.setTime(date);
+		XMLGregorianCalendar now = null;
+		try {
+			now = DatatypeFactory.newInstance().newXMLGregorianCalendar(gCalendar);
+		} catch (DatatypeConfigurationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		List<VirtualMachineType> vms = new ArrayList<VirtualMachineType>();
+		Random rand = new Random(System.currentTimeMillis());
+				
+		for(int i=0; i<NBVMsTotal; i++) {
+			VirtualMachineType VM = modelGenerator1.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);		
+			VM.setCloudVmType("m1.small");
+			VM.setLastMigrationTimestamp(now);
+			VM.setFrameworkID("VMa" + i);
+			vms.add(VM);
+			
+			Collection<ServerType> nonFullServers = Collections2.filter(servers, Predicates.not(isFull));
+			int size = nonFullServers.size();
+			if(size == 0) 
+				break;
+			
+			int item = rand.nextInt(size);
+			List<ServerType> myList = new ArrayList<ServerType>();
+			myList.addAll(nonFullServers);
+			ServerType s = myList.get(item);
+			s.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().add(VM);
+					
+		}
+		
+		Recorder recorder = new Recorder(true, path);
+		recorder.recordModel(model);
+		
+		
+	}
+	
+	//run all configurations in a directory
+	void runConfigurations(String pathName) {
+		
+		String sep = System.getProperty("file.separator");
+		
+		String fileName;
+		File folder = new File(pathName);
+		File[] listOfFiles = folder.listFiles(); 
+		 
+		for (int i = 0; i < listOfFiles.length; i++) 
+		{		 
+			if (listOfFiles[i].isFile()) 
+			{
+				fileName = listOfFiles[i].getName();
+				if (fileName.endsWith(".xml"))
+				{
+					runConfiguration(pathName + sep + fileName);
+			    }
+		    }
+		}
+	}
+	
+	//run a configuration file
+	void runConfiguration(String pathName) {
+		
+		ModelGenerator modelGenerator = new ModelGenerator();	
+		FIT4GreenType model = modelGenerator.getModel(pathName);
+		
+		String sep = System.getProperty("file.separator");
+		final SLAReader sla = new SLAReader("resources" + sep	+ "unittest_SLA_instance_ComHP.xml");
+		optimizer.setClusterType(sla.getCluster());
+		optimizer.setSla(sla.getSLAs());
+		optimizer.setFederation(sla.getFeds());
+		optimizer.setClusterType(sla.getCluster());
+		optimizer.setPolicies(sla.getPolicies());
+		optimizer.setVmTypes(sla.getVMtypes());
+		
+		optimizer.runGlobalOptimization(model);
+		try {
+			actionRequestAvailable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		ActionList response3 = actionRequest.getActionList();
+		
+		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
+		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
+		
+		for (JAXBElement<? extends AbstractBaseActionType> action : response3.getAction()){
+			if (action.getValue() instanceof MoveVMActionType) 
+				moves.add((MoveVMActionType)action.getValue());
+			if (action.getValue() instanceof PowerOffActionType) 
+				powerOffs.add((PowerOffActionType)action.getValue());
+		}
+	         	
+		log.debug("moves=" + moves.size());
+		log.debug("powerOffs=" + powerOffs.size());
+		
+	}
+	
+	//generate a sample configurations into XML files in a directory
+	public void testGenerateConfigurations(){
+		generateConfigurations(10, 2, "F4Gmodels");
+	}
+	
+	//run all configurations found in a directory
+	public void testRunConfigurations(){
+		runConfigurations("F4Gmodels");
+	}
+	
+	   
 }
