@@ -7,18 +7,13 @@ import choco.kernel.solver.search.integer.AbstractIntVarSelector;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
-import entropy.plan.choco.constraint.pack.CustomPack;
 
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import org.apache.log4j.Logger;
 import org.f4g.entropy.configuration.F4GResourcePicker;
-import org.f4g.entropy.plan.F4GNodeComparator;
+import org.f4g.entropy.configuration.F4GNodeComparator;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 
 /**
  * A Var selector that focuses on the assignment var of the demanding slices.
