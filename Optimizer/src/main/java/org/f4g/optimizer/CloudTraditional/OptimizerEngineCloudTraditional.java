@@ -233,8 +233,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 				.getValue();
 		Configuration src = null;
 		
-		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(
-				model, vmTypes);
+		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(model, vmTypes, powerCalculator);
 		VirtualMachine VMtoAllocate = confAdapter.getVM(request);
 
 		if (VMtoAllocate == null) {
@@ -349,7 +348,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	public void runGlobalOptimization(FIT4GreenType model) {
 		log.debug("Performing Global Optimization");
 
-		Configuration src = (new F4GConfigurationAdapter(model, vmTypes)).extractConfiguration();
+		Configuration src = (new F4GConfigurationAdapter(model, vmTypes, powerCalculator)).extractConfiguration();
 
 		if (src.getAllNodes().size() == 0) {
 			log.warn("No Nodes");

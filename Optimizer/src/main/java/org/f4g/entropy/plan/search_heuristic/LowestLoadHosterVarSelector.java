@@ -14,6 +14,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import org.apache.log4j.Logger;
+import org.f4g.entropy.configuration.F4GResourcePicker;
+import org.f4g.entropy.plan.F4GNodeComparator;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -52,9 +55,11 @@ public class LowestLoadHosterVarSelector extends AbstractIntVarSelector {
 		pb = myPb;
 		nodes = myNodes.clone();
 
-		//Collections.sort(nodes, new NodeCompareName()); //WTF ?
-
-        org.f4g.entropy.plan.NodeFreeResourcesComparator cmp = new org.f4g.entropy.plan.NodeFreeResourcesComparator(myPb.getSourceConfiguration(), false, ResourcePicker.NodeRc.memoryCapacity);
+		//first criteria: select first the servers with a lot of CPU remaining to empty them
+        F4GNodeComparator cmp = new F4GNodeComparator(false, F4GResourcePicker.NodeRc.cpuRemaining, (Configuration) myPb.getSourceConfiguration());
+        //second criteria: select first the servers with a big power idle (to free them and switch them off)
+        cmp.appendCriteria(true, F4GResourcePicker.NodeRc.powerIdle);
+        
         Collections.sort(nodes, cmp);
 
         vms = new SimpleManagedElementSet<VirtualMachine>();

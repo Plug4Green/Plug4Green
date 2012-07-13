@@ -12,7 +12,15 @@ import java.util.List;
 
 import choco.kernel.common.util.iterators.DisposableIntIterator;
 import entropy.configuration.*;
+
 import org.apache.log4j.Logger;
+import org.f4g.entropy.configuration.F4GNode;
+import org.f4g.optimizer.OptimizationObjective;
+import org.f4g.power.IPowerCalculator;
+import org.f4g.schema.metamodel.FIT4GreenType;
+import org.f4g.schema.metamodel.ServerStatusType;
+import org.f4g.schema.metamodel.ServerType;
+import org.f4g.util.StaticPowerCalculation;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -20,8 +28,9 @@ import com.google.common.collect.Collections2;
 
 import choco.kernel.solver.search.ValSelector;
 import choco.kernel.solver.variables.integer.IntDomainVar;
+import entropy.plan.Plan;
 import entropy.plan.choco.ReconfigurationProblem;
-import entropy.plan.choco.constraint.pack.CustomPack;
+
 
 
 /**
@@ -40,7 +49,7 @@ public class ConsolidateValSelector implements ValSelector<IntDomainVar> {
     IntDomainVar[] hosters;
     ManagedElementSet<Node> nodes;
     ManagedElementSet<VirtualMachine> vms;
-
+    
     /**
      * Build a selector for a specific solver.
      *
@@ -54,6 +63,7 @@ public class ConsolidateValSelector implements ValSelector<IntDomainVar> {
 		pb = myPb;
 		Configuration src = pb.getSourceConfiguration();
 		nodes = myNodes;
+		
 		
 		vms = myPb.getSourceConfiguration().getRunnings(myNodes);
 		hosters = new IntDomainVar[vms.size()];
@@ -78,7 +88,8 @@ public class ConsolidateValSelector implements ValSelector<IntDomainVar> {
 		/*Node destNode = null;
 		destNode = bestDestinationNode(hoster, myVM);
 		int indexDest = nodes.indexOf(destNode);*/
-		int indexDest = worstFitCPUOnlinesFirst(var);
+		//int indexDest = worstFitCPUOnlinesFirst(var);
+		int indexDest = worstFitCPULowPIdleFirst(var);
 		return indexDest;
     }
 
@@ -99,7 +110,7 @@ public class ConsolidateValSelector implements ValSelector<IntDomainVar> {
             if (cpu > maxCPU) {
                 maxIdx = possible;
                 maxCPU = cpu;
-            } else if (cpu == maxCPU) { //Same value, so if the node was already online, it is better
+            } else if (cpu == maxCPU) { //Same value, so if the node was already online in the original configuration, it is better
                 Node n = pb.getNode(possible);
                 if (pb.getSourceConfiguration().isOnline(n)) {
                     maxIdx = possible;
@@ -109,6 +120,28 @@ public class ConsolidateValSelector implements ValSelector<IntDomainVar> {
         ite.dispose();
         return maxIdx;
     }
+   
+   private int worstFitCPULowPIdleFirst(IntDomainVar v) {
+       DisposableIntIterator ite = v.getDomain().getIterator();
+       int maxIdx = ite.next();
+       int maxCPU = pb.getUsedCPU(pb.getNode(maxIdx)).getInf();
+       while (ite.hasNext()) {
+           int possible = ite.next();
+           int cpu = pb.getUsedCPU(pb.getNode(possible)).getInf();
+           if (cpu > maxCPU) {
+               maxIdx = possible;
+               maxCPU = cpu;
+           } else if (cpu == maxCPU) { //Same value, so if the node has less power idle, it is better
+               F4GNode newNode = (F4GNode) pb.getNode(possible);
+               F4GNode oldNode = (F4GNode) pb.getNode(maxIdx);
+               if (newNode.getPIdle() < oldNode.getPIdle()) {
+                   maxIdx = possible;
+               }
+           }
+       }
+       ite.dispose();
+       return maxIdx;
+   }
 
     //get the best destination node for a VM
     private Node bestDestinationNode(final IntDomainVar place, final VirtualMachine myVM) {
@@ -234,7 +267,8 @@ public class ConsolidateValSelector implements ValSelector<IntDomainVar> {
 		return myVM;
 	}
     
-
+	 
+	
     
 }
 

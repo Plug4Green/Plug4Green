@@ -59,6 +59,7 @@ public class PowerObjective extends Objective {
     int reconfTime = 10*60; // seconds
     int EnergyOn = 1; //Joule
     int EnergyOff = 1; //Joule
+	private List<ServerType> allServers;
         
     /**
      * Make a new constraint.
@@ -76,7 +77,7 @@ public class PowerObjective extends Objective {
 
         // initialize data structures
         
-    	List<ServerType> allServers = Utils.getAllServers(model);
+    	allServers = Utils.getAllServers(model);
         int numberOfServers = allServers.size();
 
         List<NetworkNodeType> networkNodes = Utils.getAllNetworkDeviceNodes(model);
@@ -141,7 +142,6 @@ public class PowerObjective extends Objective {
              
     	IntDomainVar Pidle = m.createBoundIntVar("Pidle",0, Choco.MAX_UPPER_BOUND);
     	
-    	List<ServerType> allServers = Utils.getAllServers(model);
         ManagedElementSet<Node> nodes = m.getSourceConfiguration().getAllNodes();
         IntDomainVar[] PIdleServer = new IntDomainVar[nodes.size()];
 
@@ -181,7 +181,6 @@ public class PowerObjective extends Objective {
     public IntExp getPVMs(ReconfigurationProblem m) {
                 
     	IntDomainVar PVMs = m.createBoundIntVar("PVMs",0, Choco.MAX_UPPER_BOUND);
-    	List<ServerType> allServers = Utils.getAllServers(model);
         ManagedElementSet<Node> nodes = m.getSourceConfiguration().getAllNodes();
 
         //For each node, we define a set denoting the VMs it may hosts

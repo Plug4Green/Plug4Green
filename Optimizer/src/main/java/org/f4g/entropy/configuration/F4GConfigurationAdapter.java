@@ -2,10 +2,13 @@ package org.f4g.entropy.configuration;
 
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
+import org.f4g.optimizer.OptimizationObjective;
 import org.f4g.optimizer.utils.Utils;
+import org.f4g.power.IPowerCalculator;
 import org.f4g.schema.allocation.CloudVmAllocationType;
 import org.f4g.schema.allocation.RequestType;
 import org.f4g.schema.allocation.TraditionalVmAllocationType;
@@ -15,6 +18,7 @@ import org.f4g.schema.metamodel.FIT4GreenType;
 import org.f4g.schema.metamodel.ServerStatusType;
 import org.f4g.schema.metamodel.ServerType;
 import org.f4g.schema.metamodel.VirtualMachineType;
+import org.f4g.util.StaticPowerCalculation;
 import org.f4g.util.Util;
 
 import entropy.configuration.Configuration;
@@ -24,6 +28,7 @@ import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
 import entropy.configuration.VirtualMachine;
 import entropy.monitoring.ConfigurationAdapter;
+import entropy.plan.Plan;
 
 
 public class F4GConfigurationAdapter extends ConfigurationAdapter
@@ -32,6 +37,13 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 	VMTypeType currentVMType;
 	
 	private Logger log;
+	private List<ServerType> allServers;
+	private OptimizationObjective optiObjective;
+	private IPowerCalculator powerCalculator;
+	
+
+
+	private StaticPowerCalculation powerCalculation;
 	
     public FIT4GreenType getCurrentFIT4Green() {
 		return currentFit4Green;
@@ -41,10 +53,13 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		this.currentFit4Green = currentFIT4Green;
 	}
 
-	public F4GConfigurationAdapter(FIT4GreenType f4g, VMTypeType vmType) {
+	public F4GConfigurationAdapter(FIT4GreenType f4g, VMTypeType vmType, IPowerCalculator powerCalculator) {
 		currentFit4Green = f4g;
 		currentVMType = vmType;
 		log = Logger.getLogger(F4GConfigurationAdapter.class.getName());
+		allServers = Utils.getAllServers(f4g);
+		this.powerCalculator = powerCalculator;
+		powerCalculation = new StaticPowerCalculation(null);
 	}
 	
 	
@@ -198,6 +213,7 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		int nbCPUs = cores.size();
 		int cpuCapacity = nbCPUs * 100;  // getCPUCapacity ((int) (freq / 1000000), nbCPUs);
 		int memoryTotal = (int) Utils.getMemory(server) * 1024;
+		int powerIdle = (int) getPIdle(server);
 		
 		log.debug("creation of an Entropy Node with name " + server.getFrameworkID());
 		log.debug("server is " + server.getStatus().toString());
@@ -205,9 +221,30 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		log.debug("freq " + freq + " GHz");
 		log.debug("cpuCapacity " + cpuCapacity +" %");
 		log.debug("memoryTotal " + memoryTotal + " MB");
-		Node node = new SimpleNode(server.getFrameworkID(), nbCPUs, cpuCapacity, memoryTotal);
+		log.debug("powerIdle " + powerIdle + " W");
+		
+		Node node = new F4GNode(server.getFrameworkID(), nbCPUs, cpuCapacity, memoryTotal, powerIdle);
 		return node;
 	}
 	
+	 
+	public float getPIdle(ServerType server) {
+      
+		//compute usage effectiveness factor (either PUE or CUE)
+    	double ue = 0;
+    	if(optiObjective == OptimizationObjective.Power) {
+    		ue = org.f4g.optimizer.utils.Utils.getServerSite(server, currentFit4Green).getPUE().getValue();
+    	} else {
+    		ue = org.f4g.optimizer.utils.Utils.getServerSite(server, currentFit4Green).getCUE().getValue();
+    	}			        			
+    	ServerStatusType status = server.getStatus();
+    	server.setStatus(ServerStatusType.ON); //set the server status to ON to avoid a null power
+        int powerIdle = (int) (powerCalculation.computePowerIdle(server, powerCalculator) * ue);
+        server.setStatus(status);
+        Plan.logger.debug("power Idle for server " + server.getFrameworkID() + " = " + powerIdle);
+                    
+        return powerIdle;        
+    }
+    
 	
 }
