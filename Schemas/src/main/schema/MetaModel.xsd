@@ -554,7 +554,7 @@
 			<xsd:element name="DVFS" type="xsd:boolean" minOccurs="1"
 				maxOccurs="1" />
 			<xsd:element name="lithography" type="f4g:LithographyType"
-				minOccurs="1" maxOccurs="1" />
+				minOccurs="0" maxOccurs="1" />
 			<xsd:element name="powerIdle" type="f4g:PowerType"
 				minOccurs="1" maxOccurs="1" />
 			<xsd:element name="powerMax" type="f4g:PowerType"

@@ -6,11 +6,16 @@ package org.f4g.entropy.plan.search_heuristic;
 import java.util.Comparator;
 import java.util.List;
 
+import org.f4g.optimizer.OptimizationObjective;
+import org.f4g.schema.metamodel.ServerStatusType;
+import org.f4g.schema.metamodel.ServerType;
+
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.configuration.VirtualMachine;
+import entropy.plan.Plan;
 import entropy.plan.choco.ReconfigurationProblem;
 
 
@@ -299,6 +304,6 @@ public class Utils {
         }
         return false;*/
     }
-    
+   
 }
 

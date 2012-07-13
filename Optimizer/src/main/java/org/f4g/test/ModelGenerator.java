@@ -53,7 +53,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class ModelGenerator {
 	
-	//TODO: add strong types
+	
 	
 	//bounds to construct a server
 	public int MIN_CPU = 1;
@@ -66,13 +66,14 @@ public class ModelGenerator {
 	public double MAX_CPU_POWER_IDLE = 50.0;
 	public double MIN_CPU_POWER_DELTA_MAX = 50.0;
 	public double MAX_CPU_POWER_DELTA_MAX = 50.0;
+	public int NUMBER_OF_TRANSISTORS = 731;
 	public int MIN_RAM_SIZE = 50;
 	public int MAX_RAM_SIZE = 50;
 	public int MIN_STORAGE_SIZE = 10000;
 	public int MAX_STORAGE_SIZE = 10000;
 	public int MIN_FAN = 2;
 	public int MAX_FAN = 2;
-
+	public boolean DVFS = true;
 	
 	public double MIN_SERVER_POWER_IDLE = 50.0;
 	public double MAX_SERVER_POWER_IDLE = 50.0;
@@ -421,7 +422,7 @@ public class ModelGenerator {
 //				.add( createRandomServer(DC1.getFrameworkCapabilities().get(0), SERVER_FRAMEWORK_ID * i));
 
 
-        int frameworkid = 0; //SERVER_FRAMEWORK_ID;
+        int frameworkid = SERVER_FRAMEWORK_ID;
 		
 		for(int i=0; i<MAX_NB_SERVERS; i++) {
 			DC1.getRack().get(0).getRackableServer()
@@ -531,7 +532,9 @@ public class ModelGenerator {
 			CPUType CPU = new CPUType();
 			CPU.setPowerIdle(new PowerType(CPUpowerIdle));
 			CPU.setPowerMax(new PowerType(CPUpowerMax));
-			CPU.setArchitecture(CPUArchitectureType.INTEL);
+			CPU.setArchitecture(CPUArchitectureType.AMD);
+			CPU.setTransistorNumber(new NrOfTransistorsType(NUMBER_OF_TRANSISTORS));
+			CPU.setDVFS(true);
 			
 			for (int j=0; j< nbCorePerCPU; j++ ){
 				CoreType core = new CoreType();
@@ -541,7 +544,6 @@ public class ModelGenerator {
 				core.setLastPstate(new NrOfPstatesType(0));
 				core.setTotalPstates(new NrOfPstatesType(0));
 				CPU.getCore().add(core);
-				CPU.setTransistorNumber(new NrOfTransistorsType(0));
 				
 			}
 			mainboard.getCPU().add(CPU);
@@ -848,7 +850,7 @@ public class ModelGenerator {
 			// ****** VALIDATION ******
 			SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 			try {
-				Schema schema = sf.newSchema(new File("../Schemas/src/main/schema/MetaModel.xsd"));
+				Schema schema = sf.newSchema(new File("../FIT4Green/Schemas/src/main/schema/MetaModel.xsd"));
 				u.setSchema(schema);
 				u.setEventHandler(new ValidationEventHandler() {
 					// allow unmarshalling to continue even if there are errors

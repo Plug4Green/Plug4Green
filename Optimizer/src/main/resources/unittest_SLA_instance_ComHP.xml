@@ -108,11 +108,11 @@
     <SLA id="ID11">
       <HardwareMetrics/>
       <CommonQoSRelatedMetrics>
-        <MaxVirtualCPUPerCore>1</MaxVirtualCPUPerCore>
+        <MaxVirtualCPUPerCore>2</MaxVirtualCPUPerCore>
         <!-- MaxServerAvg_vCPUperCore>2</MaxServerAvg_vCPUperCore>
-        <MaxServerAvg_vRAMperPhyRAM>1</MaxServerAvg_vRAMperPhyRAM>
+        <MaxServerAvg_vRAMperPhyRAM>1</MaxServerAvg_vRAMperPhyRAM>-->
         <Max_vRAMperPhyRAM>1</Max_vRAMperPhyRAM>
-        <MaxVMperServer>30</MaxVMperServer-->
+        <MaxVMperServer>15</MaxVMperServer>
       </CommonQoSRelatedMetrics>
       <AdditionalMetrics/>
     </SLA>

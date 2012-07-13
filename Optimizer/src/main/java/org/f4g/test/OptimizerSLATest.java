@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.measure.quantities.Duration;
 import javax.measure.quantities.Energy;
@@ -59,8 +60,6 @@ import org.f4g.schema.constraints.optimizerconstraints.SLAType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.measures.Measure;
-
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -1492,12 +1491,12 @@ public class OptimizerSLATest extends OptimizerTest {
 		
 		DatatypeFactory factory;
 		try {
+			TimeZone gmt = TimeZone.getTimeZone("GMT");
+			GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance(gmt);
 			factory = DatatypeFactory.newInstance();
 			javax.xml.datatype.Duration duration = factory.newDuration(false, 0, 0, 0, 0,
 					4, 0); // 4 Minutes negative Duration
-			XMLGregorianCalendar VMLastTimeMove = new XMLGregorianCalendarImpl(
-					(GregorianCalendar) java.util.GregorianCalendar
-							.getInstance());
+			XMLGregorianCalendar VMLastTimeMove = factory.newXMLGregorianCalendar(gc);
 			VMLastTimeMove.add(duration);
 			List<VirtualMachineType> vms = Utils.getAllVMs(model);
 			for (VirtualMachineType vmt : vms){

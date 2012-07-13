@@ -664,7 +664,7 @@ public class IntegrationTest extends OptimizerTest {
 		modelGenerator1.setNB_SERVERS(nbServers1);
 		modelGenerator1.setNB_ROUTERS(0);
 		modelGenerator1.setNB_SWITCHES(0);
-		
+		modelGenerator1.NUMBER_OF_TRANSISTORS = 731;
 		modelGenerator1.SERVER_FRAMEWORK_ID = 100000;
 		
 		
@@ -681,15 +681,19 @@ public class IntegrationTest extends OptimizerTest {
 		modelGenerator2.setNB_VIRTUAL_MACHINES(0);
 		modelGenerator2.setNB_SERVERS(nbServers2);
 		modelGenerator2.SERVER_FRAMEWORK_ID = 200000;
-		
+		modelGenerator2.NIC_FRAMEWORK_ID = 300000;
+		modelGenerator2.NUMBER_OF_TRANSISTORS = 731;
 		FIT4GreenType model = modelGenerator1.createPopulatedFIT4GreenType();
 		FIT4GreenType model2 = modelGenerator2.createPopulatedFIT4GreenType();
 			
-		List<ServerType> servers = Utils.getAllServers(model);
-		List<ServerType> servers2 = Utils.getAllServers(model2);
-		
+			
 		//all the servers of model2 are added in model 1. model2 will not be used anymore.
-		servers.addAll(servers2);
+		List<RackableServerType> rackServers = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer();
+		
+		for(ServerType server2 : Utils.getAllServers(model2)) {
+			rackServers.add((RackableServerType) server2);
+		}		
+		List<ServerType> servers = Utils.getAllServers(model);
 		
 		String sep = System.getProperty("file.separator");
 		final SLAReader sla = new SLAReader("resources" + sep	+ "unittest_SLA_instance_ComHP.xml");
@@ -767,7 +771,6 @@ public class IntegrationTest extends OptimizerTest {
 	//run all configurations in a directory
 	void runConfigurations(String pathName) {
 		
-		String sep = System.getProperty("file.separator");
 		
 		String fileName;
 		File folder = new File(pathName);
@@ -780,7 +783,7 @@ public class IntegrationTest extends OptimizerTest {
 				fileName = listOfFiles[i].getName();
 				if (fileName.endsWith(".xml"))
 				{
-					runConfiguration(pathName + sep + fileName);
+					runConfiguration(pathName + File.separator + fileName);
 			    }
 		    }
 		}
@@ -792,8 +795,12 @@ public class IntegrationTest extends OptimizerTest {
 		ModelGenerator modelGenerator = new ModelGenerator();	
 		FIT4GreenType model = modelGenerator.getModel(pathName);
 		
-		String sep = System.getProperty("file.separator");
+		String sep = File.separator;
 		final SLAReader sla = new SLAReader("resources" + sep	+ "unittest_SLA_instance_ComHP.xml");
+		
+		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new PowerCalculator(), new NetworkCost(), 
+		        slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, null));
+		
 		optimizer.setClusterType(sla.getCluster());
 		optimizer.setSla(sla.getSLAs());
 		optimizer.setFederation(sla.getFeds());
@@ -827,12 +834,36 @@ public class IntegrationTest extends OptimizerTest {
 	
 	//generate a sample configurations into XML files in a directory
 	public void testGenerateConfigurations(){
-		generateConfigurations(10, 2, "F4Gmodels");
+		//generateConfigurations(int nbServers, int nbConf, String path)
+		generateConfigurations(2, 1, "F4Gmodels");
 	}
 	
 	//run all configurations found in a directory
 	public void testRunConfigurations(){
 		runConfigurations("F4Gmodels");
+	}
+	
+	//generate sample configurations & run all
+	public void testGenerateRunConfigurations(){
+		
+		deleteDir(new File("F4Gmodels"));
+		generateConfigurations(10, 1, "F4Gmodels");
+		runConfigurations("F4Gmodels");
+	}
+	
+	public static boolean deleteDir(File dir) {
+	    if (dir.isDirectory()) {
+	        String[] children = dir.list();
+	        for (int i=0; i<children.length; i++) {
+	            boolean success = deleteDir(new File(dir, children[i]));
+	            if (!success) {
+	                return false;
+	            }
+	        }
+	    }
+
+	    // The directory is now empty so delete it
+	    return dir.delete();
 	}
 	
 	   

@@ -45,7 +45,6 @@ import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.schema.constraints.placement.Capacity;
 
-import entropy.configuration.DefaultVirtualMachine;
 import entropy.configuration.VirtualMachine;
 
 
