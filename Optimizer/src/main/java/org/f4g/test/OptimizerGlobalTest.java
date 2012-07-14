@@ -295,15 +295,15 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		assertNotNull(powerOff.getNodeName());
 		
 		//two possible solutions
-		boolean sol1 = move.getVirtualMachine()      .equals("id" + (modelGenerator.SERVER_FRAMEWORK_ID * 0 + modelGenerator.VM_FRAMEWORK_ID)) 
-					&& move.getDestNodeController()  .equals("id" + modelGenerator.SERVER_FRAMEWORK_ID * 1)
-					&& move.getSourceNodeController().equals("id" + modelGenerator.SERVER_FRAMEWORK_ID * 0)
-					&& powerOff.getNodeName()        .equals("id" + modelGenerator.SERVER_FRAMEWORK_ID * 0);
-		
-		boolean sol2 = move.getVirtualMachine()      .equals("id" + (modelGenerator.SERVER_FRAMEWORK_ID * 1 + modelGenerator.VM_FRAMEWORK_ID)) 
-		            && move.getDestNodeController()  .equals("id" + modelGenerator.SERVER_FRAMEWORK_ID * 0)
-		            && move.getSourceNodeController().equals("id" + modelGenerator.SERVER_FRAMEWORK_ID * 1)
+		boolean sol1 = move.getVirtualMachine()      .equals("id" + (modelGenerator.SERVER_FRAMEWORK_ID * 1 + modelGenerator.VM_FRAMEWORK_ID)) 
+					&& move.getDestNodeController()  .equals("id" + modelGenerator.SERVER_FRAMEWORK_ID * 2)
+					&& move.getSourceNodeController().equals("id" + modelGenerator.SERVER_FRAMEWORK_ID * 1)
 					&& powerOff.getNodeName()        .equals("id" + modelGenerator.SERVER_FRAMEWORK_ID * 1);
+		
+		boolean sol2 = move.getVirtualMachine()      .equals("id" + (modelGenerator.SERVER_FRAMEWORK_ID * 2 + modelGenerator.VM_FRAMEWORK_ID)) 
+		            && move.getDestNodeController()  .equals("id" + modelGenerator.SERVER_FRAMEWORK_ID * 1)
+		            && move.getSourceNodeController().equals("id" + modelGenerator.SERVER_FRAMEWORK_ID * 2)
+					&& powerOff.getNodeName()        .equals("id" + modelGenerator.SERVER_FRAMEWORK_ID * 2);
 		assertTrue(sol1 || sol2);
 		
 	}
@@ -635,7 +635,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		class MyPowerCalculator extends MockPowerCalculator {
 			public PowerData computePowerServer(ServerType server) {
 				PowerData power = new PowerData();
-				if(server.getFrameworkID().equals("id0"))
+				if(server.getFrameworkID().equals("id100000"))
 					power.setActualConsumption(15.0 + traverser.calculatePower(server).getActualConsumption());
 				else
 					power.setActualConsumption(10.0  + traverser.calculatePower(server).getActualConsumption());
@@ -712,7 +712,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		log.debug("moves=" + moves.size());
 		log.debug("powerOffs=" + powerOffs.size());
 		//one VM is moving to switch off a server
-		assertEquals(moves.get(0).getSourceNodeController(), "id0");
+		assertEquals(moves.get(0).getSourceNodeController(), "id100000");
 
 
 		//TEST 2
@@ -721,7 +721,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		class MyPowerCalculator2 extends MockPowerCalculator {
 			public PowerData computePowerServer(ServerType server) {
 				PowerData power = new PowerData();
-				if(server.getFrameworkID().equals("id100000"))
+				if(server.getFrameworkID().equals("id200000"))
 					power.setActualConsumption(15.0 + traverser.calculatePower(server).getActualConsumption());
 				else
 					power.setActualConsumption(10.0  + traverser.calculatePower(server).getActualConsumption());
@@ -759,7 +759,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		log.debug("powerOffs=" + powerOffs.size());
 		
 		// going to the low power server
-		assertEquals(moves.get(0).getSourceNodeController(), "id100000");
+		assertEquals(moves.get(0).getSourceNodeController(), "id200000");
 		//assertEquals(moves.get(1).getDestNodeController(), "id100000");
 		
 	}
@@ -854,7 +854,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		//turning On only one machine, id1 is more efficient than id0
 		assertEquals(actionRequest.getActionList().getAction().size(), 1);
 		assertEquals(powerOns.size(), 1);
-		assertEquals(powerOns.get(0).getNodeName(), "id100000");
+		assertEquals(powerOns.get(0).getNodeName(), "id200000");
 		
 	}
 	
@@ -930,7 +930,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		//turning Off 4 machines: leaving 4 machines alive, that represents 16 cores: within the bounds 8 -> 16 VM slots.
 		assertEquals(actionRequest.getActionList().getAction().size() < 12, true);
 		assertEquals(powerOffs.size(), 6);
-		assertNotSame(powerOffs.get(0).getNodeName(), "id700000");
+		assertNotSame(powerOffs.get(0).getNodeName(), "id800000");
 		
 	}
 	

@@ -140,7 +140,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
-		assertEquals(VMAllocResponse.getNodeId(),"id" + String.valueOf(0));
+		assertEquals(VMAllocResponse.getNodeId(),"id100000");
 	}
 	
 	/**
@@ -240,7 +240,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
-		assertEquals(VMAllocResponse.getNodeId(),"id" + String.valueOf(0));
+		assertEquals(VMAllocResponse.getNodeId(),"id100000");
 	}
 	
 
@@ -278,7 +278,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
 		//enough CPU: New VM should be allocated on first server		
-		assertEquals(((CloudVmAllocationResponseType) response.getResponse().getValue()).getNodeId(),"id0");
+		assertEquals(((CloudVmAllocationResponseType) response.getResponse().getValue()).getNodeId(),"id100000");
 		
 		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVCpus().setValue(2);
 
@@ -323,7 +323,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
 		//enough RAM: New VM should be allocated on first server		
-		assertEquals(((CloudVmAllocationResponseType) response.getResponse().getValue()).getNodeId(),"id0");
+		assertEquals(((CloudVmAllocationResponseType) response.getResponse().getValue()).getNodeId(),"id100000");
 		
 		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVRam().setValue(2000);
 
@@ -357,7 +357,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		//Simulates a CloudVmAllocationType operation
 		JAXBElement<CloudVmAllocationType>  operationType = (new ObjectFactory()).createCloudVmAllocation(cloudAlloc);
 		List<String> nodeName = new ArrayList<String>();
-		nodeName.add("id0");
+		nodeName.add("id100000");
 		allocationRequest.setRequest(operationType);
 		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
 		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , null, null, "idc1"));
@@ -374,7 +374,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
-		assertEquals(VMAllocResponse.getNodeId(),   "id0");
+		assertEquals(VMAllocResponse.getNodeId(),   "id100000");
 		assertEquals(VMAllocResponse.getVmType(),   "m1.small");
 		assertEquals(VMAllocResponse.getClusterId(),"c1");
 		assertEquals(VMAllocResponse.getImageId(),  "i1");
@@ -391,7 +391,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		class MyPowerCalculator extends MockPowerCalculator {
 			public PowerData computePowerServer(ServerType server) {
 				PowerData power = new PowerData();
-				if(server.getFrameworkID().equals("id200000"))
+				if(server.getFrameworkID().equals("id300000"))
 					power.setActualConsumption(8.0 + traverser.calculatePower(server).getActualConsumption());
 				else
 					power.setActualConsumption(10.0  + traverser.calculatePower(server).getActualConsumption());
@@ -433,7 +433,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		class MyPowerCalculator2 extends MockPowerCalculator {
 			public PowerData computePowerServer(ServerType server) {
 				PowerData power = new PowerData();
-				if(server.getFrameworkID().equals("id100000"))
+				if(server.getFrameworkID().equals("id200000"))
 					power.setActualConsumption(8.0 + traverser.calculatePower(server).getActualConsumption());
 				else
 					power.setActualConsumption(10.0  + traverser.calculatePower(server).getActualConsumption());
@@ -464,7 +464,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		class MyPowerCalculator extends MockPowerCalculator {
 			public PowerData computePowerServer(ServerType server) {
 				PowerData power = new PowerData();
-				if(server.getFrameworkID().equals("id200000"))
+				if(server.getFrameworkID().equals("id300000"))
 					power.setActualConsumption(10.0 + 0.8 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
 				else
 					power.setActualConsumption(10.0  + 1.0 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
@@ -496,7 +496,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
 	            
 		//server id100000 consumes less than the others.
-		assertEquals(((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId(), "id200000");
+		assertEquals(((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId(), "id300000");
 		
 	}
 	
@@ -510,7 +510,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		class MyPowerCalculator extends MockPowerCalculator {
 			public PowerData computePowerServer(ServerType server) {
 				PowerData power = new PowerData();
-				if(server.getFrameworkID().equals("id200000"))
+				if(server.getFrameworkID().equals("id300000"))
 					power.setActualConsumption(1000.0 + 4.0 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
 				else
 					power.setActualConsumption(1000.0  + 5.0 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
@@ -571,7 +571,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
 				
 		//server xxx consumes less than the others.
-		assertEquals(((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId(), "id200000");
+		assertEquals(((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId(), "id300000");
 		
 		//TEST 2
 		
@@ -579,7 +579,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		class MyPowerCalculator2 extends MockPowerCalculator {
 			public PowerData computePowerServer(ServerType server) {
 				PowerData power = new PowerData();
-				if(server.getFrameworkID().equals("id100000"))
+				if(server.getFrameworkID().equals("id200000"))
 					power.setActualConsumption(10.0 + 0.8 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
 				else
 					power.setActualConsumption(10.0  + 1.0 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
@@ -596,7 +596,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		AllocationResponseType response2 = MyOptimizer2.allocateResource(allocationRequest, model);
 	            
 		//server xxx consumes less than the others.
-		assertEquals(((CloudVmAllocationResponseType)response2.getResponse().getValue()).getNodeId(), "id100000");
+		assertEquals(((CloudVmAllocationResponseType)response2.getResponse().getValue()).getNodeId(), "id200000");
 		
 		
 	}
@@ -653,7 +653,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		TraditionalVmAllocationResponseType VMAllocResponse = (TraditionalVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
-		assertEquals(VMAllocResponse.getNodeId(),"id0");
+		assertEquals(VMAllocResponse.getNodeId(),"id100000");
 		assertEquals(VMAllocResponse.getClusterId(),"c1");
 	}
 	
@@ -946,7 +946,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//The policies are not taken into account in allocation, so allocation is possible.		
-		assertEquals(VMAllocResponse.getNodeId(),"id0");
+		assertEquals(VMAllocResponse.getNodeId(),"id100000");
 
 	}
 

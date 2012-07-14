@@ -89,6 +89,11 @@ public final class F4GResourcePicker {
         powerIdle,
         
         /**
+         * retrieve {@link Node#getPperVM()} .
+         */
+         powerPerVM,
+        
+        /**
          * 
          */
         cpuRemaining,
@@ -142,6 +147,8 @@ public final class F4GResourcePicker {
                 return n.getNbOfCPUs();
             case powerIdle:
             	return n.getPIdle();
+            case powerPerVM:
+            	return n.getPperVM();
             case cpuRemaining:
                 return n.getCPUCapacity() - ManagedElementSets.sum(cfg.getRunnings(n), ResourcePicker.VMRc.cpuConsumption)[0];
             case memoryRemaining:

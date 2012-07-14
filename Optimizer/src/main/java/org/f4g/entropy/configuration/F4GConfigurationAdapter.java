@@ -13,6 +13,7 @@ import org.f4g.schema.allocation.CloudVmAllocationType;
 import org.f4g.schema.allocation.RequestType;
 import org.f4g.schema.allocation.TraditionalVmAllocationType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
+import org.f4g.schema.constraints.optimizerconstraints.VMTypeType.VMType;
 import org.f4g.schema.metamodel.CoreType;
 import org.f4g.schema.metamodel.FIT4GreenType;
 import org.f4g.schema.metamodel.ServerStatusType;
@@ -21,7 +22,12 @@ import org.f4g.schema.metamodel.VirtualMachineType;
 import org.f4g.util.StaticPowerCalculation;
 import org.f4g.util.Util;
 
+import choco.Choco;
+import choco.kernel.solver.constraints.integer.IntExp;
+import choco.kernel.solver.variables.integer.IntDomainVar;
+
 import entropy.configuration.Configuration;
+import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.configuration.SimpleConfiguration;
 import entropy.configuration.SimpleNode;
@@ -29,6 +35,7 @@ import entropy.configuration.SimpleVirtualMachine;
 import entropy.configuration.VirtualMachine;
 import entropy.monitoring.ConfigurationAdapter;
 import entropy.plan.Plan;
+import entropy.plan.choco.ReconfigurationProblem;
 
 
 public class F4GConfigurationAdapter extends ConfigurationAdapter
@@ -214,6 +221,7 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		int cpuCapacity = nbCPUs * 100;  // getCPUCapacity ((int) (freq / 1000000), nbCPUs);
 		int memoryTotal = (int) Utils.getMemory(server) * 1024;
 		int powerIdle = (int) getPIdle(server);
+		int powerPerVM = (int) getPperVM(server);
 		
 		log.debug("creation of an Entropy Node with name " + server.getFrameworkID());
 		log.debug("server is " + server.getStatus().toString());
@@ -222,29 +230,45 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		log.debug("cpuCapacity " + cpuCapacity +" %");
 		log.debug("memoryTotal " + memoryTotal + " MB");
 		log.debug("powerIdle " + powerIdle + " W");
+		log.debug("powerPerVM " + powerPerVM + " W");
 		
-		Node node = new F4GNode(server.getFrameworkID(), nbCPUs, cpuCapacity, memoryTotal, powerIdle);
+		Node node = new F4GNode(server.getFrameworkID(), nbCPUs, cpuCapacity, memoryTotal, powerIdle, powerPerVM);
 		return node;
 	}
 	
 	 
 	public float getPIdle(ServerType server) {
       
-		//compute usage effectiveness factor (either PUE or CUE)
-    	double ue = 0;
-    	if(optiObjective == OptimizationObjective.Power) {
-    		ue = org.f4g.optimizer.utils.Utils.getServerSite(server, currentFit4Green).getPUE().getValue();
-    	} else {
-    		ue = org.f4g.optimizer.utils.Utils.getServerSite(server, currentFit4Green).getCUE().getValue();
-    	}			        			
+		double ue = getUsageEffectiveness(server);		
+		
     	ServerStatusType status = server.getStatus();
     	server.setStatus(ServerStatusType.ON); //set the server status to ON to avoid a null power
-        int powerIdle = (int) (powerCalculation.computePowerIdle(server, powerCalculator) * ue);
+        float powerIdle = (float) (powerCalculation.computePowerIdle(server, powerCalculator) * ue);
         server.setStatus(status);
-        Plan.logger.debug("power Idle for server " + server.getFrameworkID() + " = " + powerIdle);
                     
         return powerIdle;        
     }
     
+
+    public float getPperVM(ServerType server) {
+                
+    	double ue = getUsageEffectiveness(server);	
+    	
+        VMType vm = currentVMType.getVMType().get(0);
+    	ServerStatusType status = server.getStatus();
+    	server.setStatus(ServerStatusType.ON); //set the server status to ON to avoid a null power
+    	float PperVM = (float) (powerCalculation.computePowerForVM(server, vm, powerCalculator) * ue);
+        server.setStatus(status);
+            
+        return PperVM;        
+    }
+
+	private double getUsageEffectiveness(ServerType server) {
+    	if(optiObjective == OptimizationObjective.Power) {
+    		return Utils.getServerSite(server, currentFit4Green).getPUE().getValue();
+    	} else {
+    		return Utils.getServerSite(server, currentFit4Green).getCUE().getValue();
+    	}
+	}
 	
 }

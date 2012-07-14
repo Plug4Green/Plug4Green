@@ -7,6 +7,8 @@ import java.util.HashMap;
 import choco.cp.solver.variables.integer.BoolVarNot2;
 
 import choco.cp.solver.variables.integer.BooleanVarImpl;
+
+import org.f4g.entropy.configuration.F4GNode;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.power.IPowerCalculator;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
@@ -146,29 +148,18 @@ public class PowerObjective extends Objective {
         IntDomainVar[] PIdleServer = new IntDomainVar[nodes.size()];
 
         for (int i = 0; i < nodes.size(); i++) {
-        	ServerType server = allServers.get(i);
-        	//compute usage effectiveness factor (either PUE or CUE)
-        	double ue = 0;
-        	if(optiObjective == OptimizationObjective.Power) {
-        		ue = Utils.getServerSite(server, model).getPUE().getValue();
-        	} else {
-        		ue = Utils.getServerSite(server, model).getCUE().getValue();
-        	}			        			
-        	ServerStatusType status = server.getStatus();
-        	server.setStatus(ServerStatusType.ON); //set the server status to ON to avoid a null power
-            int powerIdle = (int) (powerCalculation.computePowerIdle(server, powerCalculator) * ue);
-            server.setStatus(status);
-            Plan.logger.debug("power Idle for server " + server.getFrameworkID() + " = " + powerIdle);
-             
-            PIdleServer[i] = m.createEnumIntVar("IdlePowerServer" + i, new int[]{0, powerIdle}); 
+        	
+        	F4GNode f4gNode = (F4GNode)nodes.get(i);		
+               	
+            PIdleServer[i] = m.createEnumIntVar("IdlePowerServer" + i, new int[]{0, f4gNode.getPIdle()}); 
                         
             if(m.getFutureOnlines().contains(nodes.get(i))) {
-                m.post(m.eq(powerIdle, PIdleServer[i])); 
+                m.post(m.eq(f4gNode.getPIdle(), PIdleServer[i])); 
             } else if (m.getFutureOfflines().contains(nodes.get(i))) {
             	m.post(m.eq(0, PIdleServer[i]));
             } else {
                 ManageableNodeActionModel action = (ManageableNodeActionModel) m.getAssociatedAction(nodes.get(i));
-                m.post(new FastIFFEq(action.getState(), PIdleServer[i], powerIdle)); 
+                m.post(new FastIFFEq(action.getState(), PIdleServer[i], f4gNode.getPIdle())); 
             }
                      
         }
@@ -190,24 +181,10 @@ public class PowerObjective extends Objective {
         
         Plan.logger.debug(nodes.toString());
         for (int i = 0; i < nodes.size(); i++) {
-        	ServerType server = allServers.get(i);
-        	//compute usage effectiveness factor (either PUE or CUE)
-        	double ue;
-        	if(optiObjective == OptimizationObjective.Power) {
-        		ue = Utils.getServerSite(server, model).getPUE().getValue();
-        	} else {
-        		ue = Utils.getServerSite(server, model).getCUE().getValue();
-        	}	
-        	
-            cards[i] = m.getSetModel(nodes.get(i)).getCard();
+        	F4GNode f4gNode = (F4GNode)nodes.get(i);		
  
-            //TODO fix this
-            VMType vm = vmTypes.getVMType().get(0);
-        	ServerStatusType status = server.getStatus();
-        	server.setStatus(ServerStatusType.ON); //set the server status to ON to avoid a null power
-            nodesEnergyPerVM[i] = (int) (powerCalculation.computePowerForVM(server, vm, powerCalculator) * ue);
-            server.setStatus(status);
-            Plan.logger.debug("power per VM for server " + server.getFrameworkID() + " = " + nodesEnergyPerVM[i]);
+        	cards[i] = m.getSetModel(nodes.get(i)).getCard();
+            nodesEnergyPerVM[i] = f4gNode.getPperVM();
         }
         
         m.post(m.eq(m.scalar(cards, nodesEnergyPerVM), PVMs)); 
@@ -215,9 +192,6 @@ public class PowerObjective extends Objective {
         return PVMs;
         
     }
-    
-
-
     
     //Computes the power of the network
     public IntExp getPNetwork(ReconfigurationProblem m) {
