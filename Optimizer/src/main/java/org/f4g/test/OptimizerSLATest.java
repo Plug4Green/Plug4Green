@@ -1367,7 +1367,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		System.out.println("NodeID: " );//+ VMAllocResponse.getNodeId());
 		//New VM should be allocated on first server		
-		assertEquals(VMAllocResponse.getNodeId(),"id" + String.valueOf(0));
+		assertEquals(VMAllocResponse.getNodeId(),"id100000");
 	}
 	
 	

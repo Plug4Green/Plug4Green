@@ -260,7 +260,7 @@ public class IntegrationTest extends OptimizerTest {
 		AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
 				
 		//server xxx consumes less than the others.
-		assertEquals(((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId(), "id0");
+		assertEquals(((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId(), "id100000");
 		
 		//TEST 2
 		
@@ -356,7 +356,7 @@ public class IntegrationTest extends OptimizerTest {
 		log.debug("moves=" + moves.size());
 		log.debug("powerOffs=" + powerOffs.size());
 		//one VM is moving to switch off a server
-		assertEquals(moves.get(0).getSourceNodeController(), "id100000");
+		assertEquals(moves.get(0).getSourceNodeController(), "id200000");
 
 
 		//TEST 2

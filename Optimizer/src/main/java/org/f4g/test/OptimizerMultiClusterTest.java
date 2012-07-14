@@ -910,7 +910,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
-		assertEquals(VMAllocResponse.getNodeId(),"id0");
+		assertEquals(VMAllocResponse.getNodeId(),"id100000");
 		assertEquals(VMAllocResponse.getClusterId(),"c1");
 		
 	}
@@ -985,7 +985,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		CloudVmAllocationResponseType VMAllocResponse2 = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on first cluster		
-		assertEquals(VMAllocResponse2.getNodeId(),"id0");
+		assertEquals(VMAllocResponse2.getNodeId(),"id100000");
 		assertEquals(VMAllocResponse2.getClusterId(),"c1");
 		
 		//TEST 2 two clusters, no more space on c1
