@@ -49,7 +49,7 @@ import org.f4g.optimizer.utils.Utils;
 import org.f4g.util.Util;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
+import org.f4g.optimizer.utils.Utils;
 
 public class ModelGenerator {
 	
@@ -115,7 +115,7 @@ public class ModelGenerator {
 	public boolean IS_CLOUD = true;
 	
 	public Logger log;  
-	private static Properties log4jProperties;
+	
 
 
 
@@ -266,7 +266,7 @@ public class ModelGenerator {
 			System.exit(1);
 		}
 		
-		boolean res = test.init(args[0]);
+		boolean res = Utils.initLogger(args[0]);
 		
 		if(!res){
 			System.exit(1);
@@ -282,27 +282,6 @@ public class ModelGenerator {
 		
 	}
 	
-	public boolean  init(String f4gConfigPathName) {
-
-		try {
-			log4jProperties = new Properties();
-			if(System.getProperty("log4j.configuration") != null){
-				PropertyConfigurator.configure(System.getProperty("log4j.configuration"));				
-			} else {
-				InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("config/log4j.properties");
-				log4jProperties.load(isLog4j);
-				PropertyConfigurator.configure(log4jProperties);				
-			}
-			log.info("Loading configuration...");
-			
-			
-		} catch (IOException e) {
-			log.error(e);
-			return false;
-		}
-		
-		return true;
-	}
 	
 	/**
 	 * create a F4G type (everything but servers)
@@ -831,7 +810,6 @@ public class ModelGenerator {
 	 */
 	public FIT4GreenType getModel(String modelPathName) {
 		
-		//InputStream isModel = ModelGenerator.class.getClassLoader().getResourceAsStream(modelPathName);
 		InputStream isModel = null;
 		try {
 			isModel = new FileInputStream(modelPathName);

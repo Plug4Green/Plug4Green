@@ -49,6 +49,7 @@ public class Recorder {
 
     private Boolean isRecording;
     private String recorderDirectory;
+    private String prefix;
 
     public Recorder() {
         log = Logger.getLogger(Recorder.class.getName());
@@ -56,18 +57,21 @@ public class Recorder {
         try {
             isRecording = Boolean.parseBoolean(Configuration.get(Constants.RECORDER_IS_ON));
             recorderDirectory = Configuration.get(Constants.RECORDER_FILE_PATH);
+            prefix = "";
         } catch (NullPointerException e) {
             isRecording = false;
             recorderDirectory = "";
+            prefix = "";
         }
 
     }
 
-    public Recorder(boolean myIsRecording, String myRecorderDirectory) {
+    public Recorder(boolean myIsRecording, String myRecorderDirectory, String myPrefix) {
         log = Logger.getLogger(Recorder.class.getName());
 
         isRecording = myIsRecording;
         recorderDirectory = myRecorderDirectory;
+        prefix = myPrefix;
 
     }
 
@@ -78,14 +82,12 @@ public class Recorder {
 
             log.debug("recording Model...");
 
-            boolean success = (new File(recorderDirectory)).mkdirs();
-            if (!success) {
-                log.debug("directory creation failed");
-            }
+            (new File(recorderDirectory)).mkdirs();
+
             JAXBElement<FIT4GreenType> fIT4Green = (new ObjectFactory()).createFIT4Green(model);
 
             saveToXML(fIT4Green,
-                    getFileName("F4G Model"),
+                    getFileName(prefix),
                     Constants.METAMODEL_FILE_NAME, //../Schemas/src/main/schema/
                     Constants.METAMODEL_PACKAGE_NAME);
 
@@ -148,7 +150,7 @@ public class Recorder {
 
     private String getFileName(String recordType) {
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss S");
 
         String date = dateFormat.format(new Date());
 
@@ -190,7 +192,7 @@ public class Recorder {
 
         try {
             log.debug("**** Logging element: " + filePathName);
-            logElement(objectToSave, schemaLocation.toString());
+            //logElement(objectToSave, schemaLocation.toString());
             java.io.FileWriter fw = new FileWriter(filePathName);
 
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
