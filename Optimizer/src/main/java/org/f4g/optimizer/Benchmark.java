@@ -180,13 +180,12 @@ public class Benchmark {
     //run a configuration file
     static void runConfiguration(String pathName) {
 
-        Logger log = log = Logger.getLogger(Benchmark.class.getName());
+        Logger log = Logger.getLogger(Benchmark.class.getName());
 
         List<LoadType> load = new LinkedList<LoadType>();
         load.add(new LoadType("m1.small", 300, 6));
 
         XMLGregorianCalendar begin = null;
-
         XMLGregorianCalendar end = null;
 
         try {
