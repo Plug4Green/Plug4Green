@@ -311,7 +311,7 @@ public class Benchmark {
         if (args.length == 0) {
             usage(0);
         }
-        String prefix = "F4G Model";
+        String prefix = "F4G_Model";
         if (args[0].equals("-gen")) {
         	if (args.length == 7) {
         		prefix = args[6];
