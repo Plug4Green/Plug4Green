@@ -929,7 +929,6 @@ public class OptimizerSLATest extends OptimizerTest {
 	public void testVLoadPerCoreGlobal() {
 
 		// generate one VM per server
-		// VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(2);
@@ -948,7 +947,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		type1.setName("m1.small");
 		type1.setCapacity(new CapacityType(new NrOfCpusType(1),
 				new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100),
+		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(50),
 				new MemoryUsageType(0), new IoRateType(0),
 				new NetworkUsageType(0)));
 		type.getVMType().add(type1);
@@ -962,11 +961,10 @@ public class OptimizerSLATest extends OptimizerTest {
 		optimizer.setSla(sla.getSLAs());
 		optimizer.setFederation(sla.getFeds());
 
-		FIT4GreenType myModel = modelGenerator
-				.createPopulatedFIT4GreenType();
+		FIT4GreenType myModel = modelGenerator.createPopulatedFIT4GreenType();
 
 		//clearing one servers
-		myModel.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(0).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
+		//myModel.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(0).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
 		optimizer.runGlobalOptimization(myModel);
 
 		try {

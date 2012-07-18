@@ -15,12 +15,18 @@
 package org.f4g.optimizer.utils;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Properties;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -40,6 +46,8 @@ import org.f4g.util.Util;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathNotFoundException;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
@@ -830,6 +838,31 @@ public class Utils {
 		}
 		return false;
 		
+	}
+	
+
+	public static boolean initLogger(String pathName) {
+				
+		try {
+			File dir1 = new File(".");
+			System.out.println("Current dir : " + dir1.getCanonicalPath());
+			Properties log4jProperties = new Properties();
+			if(System.getProperty("log4j.configuration") != null){
+				PropertyConfigurator.configure(System.getProperty("log4j.configuration"));				
+			} else {
+				InputStream isLog4j = new FileInputStream(pathName);
+				log4jProperties.load(isLog4j);
+				PropertyConfigurator.configure(log4jProperties);				
+			}
+			log.info("Loading configuration...");
+			
+			
+		} catch (IOException e) {
+			System.out.println(e);
+			return false;
+		}
+		
+		return true;
 	}
 	
 }

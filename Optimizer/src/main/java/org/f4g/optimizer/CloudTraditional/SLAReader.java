@@ -182,10 +182,9 @@ public class SLAReader {
 	 */
 	public FIT4GreenOptimizerConstraint readSLA(String SLAPathName) {
 
-		InputStream isSLA = this.getClass().getClassLoader()
-				.getResourceAsStream(SLAPathName);
+		InputStream isSLA = this.getClass().getClassLoader().getResourceAsStream(SLAPathName);
 
-		log.debug("SLAPathName: " + SLAPathName + ", isModel: " + isSLA);
+		log.debug("SLAPathName: " + SLAPathName + ", isSLA: " + isSLA);
 
 		// JAXBElement<FIT4GreenOptimizerConstraint> poElement = null;
 		try {

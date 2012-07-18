@@ -26,6 +26,7 @@ import java.util.*;
 
 import entropy.plan.choco.constraint.sliceScheduling.SlicesPlanner;
 
+import org.apache.log4j.Logger;
 import org.f4g.entropy.plan.objective.PowerObjective;
 import org.f4g.entropy.plan.search_heuristic.F4GPlacementHeuristic;
 
@@ -38,6 +39,8 @@ import org.f4g.entropy.plan.search_heuristic.F4GPlacementHeuristic;
 public class F4GPlanner extends CustomizablePlannerModule {
 
     private List<SConstraint> costConstraints;
+    
+    public Logger log;
 
     /**
      * The model.
@@ -79,6 +82,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
         super(new MockDurationEvaluator(1, 2, 3, 4, 5, 6, 7, 8, 9));
         costConstraints = new LinkedList<SConstraint>();
         objective = myObjective;
+        log = Logger.getLogger(this.getClass().getName());
     }
 
     /**
@@ -151,7 +155,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    for (VJob vjob : queue) {
 	        for (PlacementConstraint c : vjob.getConstraints()) {
 	            try {
-	            	Plan.logger.debug("Active constraint:" + c.toString());
+	            	log.debug("Active constraint:" + c.toString());
 	                c.inject(model);
 	                if (!occurences.containsKey(c.getClass())) {
 	                    occurences.put(c.getClass(), 0);
@@ -159,12 +163,12 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	                nbConstraints++;
 	                occurences.put(c.getClass(), 1 + occurences.get(c.getClass()));
 	            } catch (Exception e) {
-	                Plan.logger.error(e.getMessage(), e);
+	            	log.error(e.getMessage(), e);
 	            }
 	        }
 	    }
 	    
-	    Plan.logger.debug("adding packing constraint");
+	    log.debug("adding packing constraint");
         packingConstraintClass.add(model);
         new SlicesPlanner().add(model);
 	
@@ -172,11 +176,11 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    * A pretty print of the problem
 	    */
 	    //The elements
-	    Plan.logger.debug(run.size() + wait.size() + sleep.size() + stop.size() + " VMs: " +
+        log.debug(run.size() + wait.size() + sleep.size() + stop.size() + " VMs: " +
 	            run.size() + " will run; " + wait.size() + " will wait; " + sleep.size() + " will sleep; " + stop.size() + " will be stopped");
-	    Plan.logger.debug(on.size() + off.size() + " nodes: " + on.size() + " to run; " + off.size() + " to halt");
-	    Plan.logger.debug("Manage " + vms.size() + " VMs (" + (repair ? "repair" : "rebuild") + ")");
-	    Plan.logger.debug("Timeout is " + getTimeLimit() + " seconds");
+        log.debug(on.size() + off.size() + " nodes: " + on.size() + " to run; " + off.size() + " to halt");
+        log.debug("Manage " + vms.size() + " VMs (" + (repair ? "repair" : "rebuild") + ")");
+        log.debug("Timeout is " + getTimeLimit() + " seconds");
 	
 	    //The constraints
 	    StringBuilder b = new StringBuilder();
@@ -184,7 +188,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    for (Map.Entry<Class, Integer> e : occurences.entrySet()) {
 	        b.append(e.getValue() + " " + e.getKey().getSimpleName() + "; ");
 	    }
-	    Plan.logger.debug(b.toString());
+	    log.debug(b.toString());
 	 	    
 	    //create and set the optimization objective in the engine
 	    objective.makeObjective(model);
@@ -216,7 +220,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	
 	    ChocoLogging.setVerbosity(Verbosity.SOLUTION);
 	
-	    logger.debug(generationTime + "ms to build the solver, " + model.getNbIntConstraints() + " constraints, " + model.getNbIntVars() + " integer variables, " + model.getNbBooleanVars() + " boolean variables, " + model.getNbConstants() + " constantes");
+	    log.debug(generationTime + "ms to build the solver, " + model.getNbIntConstraints() + " constraints, " + model.getNbIntVars() + " integer variables, " + model.getNbBooleanVars() + " boolean variables, " + model.getNbConstants() + " constantes");
 
 	    //Launch the solver
 	    model.minimize(true);
@@ -226,7 +230,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	        throw new PlanException("Unable to check wether a solution exists or not");
 	    } else {
 	    	
-	        Plan.logger.debug("#nodes= " + model.getNodeCount() +
+	    	log.debug("#nodes= " + model.getNodeCount() +
 	                ", #backtracks= " + model.getBackTrackCount() +
 	                ", #duration= " + model.getTimeCount() +
 	                ", #nbsol= " + model.getNbSolutions());
@@ -285,10 +289,10 @@ public class F4GPlanner extends CustomizablePlannerModule {
             totalDuration.setInf(min);
             totalDuration.setSup(sup);
         } catch (Exception e) {
-            Plan.logger.warn(e.getMessage(), e);
+        	log.warn(e.getMessage(), e);
         }
-        Plan.logger.debug(totalDuration.pretty());
-        Plan.logger.debug(model.getEnd().pretty());
+        log.debug(totalDuration.pretty());
+        log.debug(model.getEnd().pretty());
     }
 
     /**
@@ -339,7 +343,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
                 }
             }
         } catch (Exception e) {
-            Plan.logger.warn(e.getMessage(), e);
+        	log.warn(e.getMessage(), e);
         }
     }
 

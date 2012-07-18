@@ -34,9 +34,11 @@ import java.util.concurrent.Semaphore;
  * @author Fabien Hermenier
  */
 public class Benchmark {
+	
+	private static Logger log;
 
 
-    public static void generateConfiguration(int nbServers, String path) {
+    public static void generateConfiguration(int nbServers, String path, String prefix) {
 
         int NbVMsperServer = 6;
         int NBVMsTotal = nbServers * NbVMsperServer;
@@ -73,7 +75,7 @@ public class Benchmark {
         modelGenerator2.setSTORAGE_SIZE(600);
         modelGenerator2.setNB_VIRTUAL_MACHINES(0);
         modelGenerator2.setNB_SERVERS(nbServers2);
-        modelGenerator2.SERVER_FRAMEWORK_ID = 200000;
+        modelGenerator2.SERVER_FRAMEWORK_ID = 100000;
         modelGenerator2.NIC_FRAMEWORK_ID = 300000;
         modelGenerator2.NUMBER_OF_TRANSISTORS = 731;
         FIT4GreenType model = modelGenerator1.createPopulatedFIT4GreenType();
@@ -84,6 +86,7 @@ public class Benchmark {
         List<RackableServerType> rackServers = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer();
 
         for (ServerType server2 : Utils.getAllServers(model2)) {
+        	server2.setFrameworkID(server2.getFrameworkID() + "b");
             rackServers.add((RackableServerType) server2);
         }
         List<ServerType> servers = Utils.getAllServers(model);
@@ -108,15 +111,22 @@ public class Benchmark {
                 }
 
                 //constraint MaxVMperServer=15
-                if (vms.size() >= 15)
-                    return true;
+                if (vms.size() >= 15) {
+                	log.debug("MaxVMperServer limit for server " + server.getFrameworkID());
+                	return true;
+                }
+                   
                 //constraint MaxVirtualCPUPerCore=2
-                if (sumCPUs >= Utils.getNbCores(server) * 2)
-                    return true;
+                if (sumCPUs >= Utils.getNbCores(server) * 2){
+                	log.debug("MaxVirtualCPUPerCore limit for server " + server.getFrameworkID());
+               	    return true;
+               }
 
                 //regular CPU consumption constraint
-                if (sumCPUDemands + 100 >= Utils.getNbCores(server) * 100)
-                    return true;
+                if (sumCPUDemands + 100 >= Utils.getNbCores(server) * 100){
+                	log.debug("CPU consumption limit for server " + server.getFrameworkID());
+               	    return true;
+               }
 
                 return false;
             }
@@ -137,6 +147,7 @@ public class Benchmark {
         Random rand = new Random(System.currentTimeMillis());
 
         for (int i = 0; i < NBVMsTotal; i++) {
+        	servers = Utils.getAllServers(model);
             VirtualMachineType VM = modelGenerator1.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);
             VM.setCloudVmType("m1.small");
             VM.setLastMigrationTimestamp(now);
@@ -155,7 +166,7 @@ public class Benchmark {
 
         }
 
-        Recorder recorder = new Recorder(true, path);
+        Recorder recorder = new Recorder(true, path, prefix);
         recorder.recordModel(model);
     }
 
@@ -285,26 +296,33 @@ public class Benchmark {
 
 
     private static void usage(int ret) {
-        System.out.println("Usage: Benchmark -gen 10 20 -o foo");
-        System.out.println("Generate 10 instances of data centres having 20 servers each. Output files are stored in the folder 'foo'");
-        System.out.println("\nUsage: Benchmark -run foo ");
-        System.out.println("If 'foo' is an instance, compute a solution and print it on stdout. If 'foo' is a folder, run every instances");
+        System.out.println("Usage: Benchmark -gen <number of instances> <number of servers> -o <folder> [-p <prefix>]");
+        System.out.println("Generate <number of instances> of data centres having <number of servers> each. Output files are stored in <folder>, with a optionnal <prefix> ");
+        System.out.println("\nUsage: Benchmark -run <name> ");
+        System.out.println("If '<name>' is an instance, compute a solution and print it on stdout. If '<name>' is a folder, run every instances");
         System.exit(ret);
     }
 
     public static void main(String[] args) {
 
+    	Utils.initLogger("../FIT4Green/Optimizer/src/main/config/log4j.properties");
+    	log = Logger.getLogger(Benchmark.class.getName());
+    	
         if (args.length == 0) {
             usage(0);
         }
+        String prefix = "F4G Model";
         if (args[0].equals("-gen")) {
+        	if (args.length == 7) {
+        		prefix = args[6];
+        	}
             if (args.length == 5) {
                 int nbInstances = Integer.parseInt(args[1]);
                 int nbServers = Integer.parseInt(args[2]);
                 String output = args[4];
-
+                
                 for (int i = 0; i < nbInstances; i++) {
-                    generateConfiguration(nbServers, output);
+                    generateConfiguration(nbServers, output, prefix);
                 }
             } else {
                 usage(1);
