@@ -167,4 +167,4 @@ local.build.properties
 *.ipr
 *.iws
 MetaModel.xsd
-Schema/src/main/java
+Schema/src/main/java/**
