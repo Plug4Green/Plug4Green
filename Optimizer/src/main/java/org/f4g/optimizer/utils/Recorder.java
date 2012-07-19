@@ -150,7 +150,7 @@ public class Recorder {
 
     private String getFileName(String recordType) {
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss S");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss_S");
 
         String date = dateFormat.format(new Date());
 
