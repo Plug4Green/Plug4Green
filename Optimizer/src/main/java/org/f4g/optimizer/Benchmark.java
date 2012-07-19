@@ -3,9 +3,14 @@ package org.f4g.optimizer;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
+import entropy.configuration.Configuration;
+import entropy.configuration.Configurations;
+import entropy.configuration.ManagedElementSet;
+import entropy.configuration.Node;
 import org.apache.log4j.Logger;
 import org.f4g.controller.IController;
 import org.f4g.cost_estimator.NetworkCost;
+import org.f4g.entropy.configuration.F4GConfigurationAdapter;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import org.f4g.optimizer.CloudTraditional.SLAReader;
 import org.f4g.optimizer.utils.Recorder;
@@ -39,6 +44,7 @@ public class Benchmark {
 	
 	private static Logger log;
 
+    private static PowerCalculator powerCalculator = new PowerCalculator();
 
     public static void generateConfiguration(int nbServers, String path, String prefix) {
 
@@ -170,6 +176,15 @@ public class Benchmark {
 
         }
 
+
+        //Check the current configuration, just in case
+        F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(model, sla.getVMtypes(), powerCalculator);
+        Configuration cfg = confAdapter.extractConfiguration();
+        ManagedElementSet<Node> ns = Configurations.currentlyOverloadedNodes(cfg);
+        if (!ns.isEmpty()) {
+            System.err.println("Error: Generated configuration is not viable. Currently overloaded: " + ns);
+            System.exit(1);
+        }
         Recorder recorder = new Recorder(true, path, prefix);
         recorder.recordModel(model);
     }
@@ -236,7 +251,7 @@ public class Benchmark {
 
         BenchmarkStatistics st = new BenchmarkStatistics(pathName);
 
-        OptimizerEngineCloudTraditional optimizer = new OptimizerEngineCloudTraditional(new MockController(st), new PowerCalculator(), new NetworkCost(),
+        OptimizerEngineCloudTraditional optimizer = new OptimizerEngineCloudTraditional(new MockController(st), powerCalculator, new NetworkCost(),
                 slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, null));
 
         optimizer.setClusterType(sla.getCluster());
