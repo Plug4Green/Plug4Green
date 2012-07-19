@@ -148,10 +148,12 @@ public class Benchmark {
         //List<VirtualMachineType> vms = new ArrayList<VirtualMachineType>();
         Random rand = new Random(System.currentTimeMillis());
 
+        String [] VMType = {"m1.small", "m1.large", "m1.xlarge"};
+        Random r = new Random();
         for (int i = 0; i < NBVMsTotal; i++) {
         	servers = Utils.getAllServers(model);
             VirtualMachineType VM = modelGenerator1.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);
-            VM.setCloudVmType("m1.small");
+            VM.setCloudVmType(VMType[r.nextInt(VMType.length)]);
             VM.setLastMigrationTimestamp(now);
             VM.setFrameworkID("VMa" + i);
             //vms.add(VM);
