@@ -124,7 +124,32 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	private FederationType federation;
 	private SLAType SLAs;
 
-	public SLAType getSla() {
+    /**
+     * Maximum solving duration. 0 for no time limit.
+     */
+    private int searchTimeLimit;
+
+
+    /**
+     * Get the search time limit.
+     * A duration equals to 0 indicates no time limit.
+     * @return a duration in seconds
+     */
+    public int getSearchTimeLimit() {
+        return searchTimeLimit;
+    }
+
+    /**
+     * Set the search time limit.
+     * A duration equals to 0 indicates no time limit.
+     * @param searchTimeLimit a duration in second.
+     */
+    public void setSearchTimeLimit(int searchTimeLimit) {
+        this.searchTimeLimit = searchTimeLimit;
+    }
+
+
+    public SLAType getSla() {
 		return SLAs;
 	}
 
@@ -363,7 +388,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			List<VJob> queue = getConstraints(model, src);
 			
 			try {					
-				actions = computeActions(model, src, queue);				
+				actions = computeActions(model, src, queue);
 			} catch (PlanException e) {
 				if(e instanceof PlanException) {
 					log.warn("Cannot compute the plan, trying degraded mode...");
@@ -479,6 +504,8 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		plan.setRepairMode(false);
 		
 		//compute the plan with the CP engine
+        plan.setTimeLimit(searchTimeLimit);
+
 		TimedReconfigurationPlan p = plan.compute(src,
 				src.getRunnings(), src.getWaitings(),
 				src.getSleepings(),
