@@ -245,6 +245,7 @@ public class Benchmark {
         optimizer.setClusterType(sla.getCluster());
         optimizer.setPolicies(sla.getPolicies());
         optimizer.setVmTypes(sla.getVMtypes());
+        optimizer.setSearchTimeLimit(10);
 
         long start = System.currentTimeMillis();
 

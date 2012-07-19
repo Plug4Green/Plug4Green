@@ -53,7 +53,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
     
     private PowerObjective objective;
 
-    private int searchTimeLimit;
+    private int searchTimeLimit = 3; //Default timeout value is 3 seconds
 
     /**
      * Get the search time limit.
