@@ -154,7 +154,7 @@ public class Recorder {
 
         String date = dateFormat.format(new Date());
 
-        return recorderDirectory + "/" + date + " " + recordType + ".xml";
+        return recorderDirectory + "/" + date + "_" + recordType + ".xml";
     }
 
     public void logElement(Object element, String schemaLocation) {
