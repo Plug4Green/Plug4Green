@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
-import java.util.concurrent.Semaphore;
 
 /**
  * A tool to generate then solve placement problems.
@@ -97,10 +96,9 @@ public class Benchmark {
         	server2.setFrameworkID(server2.getFrameworkID() + "b");
             rackServers.add((RackableServerType) server2);
         }
-        List<ServerType> servers = Utils.getAllServers(model);
+        List<ServerType> servers;
 
-        String sep = System.getProperty("file.separator");
-        final SLAReader sla = new SLAReader("resources" + sep + "unittest_SLA_instance_ComHP.xml");
+        final SLAReader sla = new SLAReader("resources" + File.separator + "unittest_SLA_instance_ComHP.xml");
 
 
         //predicate to determine is a server is full according to our known constraints
@@ -181,7 +179,7 @@ public class Benchmark {
         Configuration cfg = confAdapter.extractConfiguration();
         ManagedElementSet<Node> ns = Configurations.currentlyOverloadedNodes(cfg);
         if (!ns.isEmpty()) {
-            System.err.println("Error: Generated configuration is not viable. Currently overloaded: " + ns);
+            log.error("Error: Generated configuration is not viable. Currently overloaded: " + ns);
             System.exit(1);
         }
         Recorder recorder = new Recorder(true, path, prefix);
@@ -196,14 +194,18 @@ public class Benchmark {
         File folder = new File(pathName);
         File[] listOfFiles = folder.listFiles();
 
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                fileName = listOfFiles[i].getName();
+        if (listOfFiles != null) {
+        for (File f : listOfFiles) {
+            if (f.isFile()) {
+                fileName = f.getName();
                 if (fileName.endsWith(".xml")) {
                     BenchmarkStatistics st = runConfiguration(pathName + File.separator + fileName);
                     stats.add(st);
                 }
             }
+        }
+        } else {
+            log.error("No files in '" + pathName + "'");
         }
         return stats;
     }
@@ -211,10 +213,8 @@ public class Benchmark {
     //run a configuration file
     static BenchmarkStatistics runConfiguration(String pathName) {
 
-        Logger log = Logger.getLogger(Benchmark.class.getName());
-
-        List<LoadType> load = new LinkedList<LoadType>();
-        load.add(new LoadType("m1.small", 300, 6));
+        /*List<LoadType> load = new LinkedList<LoadType>();
+        load.add(new LoadType("m1.small", 300, 6));*/
 
         XMLGregorianCalendar begin = null;
         XMLGregorianCalendar end = null;
@@ -240,8 +240,6 @@ public class Benchmark {
 
         PolicyType vmMargins = new PolicyType(polL);
         vmMargins.getPolicy().add(pol);
-
-        Semaphore actionRequestAvailable = new Semaphore(1);
 
         ModelGenerator modelGenerator = new ModelGenerator();
         FIT4GreenType model = modelGenerator.getModel(pathName);
@@ -338,7 +336,7 @@ public class Benchmark {
 
     private static void usage(int ret) {
         System.out.println("Usage: Benchmark -gen <number of instances> <number of servers> -o <folder> [-p <prefix>]");
-        System.out.println("Generate <number of instances> of data centres having <number of servers> each. Output files are stored in <folder>, with a optionnal <prefix> ");
+        System.out.println("Generate <number of instances> of data centres having <number of servers> each. Output files are stored in <folder>, with a optional <prefix> ");
         System.out.println("\nUsage: Benchmark -run <name> [-o output]");
         System.out.println("If '<name>' is an instance, compute a solution and print it on stdout. If '<name>' is a folder, run every instances.");
         System.exit(ret);
