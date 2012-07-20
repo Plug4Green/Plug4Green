@@ -236,6 +236,28 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		showVMs(vmTypes);
 
 	}
+	
+	/**
+	 * constructor for production
+	 * 
+	 * @param traditional
+	 */
+	public OptimizerEngineCloudTraditional(IController controller,
+			IPowerCalculator powerCalculator, ICostEstimator costEstimator,
+			CloudTradCS cs, SLAReader slaReader) {
+		super(controller, powerCalculator, costEstimator);
+		log = Logger.getLogger(this.getClass().getName());
+		computingStyle = cs;
+		vmTypes = slaReader.getVMtypes();
+		clusters = slaReader.getCluster();
+		serverGroups = slaReader.getServerGroup();
+		ct = slaReader.getPCs();
+		policies = slaReader.getPolicies();
+		federation = slaReader.getFeds();
+		SLAs = slaReader.getSLAs();
+		showVMs(vmTypes);
+		
+	}
 
 	/**
 	 * Handles a request for resource allocation

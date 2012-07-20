@@ -13,8 +13,10 @@ import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.entropy.configuration.F4GConfigurationAdapter;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import org.f4g.optimizer.CloudTraditional.SLAReader;
+import org.f4g.optimizer.Optimizer.CloudTradCS;
 import org.f4g.optimizer.utils.Recorder;
 import org.f4g.optimizer.utils.Utils;
+import org.f4g.power.IPowerCalculator;
 import org.f4g.power.PowerCalculator;
 import org.f4g.schema.actions.ActionRequestType;
 import org.f4g.schema.constraints.optimizerconstraints.*;
@@ -221,34 +223,6 @@ public class Benchmark {
     //run a configuration file
     static BenchmarkStatistics runConfiguration(String pathName) {
 
-        /*List<LoadType> load = new LinkedList<LoadType>();
-        load.add(new LoadType("m1.small", 300, 6));*/
-
-        XMLGregorianCalendar begin = null;
-        XMLGregorianCalendar end = null;
-
-        try {
-            begin = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(2010, 1, 1, 0);
-            end = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(2020, 1, 1, 0);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
-
-
-        SLAGenerator slaGenerator = new SLAGenerator();
-
-        PeriodType period = new PeriodType(
-                begin, end, null, null, new LoadType("m1.small", 300, 6));
-
-        PolicyType.Policy pol = new PolicyType.Policy();
-        pol.getPeriodVMThreshold().add(period);
-
-        List<PolicyType.Policy> polL = new LinkedList<PolicyType.Policy>();
-        polL.add(pol);
-
-        PolicyType vmMargins = new PolicyType(polL);
-        vmMargins.getPolicy().add(pol);
-
         ModelGenerator modelGenerator = new ModelGenerator();
         FIT4GreenType model = modelGenerator.getModel(pathName);
 
@@ -256,15 +230,8 @@ public class Benchmark {
 
         BenchmarkStatistics st = new BenchmarkStatistics(pathName);
 
-        OptimizerEngineCloudTraditional optimizer = new OptimizerEngineCloudTraditional(new MockController(st), powerCalculator, new NetworkCost(),
-                slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, null));
-
-        optimizer.setClusterType(sla.getCluster());
-        optimizer.setSla(sla.getSLAs());
-        optimizer.setFederation(sla.getFeds());
-        optimizer.setClusterType(sla.getCluster());
-        optimizer.setPolicies(sla.getPolicies());
-        optimizer.setVmTypes(sla.getVMtypes());
+        OptimizerEngineCloudTraditional optimizer = new OptimizerEngineCloudTraditional(new MockController(st), powerCalculator, new NetworkCost(), CloudTradCS.CLOUD, sla);
+    	
         optimizer.setSearchTimeLimit(10);
 
         long start = System.currentTimeMillis();
@@ -276,31 +243,6 @@ public class Benchmark {
         return st;
     }
 
-    private static FederationType makeSimpleFed(PolicyType policies, FIT4GreenType f4g) {
-
-        FederationType fed = new FederationType();
-        BoundedPoliciesType.Policy bpol = new BoundedPoliciesType.Policy(policies.getPolicy().get(0));
-        BoundedPoliciesType bpols = new BoundedPoliciesType();
-        bpols.getPolicy().add(bpol);
-        fed.setBoundedPolicies(bpols);
-
-        if (f4g != null) {
-            //add all servers in one cluster
-            BoundedClustersType bcls = new BoundedClustersType();
-            ClusterType.Cluster c = new ClusterType.Cluster();
-            c.setNodeController(new NodeControllerType());
-            c.setName("c1");
-            for (ServerType s : Utils.getAllServers(f4g)) {
-                c.getNodeController().getNodeName().add(s.getFrameworkID());
-            }
-            BoundedClustersType.Cluster bcl = new BoundedClustersType.Cluster();
-            bcl.setIdref(c);
-            bcls.getCluster().add(bcl);
-            fed.setBoundedCluster(bcls);
-        }
-
-        return fed;
-    }
 
     protected static class MockController implements IController {
 
