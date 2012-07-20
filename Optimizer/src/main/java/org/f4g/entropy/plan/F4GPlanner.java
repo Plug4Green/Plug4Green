@@ -53,27 +53,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
     
     private PowerObjective objective;
 
-    private int searchTimeLimit = 3; //Default timeout value is 3 seconds
-
-    /**
-     * Get the search time limit.
-     * A duration equals to 0 indicates no time limit.
-     * @return a duration in seconds
-     */
-    public int getSearchTimeLimit() {
-        return searchTimeLimit;
-    }
-
-    /**
-     * Set the search time limit.
-     * A duration equals to 0 indicates no time limit.
-     * @param searchTimeLimit a duration in second.
-     */
-    public void setSearchTimeLimit(int searchTimeLimit) {
-        this.searchTimeLimit = searchTimeLimit;
-    }
-
-    /**
+     /**
      * the class to instantiate to generate the global constraint.
      * Default is SatisfyDemandingSlicesHeightsSimpleBP.
      */
@@ -215,7 +195,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    model.setObjective(objective.getObjective());
 	   
 	    //time limit of the search
-	    model.setTimeLimit(searchTimeLimit * 1000); // Conversion into seconds
+	    model.setTimeLimit(getTimeLimit()* 1000); // Conversion into seconds
 	    
 	    //Add the F4G heuristics
 	    new F4GPlacementHeuristic().add(this);
