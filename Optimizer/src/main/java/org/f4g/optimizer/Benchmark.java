@@ -225,7 +225,10 @@ public class Benchmark {
         FIT4GreenType model = modelGenerator.getModel(pathName);
 
         final SLAReader sla = new SLAReader("resources" + File.separator + "unittest_SLA_instance_ComHP.xml");
-
+        for(ServerType server : Utils.getAllServers(model)) {
+        	sla.getCluster().getCluster().get(0).getNodeController().getNodeName().add(server.getFrameworkID());
+        }       
+        
         BenchmarkStatistics st = new BenchmarkStatistics(pathName);
 
         OptimizerEngineCloudTraditional optimizer = new OptimizerEngineCloudTraditional(new MockController(st), powerCalculator, new NetworkCost(), CloudTradCS.CLOUD, sla);
