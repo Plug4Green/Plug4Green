@@ -110,7 +110,7 @@ public class F4GMemoryOverbookingConstraint extends F4GConstraint {
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();
 
-		buffer.append("overbookingConstraint(");
+		buffer.append("F4GMemoryOverbookingConstraint(");
 		buffer.append(overbookingFactor);
 		buffer.append(", ");
 		buffer.append(nodes.toString());

@@ -194,6 +194,8 @@ public class PolicyConstraintFactory {
 				}
 			}
 		}
+		if(delayTimeBetweenMove <= 0)
+			return;
 
 		if (model.getDatetime() != null) {
 			XMLGregorianCalendar earliestLastTimeMove = model.getDatetime();
