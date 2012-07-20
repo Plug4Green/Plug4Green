@@ -60,7 +60,7 @@ public class BenchServer implements CommitedJobHandler {
     public void jobCommited(Job job) {
         try {
             PrintWriter out = new PrintWriter(new FileWriter(output, true), true);
-            out.print(job.get(RESULT_KEY));
+            out.println(job.get(RESULT_KEY));
             out.close();
         } catch (IOException e) {
             JobDispatcher.getLogger().error(e.getMessage(), e);
