@@ -213,7 +213,6 @@ public class Benchmark {
                 if (fileName.endsWith(".xml")) {
                     BenchmarkStatistics st = runConfiguration(sla, pathName + File.separator + fileName, timeout);
                     stats.add(st);
-                    break;
                 }
             }
         }

@@ -234,9 +234,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    //other goals (inverse?)
 	    model.addGoal(((DefaultReconfigurationProblem)model).generateDefaultIntGoal());
 	    model.addGoal(((DefaultReconfigurationProblem)model).generateSetDefaultGoal());
-	
-	    ChocoLogging.setVerbosity(Verbosity.SOLUTION);
-	
+
 	    log.debug(generationTime + "ms to build the solver, " + model.getNbIntConstraints() + " constraints, " + model.getNbIntVars() + " integer variables, " + model.getNbBooleanVars() + " boolean variables, " + model.getNbConstants() + " constantes");
 
 	    //Launch the solver
