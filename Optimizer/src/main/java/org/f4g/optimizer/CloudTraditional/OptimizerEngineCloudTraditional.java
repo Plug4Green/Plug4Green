@@ -128,9 +128,9 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	private SLAType SLAs;
 
     /**
-     * Maximum solving duration. 0 for no time limit.
+     * Maximum solving duration. 0 for no time limit. Default is 5 seconds
      */
-    private int searchTimeLimit;
+    private int searchTimeLimit = 5;
 
 
     /**

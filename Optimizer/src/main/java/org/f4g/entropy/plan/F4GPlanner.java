@@ -212,7 +212,9 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    model.setObjective(objective.getObjective());
 	   
 	    //time limit of the search
-	    model.setTimeLimit(getTimeLimit()* 1000); // Conversion into seconds
+        if (getTimeLimit() > 0) {
+	        model.setTimeLimit(getTimeLimit()* 1000); // Conversion into seconds
+        }
 	    
 	    //Add the F4G heuristics
 	    new F4GPlacementHeuristic().add(this);

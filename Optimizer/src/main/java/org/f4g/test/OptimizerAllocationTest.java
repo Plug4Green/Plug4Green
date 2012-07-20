@@ -19,6 +19,8 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
+import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.common.logging.Verbosity;
 import org.f4g.com.util.PowerData;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
@@ -106,7 +108,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 * Test allocation success
 	 */
 	public void testAllocationSuccess() {
-		
+        ChocoLogging.setVerbosity(Verbosity.SEARCH);
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(10);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
