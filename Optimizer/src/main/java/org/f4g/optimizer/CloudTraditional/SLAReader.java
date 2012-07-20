@@ -14,7 +14,7 @@ package org.f4g.optimizer.CloudTraditional;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -67,6 +67,18 @@ public class SLAReader {
 		if (SLA == null)
 			log.error("No SLA instance file found or wrong instance");
 	}
+
+    /**
+     * get SLA from file input: the SLA path
+     *
+     */
+    public SLAReader(File SLAPathName) throws FileNotFoundException{
+
+        SLA = readSLA(SLAPathName);
+
+        if (SLA == null)
+            log.error("No SLA instance file found or wrong instance");
+    }
 
 	/**
 	 * get VMtypes from a SLA file
@@ -174,71 +186,75 @@ public class SLAReader {
 			return null;
 		}
 	}
-	
+
+
+    /**
+     * Read a SLA from an external file.
+     * @param path the filename to read
+     * @return the readed SLA
+     */
+    public FIT4GreenOptimizerConstraint readSLA(File path) throws FileNotFoundException {
+        return this.readSLA(new FileInputStream(path));
+    }
+
+    private FIT4GreenOptimizerConstraint readSLA(InputStream in) {
+        log.debug("SLA location: " + in);
+        // JAXBElement<FIT4GreenOptimizerConstraint> poElement = null;
+        try {
+            // create an Unmarshaller
+            Unmarshaller u = JAXBContext.newInstance(
+                    "org.f4g.schema.constraints.optimizerconstraints")
+                    .createUnmarshaller();
+
+            // ****** VALIDATION ******
+            // TODO: remove hard path
+            URL url = this.getClass().getClassLoader()
+                    .getResource("schema/SlaClusterConstraints.xsd");
+
+            log.debug("URL: " + url);
+
+            SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
+            try {
+                Schema schema = sf.newSchema(url);
+                u.setSchema(schema);
+                u.setEventHandler(new ValidationEventHandler() {
+                    // allow unmarshalling to continue even if there are errors
+                    public boolean handleEvent(ValidationEvent ve) {
+                        // ignore warnings
+                        if (ve.getSeverity() != ValidationEvent.WARNING) {
+                            ValidationEventLocator vel = ve.getLocator();
+                            log.warn("Line:Col[" + vel.getLineNumber() + ":"
+                                    + vel.getColumnNumber() + "]:"
+                                    + ve.getMessage() + "\nURL: "
+                                    + vel.getURL() + " Name:"
+                                    + vel.getObject().getClass().getName()
+                                    + " Node:" + vel.getNode().getNodeName());
+                        }
+                        return true;
+                    }
+                });
+            } catch (org.xml.sax.SAXException se) {
+                log.error("Unable to validate due to following error: ", se);
+            }
+            // *********************************
+
+            // unmarshal an XML document into a tree of Java content
+            // objects composed of classes from the "org.f4g.schema" package.
+            return (FIT4GreenOptimizerConstraint) u.unmarshal(in);
+        } catch (JAXBException je) {
+            log.error(je);
+            return null;
+        }
+    }
+
 	/**
 	 * loads a SLA file
 	 * 
 	 * @author cdupont
 	 */
 	public FIT4GreenOptimizerConstraint readSLA(String SLAPathName) {
-
-		InputStream isSLA = this.getClass().getClassLoader().getResourceAsStream(SLAPathName);
-
-		log.debug("SLAPathName: " + SLAPathName + ", isSLA: " + isSLA);
-
-		// JAXBElement<FIT4GreenOptimizerConstraint> poElement = null;
-		try {
-			// create an Unmarshaller
-			Unmarshaller u = JAXBContext.newInstance(
-					"org.f4g.schema.constraints.optimizerconstraints")
-					.createUnmarshaller();
-
-			// ****** VALIDATION ******
-			// TODO: remove hard path
-			URL url = this.getClass().getClassLoader()
-					.getResource("schema/SlaClusterConstraints.xsd");
-
-			log.debug("URL: " + url);
-
-			SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-			try {
-				Schema schema = sf.newSchema(url);
-				u.setSchema(schema);
-				u.setEventHandler(new ValidationEventHandler() {
-					// allow unmarshalling to continue even if there are errors
-					public boolean handleEvent(ValidationEvent ve) {
-						// ignore warnings
-						if (ve.getSeverity() != ValidationEvent.WARNING) {
-							ValidationEventLocator vel = ve.getLocator();
-							log.warn("Line:Col[" + vel.getLineNumber() + ":"
-									+ vel.getColumnNumber() + "]:"
-									+ ve.getMessage() + "\nURL: "
-									+ vel.getURL() + " Name:"
-									+ vel.getObject().getClass().getName()
-									+ " Node:" + vel.getNode().getNodeName());
-						}
-						return true;
-					}
-				});
-			} catch (org.xml.sax.SAXException se) {
-				log.error("Unable to validate due to following error: ", se);
-			}
-			// *********************************
-
-			// unmarshal an XML document into a tree of Java content
-			// objects composed of classes from the "org.f4g.schema" package.
-
-			// poElement = (JAXBElement<FIT4GreenOptimizerConstraint>)
-			// u.unmarshal(isSLA);
-			return (FIT4GreenOptimizerConstraint) u.unmarshal(isSLA);
-
-			// return (FIT4GreenOptimizerConstraint) poElement.getValue();
-
-		} catch (JAXBException je) {
-			log.error(je);
-			return null;
-		}
-
+        log.debug("SLAPathName: " + SLAPathName);
+        return readSLA(this.getClass().getClassLoader().getResourceAsStream(SLAPathName));
 	}
 
 	

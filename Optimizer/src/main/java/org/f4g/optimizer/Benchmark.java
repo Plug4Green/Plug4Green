@@ -18,7 +18,6 @@ import org.f4g.optimizer.CloudTraditional.SLAReader;
 import org.f4g.optimizer.Optimizer.CloudTradCS;
 import org.f4g.optimizer.utils.Recorder;
 import org.f4g.optimizer.utils.Utils;
-import org.f4g.power.IPowerCalculator;
 import org.f4g.power.PowerCalculator;
 import org.f4g.schema.actions.ActionRequestType;
 import org.f4g.schema.constraints.optimizerconstraints.*;
@@ -27,13 +26,13 @@ import org.f4g.schema.metamodel.RackableServerType;
 import org.f4g.schema.metamodel.ServerType;
 import org.f4g.schema.metamodel.VirtualMachineType;
 import org.f4g.test.ModelGenerator;
-import org.f4g.test.SLAGenerator;
 import org.f4g.util.Util;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -49,7 +48,7 @@ public class Benchmark {
 
     private static PowerCalculator powerCalculator = new PowerCalculator();
 
-    public static boolean generateConfiguration(int nbServers, String path, String prefix) {
+    public static boolean generateConfiguration(final SLAReader sla, int nbServers, String path, String prefix) {
 
         int NbVMsperServer = 6;
         int NBVMsTotal = nbServers * NbVMsperServer;
@@ -102,7 +101,7 @@ public class Benchmark {
         }
         List<ServerType> servers;
 
-        final SLAReader sla = new SLAReader("resources" + File.separator + "unittest_SLA_instance_ComHP.xml");
+        //
 
 
         //predicate to determine is a server is full according to our known constraints
@@ -200,7 +199,7 @@ public class Benchmark {
     }
 
     //run all configurations in a directory
-    static List<BenchmarkStatistics> runConfigurations(String pathName) {
+    static List<BenchmarkStatistics> runConfigurations(SLAReader sla, String pathName) {
         List<BenchmarkStatistics> stats = new LinkedList<BenchmarkStatistics>();
 
         String fileName;
@@ -212,7 +211,7 @@ public class Benchmark {
             if (f.isFile()) {
                 fileName = f.getName();
                 if (fileName.endsWith(".xml")) {
-                    BenchmarkStatistics st = runConfiguration(pathName + File.separator + fileName);
+                    BenchmarkStatistics st = runConfiguration(sla, pathName + File.separator + fileName);
                     stats.add(st);
                     break;
                 }
@@ -225,13 +224,11 @@ public class Benchmark {
     }
 
     //run a configuration file
-    static BenchmarkStatistics runConfiguration(String pathName) {
+    static BenchmarkStatistics runConfiguration(SLAReader sla, String pathName) {
         ChocoLogging.setVerbosity(Verbosity.SEARCH);
         ChocoLogging.setLoggingMaxDepth(200);
         ModelGenerator modelGenerator = new ModelGenerator();
         FIT4GreenType model = modelGenerator.getModel(pathName);
-
-        final SLAReader sla = new SLAReader("resources" + File.separator + "unittest_SLA_instance_ComHP.xml");
 
         BenchmarkStatistics st = new BenchmarkStatistics(pathName);
 
@@ -289,9 +286,9 @@ public class Benchmark {
 
 
     private static void usage(int ret) {
-        System.out.println("Usage: Benchmark -gen <number of instances> <number of servers> -o <folder> [-p <prefix>]");
+        System.out.println("Usage: Benchmark -gen <number of instances> <number of servers> -sla <sla> -o <folder> [-p <prefix>]");
         System.out.println("Generate <number of instances> of data centres having <number of servers> each. Output files are stored in <folder>, with a optional <prefix> ");
-        System.out.println("\nUsage: Benchmark -run <name> [-o output]");
+        System.out.println("\nUsage: Benchmark -run <name> -sla <sla> [-o output]");
         System.out.println("If '<name>' is an instance, compute a solution and print it on stdout. If '<name>' is a folder, run every instances.");
         System.exit(ret);
     }
@@ -304,19 +301,29 @@ public class Benchmark {
         if (args.length == 0) {
             usage(0);
         }
+
+        SLAReader sla = null;
+
         String prefix = "F4G_Model";
         if (args[0].equals("-gen")) {
-        	if (args.length == 7) {
-        		prefix = args[6];
+        	if (args.length == 9) {
+        		prefix = args[8];
         	}
-            if (args.length == 5) {
+            if (args.length == 7) {
                 int nbInstances = Integer.parseInt(args[1]);
                 int nbServers = Integer.parseInt(args[2]);
-                String output = args[4];
+                try {
+                    sla = new SLAReader(new File(args[4]));
+                } catch (FileNotFoundException e) {
+                    log.error(e.getMessage());
+                    System.exit(1);
+                }
+                String output = args[6];
                 log.info("Generating " + nbInstances + " models into '" + output + "'");
+                log.info("Use SLA in " + args[4]);
                 for (int i = 1; i <= nbInstances;) {
                     log.info("Generate model " + i + "/" + nbInstances);
-                    if (generateConfiguration(nbServers, output, prefix)) {
+                    if (generateConfiguration(sla, nbServers, output, prefix)) {
                         i++;
                     }
                 }
@@ -324,21 +331,31 @@ public class Benchmark {
                 usage(1);
             }
         } else if (args[0].equals("-run")) {
-            if (args.length < 2) {
+            if (args.length < 4) {
                 usage(1);
             } else {
+
+                try {
+                    sla = new SLAReader(new File(args[3]));
+                } catch (FileNotFoundException e) {
+                    log.error(e.getMessage());
+                    System.exit(1);
+                }
+                sla = new SLAReader(args[3]);
                 File f = new File(args[1]);
                 List<BenchmarkStatistics> stats = new LinkedList<BenchmarkStatistics>();
                 if (f.isDirectory()) {
-                    stats.addAll(runConfigurations(args[1]));
+                    stats.addAll(runConfigurations(sla, args[1]));
                 } else {
-                    BenchmarkStatistics st = runConfiguration(args[1]);
+                    BenchmarkStatistics st = runConfiguration(sla, args[1]);
                     stats.add(st);
                 }
-                if (args.length == 4 && args[2].equals("-o")) {
+
+
+                if (args.length == 6 && args[4].equals("-o")) {
                     PrintWriter out = null;
                     try {
-                        out = new PrintWriter(args[3]);
+                        out = new PrintWriter(args[5]);
                     for (BenchmarkStatistics st : stats) {
                         out.println(st.toRaw());
                     }
