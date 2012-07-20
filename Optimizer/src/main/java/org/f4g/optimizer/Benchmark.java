@@ -112,10 +112,12 @@ public class Benchmark {
 
                 int sumCPUs = 0;
                 int sumCPUDemands = 0;
+                int sumMemoryDemands = 0;
                 for (VirtualMachineType vm : vms) {
                     VMTypeType.VMType SLAVM = Util.findVMByName(vm.getCloudVmType(), sla.getVMtypes());
                     sumCPUs += SLAVM.getCapacity().getVCpus().getValue();
                     sumCPUDemands += SLAVM.getExpectedLoad().getVCpuLoad().getValue();
+                    sumMemoryDemands += SLAVM.getCapacity().getVRam().getValue(); //in GB
                 }
 
                 //constraint MaxVMperServer=15
@@ -128,13 +130,19 @@ public class Benchmark {
                 if (sumCPUs >= Utils.getNbCores(server) * 2){
                 	log.debug("MaxVirtualCPUPerCore limit for server " + server.getFrameworkID());
                	    return true;
-               }
+                }
 
                 //regular CPU consumption constraint
                 if (sumCPUDemands + 100 >= Utils.getNbCores(server) * 100){
                 	log.debug("CPU consumption limit for server " + server.getFrameworkID());
                	    return true;
-               }
+                }
+                
+                //regular Memory constraint
+                if (sumMemoryDemands + 4 >= Utils.getMemory(server) ){
+                	log.debug("Memory limit for server " + server.getFrameworkID());
+               	    return true;
+                }
 
                 return false;
             }
