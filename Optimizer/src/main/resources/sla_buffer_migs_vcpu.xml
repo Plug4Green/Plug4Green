@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<opticon:FIT4GreenOptimizerConstraint id="" scenario="single" xmlns:f4g="http://www.f4g.org/schema/MetaModel" xmlns:opticon="http://www.f4g.org/schema/constraints/OptimizerConstraints" xmlns:p="http://www.f4g.org/schema/CommonTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.f4g.org/schema/constraints/OptimizerConstraints ../../../../Schemas/src/main/schema/SlaClusterConstraints.xsd ">
+<opticon:FIT4GreenOptimizerConstraint id="" scenario="single"
+                                      xmlns:opticon="http://www.f4g.org/schema/constraints/OptimizerConstraints"
+                                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                      xsi:schemaLocation="http://www.f4g.org/schema/constraints/OptimizerConstraints ../../../../Schemas/src/main/schema/SlaClusterConstraints.xsd ">
   <VirtualMachines>
     <VMType>
       <name>m1.small</name>
@@ -109,8 +112,7 @@
       <HardwareMetrics/>
       <CommonQoSRelatedMetrics>
         <MaxVirtualCPUPerCore>2</MaxVirtualCPUPerCore>
-        <!-- MaxServerAvg_vCPUperCore>2</MaxServerAvg_vCPUperCore>
-        MaxServerAvg_vRAMperPhyRAM>1</MaxServerAvg_vRAMperPhyRAM>-->
+        <MaxServerAvg_vCPUperCore>2.5</MaxServerAvg_vCPUperCore>
         <Max_vRAMperPhyRAM>1</Max_vRAMperPhyRAM>
         <MaxVMperServer>15</MaxVMperServer>
       </CommonQoSRelatedMetrics>
@@ -124,11 +126,11 @@
         <Ends>2013-05-04T11:51:36Z</Ends>
         <Load>
           <VMnameRef>m1.xlarge</VMnameRef>
-          <lowVMSlotsThreshold>800</lowVMSlotsThreshold>
+            <lowVMSlotsThreshold>1600</lowVMSlotsThreshold>
           <highVMSlotsThreshold>6</highVMSlotsThreshold>
         </Load>
       </PeriodVMThreshold>      
-      <!--DelayBetweenMove>2</DelayBetweenMove-->
+      <DelayBetweenMove>30</DelayBetweenMove>
     </policy>
   </ListOfPolicies>
   <ListOfPlacementConstraints>
