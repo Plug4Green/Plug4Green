@@ -236,7 +236,6 @@ public class Benchmark {
 
         long start = System.currentTimeMillis();
 
-        //FIXME: How can I know whether the solving process is successful or not.
         optimizer.runGlobalOptimization(model);
         long ed = System.currentTimeMillis();
         st.setSolvingDuration(ed - start);
