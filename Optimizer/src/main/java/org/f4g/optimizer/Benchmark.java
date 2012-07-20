@@ -293,7 +293,7 @@ public class Benchmark {
 
     public static void main(String[] args) {
 
-    	Utils.initLogger("../FIT4Green/Optimizer/src/main/config/log4j.properties");
+    	Utils.initLogger("../FIT4Green/Optimizer/src/main/config/log4j-benchmark.properties");
     	log = Logger.getLogger(Benchmark.class.getName());
     	
         if (args.length == 0) {
@@ -308,8 +308,9 @@ public class Benchmark {
                 int nbInstances = Integer.parseInt(args[1]);
                 int nbServers = Integer.parseInt(args[2]);
                 String output = args[4];
-                
+                log.info("Generating " + nbInstances + " models into '" + output + "'");
                 for (int i = 0; i < nbInstances; i++) {
+                    log.info("Generate model " + i + "/" + nbInstances);
                     generateConfiguration(nbServers, output, prefix);
                 }
             } else {
