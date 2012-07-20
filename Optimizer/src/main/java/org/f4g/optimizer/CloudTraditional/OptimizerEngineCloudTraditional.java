@@ -94,13 +94,16 @@ import entropy.vjob.VJob;
 
 public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
-	public enum AlgoType {
+
+    public enum AlgoType {
 		CLOUD, TRADITIONAL
-	};
+	}
 
 	CloudTradCS computingStyle;
 
 	ServerGroupType serverGroups;
+
+    private boolean optimize = true;
 
 	public void setServerGroups(ServerGroupType sg) {
 		this.serverGroups = sg;
@@ -173,6 +176,21 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		this.ct = ct;
 	}
 
+    /**
+     * Indicates if the planner stops after computing a first solution.
+     * @return {@code true} if it continues
+     */
+    public boolean doOptimize() {
+        return optimize;
+    }
+
+    /**
+     * Indicates if the planner must stop after computing a first solution.
+     * @return {@code true} if it continues
+     */
+    public void doOptimize(boolean optimize) {
+        this.optimize = optimize;
+    }
 	
 	/**
 	 * constructor for production
@@ -350,7 +368,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			// setting repair mode: VMs that are OK (should be the case for all)
 			// will not be moved.
 			plan.setRepairMode(true);
-
+            plan.doOptimize(optimize);
 			// launch CP engine
 			p = plan.compute(src, futureRunnings, futureWaitings,
 					src.getSleepings(),
@@ -527,7 +545,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		
 		//compute the plan with the CP engine
         plan.setTimeLimit(searchTimeLimit);
-
+        plan.doOptimize(optimize);
 		TimedReconfigurationPlan p = plan.compute(src,
 				src.getRunnings(), src.getWaitings(),
 				src.getSleepings(),

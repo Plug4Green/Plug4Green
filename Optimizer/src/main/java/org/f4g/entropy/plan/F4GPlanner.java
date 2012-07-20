@@ -53,6 +53,23 @@ public class F4GPlanner extends CustomizablePlannerModule {
     
     private PowerObjective objective;
 
+    /**
+     * Indicates if the planner stops after computing a first solution.
+     * @return {@code true} if it continues
+     */
+    public boolean doOptimize() {
+        return optimize;
+    }
+
+    /**
+     * Indicates if the planner must stop after computing a first solution.
+     * @return {@code true} if it continues
+     */
+    public void doOptimize(boolean optimize) {
+        this.optimize = optimize;
+    }
+
+    private boolean optimize = true;
      /**
      * the class to instantiate to generate the global constraint.
      * Default is SatisfyDemandingSlicesHeightsSimpleBP.
@@ -223,8 +240,11 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    log.debug(generationTime + "ms to build the solver, " + model.getNbIntConstraints() + " constraints, " + model.getNbIntVars() + " integer variables, " + model.getNbBooleanVars() + " boolean variables, " + model.getNbConstants() + " constantes");
 
 	    //Launch the solver
-	    model.minimize(true);
-	    //model.solve();
+        if (optimize) {
+	        model.minimize(true);
+        } else {
+            model.solve();
+        }
 	    Boolean ret = model.isFeasible();
 	    if (ret == null) {
 	        throw new PlanException("Unable to check wether a solution exists or not");
