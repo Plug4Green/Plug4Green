@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 
-import choco.cp.solver.variables.integer.BoolVarNot2;
+import choco.cp.solver.variables.integer.BoolVarNot;
 
 import choco.cp.solver.variables.integer.BooleanVarImpl;
 
@@ -292,7 +292,7 @@ public class PowerObjective extends Objective {
                 	m.post(new FastIFFEq(action.getState(), EOnOffServer[i], EnergyOn)); 
                 	//m.post(m.eq(EOnOffServer[i], mult(EnergyOn, action.getState()))); 
                 } else if (action instanceof ShutdownableNodeActionModel) {
-                	IntDomainVar isOffline = new BoolVarNot2(m, "offline(" + n.getName() + ")", action.getState());
+                	IntDomainVar isOffline = new BoolVarNot(m, "offline(" + n.getName() + ")", action.getState());
                 	m.post(new FastIFFEq(isOffline, EOnOffServer[i], EnergyOn)); 
                 	//m.post(m.eq(EOnOffServer[i], mult(EnergyOff, isOffline))); 
                 }
