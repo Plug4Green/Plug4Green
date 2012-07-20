@@ -9,9 +9,8 @@ import java.util.List;
 
 import choco.Choco;
 import choco.cp.solver.constraints.reified.FastImpliesEq;
-import choco.cp.solver.variables.integer.BoolVarNot2;
+import choco.cp.solver.variables.integer.BoolVarNot;
 import choco.kernel.solver.variables.integer.IntDomainVar;
-import choco.kernel.solver.variables.set.SetVar;
 import entropy.configuration.*;
 import entropy.plan.choco.Chocos;
 import entropy.plan.choco.ReconfigurationProblem;
@@ -115,7 +114,7 @@ public class SpareCPUs implements PlacementConstraint {
 	    			               
 	        } else if (!core.getFutureOnlines().contains(n)){ //the server state is managed by Entropy
 	        	ManageableNodeActionModel action = (ManageableNodeActionModel) core.getAssociatedAction(n);
-	         	IntDomainVar isOffline = new BoolVarNot2(core, "offline(" + n.getName() + ")", action.getState());
+	         	IntDomainVar isOffline = new BoolVarNot(core, "offline(" + n.getName() + ")", action.getState());
 	         	core.post(new FastImpliesEq(isOffline, capacities[i], 0));
 	        }
 	    }

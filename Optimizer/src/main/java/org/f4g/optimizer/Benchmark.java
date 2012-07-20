@@ -345,7 +345,6 @@ public class Benchmark {
                     log.error(e.getMessage());
                     System.exit(1);
                 }
-                sla = new SLAReader(args[3]);
                 File f = new File(args[1]);
                 List<BenchmarkStatistics> stats = new LinkedList<BenchmarkStatistics>();
                 if (f.isDirectory()) {

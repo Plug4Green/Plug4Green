@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import choco.cp.solver.variables.integer.BoolVarNot;
 import org.apache.log4j.Logger;
 
 import choco.cp.solver.constraints.reified.FastImpliesEq;
-import choco.cp.solver.variables.integer.BoolVarNot2;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
@@ -147,7 +147,7 @@ public class F4GCPUOverbookingConstraint extends F4GConstraint {
 	    			               
 	        } else if (!core.getFutureOnlines().contains(n)){ //the server state is managed by Entropy
 	        	ManageableNodeActionModel action = (ManageableNodeActionModel) core.getAssociatedAction(n);
-	         	IntDomainVar isOffline = new BoolVarNot2(core, "offline(" + n.getName() + ")", action.getState());
+	         	IntDomainVar isOffline = new BoolVarNot(core, "offline(" + n.getName() + ")", action.getState());
 	         	core.post(new FastImpliesEq(isOffline, capacities[i], 0));
 	        }
 	    }
