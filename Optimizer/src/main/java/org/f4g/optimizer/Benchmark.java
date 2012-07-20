@@ -238,7 +238,7 @@ public class Benchmark {
 
         OptimizerEngineCloudTraditional optimizer = new OptimizerEngineCloudTraditional(new MockController(st), powerCalculator, new NetworkCost(), CloudTradCS.CLOUD, sla);
     	
-        optimizer.setSearchTimeLimit(10);
+        optimizer.setSearchTimeLimit(60);
 
         long start = System.currentTimeMillis();
 
