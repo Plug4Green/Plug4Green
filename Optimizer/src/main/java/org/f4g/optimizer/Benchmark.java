@@ -230,6 +230,10 @@ public class Benchmark {
         ModelGenerator modelGenerator = new ModelGenerator();
         FIT4GreenType model = modelGenerator.getModel(pathName);
 
+        for(ServerType server : Utils.getAllServers(model)) {
+        	sla.getCluster().getCluster().get(0).getNodeController().getNodeName().add(server.getFrameworkID());
+        }       
+
         BenchmarkStatistics st = new BenchmarkStatistics(pathName);
 
         OptimizerEngineCloudTraditional optimizer = new OptimizerEngineCloudTraditional(new MockController(st), powerCalculator, new NetworkCost(), CloudTradCS.CLOUD, sla);

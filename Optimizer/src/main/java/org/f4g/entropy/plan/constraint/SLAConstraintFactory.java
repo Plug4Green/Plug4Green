@@ -73,6 +73,7 @@ public class SLAConstraintFactory {
 		clusters = myClusters;
 		log = Logger.getLogger(this.getClass().getName());
 		this.sg = sg;
+		log.debug("minPriority=" + minPriority);
 		
 	}
 
@@ -97,8 +98,7 @@ public class SLAConstraintFactory {
 				ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
 				for (Node node : nodes) {
 					try {
-						ManagedElementSet<VirtualMachine> vm = src
-								.getRunnings(node);
+						ManagedElementSet<VirtualMachine> vm = src.getRunnings(node);
 						vms.addAll(vm);
 					} catch (Exception e) {
 					}
@@ -192,7 +192,7 @@ public class SLAConstraintFactory {
 		}
 
 		try {
-			// Maximum vCPU per core (CPU overbooking on server level)
+			// Maximum vCPU per core
 			if (type.getMaxVirtualCPUPerCore() != null) {
 				if (type.getMaxVirtualCPUPerCore().getPriority() >= minPriority) {
 					if (vms.size() != 0) {
