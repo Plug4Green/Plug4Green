@@ -47,7 +47,7 @@ public class Benchmark {
 
     private static PowerCalculator powerCalculator = new PowerCalculator();
 
-    public static void generateConfiguration(int nbServers, String path, String prefix) {
+    public static boolean generateConfiguration(int nbServers, String path, String prefix) {
 
         int NbVMsperServer = 6;
         int NBVMsTotal = nbServers * NbVMsperServer;
@@ -190,10 +190,11 @@ public class Benchmark {
         ManagedElementSet<Node> ns = Configurations.currentlyOverloadedNodes(cfg);
         if (!ns.isEmpty()) {
             log.error("Error: Generated configuration is not viable. Currently overloaded: " + ns);
-            System.exit(1);
+            return false;
         }
         Recorder recorder = new Recorder(true, path, prefix);
         recorder.recordModel(model);
+        return true;
     }
 
     //run all configurations in a directory
@@ -309,9 +310,11 @@ public class Benchmark {
                 int nbServers = Integer.parseInt(args[2]);
                 String output = args[4];
                 log.info("Generating " + nbInstances + " models into '" + output + "'");
-                for (int i = 0; i < nbInstances; i++) {
+                for (int i = 1; i <= nbInstances;) {
                     log.info("Generate model " + i + "/" + nbInstances);
-                    generateConfiguration(nbServers, output, prefix);
+                    if (generateConfiguration(nbServers, output, prefix)) {
+                        i++;
+                    }
                 }
             } else {
                 usage(1);
