@@ -199,7 +199,7 @@ public class Benchmark {
     }
 
     //run all configurations in a directory
-    static List<BenchmarkStatistics> runConfigurations(SLAReader sla, String pathName) {
+    static List<BenchmarkStatistics> runConfigurations(SLAReader sla, String pathName, int timeout) {
         List<BenchmarkStatistics> stats = new LinkedList<BenchmarkStatistics>();
 
         String fileName;
@@ -211,7 +211,7 @@ public class Benchmark {
             if (f.isFile()) {
                 fileName = f.getName();
                 if (fileName.endsWith(".xml")) {
-                    BenchmarkStatistics st = runConfiguration(sla, pathName + File.separator + fileName);
+                    BenchmarkStatistics st = runConfiguration(sla, pathName + File.separator + fileName, timeout);
                     stats.add(st);
                     break;
                 }
@@ -224,7 +224,7 @@ public class Benchmark {
     }
 
     //run a configuration file
-    static BenchmarkStatistics runConfiguration(SLAReader sla, String pathName) {
+    static BenchmarkStatistics runConfiguration(SLAReader sla, String pathName, int timeout) {
         ChocoLogging.setVerbosity(Verbosity.SEARCH);
         ChocoLogging.setLoggingMaxDepth(200);
         ModelGenerator modelGenerator = new ModelGenerator();
@@ -238,7 +238,7 @@ public class Benchmark {
 
         OptimizerEngineCloudTraditional optimizer = new OptimizerEngineCloudTraditional(new MockController(st), powerCalculator, new NetworkCost(), CloudTradCS.CLOUD, sla);
     	
-        optimizer.setSearchTimeLimit(60);
+        optimizer.setSearchTimeLimit(timeout);
 
         long start = System.currentTimeMillis();
 
@@ -292,7 +292,7 @@ public class Benchmark {
     private static void usage(int ret) {
         System.out.println("Usage: Benchmark -gen <number of instances> <number of servers> -sla <sla> -o <folder> [-p <prefix>]");
         System.out.println("Generate <number of instances> of data centres having <number of servers> each. Output files are stored in <folder>, with a optional <prefix> ");
-        System.out.println("\nUsage: Benchmark -run <name> -sla <sla> [-o output]");
+        System.out.println("\nUsage: Benchmark -run <name> -sla <sla> -t <timeout> [-o output]");
         System.out.println("If '<name>' is an instance, compute a solution and print it on stdout. If '<name>' is a folder, run every instances.");
         System.exit(ret);
     }
@@ -335,7 +335,7 @@ public class Benchmark {
                 usage(1);
             }
         } else if (args[0].equals("-run")) {
-            if (args.length < 4) {
+            if (args.length < 6) {
                 usage(1);
             } else {
 
@@ -345,20 +345,22 @@ public class Benchmark {
                     log.error(e.getMessage());
                     System.exit(1);
                 }
+
+                int timeout = Integer.parseInt(args[5]);
                 File f = new File(args[1]);
                 List<BenchmarkStatistics> stats = new LinkedList<BenchmarkStatistics>();
                 if (f.isDirectory()) {
-                    stats.addAll(runConfigurations(sla, args[1]));
+                    stats.addAll(runConfigurations(sla, args[1], timeout));
                 } else {
-                    BenchmarkStatistics st = runConfiguration(sla, args[1]);
+                    BenchmarkStatistics st = runConfiguration(sla, args[1], timeout);
                     stats.add(st);
                 }
 
 
-                if (args.length == 6 && args[4].equals("-o")) {
+                if (args.length == 8 && args[6].equals("-o")) {
                     PrintWriter out = null;
                     try {
-                        out = new PrintWriter(args[5]);
+                        out = new PrintWriter(args[7]);
                     for (BenchmarkStatistics st : stats) {
                         out.println(st.toRaw());
                     }

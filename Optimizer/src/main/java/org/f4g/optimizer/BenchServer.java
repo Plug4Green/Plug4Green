@@ -5,6 +5,7 @@ import entropy.jobsManager.Job;
 import entropy.jobsManager.JobDispatcher;
 import org.apache.log4j.Logger;
 import org.f4g.optimizer.CloudTraditional.SLAReader;
+import org.omg.CORBA.TIMEOUT;
 
 import java.io.*;
 import java.util.concurrent.BlockingQueue;
@@ -20,15 +21,20 @@ public class BenchServer implements CommitedJobHandler {
 
     private String output;
 
+    private int timeout;
+
     public static final String SLA_KEY = "SLA";
 
     public static final String MODEL_KEY = "model";
 
+    public static final String TIMEOUT_KEY = "timeout";
+
     public static final String RESULT_KEY = "result";
 
-    public BenchServer(String input, String sla, String output, int port) {
+    public BenchServer(String input, String sla, String output, int timeout, int port) {
         dispatcher = new JobDispatcher(port, System.getProperty("user.dir"), this);
         this.output = output;
+        this.timeout = timeout;
 
         fillServer(input, sla);
     }
@@ -43,6 +49,7 @@ public class BenchServer implements CommitedJobHandler {
                 Job j = new Job(id);
                 j.put(SLA_KEY, new File(sla).getPath());
                 j.put(MODEL_KEY, i.getPath());
+                j.put(TIMEOUT_KEY, Integer.toString(timeout));
                 dispatcher.enqueue(j);
                 id++;
             }
@@ -66,23 +73,24 @@ public class BenchServer implements CommitedJobHandler {
     }
 
     public static void main(String [] args) {
-        if (args.length != 8) {
+        if (args.length != 10) {
             usage(0);
         }
-        int port = Integer.parseInt(args[7]);
+        int port = Integer.parseInt(args[9]);
         String input = args[1];
         String sla = args[3];
-
+        int timeout = Integer.parseInt(args[7]);
 
         String output = args[5];
-        BenchServer srv = new BenchServer(input, sla, output, port);
+        BenchServer srv = new BenchServer(input, sla, output, timeout, port);
         srv.start();
     }
 
 
     public static void usage(int err) {
-        System.out.println("Usage: BenchServer -i <folder> -sla <sla> -o <output> -p <port>");
+        System.out.println("Usage: BenchServer -i <folder> -sla <sla> -o <output> -t <timeout> -p <port>");
         System.out.println("Get the instances in <folder> and the sla in <sla> and listen for clients on port <port>");
+        System.out.println("The timeout value to compute a solution is limited to <timeout> seconds");
         System.out.println("Results will be stored in file <output>");
         System.exit(err);
     }

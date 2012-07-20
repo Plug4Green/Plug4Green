@@ -44,8 +44,8 @@ public class BenchClient {
                 File f = storeResource(client, j.get(BenchServer.SLA_KEY), root);
                 sla = new SLAReader(f);
             }
-
-            BenchmarkStatistics st = Benchmark.runConfiguration(sla, model.getPath());
+            int timeout = Integer.parseInt(j.get(BenchServer.TIMEOUT_KEY));
+            BenchmarkStatistics st = Benchmark.runConfiguration(sla, model.getPath(), timeout);
 
             j.put(BenchServer.RESULT_KEY, st.toRaw());
             client.commit(j);
