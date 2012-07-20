@@ -75,7 +75,7 @@ public class SpareCPUs implements PlacementConstraint {
 				core.post(core.eq(spareCPU[i], Chocos.mult(core, a.getState(), tmpSpare)));
 			}
 		}
-		core.post(core.leq(minSpareCPU, sum(spareCPU)));		
+		core.post(core.leq(minSpareCPU, sum(spareCPU)));
     }
 
     //get the variables denoting the number of virtual CPUs on each servers

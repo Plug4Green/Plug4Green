@@ -161,7 +161,7 @@ public class F4GMemoryOverbookingConstraint extends F4GConstraint {
 	    			               
 	        } else if (!core.getFutureOnlines().contains(n)){ //the server state is managed by Entropy
 	        	ManageableNodeActionModel action = (ManageableNodeActionModel) core.getAssociatedAction(n);
-	         	IntDomainVar isOffline = new BoolVarNot(core, "offline(" + n.getName() + ")", (BooleanVarImpl)action.getState());
+	         	IntDomainVar isOffline = new BoolVarNot(core, "offline(" + n.getName() + ")", action.getState());
 	         	core.post(new FastImpliesEq(isOffline, capacities[i], 0));
 	        }
 	    }

@@ -16,11 +16,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import choco.cp.solver.variables.integer.BoolVarNot;
 import org.f4g.schema.metamodel.FIT4GreenType;
 
 import choco.cp.solver.constraints.reified.FastIFFEq;
 import choco.cp.solver.constraints.reified.FastImpliesEq;
-import choco.cp.solver.variables.integer.BoolVarNot2;
+import choco.cp.solver.variables.integer.BoolVarNot;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
@@ -173,7 +174,7 @@ public class F4GVirtualLoadPerCoreConstraint extends F4GConstraint {
 																// Entropy
 				ManageableNodeActionModel action = (ManageableNodeActionModel) core
 						.getAssociatedAction(n);
-				IntDomainVar isOffline = new BoolVarNot2(core, "offline("
+				IntDomainVar isOffline = new BoolVarNot(core, "offline("
 						+ n.getName() + ")", action.getState());
 				core.post(new FastImpliesEq(isOffline, capacities[i], 0));
 			}

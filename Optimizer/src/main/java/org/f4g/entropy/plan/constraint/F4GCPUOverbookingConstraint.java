@@ -154,7 +154,7 @@ public class F4GCPUOverbookingConstraint extends F4GConstraint {
 	    
 	    //Each VM must be packed within each CPU capacity  
 	    //Try SimpleBinPacking first, then FastBinPacking as I'm not sure this last one works...
-		core.post(new FastBinPacking(core.getEnvironment(), capacities, demands, myAssigns));
+	    core.post(new FastBinPacking(core.getEnvironment(), capacities, demands, myAssigns));
 		
 	}
 
