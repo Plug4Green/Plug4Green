@@ -1,5 +1,7 @@
 package org.f4g.optimizer;
 
+import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.common.logging.Verbosity;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
@@ -212,6 +214,7 @@ public class Benchmark {
                 if (fileName.endsWith(".xml")) {
                     BenchmarkStatistics st = runConfiguration(pathName + File.separator + fileName);
                     stats.add(st);
+                    break;
                 }
             }
         }
@@ -223,7 +226,8 @@ public class Benchmark {
 
     //run a configuration file
     static BenchmarkStatistics runConfiguration(String pathName) {
-
+        ChocoLogging.setVerbosity(Verbosity.SEARCH);
+        ChocoLogging.setLoggingMaxDepth(200);
         ModelGenerator modelGenerator = new ModelGenerator();
         FIT4GreenType model = modelGenerator.getModel(pathName);
 

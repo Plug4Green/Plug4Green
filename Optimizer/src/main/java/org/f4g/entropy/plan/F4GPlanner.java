@@ -178,7 +178,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    //The elements
         log.debug(run.size() + wait.size() + sleep.size() + stop.size() + " VMs: " +
 	            run.size() + " will run; " + wait.size() + " will wait; " + sleep.size() + " will sleep; " + stop.size() + " will be stopped");
-        log.debug(on.size() + off.size() + " nodes: " + on.size() + " to run; " + off.size() + " to halt");
+        log.debug(src.getAllNodes().size() + " nodes: " + on.size() + " must be on, " + off.size() + " must be off. " + (src.getAllNodes().size() - on.size() - off.size()) + " manageable");
         log.debug("Manage " + vms.size() + " VMs (" + (repair ? "repair" : "rebuild") + ")");
         log.debug("Timeout is " + getTimeLimit() + " seconds");
 	
