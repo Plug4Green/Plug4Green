@@ -96,10 +96,10 @@ public class OptimizerNetworkTest extends OptimizerTest {
         String s2 = (String) allSwitches.get(1).getNetworkPort().get(3).getNetworkPortRef();    // node connected to switch1's port 2
         String s3 = (String) allSwitches.get(1).getNetworkPort().get(4).getNetworkPortRef();    // node connected to switch1's port 2
         assertEquals(n2, "id1000000");               // should be switch0
-        assertEquals(s0, "id0");               // should be server0
-        assertEquals(s1, "id100000");          // should be server1
-        assertEquals(s2, "id200000");          // should be server2
-        assertEquals(s3, "id300000");          // should be server3
+        assertEquals(s0, "id100000");               // should be server0
+        assertEquals(s1, "id200000");          // should be server1
+        assertEquals(s2, "id300000");          // should be server2
+        assertEquals(s3, "id400000");          // should be server3
         
     
         // verify who is connected to switch2
