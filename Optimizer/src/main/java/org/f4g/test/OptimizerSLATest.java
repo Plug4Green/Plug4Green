@@ -17,6 +17,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.common.logging.Verbosity;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.optimizer.ICostEstimator;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
@@ -1463,7 +1465,6 @@ public class OptimizerSLATest extends OptimizerTest {
 	}
 	
 	public void testDelayBetweenMoveGlobal() {
-
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(4);
@@ -1480,7 +1481,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		
 		VMTypeType.VMType type1 = new VMTypeType.VMType();
 		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(0), new StorageCapacityType(1)));
+		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
 		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(10), new MemoryUsageType(1), new IoRateType(0), new NetworkUsageType(0)));
 		VMs.getVMType().add(type1);
 				

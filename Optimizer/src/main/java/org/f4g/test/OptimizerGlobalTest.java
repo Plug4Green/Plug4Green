@@ -1080,7 +1080,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		//generate one VM per server
 		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(2000); //Was 50
+		modelGenerator.setNB_SERVERS(50); //Was 50
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);//Was 1
 		modelGenerator.setRAM_SIZE(800); //was 8000
 		//servers settings
