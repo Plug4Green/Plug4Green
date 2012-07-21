@@ -379,7 +379,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	 * @author cdupont
 	 */
 	public void testGlobalConstraintOnMemory() {
-		
+        //ChocoLogging.setVerbosity(Verbosity.SEARCH);
 		//generate one VM per server
 		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -392,11 +392,11 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setRAM_SIZE(2);
 	
 		//VM settings
-		modelGenerator.setCPU_USAGE(0.0); 
+		modelGenerator.setCPU_USAGE(1.0);
 		modelGenerator.setNB_CPU(1);
 		modelGenerator.setNETWORK_USAGE(0);
 		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(0); 
+		modelGenerator.setMEMORY_USAGE(1);
 		modelGenerator.VM_TYPE = "RAM_constraint";
 		
 		VMTypeType.VMType type1 = new VMTypeType.VMType();
@@ -409,10 +409,10 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		FIT4GreenType modelManyServersNoLoad = modelGenerator.createPopulatedFIT4GreenType();				
 	
 		optimizer.runGlobalOptimization(modelManyServersNoLoad);
+        optimizer.setSearchTimeLimit(180);
 		try {
 			actionRequestAvailable.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

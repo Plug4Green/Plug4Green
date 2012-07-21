@@ -13,6 +13,8 @@
 package org.f4g.test;
 
 
+import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.common.logging.Verbosity;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
@@ -238,7 +240,6 @@ public class IntegrationTest extends OptimizerTest {
      * test global optimization with real power calculator
      */
     public void testGlobal() {
-
         //generate one VM per server
         //VMs ressource usage is 0
         ModelGenerator modelGenerator = new ModelGenerator();
