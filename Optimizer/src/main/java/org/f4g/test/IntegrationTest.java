@@ -251,6 +251,7 @@ public class IntegrationTest extends OptimizerTest {
         modelGenerator.setCPU(1);
         modelGenerator.setCORE(4);
         modelGenerator.setRAM_SIZE(100);
+        modelGenerator.CPU_VOLTAGE = 2;
 
         modelGenerator.setVM_TYPE("small");
 
@@ -278,7 +279,7 @@ public class IntegrationTest extends OptimizerTest {
 
         //TEST 1
 
-        //Create a new optimizer with the special power calculator
+        //Create a new optimizer with the power calculator
         OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new PowerCalculator(), new NetworkCost(),
                 vmTypes, vmMargins, makeSimpleFed(vmMargins, model));
 
@@ -314,14 +315,8 @@ public class IntegrationTest extends OptimizerTest {
 
         List<ServerType> servers = Utils.getAllServers(model);
 
-        //add a supplementary core to S0
-        CoreType core = new CoreType();
-        core.setFrequency(new FrequencyType(1));
-        core.setCoreLoad(new CoreLoadType(0.1));
-        core.setVoltage(new VoltageType(1.0));
-        core.setLastPstate(new NrOfPstatesType(0));
-        core.setTotalPstates(new NrOfPstatesType(0));
-        servers.get(0).getMainboard().get(0).getCPU().get(0).getCore().add(core);
+        //server 0 has less power usage
+        servers.get(0).getMainboard().get(0).getCPU().get(0).getCore().get(0).setFrequency(new FrequencyType(0.5));
 
         MyOptimizer.runGlobalOptimization(model);
         try {
@@ -347,8 +342,7 @@ public class IntegrationTest extends OptimizerTest {
         log.debug("powerOffs=" + powerOffs.size());
 
         // going to the low power server
-        assertEquals(moves.get(0).getSourceNodeController(), "id0");
-        //assertEquals(moves.get(1).getDestNodeController(), "id100000");
+        assertEquals(moves.get(0).getSourceNodeController(), "id100000");
 
     }
 

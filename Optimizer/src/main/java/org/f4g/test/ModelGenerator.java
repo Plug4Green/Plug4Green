@@ -55,6 +55,7 @@ public class ModelGenerator {
 	
 	
 	
+	
 	//bounds to construct a server
 	public int MIN_CPU = 1;
 	public int MAX_CPU = 1;
@@ -74,6 +75,7 @@ public class ModelGenerator {
 	public int MIN_FAN = 2;
 	public int MAX_FAN = 2;
 	public boolean DVFS = true;
+	public int CPU_VOLTAGE = 1;
 	
 	public double MIN_SERVER_POWER_IDLE = 50.0;
 	public double MAX_SERVER_POWER_IDLE = 50.0;
@@ -515,11 +517,12 @@ public class ModelGenerator {
 			CPU.setTransistorNumber(new NrOfTransistorsType(NUMBER_OF_TRANSISTORS));
 			CPU.setDVFS(true);
 			
+			
 			for (int j=0; j< nbCorePerCPU; j++ ){
 				CoreType core = new CoreType();
 				core.setFrequency(new FrequencyType(CPUfrequency));
 				core.setCoreLoad(new CoreLoadType(0.1));
-				core.setVoltage(new VoltageType(1.0));
+				core.setVoltage(new VoltageType(CPU_VOLTAGE));
 				core.setLastPstate(new NrOfPstatesType(0));
 				core.setTotalPstates(new NrOfPstatesType(0));
 				CPU.getCore().add(core);
@@ -811,13 +814,16 @@ public class ModelGenerator {
 	public FIT4GreenType getModel(String modelPathName) {
 		
 		InputStream isModel = null;
-		try {
-			isModel = new FileInputStream(modelPathName);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if((new File(modelPathName)).exists()) {
+			try {
+				isModel = new FileInputStream(modelPathName);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		} else {
+			isModel = this.getClass().getClassLoader().getResourceAsStream(modelPathName);
 		}
-		
+			
 		log.debug("modelPathName: " + modelPathName + ", isModel: " + isModel);
 		
 		JAXBElement<?> poElement = null;

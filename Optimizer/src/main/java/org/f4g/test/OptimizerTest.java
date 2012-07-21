@@ -403,7 +403,7 @@ public class OptimizerTest extends TestCase {
 	protected ClusterType createDefaultCluster(int NumberOfNodes, SLAType.SLA sla, PolicyType policy) {
 	
 		List<String> nodeName = new ArrayList<String>();
-		for(int i=0; i<NumberOfNodes; i++){
+		for(int i=1; i<=NumberOfNodes; i++){
 			nodeName.add("id" + i*100000 );	
 		}		
 		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();

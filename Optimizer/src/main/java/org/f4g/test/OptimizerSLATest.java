@@ -1073,7 +1073,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", 300, 6));
+				begin, end, null, null, new LoadType("m1.small", 0, 6));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);

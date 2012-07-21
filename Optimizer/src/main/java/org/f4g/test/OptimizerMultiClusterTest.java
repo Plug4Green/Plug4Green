@@ -82,7 +82,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		load.add(new LoadType("m1.small", 300, 6));
 
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", 300, 6));
+				begin, end, null, null, new LoadType("m1.small", 0, 6));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -432,7 +432,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	}
 	
 	/**
-	 * Test global optimization with one VM per servers and no load
+	 * Test global optimization with 2 DC and migrations between allowed
 	 *
 	 * @author cdupont
 	 */
@@ -460,6 +460,8 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();				
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		
+		//optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).get
+		optimizer.setSearchTimeLimit(30);
 		optimizer.runGlobalOptimization(model);
 		try {
 			actionRequestAvailable.acquire();
@@ -500,7 +502,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 
 
 	/**
-	 * Test global optimization with one VM per servers and no load
+	 * Test global optimization with 2 DC and migrations between allowed
 	 *
 	 * @author cdupont
 	 */
@@ -615,7 +617,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	
 		assertTrue(moves.size()==1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(moves.get(0).getDestNodeController(),"id0");
+		assertEquals(moves.get(0).getDestNodeController(),"id1000000");
 		
 		//TEST 2
 		
@@ -836,7 +838,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	
 		assertTrue(moves.size()==1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(moves.get(0).getDestNodeController(),"id0");
+		assertEquals(moves.get(0).getDestNodeController(),"id1000000");
 		
 	}
 	
@@ -1007,7 +1009,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		VMAllocResponse2 = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on second cluster		
-		assertEquals(VMAllocResponse2.getNodeId(),"id400000");
+		assertEquals(VMAllocResponse2.getNodeId(),"id500000");
 		assertEquals(VMAllocResponse2.getClusterId(),"c2");
 			
 	}
@@ -1064,17 +1066,17 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 		
 		List<String> nodeName = new ArrayList<String>();
-		nodeName.add("id0");
 		nodeName.add("id100000");
 		nodeName.add("id200000");
 		nodeName.add("id300000");
+		nodeName.add("id400000");
 		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
 		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc1"));
 		nodeName = new ArrayList<String>();
-		nodeName.add("id400000");
 		nodeName.add("id500000");
 		nodeName.add("id600000");
 		nodeName.add("id700000");
+		nodeName.add("id800000");
 		cluster.add(new Cluster("c2", new NodeControllerType(nodeName) , bSlas2, bPolicies, "idc2"));
 		ClusterType clusters = new ClusterType(cluster);
 			

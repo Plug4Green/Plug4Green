@@ -218,21 +218,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    
 	    //Add the F4G heuristics
 	    new F4GPlacementHeuristic().add(this);
-	    
-//	    ManagedElementSet<Node> nodes = src.getAllNodes();
-//	    IntDomainVar[] PIdleServer = new IntDomainVar[nodes.size()];
-//        for (int i = 1; i < 3; i++) {
-//            PIdleServer[i] = model.createEnumIntVar("IdlePowerServer" + i, new int[]{0, 10}); 
-//            ManageableNodeActionModel action = (ManageableNodeActionModel) model.getAssociatedAction(nodes.get(i));
-//            model.post(new FastIFFEq(action.getState(), PIdleServer[i], 10)); 
-//            logger.debug("action name:" + action.getState().getName());
-//        }
-//            
-//        
-//        List<DemandingSlice> myDSlices = ActionModels.extractDemandingSlices(model.getAssociatedActions(src.getAllVirtualMachines()));
-//        IntDomainVar[] myAssigns = Slices.extractHosters(myDSlices);
-//        model.addGoal(new AssignVar(new StaticVarOrder(model, myAssigns), new MinVal()));
-        
+	           
 	    //other goals (inverse?)
 	    model.addGoal(((DefaultReconfigurationProblem)model).generateDefaultIntGoal());
 	    model.addGoal(((DefaultReconfigurationProblem)model).generateSetDefaultGoal());
