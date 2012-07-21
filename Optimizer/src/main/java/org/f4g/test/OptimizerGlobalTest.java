@@ -392,7 +392,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setRAM_SIZE(2);
 	
 		//VM settings
-		modelGenerator.setCPU_USAGE(1.0);
+		modelGenerator.setCPU_USAGE(2.0);
 		modelGenerator.setNB_CPU(1);
 		modelGenerator.setNETWORK_USAGE(0);
 		modelGenerator.setSTORAGE_USAGE(0);
