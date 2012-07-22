@@ -10,6 +10,7 @@ import java.util.Comparator;
 
 import java.util.List;
 
+import choco.kernel.common.logging.ChocoLogging;
 import choco.kernel.common.util.iterators.DisposableIntIterator;
 import entropy.configuration.*;
 

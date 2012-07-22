@@ -5,6 +5,8 @@ import choco.kernel.common.logging.ChocoLogging;
 import choco.kernel.common.logging.Verbosity;
 import choco.kernel.solver.constraints.SConstraint;
 import choco.kernel.solver.constraints.integer.IntExp;
+import choco.kernel.solver.search.ISolutionPool;
+import choco.kernel.solver.search.SolutionPoolFactory;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.*;
 import entropy.plan.*;
@@ -215,7 +217,8 @@ public class F4GPlanner extends CustomizablePlannerModule {
         if (getTimeLimit() > 0) {
 	        model.setTimeLimit(getTimeLimit()* 1000); // Conversion into seconds
         }
-	    
+
+        //model.clearGoals();
 	    //Add the F4G heuristics
 	    new F4GPlacementHeuristic().add(this);
 	           
@@ -223,14 +226,16 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    model.addGoal(((DefaultReconfigurationProblem)model).generateDefaultIntGoal());
 	    model.addGoal(((DefaultReconfigurationProblem)model).generateSetDefaultGoal());
 
-	    log.debug(generationTime + "ms to build the solver, " + model.getNbIntConstraints() + " constraints, " + model.getNbIntVars() + " integer variables, " + model.getNbBooleanVars() + " boolean variables, " + model.getNbConstants() + " constantes");
+	    log.debug(generationTime + "ms to build the solver, " + model.getNbIntConstraints() + " constraints, " + model.getNbIntVars() + " integer variables, " + model.getNbBooleanVars() + " boolean variables, " + model.getNbConstants() + " constants");
 
 	    //Launch the solver
-        if (optimize) {
-	        model.minimize(true);
-        } else {
-            model.solve();
-        }
+        model.setDoMaximize(false);
+        model.setFirstSolution(!optimize);
+        model.generateSearchStrategy();
+        ISolutionPool sp = SolutionPoolFactory.makeInfiniteSolutionPool(model.getSearchStrategy());
+        model.getSearchStrategy().setSolutionPool(sp);
+        model.launch();
+
 	    Boolean ret = model.isFeasible();
 	    if (ret == null) {
 	        throw new PlanException("Unable to check wether a solution exists or not");

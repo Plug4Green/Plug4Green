@@ -45,7 +45,7 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
     public void add(F4GPlanner plan) {
     	ReconfigurationProblem rp = plan.getModel();
         Configuration src = rp.getSourceConfiguration();
-
+        rp.clearGoals();
         //Get the VMs to move
         ManagedElementSet<VirtualMachine> onBadNodes = new SimpleManagedElementSet<VirtualMachine>();
         ManagedElementSet<VirtualMachine> onGoodNodes = src.getRunnings().clone();

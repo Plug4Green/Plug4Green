@@ -108,7 +108,6 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 * Test allocation success
 	 */
 	public void testAllocationSuccess() {
-        ChocoLogging.setVerbosity(Verbosity.SEARCH);
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(10);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);

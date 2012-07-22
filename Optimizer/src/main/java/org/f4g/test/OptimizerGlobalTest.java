@@ -121,8 +121,6 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	 */
     @Test
 	public void testGlobalConstraintOnCPUUsage(){
-
-        ChocoLogging.setVerbosity(Verbosity.SOLUTION);
 		//generate one VM per server
 		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -769,7 +767,6 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	 * There is too few ON servers, issuing powers ON
 	 */
 	public void testGlobalTooFewServers() {
-		
 		//generate one VM per server
 		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -1076,7 +1073,6 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	 */
     @Test
 	public void testGlobalChargedTraditional(){
-        ChocoLogging.setVerbosity(Verbosity.SOLUTION);
 		//generate one VM per server
 		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
