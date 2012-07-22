@@ -224,7 +224,7 @@ public class Benchmark {
 
     //run a configuration file
     static BenchmarkStatistics runConfiguration(SLAReader sla, String pathName, int timeout) {
-        ChocoLogging.setVerbosity(Verbosity.SEARCH);
+        ChocoLogging.setVerbosity(Verbosity.SOLUTION);
         ChocoLogging.setLoggingMaxDepth(200);
         ModelGenerator modelGenerator = new ModelGenerator();
         FIT4GreenType model = modelGenerator.getModel(pathName);

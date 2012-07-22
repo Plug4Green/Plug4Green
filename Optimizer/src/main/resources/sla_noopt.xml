@@ -110,11 +110,13 @@
   <ListOfSLA>
     <SLA id="ID11">
       <HardwareMetrics/>
-      <CommonQoSRelatedMetrics>
+      <CommonQoSRelatedMetrics/>
+
+      <!--<CommonQoSRelatedMetrics>
         <MaxVirtualCPUPerCore>1.2</MaxVirtualCPUPerCore>
         <Max_vRAMperPhyRAM>1</Max_vRAMperPhyRAM>
         <MaxVMperServer>15</MaxVMperServer>
-      </CommonQoSRelatedMetrics>
+      </CommonQoSRelatedMetrics>       -->
       <AdditionalMetrics/>
     </SLA>
   </ListOfSLA>
