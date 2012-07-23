@@ -39,6 +39,7 @@ public class Optimizer implements IOptimizer{
 	IController controller = null;
 	IPowerCalculator powerCalculator = null;
 
+
 	//the three engines for each computing styles are held here
 	private Map<DCComputingStyleType, OptimizerEngine> engines;
 
@@ -153,4 +154,13 @@ public class Optimizer implements IOptimizer{
 		//optimizer is pure: nothing to do.
 		return true;
 	}		
+	
+
+	public IPowerCalculator getPowerCalculator() {
+		return powerCalculator;
+	}
+
+	public void setPowerCalculator(IPowerCalculator powerCalculator) {
+		this.powerCalculator = powerCalculator;
+	}
 }
