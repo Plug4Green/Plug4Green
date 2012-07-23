@@ -764,11 +764,23 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	}
 
 	/**
-	 * There is too few ON servers, issuing powers ON
+	 * There is too few ON servers, issuing powers ON on the most energy efficient server
 	 */
 	public void testGlobalTooFewServers() {
-		//generate one VM per server
-		//VMs ressource usage is 0
+		
+		//Create a Power Calculator that computes a more feeble power a server.
+		class MyPowerCalculator extends MockPowerCalculator {
+			public PowerData computePowerServer(ServerType server) {
+				PowerData power = new PowerData();
+				if(server.getFrameworkID().equals("id200000"))
+					power.setActualConsumption(8.0 + traverser.calculatePower(server).getActualConsumption());
+				else
+					power.setActualConsumption(10.0  + traverser.calculatePower(server).getActualConsumption());
+
+				return power;
+			}						
+		}
+		
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(4); //8
 		modelGenerator.setNB_VIRTUAL_MACHINES(4);
@@ -776,41 +788,13 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		//servers settings
 		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(4); //4 cores
-		
-		//VM settings
-		modelGenerator.setCPU_USAGE(0.0);
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setNETWORK_USAGE(0);
-		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(0);
-
-		FrameworkCapabilitiesType frameworkCapabilitie = new FrameworkCapabilitiesType();
-		frameworkCapabilitie.setFrameworkName("FM");
-						
+								
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 		
 		List<ServerType> servers = Utils.getAllServers(model.getSite().get(0).getDatacenter().get(0));
-			
 		servers.get(0).setStatus(ServerStatusType.OFF);
 		servers.get(1).setStatus(ServerStatusType.OFF);
-		
-		//add a supplementary core to S1 -> should be turned on
-		servers.get(1).getMainboard().get(0).getCPU().get(0).getCore().add(new CoreType());
-		
-		//add a supplementary core to S2 -> should get allocated
-		servers.get(2).getMainboard().get(0).getCPU().get(0).getCore().add(new CoreType());
-				
-		CloudVmAllocationType cloudAlloc = new CloudVmAllocationType();
-		cloudAlloc.setVmType("m1.small");
-		cloudAlloc.getClusterId().add("c1");
-		cloudAlloc.setImageId("i1");
-		cloudAlloc.setUserId("u1");
-		
-		//Simulates a CloudVmAllocationType operation
-		JAXBElement<CloudVmAllocationType>  operationType = (new ObjectFactory()).createCloudVmAllocation(cloudAlloc);
-	
-		AllocationRequestType allocationRequest = new AllocationRequestType();
-		allocationRequest.setRequest(operationType);
+					
 		
 		PeriodType period = new PeriodType(
 				begin, end, null, null, new LoadType("m1.small", 300, 6));
@@ -823,19 +807,12 @@ public class OptimizerGlobalTest extends OptimizerTest {
 
 		PolicyType myVmMargins = new PolicyType(polL);
 		myVmMargins.getPolicy().add(pol);
-		
-		VMTypeType vmTypes = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(0)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(50), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-		
-		OptimizerEngineCloudTraditional myOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				vmTypes, myVmMargins, makeSimpleFed(myVmMargins, model));
-		
-		myOptimizer.runGlobalOptimization(model);
+
+
+		optimizer.setPolicies(myVmMargins);
+		optimizer.setFederation(makeSimpleFed(myVmMargins, model));
+		optimizer.setPowerCalculator(new MyPowerCalculator());
+		optimizer.runGlobalOptimization(model);
 		try {
 			actionRequestAvailable.acquire();
 		} catch (InterruptedException e) {

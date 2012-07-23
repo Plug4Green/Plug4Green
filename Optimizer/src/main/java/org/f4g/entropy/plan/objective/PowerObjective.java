@@ -60,9 +60,10 @@ public class PowerObjective extends Objective {
 	int powerPerSwitch[];
     
     
-    int reconfTime = 10*60; // seconds
-    int EnergyOn = 1; //Joule
-    int EnergyOff = 1; //Joule
+    int reconfTime = 1000; // seconds (must be multiple of 1000s)
+    int EnergyOn = 1; //KJoule, sample value
+    int EnergyOff = 1; //KJoule, sample value
+    int EnergyMove = 1; //KJoule, sample value
 	private List<ServerType> allServers;
         
     /**
@@ -126,14 +127,14 @@ public class PowerObjective extends Objective {
     @Override
     public void makeObjective(ReconfigurationProblem m) {
         
-    	IntDomainVar reconfEnergy = m.createBoundIntVar("reconfEnergy", 0, Choco.MAX_UPPER_BOUND);
-    	IntDomainVar globalPower = m.createBoundIntVar("globalPower", 0, Choco.MAX_UPPER_BOUND);
-    	IntDomainVar stableEnergy = m.createBoundIntVar("stableEnergy", 0, Choco.MAX_UPPER_BOUND);
+    	IntDomainVar reconfEnergy = m.createBoundIntVar("reconfEnergy", 0, Choco.MAX_UPPER_BOUND); //In Watts
+    	IntDomainVar globalPower = m.createBoundIntVar("globalPower", 0, Choco.MAX_UPPER_BOUND); // in Watts
+    	IntDomainVar stableEnergy = m.createBoundIntVar("stableEnergy", 0, Choco.MAX_UPPER_BOUND); //in KJ
     	
     	//sum the power Idle, the power for the VMs and extra power for the network 
     	m.post(m.eq(m.sum(getPIdle(m), getPVMs(m), getPNetwork(m)), globalPower));
     		
-    	m.post(m.eq(mult(reconfTime, globalPower), stableEnergy)); 
+    	m.post(m.eq(mult((int)reconfTime/1000, globalPower), stableEnergy));
     	//this equation represents the energy spent between two reconfigurations (that we'll try to minimize).
         m.post(m.eq(m.sum(stableEnergy, getEMove(m), getEOnOff(m)), reconfEnergy));
      
@@ -236,13 +237,13 @@ public class PowerObjective extends Objective {
         ManagedElementSet<VirtualMachine> vms = m.getFutureRunnings();
         
         IntDomainVar moves[] = new IntDomainVar[vms.size()];
-
+        
         for (int i = 0; i < vms.size(); i++) {
         	
         	VirtualMachine vm = vms.get(i);
         	//A boolean variable to indicate whether the node is used or not
             moves[i] = m.createBooleanVar("moves(" + vm.getName() + ")");
-           
+                        
             Slice t = m.getAssociatedAction(vm).getDemandingSlice();
             if (t != null) {                    
                try {
@@ -262,7 +263,9 @@ public class PowerObjective extends Objective {
             }
         }
         
-        m.post(m.eq(m.sum(moves), EMove));
+        IntDomainVar NbMoves = m.createBoundIntVar("NbMoves",0, vms.size()); 
+        m.post(m.eq(m.sum(moves), NbMoves));        
+        m.post(m.eq(mult(EnergyMove, NbMoves), EMove));
         return EMove;               
     }
     

@@ -72,15 +72,19 @@ public abstract class OptimizerEngine implements Runnable  {
 	 */
 	protected IController controller = null;
 	
+
 	/**
 	 * access to power calculator
 	 */
 	protected IPowerCalculator powerCalculator = null;
 
+
+
 	/**
 	 * access to cost estimator
 	 */
 	protected ICostEstimator costEstimator = null;
+
 
 
 	/**
@@ -348,5 +352,47 @@ public abstract class OptimizerEngine implements Runnable  {
 		this.optiObjective = optiObjective;
 	}
 
+	/**
+	 *  get the controller
+	 */
+	public IController getController() {
+		return controller;
+	}
+
+
+	/**
+	 *  set the controller
+	 */
+	public void setController(IController controller) {
+		this.controller = controller;
+	}
+
+	/**
+	 *  get the power calculator
+	 */
+	public IPowerCalculator getPowerCalculator() {
+		return powerCalculator;
+	}
+
+	/**
+	 *  set the power calculator
+	 */
+	public void setPowerCalculator(IPowerCalculator powerCalculator) {
+		this.powerCalculator = powerCalculator;
+	}
+	
+	/**
+	 *  get the cost estimator
+	 */
+	public ICostEstimator getCostEstimator() {
+		return costEstimator;
+	}
+
+	/**
+	 *  set the cost estimator
+	 */
+	public void setCostEstimator(ICostEstimator costEstimator) {
+		this.costEstimator = costEstimator;
+	}
 
 }

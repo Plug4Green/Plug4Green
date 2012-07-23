@@ -72,63 +72,6 @@ public class EntropyTest extends TestCase {
 		
 	}
 
-
-//	public void testDuration() {
-//		ChocoLogging.setVerbosity(Verbosity.SEARCH);
-//		ManagedElementSet<Node> ns = new SimpleManagedElementSet<Node>();
-//		for (int i = 0; i < 3; i++) {
-//			Node n = new SimpleNode("N" + i, 2, 200, 100000);
-//			ns.add(n);
-//		}
-//
-//		ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
-//		for (int j = 0; j < ns.size(); j++) {
-//			VirtualMachine vm = new SimpleVirtualMachine("VM" + j, 2, 50, 1024);
-//			vms.add(vm);
-//		}
-//
-//		Configuration src = new SimpleConfiguration();
-//		for (Node n : ns) {
-//			src.addOnline(n);
-//		}
-//		src.setRunOn(vms.get(0), ns.get(0));
-//		src.setRunOn(vms.get(1), ns.get(1));
-//		src.setRunOn(vms.get(2), ns.get(2));
-//
-//		List<VJob> vjobs = new ArrayList<VJob>();
-//		VJob v = new DefaultVJob("v1");
-//		vjobs.add(v);
-//
-//		// ManagedElementSet<Node> ns = src.getAllNodes();
-//
-//		Fence f = new Fence(vms, new SimpleManagedElementSet<Node>(ns.get(1)));
-//		v.addConstraint(f);
-//		v.addConstraint(new NoIdleOnlineNodes(ns));
-//		try {
-//
-//			ChocoCustomRP planner = makeModule();
-//			planner
-//					.setPackingConstraintClass(new SatisfyDemandingSlicesHeightsFastBP());
-//			planner.setRepairMode(false);
-//
-//			TimedReconfigurationPlan p = planner.compute(src, src
-//					.getAllVirtualMachines(),
-//					new SimpleManagedElementSet<VirtualMachine>(), src
-//							.getSleepings(),
-//					new SimpleManagedElementSet<VirtualMachine>(),
-//					new SimpleManagedElementSet<Node>(),
-//					new SimpleManagedElementSet<Node>(), vjobs);
-//			System.err.println(p);
-//			assertEquals(p.getDuration(), 9);
-//		} catch (Exception e) {
-//			Assert.fail(e.getMessage());
-//		}
-//	}
-//
-//	private ChocoCustomRP makeModule() {
-//		return new ChocoCustomRP(new MockDurationEvaluator(2, 5, 1, 1, 7, 14,
-//				7, 2, 4));
-//	}
 	
 	  public void testOfflineOnOfflineNodes() {
 	        ManagedElementSet<Node> ns1 = new SimpleManagedElementSet<Node>();
