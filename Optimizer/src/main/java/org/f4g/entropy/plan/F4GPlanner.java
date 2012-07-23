@@ -224,7 +224,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	           
 	    //other goals
 	    model.addGoal(((DefaultReconfigurationProblem)model).generateDefaultIntGoal());
-	    model.addGoal(((DefaultReconfigurationProblem)model).generateSetDefaultGoal());
+	    //model.addGoal(((DefaultReconfigurationProblem)model).generateSetDefaultGoal());
 
 	    log.debug(generationTime + "ms to build the solver, " + model.getNbIntConstraints() + " constraints, " + model.getNbIntVars() + " integer variables, " + model.getNbBooleanVars() + " boolean variables, " + model.getNbConstants() + " constants");
 	    //Launch the solver

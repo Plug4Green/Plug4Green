@@ -9,6 +9,7 @@ import entropy.configuration.Configuration;
 import entropy.configuration.Configurations;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
+import entropy.plan.choco.constraint.sliceScheduling.LocalScheduler;
 import org.apache.log4j.Logger;
 import org.f4g.controller.IController;
 import org.f4g.cost_estimator.NetworkCost;
@@ -50,7 +51,7 @@ public class Benchmark {
 
     public static boolean generateConfiguration(final SLAReader sla, int nbServers, String path, String prefix) {
 
-        int NbVMsperServer = 1;
+        int NbVMsperServer = 6;
         int NBVMsTotal = nbServers * NbVMsperServer;
         int nbServers1 = nbServers / 2;
         int nbServers2 = (nbServers % 2 == 0 ? nbServers / 2 : nbServers / 2 + 1);
@@ -224,8 +225,9 @@ public class Benchmark {
 
     //run a configuration file
     static BenchmarkStatistics runConfiguration(SLAReader sla, String pathName, int timeout) {
-        ChocoLogging.setVerbosity(Verbosity.SEARCH);
-        ChocoLogging.setLoggingMaxDepth(200);
+        ChocoLogging.setVerbosity(Verbosity.FINEST);
+        ChocoLogging.setLoggingMaxDepth(2000);
+        LocalScheduler.DEBUG = 0;
         ModelGenerator modelGenerator = new ModelGenerator();
         FIT4GreenType model = modelGenerator.getModel(pathName);
 

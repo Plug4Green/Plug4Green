@@ -166,10 +166,7 @@ public class PowerObjective extends Objective {
             }
                      
         }
-        for (IntDomainVar v : PIdleServer) {
-            System.err.println(v.pretty());
-        }
-        m.post(m.eq(m.sum(PIdleServer), Pidle)); 
+        m.post(m.eq(m.sum(PIdleServer), Pidle));
         
         return Pidle;        
     }
