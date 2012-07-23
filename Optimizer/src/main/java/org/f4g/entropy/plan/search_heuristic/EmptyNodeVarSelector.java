@@ -45,7 +45,6 @@ public class EmptyNodeVarSelector extends AbstractIntVarSelector {
     //select the shutdown for idle nodes
     @Override
     public IntDomainVar selectVar() {
-    
 	    for(int i = 0; i < nodes.size(); i++) {
 	    	Node n = nodes.get(i);
 		   

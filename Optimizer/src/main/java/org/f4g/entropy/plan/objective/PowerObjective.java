@@ -1,6 +1,7 @@
 package org.f4g.entropy.plan.objective;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.HashMap;
 
@@ -8,6 +9,7 @@ import choco.cp.solver.variables.integer.BoolVarNot;
 
 import choco.cp.solver.variables.integer.BooleanVarImpl;
 
+import com.google.gwt.logging.client.SystemLogHandler;
 import org.f4g.entropy.configuration.F4GNode;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.power.IPowerCalculator;
@@ -163,6 +165,9 @@ public class PowerObjective extends Objective {
             }
                      
         }
+        for (IntDomainVar v : PIdleServer) {
+            System.err.println(v.pretty());
+        }
         m.post(m.eq(m.sum(PIdleServer), Pidle)); 
         
         return Pidle;        
@@ -293,14 +298,13 @@ public class PowerObjective extends Objective {
                 	//m.post(m.eq(EOnOffServer[i], mult(EnergyOn, action.getState()))); 
                 } else if (action instanceof ShutdownableNodeActionModel) {
                 	IntDomainVar isOffline = new BoolVarNot(m, "offline(" + n.getName() + ")", action.getState());
-                	m.post(new FastIFFEq(isOffline, EOnOffServer[i], EnergyOn)); 
+                	m.post(new FastIFFEq(isOffline, EOnOffServer[i], EnergyOff));
                 	//m.post(m.eq(EOnOffServer[i], mult(EnergyOff, isOffline))); 
                 }
             }                     
         }
-        m.post(m.eq(m.sum(EOnOffServer), EOnOff)); 
-        
-        return EOnOff;        
+        m.post(m.eq(m.sum(EOnOffServer), EOnOff));
+        return EOnOff;
     }         
     
 }

@@ -50,7 +50,7 @@ public class Benchmark {
 
     public static boolean generateConfiguration(final SLAReader sla, int nbServers, String path, String prefix) {
 
-        int NbVMsperServer = 6;
+        int NbVMsperServer = 1;
         int NBVMsTotal = nbServers * NbVMsperServer;
         int nbServers1 = nbServers / 2;
         int nbServers2 = (nbServers % 2 == 0 ? nbServers / 2 : nbServers / 2 + 1);
@@ -224,7 +224,7 @@ public class Benchmark {
 
     //run a configuration file
     static BenchmarkStatistics runConfiguration(SLAReader sla, String pathName, int timeout) {
-        ChocoLogging.setVerbosity(Verbosity.SOLUTION);
+        ChocoLogging.setVerbosity(Verbosity.SEARCH);
         ChocoLogging.setLoggingMaxDepth(200);
         ModelGenerator modelGenerator = new ModelGenerator();
         FIT4GreenType model = modelGenerator.getModel(pathName);

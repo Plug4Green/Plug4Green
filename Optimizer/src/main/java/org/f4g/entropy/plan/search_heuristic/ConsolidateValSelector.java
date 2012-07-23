@@ -91,6 +91,8 @@ public class ConsolidateValSelector implements ValSelector<IntDomainVar> {
 		int indexDest = nodes.indexOf(destNode);*/
 		//int indexDest = worstFitCPUOnlinesFirst(var);
 		int indexDest = worstFitCPULowPIdleFirst(var);
+
+        log.info(var.pretty() + " -> " + pb.getNode(indexDest).getName());
 		return indexDest;
     }
 

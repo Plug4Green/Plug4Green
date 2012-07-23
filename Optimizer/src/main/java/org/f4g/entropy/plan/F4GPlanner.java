@@ -18,6 +18,7 @@ import entropy.plan.choco.actionModel.VirtualMachineActionModel;
 import entropy.plan.choco.actionModel.slice.Slice;
 import entropy.plan.choco.constraint.pack.SatisfyDemandingSliceHeights;
 import entropy.plan.choco.constraint.pack.SatisfyDemandingSlicesHeightsFastBP;
+import entropy.plan.choco.constraint.pack.SatisfyDemandingSlicesHeightsSimpleBP;
 import entropy.plan.durationEvaluator.DurationEvaluationException;
 import entropy.plan.durationEvaluator.MockDurationEvaluator;
 import entropy.vjob.PlacementConstraint;
@@ -186,7 +187,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	            }
 	        }
 	    }
-	    
+
 	    log.debug("adding packing constraint");
         packingConstraintClass.add(model);
         new SlicesPlanner().add(model);
@@ -194,10 +195,9 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    /*
 	    * A pretty print of the problem
 	    */
-	    //The elements
-        log.debug(run.size() + wait.size() + sleep.size() + stop.size() + " VMs: " +
+        log.info(run.size() + wait.size() + sleep.size() + stop.size() + " VMs: " +
 	            run.size() + " will run; " + wait.size() + " will wait; " + sleep.size() + " will sleep; " + stop.size() + " will be stopped");
-        log.debug(src.getAllNodes().size() + " nodes: " + on.size() + " must be on, " + off.size() + " must be off. " + (src.getAllNodes().size() - on.size() - off.size()) + " manageable");
+        log.info(src.getAllNodes().size() + " nodes: " + on.size() + " must be on, " + off.size() + " must be off. " + (src.getAllNodes().size() - on.size() - off.size()) + " manageable");
         log.debug("Manage " + vms.size() + " VMs (" + (repair ? "repair" : "rebuild") + ")");
         log.debug("Timeout is " + getTimeLimit() + " seconds");
 	
@@ -227,7 +227,6 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    model.addGoal(((DefaultReconfigurationProblem)model).generateSetDefaultGoal());
 
 	    log.debug(generationTime + "ms to build the solver, " + model.getNbIntConstraints() + " constraints, " + model.getNbIntVars() + " integer variables, " + model.getNbBooleanVars() + " boolean variables, " + model.getNbConstants() + " constants");
-
 	    //Launch the solver
         model.setDoMaximize(false);
         model.setFirstSolution(!optimize);
@@ -252,9 +251,9 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	            TimedReconfigurationPlan plan = model.extractSolution();
 	            Configuration res = plan.getDestination();
 	            ManagedElementSet<VirtualMachine> resVms = res.getAllVirtualMachines();
-	            for(VirtualMachine vm: resVms) {
+/*	            for(VirtualMachine vm: resVms) {
 	            	System.out.println("VM " + vm.getName() + " running on: " + res.getLocation(vm));
-	            }
+	            }*/
 	            
 	            
 	            if (Configurations.futureOverloadedNodes(res).size() != 0) {
