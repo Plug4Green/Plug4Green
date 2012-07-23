@@ -127,7 +127,7 @@
         <Ends>2013-05-04T11:51:36Z</Ends>
         <Load>
           <VMnameRef>m1.xlarge</VMnameRef>
-          <lowVMSlotsThreshold>800</lowVMSlotsThreshold>
+          <lowVMSlotsThreshold>0</lowVMSlotsThreshold>
           <highVMSlotsThreshold>6</highVMSlotsThreshold>
         </Load>
       </PeriodVMThreshold>
