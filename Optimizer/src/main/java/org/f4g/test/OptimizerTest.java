@@ -71,6 +71,9 @@ import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.measures.Measure;
 
+import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.common.logging.Verbosity;
+
 
 import junit.framework.TestCase;
 import static javax.measure.units.SI.*;
@@ -312,6 +315,7 @@ public class OptimizerTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
+		ChocoLogging.setVerbosity(Verbosity.SOLUTION);
 
 		begin = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(2010, 1, 1, 0);
 		end = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(2020, 1, 1, 0);

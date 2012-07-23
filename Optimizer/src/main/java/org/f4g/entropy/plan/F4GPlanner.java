@@ -222,7 +222,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    //Add the F4G heuristics
 	    new F4GPlacementHeuristic().add(this);
 	           
-	    //other goals (inverse?)
+	    //other goals
 	    model.addGoal(((DefaultReconfigurationProblem)model).generateDefaultIntGoal());
 	    model.addGoal(((DefaultReconfigurationProblem)model).generateSetDefaultGoal());
 
