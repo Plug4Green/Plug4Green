@@ -205,9 +205,9 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    /*
 	    * A pretty print of the problem
 	    */
-        log.info(run.size() + wait.size() + sleep.size() + stop.size() + " VMs: " +
+        log.debug(run.size() + wait.size() + sleep.size() + stop.size() + " VMs: " +
 	            run.size() + " will run; " + wait.size() + " will wait; " + sleep.size() + " will sleep; " + stop.size() + " will be stopped");
-        log.info(src.getAllNodes().size() + " nodes: " + on.size() + " must be on, " + off.size() + " must be off. " + (src.getAllNodes().size() - on.size() - off.size()) + " manageable");
+        log.debug(src.getAllNodes().size() + " nodes: " + on.size() + " must be on, " + off.size() + " must be off. " + (src.getAllNodes().size() - on.size() - off.size()) + " manageable");
         log.debug("Manage " + vms.size() + " VMs (" + (repair ? "repair" : "rebuild") + ")");
         log.debug("Timeout is " + getTimeLimit() + " seconds");
 	
@@ -220,8 +220,8 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    log.debug(b.toString());
 	 	    
 	    //create and set the optimization objective in the engine
-	    //objective.makeObjective(model);
-	    //model.setObjective(objective.getObjective());
+	    objective.makeObjective(model);
+	    model.setObjective(objective.getObjective());
 	   
 	    //time limit of the search
         if (getTimeLimit() > 0) {
@@ -240,14 +240,14 @@ public class F4GPlanner extends CustomizablePlannerModule {
 
 	    log.debug(generationTime + "ms to build the solver, " + model.getNbIntConstraints() + " constraints, " + model.getNbIntVars() + " integer variables, " + model.getNbBooleanVars() + " boolean variables, " + model.getNbConstants() + " constants");
 	    //Launch the solver
-        /*model.setDoMaximize(false);
+        model.setDoMaximize(false);
         model.setFirstSolution(!optimize);
         model.generateSearchStrategy();
         ISolutionPool sp = SolutionPoolFactory.makeInfiniteSolutionPool(model.getSearchStrategy());
-        model.getSearchStrategy().setSolutionPool(sp);*/
+        model.getSearchStrategy().setSolutionPool(sp);
 
-        model.solve();
-        //model.launch();
+        //model.solve();
+        model.launch();
 	    Boolean ret = model.isFeasible();
 	    if (ret == null) {
 	        throw new PlanException("Unable to check wether a solution exists or not");

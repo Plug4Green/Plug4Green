@@ -506,7 +506,6 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 * Test allocation: VM should be allocated on the server with lowest energy profile
 	 */
 	public void testAllocationPowerPerVMCharged() {
-		ChocoLogging.setVerbosity(Verbosity.SEARCH);
 		//Create a Power Calculator that computes a more feeble power for server #1.
 		class MyPowerCalculator extends MockPowerCalculator {
 			public PowerData computePowerServer(ServerType server) {
