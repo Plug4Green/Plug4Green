@@ -107,9 +107,6 @@ public class Benchmark {
         }
         List<ServerType> servers;
 
-        //
-
-
         //predicate to determine is a server is full according to our known constraints
         Predicate<ServerType> isFull = new Predicate<ServerType>() {
             @Override
@@ -175,9 +172,7 @@ public class Benchmark {
             VirtualMachineType VM = modelGenerator1.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);
             VM.setCloudVmType(VMType[rand.nextInt(VMType.length)]);
             VM.setLastMigrationTimestamp(now);
-            VM.setFrameworkID("VMa" + i);
-            //vms.add(VM);
-
+            
             Collection<ServerType> nonFullServers = Collections2.filter(servers, Predicates.not(isFull));
             if (nonFullServers.isEmpty()) {
                 break;
@@ -186,6 +181,8 @@ public class Benchmark {
             List<ServerType> myList = new ArrayList<ServerType>();
             myList.addAll(nonFullServers);
             ServerType s = myList.get(item);
+            //set a framework ID related to its origin server
+            VM.setFrameworkID("VMa" + i + "_" + s.getFrameworkID());
             s.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().add(VM);
 
         }
