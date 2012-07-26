@@ -225,6 +225,7 @@ public class Benchmark {
             if (f.isFile()) {
                 fileName = f.getName();
                 if (fileName.endsWith(".xml")) {
+                    log.info("Benching " + fileName);
                     BenchmarkStatistics st = runConfiguration(sla, pathName + File.separator + fileName, timeout);
                     stats.add(st);
                 }
@@ -238,7 +239,7 @@ public class Benchmark {
 
     //run a configuration file
     static BenchmarkStatistics runConfiguration(SLAReader sla, String pathName, int timeout) {
-        ChocoLogging.setVerbosity(Verbosity.SOLUTION);
+        ChocoLogging.setVerbosity(Verbosity.SILENT);
         ChocoLogging.setLoggingMaxDepth(2000);
         LocalScheduler.DEBUG = -1;
         ModelGenerator modelGenerator = new ModelGenerator();
