@@ -80,17 +80,10 @@ public class ConsolidateValSelector implements ValSelector<IntDomainVar> {
 
     //Get the hoster for a VM mimimises the remaining space (to pack them)
     @Override
-    public int getBestVal(IntDomainVar var) {
-
-		IntDomainVar hoster = var;
-		VirtualMachine myVM = getVM(hoster);
-		Node originalNode = pb.getSourceConfiguration().getLocation(myVM);
+    public int getBestVal(IntDomainVar hoster) {
 		
-		/*Node destNode = null;
-		destNode = bestDestinationNode(hoster, myVM);
-		int indexDest = nodes.indexOf(destNode);*/
 		//int indexDest = worstFitCPUOnlinesFirst(var);
-		int indexDest = worstFitCPULowPIdleFirst(var);
+		int indexDest = worstFitCPULowPIdleFirst(hoster);
 		return indexDest;
     }
 
