@@ -87,7 +87,7 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
         }
 
         pos = pb.getEnvironment().makeInt(0);
-        curNode = pb.getEnvironment().makeInt(0);
+        curNode = pb.getEnvironment().makeInt(-1);
     }
 
     private boolean first = true;
@@ -156,7 +156,12 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
        pick an incoming on node oldPos otherwise pick first available VM
         */
 
-        int stIdx = firstIncoming(curNode.get());
+        int stIdx = -1;
+        if (curNode.get() < 0) {
+            stIdx = randomStartMoment();
+            curNode.set(getOriginalLocation(stIdx));
+        }
+        firstIncoming(curNode.get());
         while (stIdx < 0) {
             ChocoLogging.getSearchLogger().info("No incoming left on " + curNode.get());
             int i = randomStartMoment();
