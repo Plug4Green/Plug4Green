@@ -20,7 +20,12 @@ import org.f4g.optimizer.Optimizer.CloudTradCS;
 import org.f4g.optimizer.utils.Recorder;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.power.PowerCalculator;
+import org.f4g.schema.actions.AbstractBaseActionType;
 import org.f4g.schema.actions.ActionRequestType;
+import org.f4g.schema.actions.LiveMigrateVMActionType;
+import org.f4g.schema.actions.MoveVMActionType;
+import org.f4g.schema.actions.PowerOffActionType;
+import org.f4g.schema.actions.PowerOnActionType;
 import org.f4g.schema.constraints.optimizerconstraints.*;
 import org.f4g.schema.metamodel.FIT4GreenType;
 import org.f4g.schema.metamodel.RackableServerType;
@@ -29,6 +34,7 @@ import org.f4g.schema.metamodel.VirtualMachineType;
 import org.f4g.test.ModelGenerator;
 import org.f4g.util.Util;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -200,6 +206,7 @@ public class Benchmark {
             log.error("Error: Generated configuration is not viable. Currently overloaded: " + ns);
             return false;
         }
+
         Recorder recorder = new Recorder(true, path, prefix);
         recorder.recordModel(model);
         return true;
@@ -271,9 +278,45 @@ public class Benchmark {
             //FIXME: Assume having actions means we have a successful solving process.
             st.setSolved(nb > 0);
             st.setNbActions(nb);
+			
+            int ons = 0;
+            int offs = 0;
+            int moves = 0;
+                        
+			for (JAXBElement<? extends AbstractBaseActionType> action : myActionRequest.getActionList().getAction()){
+				if (action.getValue() instanceof PowerOnActionType) {
+					PowerOnActionType on = (PowerOnActionType)action.getValue();
+					log.debug("executeActionList: power ON on :" + on.getNodeName());
+					ons++;
+				}
+				if (action.getValue() instanceof PowerOffActionType) {
+					PowerOffActionType off = (PowerOffActionType)action.getValue();
+					log.debug("executeActionList: power OFF on :" + off.getNodeName());
+					offs++;
+				}
+				if (action.getValue() instanceof MoveVMActionType) {
+					MoveVMActionType move = (MoveVMActionType)action.getValue();
+					log.debug("executeActionList: move VM " + move.getVirtualMachine() + " from " + move.getSourceNodeController() + " to " + move.getDestNodeController());
+					moves++;
+				}
+				if (action.getValue() instanceof LiveMigrateVMActionType) {
+					LiveMigrateVMActionType liveMigration = (LiveMigrateVMActionType)action.getValue();
+					log.debug("executeActionList: live migrate VM " + liveMigration.getVirtualMachine() + " from " + liveMigration.getSourceNodeController() + " to " + liveMigration.getDestNodeController());
+					moves++;
+				}
+			}
 
-            return true;
-        }
+			log.debug("executeActionList: ComputedPowerBefore = " + myActionRequest.getComputedPowerBefore().getValue());
+			log.debug("executeActionList: ComputedPowerAfter = " + myActionRequest.getComputedPowerAfter().getValue());
+			
+			st.setNbMigrations(moves);
+			st.setNbPowerOn(ons);
+			st.setNbPowerOff(offs);
+			st.setPowerBefore(myActionRequest.getComputedPowerBefore().getValue());
+			st.setPowerAfter(myActionRequest.getComputedPowerAfter().getValue());
+			
+			return true;
+		}
 
         @Override
         public boolean dispose() {
@@ -314,15 +357,19 @@ public class Benchmark {
         }
 
         SLAReader sla = null;
-
-        String prefix = "F4G_Model";
+        
         if (args[0].equals("-gen")) {
-        	if (args.length == 9) {
-        		prefix = args[8];
-        	}
-            if (args.length == 7) {
+        	
+            if (args.length >= 7) {
+            	
                 int nbInstances = Integer.parseInt(args[1]);
                 int nbServers = Integer.parseInt(args[2]);
+                String fileAppend = "";
+                if (args.length == 9) {
+                	fileAppend = args[8];
+            	} else {
+            		fileAppend = nbServers + "_Servers_F4G_Model" ;	
+            	}                
                 try {
                     sla = new SLAReader(new File(args[4]));
                 } catch (FileNotFoundException e) {
@@ -334,7 +381,7 @@ public class Benchmark {
                 log.info("Use SLA in " + args[4]);
                 for (int i = 1; i <= nbInstances;) {
                     log.info("Generate model " + i + "/" + nbInstances);
-                    if (generateConfiguration(sla, nbServers, output, prefix)) {
+                    if (generateConfiguration(sla, nbServers, output, fileAppend)) {
                         i++;
                     }
                 }

@@ -155,29 +155,31 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
        pick first VMs start moment, store oldPos
        pick an incoming on node oldPos otherwise pick first available VM
         */
-
         int stIdx = -1;
-        if (curNode.get() < 0) {
+
+        if (curNode.get() < 0) { //First call, get a first VM
             stIdx = randomStartMoment();
-            curNode.set(getOriginalLocation(stIdx));
-        }
-        firstIncoming(curNode.get());
-        while (stIdx < 0) {
-            ChocoLogging.getSearchLogger().info("No incoming left on " + curNode.get());
-            int i = randomStartMoment();
-            if (i >= 0) {
-                stIdx = i;
-                break;
-            } else {
-                ChocoLogging.getSearchLogger().info("Nothing left to do");
-                break;
+            if (stIdx >= 0) {
+                curNode.set(getOriginalLocation(stIdx));
             }
         }
-        if (stIdx >= 0) {
-            ChocoLogging.getSearchLogger().info("Looking on " + starts[stIdx].pretty() + " that must go to " + curNode.get() + " from " + oldPos[stIdx]);
-            curNode.set(oldPos[stIdx]);
-            ChocoLogging.getSearchLogger().info("New curNode=" + curNode.get());
-            return starts[stIdx];
+        if (curNode.get() >= 0) {
+            stIdx = firstIncoming(curNode.get()); //Get an incoming on the current node
+            if (stIdx < 0) {  //No VM left on that node
+                ChocoLogging.getSearchLogger().info("No incoming left on " + curNode.get());
+                int i = randomStartMoment(); //New VM
+                if (i >= 0) {
+                    stIdx = i;
+                } else { //No starts to instantiate
+                    ChocoLogging.getSearchLogger().info("Nothing left to do");
+
+                }
+            } else {
+                ChocoLogging.getSearchLogger().info("Looking on " + starts[stIdx].pretty() + " that must go to " + curNode.get() + " from " + oldPos[stIdx]);
+                curNode.set(oldPos[stIdx]);
+                ChocoLogging.getSearchLogger().info("New curNode=" + curNode.get());
+                return starts[stIdx];
+            }
         }
 
         /*
@@ -190,13 +192,13 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
             }
         } */
 
-        for (int i = 0; i < starts.length; i++) {
+        /*for (int i = 0; i < starts.length; i++) {
             IntDomainVar start = starts[i];
             if (starts[i] != null && !start.isInstantiated()) {
                 Plan.logger.info(starts[i].pretty());
                 return start;
             }
-        }
+        } */
         ChocoLogging.getBranchingLogger().info("No more variables to instantiate here");
         return null;
     }

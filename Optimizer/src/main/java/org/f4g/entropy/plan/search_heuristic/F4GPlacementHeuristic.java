@@ -95,8 +95,6 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
         //add heuritic for runs
         addStayFirst(plan, runActions, oldLocation);
         
-        //add heuristique to pack VMs on energy criteria
-        //addStayFirst(plan, plan.getModel().getVirtualMachineActions(), oldLocation);
         addEnergyPacking(rp);
         
         //add heuritic for remaining VMs

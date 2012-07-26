@@ -1,9 +1,6 @@
 
 package org.f4g.entropy.plan;
 
-import choco.kernel.common.logging.ChocoLogging;
-import choco.kernel.common.logging.Verbosity;
-import choco.kernel.solver.ContradictionException;
 import choco.kernel.solver.constraints.SConstraint;
 import choco.kernel.solver.constraints.integer.IntExp;
 import choco.kernel.solver.search.ISolutionPool;

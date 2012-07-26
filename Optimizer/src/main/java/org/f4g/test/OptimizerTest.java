@@ -134,8 +134,8 @@ public class OptimizerTest extends TestCase {
 				}
 			}
 			
-			log.debug("executeActionList: ComputedPowerBefore = " + myActionRequest.getComputedPowerBefore());
-			log.debug("executeActionList: ComputedPowerAfter = " + myActionRequest.getComputedPowerAfter());
+			log.debug("executeActionList: ComputedPowerBefore = " + myActionRequest.getComputedPowerBefore().getValue());
+			log.debug("executeActionList: ComputedPowerAfter = " + myActionRequest.getComputedPowerAfter().getValue());
 			
 			return true;
 		}
