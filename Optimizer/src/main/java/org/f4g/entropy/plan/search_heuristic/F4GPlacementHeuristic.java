@@ -3,17 +3,24 @@
 package org.f4g.entropy.plan.search_heuristic;
 
 import choco.cp.solver.search.integer.branching.AssignVar;
+import choco.cp.solver.search.integer.valselector.MaxVal;
 import choco.cp.solver.search.integer.valselector.MinVal;
+import choco.cp.solver.search.integer.varselector.StaticVarOrder;
+import choco.cp.solver.search.task.SetTimes;
+import choco.kernel.solver.variables.integer.IntDomainVar;
+import choco.kernel.solver.variables.scheduling.TaskVar;
 import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
 import entropy.plan.choco.actionModel.ActionModels;
 import entropy.plan.choco.actionModel.VirtualMachineActionModel;
+import entropy.plan.choco.actionModel.slice.DemandingSlice;
 import entropy.plan.choco.search.*;
 import gnu.trove.TLongIntHashMap;
 
 import org.apache.log4j.Logger;
 import org.f4g.entropy.plan.F4GPlanner;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import entropy.plan.choco.actionModel.*;
@@ -89,15 +96,25 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
         addStayFirst(plan, runActions, oldLocation);
         
         //add heuristique to pack VMs on energy criteria
+        //addStayFirst(plan, plan.getModel().getVirtualMachineActions(), oldLocation);
         addEnergyPacking(rp);
         
         //add heuritic for remaining VMs
         addStayFirst(plan, goodActions, oldLocation);
-        
+
+        ///SCHEDULING PROBLEM
+        List<ActionModel> actions = new ArrayList<ActionModel>();
+        for (VirtualMachineActionModel vma : rp.getVirtualMachineActions()) {
+            actions.add(vma);
+        }
+        rp.addGoal(new AssignVar(new PureIncomingFirst2(rp, actions, plan.getCostConstraints()), new MinVal()));
         //add heuristic for shutdowns
         EmptyNodeVarSelector selectShutdown = new EmptyNodeVarSelector(rp, rp.getSourceConfiguration().getAllNodes());
-        rp.addGoal(new AssignVar(selectShutdown, new MinVal()));
-                
+        rp.addGoal(new AssignVar(selectShutdown, new MaxVal()));
+
+
+        rp.addGoal(new AssignVar(new StaticVarOrder(rp, new IntDomainVar[]{rp.getEnd()}), new MinVal()));
+
     }
 
 	private void addEnergyPacking(ReconfigurationProblem rp) {

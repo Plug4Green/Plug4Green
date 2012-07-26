@@ -9,7 +9,7 @@ import entropy.configuration.Configuration;
 import entropy.configuration.Configurations;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
-import entropy.plan.choco.constraint.sliceScheduling.LocalScheduler;
+import org.f4g.entropy.plan.constraint.sliceScheduling.LocalScheduler;
 import org.apache.log4j.Logger;
 import org.f4g.controller.IController;
 import org.f4g.cost_estimator.NetworkCost;
@@ -127,15 +127,16 @@ public class Benchmark {
                 	log.debug("MaxVMperServer limit for server " + server.getFrameworkID());
                 	return true;
                 }
-                   
+
+                int nbCores = Utils.getNbCores(server);
                 //constraint MaxVirtualCPUPerCore=2
-                if (sumCPUs >= Utils.getNbCores(server) * 2){
+                if (sumCPUs >= nbCores * 2){
                 	log.debug("MaxVirtualCPUPerCore limit for server " + server.getFrameworkID());
                	    return true;
                 }
 
                 //regular CPU consumption constraint
-                if (sumCPUDemands + 100 >= Utils.getNbCores(server) * 100){
+                if (sumCPUDemands + 100 >= nbCores * 100){
                 	log.debug("CPU consumption limit for server " + server.getFrameworkID());
                	    return true;
                 }
@@ -173,13 +174,18 @@ public class Benchmark {
             VM.setFrameworkID("VMa" + i);
             //vms.add(VM);
 
-            Collection<ServerType> nonFullServers = Collections2.filter(servers, Predicates.not(isFull));
-            if (nonFullServers.isEmpty()) {
+            Predicate<ServerType> notFull = Predicates.not(isFull);
+
+            List<ServerType> myList = new ArrayList<ServerType>();
+            for (ServerType s : servers) {
+                if (notFull.apply(s)) {
+                    myList.add(s);
+                }
+            }
+            if (myList.isEmpty()) {
                 break;
             }
-            int item = rand.nextInt(nonFullServers.size());
-            List<ServerType> myList = new ArrayList<ServerType>();
-            myList.addAll(nonFullServers);
+            int item = rand.nextInt(myList.size());
             ServerType s = myList.get(item);
             s.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().add(VM);
 
@@ -225,9 +231,9 @@ public class Benchmark {
 
     //run a configuration file
     static BenchmarkStatistics runConfiguration(SLAReader sla, String pathName, int timeout) {
-        ChocoLogging.setVerbosity(Verbosity.FINEST);
+        ChocoLogging.setVerbosity(Verbosity.SEARCH);
         ChocoLogging.setLoggingMaxDepth(2000);
-        LocalScheduler.DEBUG = 0;
+        LocalScheduler.DEBUG = -1;
         ModelGenerator modelGenerator = new ModelGenerator();
         FIT4GreenType model = modelGenerator.getModel(pathName);
 

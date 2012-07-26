@@ -3,15 +3,20 @@ package org.f4g.entropy.plan;
 
 import choco.kernel.common.logging.ChocoLogging;
 import choco.kernel.common.logging.Verbosity;
+import choco.kernel.solver.ContradictionException;
 import choco.kernel.solver.constraints.SConstraint;
 import choco.kernel.solver.constraints.integer.IntExp;
 import choco.kernel.solver.search.ISolutionPool;
 import choco.kernel.solver.search.SolutionPoolFactory;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.*;
+import entropy.configuration.parser.FileConfigurationSerializer;
+import entropy.configuration.parser.FileConfigurationSerializerFactory;
 import entropy.plan.*;
 import entropy.plan.action.Action;
+import entropy.plan.choco.BasicPlacementHeuristic2;
 import entropy.plan.choco.DefaultReconfigurationProblem;
+import entropy.plan.choco.DummyPlacementHeuristic;
 import entropy.plan.choco.ReconfigurationProblem;
 import entropy.plan.choco.actionModel.ActionModel;
 import entropy.plan.choco.actionModel.VirtualMachineActionModel;
@@ -21,18 +26,21 @@ import entropy.plan.choco.constraint.pack.SatisfyDemandingSlicesHeightsFastBP;
 import entropy.plan.choco.constraint.pack.SatisfyDemandingSlicesHeightsSimpleBP;
 import entropy.plan.durationEvaluator.DurationEvaluationException;
 import entropy.plan.durationEvaluator.MockDurationEvaluator;
+import entropy.plan.parser.FileTimedReconfigurationPlanSerializerFactory;
+import entropy.plan.visualization.DotVisualizer;
+import entropy.plan.visualization.PlanVisualizer;
 import entropy.vjob.PlacementConstraint;
 import entropy.vjob.VJob;
 
+import java.io.IOException;
 import java.util.*;
 
-
-import entropy.plan.choco.constraint.sliceScheduling.SlicesPlanner;
 
 import org.apache.log4j.Logger;
 import org.f4g.entropy.plan.objective.PowerObjective;
 import org.f4g.entropy.plan.search_heuristic.F4GPlacementHeuristic;
 
+import org.f4g.entropy.plan.constraint.sliceScheduling.*;
 
 /**
  * A CustomizablePlannerModule based on Choco.
@@ -191,7 +199,12 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    log.debug("adding packing constraint");
         packingConstraintClass.add(model);
         new SlicesPlanner().add(model);
-	
+
+        try {
+            model.getEnd().setSup(50);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
 	    /*
 	    * A pretty print of the problem
 	    */
@@ -210,8 +223,8 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    log.debug(b.toString());
 	 	    
 	    //create and set the optimization objective in the engine
-	    objective.makeObjective(model);
-	    model.setObjective(objective.getObjective());
+	    //objective.makeObjective(model);
+	    //model.setObjective(objective.getObjective());
 	   
 	    //time limit of the search
         if (getTimeLimit() > 0) {
@@ -220,21 +233,24 @@ public class F4GPlanner extends CustomizablePlannerModule {
 
         //model.clearGoals();
 	    //Add the F4G heuristics
+        //new BasicPlacementHeuristic2(null).add(this);
 	    new F4GPlacementHeuristic().add(this);
-	           
+
 	    //other goals
-	    model.addGoal(((DefaultReconfigurationProblem)model).generateDefaultIntGoal());
+        new DummyPlacementHeuristic().add(model);
+	    //model.addGoal(((DefaultReconfigurationProblem)model).generateDefaultIntGoal());
 	    //model.addGoal(((DefaultReconfigurationProblem)model).generateSetDefaultGoal());
 
 	    log.debug(generationTime + "ms to build the solver, " + model.getNbIntConstraints() + " constraints, " + model.getNbIntVars() + " integer variables, " + model.getNbBooleanVars() + " boolean variables, " + model.getNbConstants() + " constants");
 	    //Launch the solver
-        model.setDoMaximize(false);
+        /*model.setDoMaximize(false);
         model.setFirstSolution(!optimize);
         model.generateSearchStrategy();
         ISolutionPool sp = SolutionPoolFactory.makeInfiniteSolutionPool(model.getSearchStrategy());
-        model.getSearchStrategy().setSolutionPool(sp);
-        model.launch();
+        model.getSearchStrategy().setSolutionPool(sp);*/
 
+        model.solve();
+        //model.launch();
 	    Boolean ret = model.isFeasible();
 	    if (ret == null) {
 	        throw new PlanException("Unable to check wether a solution exists or not");
@@ -249,6 +265,8 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	            throw new PlanException("No solution");
 	        } else {
 	            TimedReconfigurationPlan plan = model.extractSolution();
+                DotVisualizer v = new DotVisualizer("dot.dot");
+                v.buildVisualization(plan);
 	            Configuration res = plan.getDestination();
 	            ManagedElementSet<VirtualMachine> resVms = res.getAllVirtualMachines();
 /*	            for(VirtualMachine vm: resVms) {
