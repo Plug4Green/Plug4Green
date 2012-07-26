@@ -13,6 +13,7 @@ import entropy.configuration.Node;
 import entropy.plan.choco.ReconfigurationProblem;
 import entropy.plan.choco.actionModel.ManageableNodeActionModel;
 
+import entropy.plan.choco.actionModel.NodeActionModel;
 import org.apache.log4j.Logger;
 import org.f4g.entropy.configuration.F4GNodeComparator;
 import org.f4g.entropy.configuration.F4GResourcePicker;
@@ -64,7 +65,10 @@ public class EmptyNodeVarSelector extends AbstractIntVarSelector {
 	        	if(!action.getState().isInstantiated() && pb.getUsedMem(n).isInstantiated() && (pb.getUsedMem(n).getVal() == 0) ) {
 	        		return action.getState();
 	        	}
-	        }    
+                if (!action.start().isInstantiated()) {
+                    return action.start();
+                }
+            }
 	    }
 	    return null;
     }

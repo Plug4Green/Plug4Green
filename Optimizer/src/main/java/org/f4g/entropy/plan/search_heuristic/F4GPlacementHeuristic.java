@@ -107,11 +107,15 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
         for (VirtualMachineActionModel vma : rp.getVirtualMachineActions()) {
             actions.add(vma);
         }
+
+
         rp.addGoal(new AssignOrForbidIntVarVal(new PureIncomingFirst2(rp, actions, plan.getCostConstraints()), new MinVal()));
+
+        EmptyNodeVarSelector selectShutdown = new EmptyNodeVarSelector(rp, rp.getSourceConfiguration().getAllNodes());
+        rp.addGoal(new AssignVar(selectShutdown, new MinVal()));
+
         //rp.addGoal(new AssignVar(new PureIncomingFirst2(rp, actions, plan.getCostConstraints()), new MinVal()));
         //add heuristic for shutdowns
-        EmptyNodeVarSelector selectShutdown = new EmptyNodeVarSelector(rp, rp.getSourceConfiguration().getAllNodes());
-        rp.addGoal(new AssignVar(selectShutdown, new MaxVal()));
 
 
         rp.addGoal(new AssignVar(new StaticVarOrder(rp, new IntDomainVar[]{rp.getEnd()}), new MinVal()));

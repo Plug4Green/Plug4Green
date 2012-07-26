@@ -150,8 +150,8 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
             }
         }
 
-
-        return minInf();
+        IntDomainVar v = minInf();
+        return v;
         /*
         Take a starts(), then focus on an incoming on the node that hosted the start()
        pick first VMs start moment, store oldPos
@@ -209,9 +209,13 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
 
     private IntDomainVar minInf() {
         IntDomainVar best = null;
+        VirtualMachine bestVM = null;
         for (int i = 0; i < starts.length; i++) {
             IntDomainVar v = starts[i];
-            if (v != null && !v.isInstantiated() && (best == null || best.getInf() > v.getInf())) {
+            VirtualMachine vm = vms.get(i);
+            if (v != null && !v.isInstantiated() &&
+                    (best == null || best.getInf() > v.getInf() || (best.getInf() == v.getInf() && vm.getMemoryDemand() > bestVM.getMemoryDemand()))) {
+                bestVM = vm;
                 best = v;
             }
         }

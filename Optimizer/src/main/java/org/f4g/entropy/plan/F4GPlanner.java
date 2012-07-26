@@ -266,6 +266,11 @@ public class F4GPlanner extends CustomizablePlannerModule {
                 v.buildVisualization(plan);
 	            Configuration res = plan.getDestination();
 	            ManagedElementSet<VirtualMachine> resVms = res.getAllVirtualMachines();
+                for (Node n : res.getAllNodes()) {
+                    if (res.getRunnings(n).isEmpty() && ! res.isOffline(n)) {
+                        System.err.println(n.getName() + " should be shutted down ");
+                    }
+                }
 /*	            for(VirtualMachine vm: resVms) {
 	            	System.out.println("VM " + vm.getName() + " running on: " + res.getLocation(vm));
 	            }*/
