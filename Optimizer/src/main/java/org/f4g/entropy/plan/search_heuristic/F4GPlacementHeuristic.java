@@ -2,7 +2,9 @@
 
 package org.f4g.entropy.plan.search_heuristic;
 
+import choco.cp.solver.search.integer.branching.AssignOrForbidIntVarVal;
 import choco.cp.solver.search.integer.branching.AssignVar;
+import choco.cp.solver.search.integer.valiterator.IncreasingDomain;
 import choco.cp.solver.search.integer.valselector.MaxVal;
 import choco.cp.solver.search.integer.valselector.MinVal;
 import choco.cp.solver.search.integer.varselector.StaticVarOrder;
@@ -105,7 +107,8 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
         for (VirtualMachineActionModel vma : rp.getVirtualMachineActions()) {
             actions.add(vma);
         }
-        rp.addGoal(new AssignVar(new PureIncomingFirst2(rp, actions, plan.getCostConstraints()), new MinVal()));
+        rp.addGoal(new AssignOrForbidIntVarVal(new PureIncomingFirst2(rp, actions, plan.getCostConstraints()), new MinVal()));
+        //rp.addGoal(new AssignVar(new PureIncomingFirst2(rp, actions, plan.getCostConstraints()), new MinVal()));
         //add heuristic for shutdowns
         EmptyNodeVarSelector selectShutdown = new EmptyNodeVarSelector(rp, rp.getSourceConfiguration().getAllNodes());
         rp.addGoal(new AssignVar(selectShutdown, new MaxVal()));

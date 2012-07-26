@@ -97,6 +97,7 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
     private IStateInt pos;
     @Override
     public IntDomainVar selectVar() {
+        //ChocoLogging.getSearchLogger().info("New call");
         if (first) {
             first = !first;
             Plan.logger.debug("Activate cost constraints");
@@ -150,12 +151,13 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
         }
 
 
+        return minInf();
         /*
         Take a starts(), then focus on an incoming on the node that hosted the start()
        pick first VMs start moment, store oldPos
        pick an incoming on node oldPos otherwise pick first available VM
         */
-        int stIdx = -1;
+/*        int stIdx;
 
         if (curNode.get() < 0) { //First call, get a first VM
             stIdx = randomStartMoment();
@@ -170,9 +172,9 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
                 int i = randomStartMoment(); //New VM
                 if (i >= 0) {
                     stIdx = i;
-                } /*else { //No starts to instantiate
-                    ChocoLogging.getSearchLogger().info("Nothing left to do");
-                }   */
+                } //else { //No starts to instantiate
+                    //ChocoLogging.getSearchLogger().info("Nothing left to do");
+                }   //
             }
 
             if (stIdx >= 0) {
@@ -181,7 +183,7 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
                 //ChocoLogging.getSearchLogger().info("New curNode=" + curNode.get());
                 return starts[stIdx];
             }
-        }
+        }      */
 
         /*
         Collections.sort(vms, new VirtualMachineComparator(false, ResourcePicker.VMRc.memoryDemand));
@@ -201,7 +203,19 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
             }
         } */
         //ChocoLogging.getBranchingLogger().info("No more variables to instantiate here");
-        return null;
+        //return null;
+    }
+
+
+    private IntDomainVar minInf() {
+        IntDomainVar best = null;
+        for (int i = 0; i < starts.length; i++) {
+            IntDomainVar v = starts[i];
+            if (v != null && !v.isInstantiated() && (best == null || best.getInf() > v.getInf())) {
+                best = v;
+            }
+        }
+        return best;
     }
 
     private IStateInt curNode;

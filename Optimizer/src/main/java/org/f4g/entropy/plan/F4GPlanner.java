@@ -197,11 +197,11 @@ public class F4GPlanner extends CustomizablePlannerModule {
         packingConstraintClass.add(model);
         new SlicesPlanner().add(model);
 
-        try {
+        /*try {
             model.getEnd().setSup(50);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        }
+        } */
 	    /*
 	    * A pretty print of the problem
 	    */
