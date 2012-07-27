@@ -109,7 +109,7 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
 		ConsolidateValSelector selectServer = new ConsolidateValSelector(rp, rp.getSourceConfiguration().getAllNodes());
        
         //consolidate first: move VMs to low load nodes to high load nodes
-        rp.addGoal(new AssignVar(selectVM, selectServer));
+        rp.addGoal(new SimpleVMPacking(rp, rp.getSourceConfiguration().getAllNodes()) ); //new AssignVar(selectVM, selectServer));
 		
 	}
 

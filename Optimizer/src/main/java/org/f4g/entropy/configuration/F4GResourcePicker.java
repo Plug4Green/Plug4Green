@@ -101,7 +101,12 @@ public final class F4GResourcePicker {
         /**
          * 
          */
-        memoryRemaining
+        memoryRemaining,
+        
+        /**
+         * 
+         */
+        numberVMsInitial
         
     }
 
@@ -153,6 +158,8 @@ public final class F4GResourcePicker {
                 return n.getCPUCapacity() - ManagedElementSets.sum(cfg.getRunnings(n), ResourcePicker.VMRc.cpuConsumption)[0];
             case memoryRemaining:
                 return n.getMemoryCapacity() - ManagedElementSets.sum(cfg.getRunnings(n), ResourcePicker.VMRc.memoryConsumption)[0];
+            case numberVMsInitial:
+                return cfg.getRunnings(n).size();
 
         }
         return -1;
