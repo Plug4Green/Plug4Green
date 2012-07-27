@@ -109,14 +109,10 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
         }
 
 
-        rp.addGoal(new AssignOrForbidIntVarVal(new PureIncomingFirst2(rp, actions, plan.getCostConstraints()), new MinVal()));
+        rp.addGoal(new AssignOrForbidIntVarVal(new PureIncomingFirst2(plan, rp, actions), new MinVal()));
 
         EmptyNodeVarSelector selectShutdown = new EmptyNodeVarSelector(rp, rp.getSourceConfiguration().getAllNodes());
         rp.addGoal(new AssignVar(selectShutdown, new MinVal()));
-
-        //rp.addGoal(new AssignVar(new PureIncomingFirst2(rp, actions, plan.getCostConstraints()), new MinVal()));
-        //add heuristic for shutdowns
-
 
         rp.addGoal(new AssignVar(new StaticVarOrder(rp, new IntDomainVar[]{rp.getEnd()}), new MinVal()));
 
@@ -131,7 +127,7 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
 		ConsolidateValSelector selectServer = new ConsolidateValSelector(rp, rp.getSourceConfiguration().getAllNodes());
        
         //consolidate first: move VMs to low load nodes to high load nodes
-        rp.addGoal(new AssignVar(selectVM, selectServer));
+        rp.addGoal(new SimpleVMPacking(rp, rp.getSourceConfiguration().getAllNodes()) ); //new AssignVar(selectVM, selectServer));
 		
 	}
 

@@ -507,8 +507,6 @@ public class LocalScheduler {
                     break;
                 }
             }
-            ChocoLogging.getBranchingLogger().finest("-->" + dStarts[exclSlice].pretty());
-            ChocoLogging.flushLogs();
         }
     }
 

@@ -14,6 +14,7 @@ import entropy.plan.choco.actionModel.ActionModel;
 import entropy.plan.choco.actionModel.ActionModels;
 import entropy.plan.choco.actionModel.VirtualMachineActionModel;
 import entropy.plan.choco.actionModel.slice.DemandingSlice;
+import org.f4g.entropy.plan.F4GPlanner;
 
 import java.util.BitSet;
 import java.util.Collections;
@@ -47,10 +48,10 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
      * @param solver  the solver to use
      * @param actions the actions to consider.
      */
-    public PureIncomingFirst2(ReconfigurationProblem solver, List<ActionModel> actions, List<SConstraint> costConstraints) {
+    public PureIncomingFirst2(F4GPlanner planner,ReconfigurationProblem solver, List<ActionModel> actions) {
         super(solver, ActionModels.extractStarts(actions.toArray(new ActionModel[actions.size()])));
         this.pb = solver;
-        this.constraints = costConstraints;
+        this.planner = planner;
         Configuration cfg = solver.getSourceConfiguration();
 
         hoster = new IntDomainVar[solver.getVirtualMachineActions().size()];
@@ -95,23 +96,19 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
     private ReconfigurationProblem pb;
 
     private IStateInt pos;
+
+    private F4GPlanner planner;
+
     @Override
     public IntDomainVar selectVar() {
-        //ChocoLogging.getSearchLogger().info("New call");
+
         if (first) {
             first = !first;
-            Plan.logger.debug("Activate cost constraints");
-            Plan.logger.debug("End:" + pb.getEnd().pretty());
-            for (SConstraint sc : constraints) {
-                pb.postCut(sc);
-            }
-            try {
-                pb.propagate();
-            } catch (ContradictionException e) {
-                pb.setFeasible(false);
-                pb.post(Constant.FALSE);
-            }
+            planner.activateQualityOrientedConstraints();
         }
+
+
+
         for (int i = 0; i < ins.length; i++) {
             ins[i].clear();
         }
@@ -185,6 +182,9 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
         return  minInf();
     }
 
+    private void activateCostConstraints() {
+    }
+
 
     private IntDomainVar minInf() {
         IntDomainVar best = null;
@@ -200,7 +200,9 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
                 x = i;
             }
         }
-        ChocoLogging.getSearchLogger().info("Looking on " + best.pretty() + " that must go to " + hoster[x].getVal() + " from " + oldPos[x]);
+        if (best != null) {
+            ChocoLogging.getSearchLogger().info("Looking on " + best.pretty() + " that must go to " + hoster[x].getVal() + " from " + oldPos[x]);
+        }
         return best;
     }
 

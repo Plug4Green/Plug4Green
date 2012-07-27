@@ -9,6 +9,7 @@ import choco.cp.solver.variables.integer.BoolVarNot;
 
 import choco.cp.solver.variables.integer.BooleanVarImpl;
 
+import choco.kernel.solver.constraints.SConstraint;
 import com.google.gwt.logging.client.SystemLogHandler;
 import org.f4g.entropy.configuration.F4GNode;
 import org.f4g.optimizer.utils.Utils;
@@ -65,7 +66,9 @@ public class PowerObjective extends Objective {
     int EnergyOff = 1; //KJoule, sample value
     int EnergyMove = 1; //KJoule, sample value
 	private List<ServerType> allServers;
-        
+
+    private List<SConstraint> qualityConstraints;
+
     /**
      * Make a new constraint.
      *
@@ -77,7 +80,7 @@ public class PowerObjective extends Objective {
     	powerCalculator = myPowerCalculator;
     	vmTypes = myVMs;
     	optiObjective = myOptiObjective;
-    	    	
+    	this.qualityConstraints = new ArrayList<SConstraint>();
     	powerCalculation = new StaticPowerCalculation(myVMs);
 
         // initialize data structures
@@ -131,9 +134,11 @@ public class PowerObjective extends Objective {
     	IntDomainVar globalPower = m.createBoundIntVar("globalPower", 0, Choco.MAX_UPPER_BOUND); // in Watts
     	IntDomainVar stableEnergy = m.createBoundIntVar("stableEnergy", 0, Choco.MAX_UPPER_BOUND); //in KJ
     	
-    	//sum the power Idle, the power for the VMs and extra power for the network 
-    	m.post(m.eq(m.sum(getPIdle(m), getPVMs(m), getPNetwork(m)), globalPower));
-    		
+    	//sum the power Idle, the power for the VMs and extra power for the network
+        IntExp c = m.sum(getPIdle(m), getPVMs(m), getPNetwork(m));
+        SConstraint s = m.eq(c, globalPower);
+        //TODO quality constraint ?
+    	//m.post(s);
     	m.post(m.eq(mult((int)reconfTime/1000, globalPower), stableEnergy));
     	//this equation represents the energy spent between two reconfigurations (that we'll try to minimize).
         m.post(m.eq(m.sum(stableEnergy, getEMove(m), getEOnOff(m)), reconfEnergy));
@@ -166,7 +171,11 @@ public class PowerObjective extends Objective {
             }
                      
         }
-        m.post(m.eq(m.sum(PIdleServer), Pidle));
+        IntExp e = m.sum(PIdleServer);
+        //TODO quality constraint ?
+        SConstraint s = m.eq(e, Pidle);
+        qualityConstraints.add(s);
+        //m.post(s);
         
         return Pidle;        
     }
@@ -189,9 +198,11 @@ public class PowerObjective extends Objective {
         	cards[i] = m.getSetModel(nodes.get(i)).getCard();
             nodesEnergyPerVM[i] = f4gNode.getPperVM();
         }
-        
-        m.post(m.eq(m.scalar(cards, nodesEnergyPerVM), PVMs)); 
-        
+
+        //TODO quality oriented constraints
+        SConstraint s = m.eq(m.scalar(cards, nodesEnergyPerVM), PVMs);
+        qualityConstraints.add(s);
+        //m.post(s);
         return PVMs;
         
     }
@@ -222,8 +233,10 @@ public class PowerObjective extends Objective {
     	}       
     	
     	//the power of all the switch is egal to the scalar product of these two vector
-        m.post(m.eq(m.scalar(switchON, powerPerSwitch), PNetwork));
-        
+        //TODO quality oriented constraint
+        SConstraint s = m.eq(m.scalar(switchON, powerPerSwitch), PNetwork);
+        qualityConstraints.add(s);
+        //m.post(s);
     	return PNetwork;
     }
  
@@ -260,9 +273,14 @@ public class PowerObjective extends Objective {
             }
         }
         
-        IntDomainVar NbMoves = m.createBoundIntVar("NbMoves",0, vms.size()); 
-        m.post(m.eq(m.sum(moves), NbMoves));        
-        m.post(m.eq(mult(EnergyMove, NbMoves), EMove));
+        IntDomainVar NbMoves = m.createBoundIntVar("NbMoves",0, vms.size());
+        //TODO quality oriented constraint ?
+        SConstraint s = m.eq(m.sum(moves), NbMoves);
+        //m.post(s);
+        SConstraint s2 = m.eq(mult(EnergyMove, NbMoves), EMove);
+        //m.post(s2);
+        qualityConstraints.add(s2);
+        qualityConstraints.add(s);
         return EMove;               
     }
     
@@ -303,8 +321,14 @@ public class PowerObjective extends Objective {
                 }
             }                     
         }
-        m.post(m.eq(m.sum(EOnOffServer), EOnOff));
+        //TODO quality oriented constraint
+        SConstraint s = m.eq(m.sum(EOnOffServer), EOnOff);
+        qualityConstraints.add(s);
+        //m.post(s);
         return EOnOff;
-    }         
-    
+    }
+
+    public List<SConstraint> getQualityOrientedConstraints() {
+        return this.qualityConstraints;
+    }
 }

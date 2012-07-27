@@ -66,9 +66,6 @@ public class EmptyNodeVarSelector extends AbstractIntVarSelector {
 	        		return action.getState();
 	        	}
                 if (pb.getUsedMem(n).isInstantiatedTo(0) && !action.start().isInstantiated()) {
-                    if (action.start().getName().contains("s(shutdown(")) {
-                        System.err.println("hop");
-                    }
                     return action.start();
                 }
             }

@@ -108,9 +108,6 @@ public class Benchmark {
         }
         List<ServerType> servers;
 
-        //
-
-
         //predicate to determine is a server is full according to our known constraints
         Predicate<ServerType> isFull = new Predicate<ServerType>() {
             @Override
@@ -173,26 +170,21 @@ public class Benchmark {
 
         String [] VMType = {"m1.small", "m1.large", "m1.xlarge"};
         for (int i = 0; i < NBVMsTotal; i++) {
-        	servers = Utils.getAllServers(model);
+            servers = Utils.getAllServers(model);
             VirtualMachineType VM = modelGenerator1.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);
             VM.setCloudVmType(VMType[rand.nextInt(VMType.length)]);
             VM.setLastMigrationTimestamp(now);
-            VM.setFrameworkID("VMa" + i);
-            //vms.add(VM);
 
-            Predicate<ServerType> notFull = Predicates.not(isFull);
-
-            List<ServerType> myList = new ArrayList<ServerType>();
-            for (ServerType s : servers) {
-                if (notFull.apply(s)) {
-                    myList.add(s);
-                }
-            }
-            if (myList.isEmpty()) {
+            Collection<ServerType> nonFullServers = Collections2.filter(servers, Predicates.not(isFull));
+            if (nonFullServers.isEmpty()) {
                 break;
             }
-            int item = rand.nextInt(myList.size());
+            int item = rand.nextInt(nonFullServers.size());
+            List<ServerType> myList = new ArrayList<ServerType>();
+            myList.addAll(nonFullServers);
             ServerType s = myList.get(item);
+            //set a framework ID related to its origin server
+            VM.setFrameworkID("VMa" + i + "_" + s.getFrameworkID());
             s.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().add(VM);
 
         }
@@ -239,7 +231,7 @@ public class Benchmark {
 
     //run a configuration file
     static BenchmarkStatistics runConfiguration(SLAReader sla, String pathName, int timeout) {
-        ChocoLogging.setVerbosity(Verbosity.SEARCH);
+        ChocoLogging.setVerbosity(Verbosity.SILENT);
         ChocoLogging.setLoggingMaxDepth(10000);
         LocalScheduler.DEBUG = -1;
         ModelGenerator modelGenerator = new ModelGenerator();

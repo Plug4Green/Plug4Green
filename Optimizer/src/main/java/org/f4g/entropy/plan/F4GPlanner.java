@@ -1,6 +1,8 @@
 
 package org.f4g.entropy.plan;
 
+import choco.kernel.common.Constant;
+import choco.kernel.solver.ContradictionException;
 import choco.kernel.solver.constraints.SConstraint;
 import choco.kernel.solver.constraints.integer.IntExp;
 import choco.kernel.solver.search.ISolutionPool;
@@ -220,9 +222,12 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    log.debug(b.toString());
 	 	    
 	    //create and set the optimization objective in the engine
+        this.costConstraints = new ArrayList<SConstraint>();
+
 	    objective.makeObjective(model);
+        costConstraints.addAll(objective.getQualityOrientedConstraints());
 	    model.setObjective(objective.getObjective());
-	   
+
 	    //time limit of the search
         if (getTimeLimit() > 0) {
 	        model.setTimeLimit(getTimeLimit()* 1000); // Conversion into seconds
@@ -428,5 +433,19 @@ public class F4GPlanner extends CustomizablePlannerModule {
 
     public List<SConstraint> getCostConstraints() {
         return this.costConstraints;
+    }
+
+    public void activateQualityOrientedConstraints() {
+        Plan.logger.debug("Activate quality-oriented constraints");
+        Plan.logger.debug("End:" + model.getEnd().pretty());
+        for (SConstraint sc : costConstraints) {
+            model.postCut(sc);
+        }
+        try {
+            model.propagate();
+        } catch (ContradictionException e) {
+            model.setFeasible(false);
+            model.post(Constant.FALSE);
+        }
     }
 }
