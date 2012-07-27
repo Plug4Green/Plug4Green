@@ -192,10 +192,11 @@ public class LocalScheduler {
 
     public boolean propagate() throws ContradictionException {
         computeProfiles();
+        updateNonOverlappingWithExclusiveDSlice();
         if (!checkInvariant()) {
             return false;
         }
-        updateNonOverlappingWithExclusiveDSlice();
+
         updateCEndsSup();
         updateDStartsInf();
         updateDStartsSup();
@@ -405,7 +406,7 @@ public class LocalScheduler {
                     return false;
                 }
                 ChocoLogging.getBranchingLogger().finest(me + ": " + cEnds[i].pretty() + " sup=" + dStarts[exclSlice].getSup());
-                cEnds[i].setSup(dStarts[exclSlice].getSup());
+                //cEnds[i].setSup(dStarts[exclSlice].getSup());
             }
 
 
@@ -465,7 +466,7 @@ public class LocalScheduler {
 
     private void updateDStartsInf() throws ContradictionException {
 
-
+        if (excl == null || !excl.isInstantiated()) {
         for (int i = in.nextSetBit(0); i >= 0; i = in.nextSetBit(i + 1)) {
             if (!dStarts[i].isInstantiated() && !associatedToCSliceOnCurrentNode(i)) {
                 int dCpu = dCPUHeights[i];
@@ -495,6 +496,19 @@ public class LocalScheduler {
                     }
                 }
             }
+        }
+        }
+        if (excl != null && excl.isInstantiatedTo(1)) {
+            //Set its min moment equals to the first moment where all resources are free
+            for (int x = sortedMinProfile.length - 1; x >= 0; x--) {
+                int t = sortedMinProfile[x];
+                if (profileMinCPU.get(t) == 0 && profileMinMem.get(t) == 0) {
+                    dStarts[exclSlice].setInf(t);
+                    break;
+                }
+            }
+            ChocoLogging.getBranchingLogger().finest("-->" + dStarts[exclSlice].pretty());
+            ChocoLogging.flushLogs();
         }
     }
 

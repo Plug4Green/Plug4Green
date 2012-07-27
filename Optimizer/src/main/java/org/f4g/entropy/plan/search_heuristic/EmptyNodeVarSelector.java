@@ -62,10 +62,13 @@ public class EmptyNodeVarSelector extends AbstractIntVarSelector {
 	        	ManageableNodeActionModel action = (ManageableNodeActionModel) pb.getAssociatedAction(n);
 
 	        	//Select the empty nodes first
-	        	if(!action.getState().isInstantiated() && pb.getUsedMem(n).isInstantiated() && (pb.getUsedMem(n).getVal() == 0) ) {
+	        	if(!action.getState().isInstantiated() && pb.getUsedMem(n).isInstantiatedTo(0)) {
 	        		return action.getState();
 	        	}
-                if (!action.start().isInstantiated()) {
+                if (pb.getUsedMem(n).isInstantiatedTo(0) && !action.start().isInstantiated()) {
+                    if (action.start().getName().contains("s(shutdown(")) {
+                        System.err.println("hop");
+                    }
                     return action.start();
                 }
             }

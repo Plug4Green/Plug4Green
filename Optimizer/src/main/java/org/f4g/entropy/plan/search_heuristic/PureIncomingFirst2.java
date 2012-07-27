@@ -150,14 +150,12 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
             }
         }
 
-        IntDomainVar v = minInf();
-        return v;
         /*
         Take a starts(), then focus on an incoming on the node that hosted the start()
        pick first VMs start moment, store oldPos
        pick an incoming on node oldPos otherwise pick first available VM
         */
-/*        int stIdx;
+      /* int stIdx = -1;
 
         if (curNode.get() < 0) { //First call, get a first VM
             stIdx = randomStartMoment();
@@ -172,44 +170,26 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
                 int i = randomStartMoment(); //New VM
                 if (i >= 0) {
                     stIdx = i;
-                } //else { //No starts to instantiate
-                    //ChocoLogging.getSearchLogger().info("Nothing left to do");
-                }   //
+                }
             }
 
             if (stIdx >= 0) {
-                //ChocoLogging.getSearchLogger().info("Looking on " + starts[stIdx].pretty() + " that must go to " + curNode.get() + " from " + oldPos[stIdx]);
+                ChocoLogging.getSearchLogger().info("Looking on " + starts[stIdx].pretty() + " that must go to " + curNode.get() + " from " + oldPos[stIdx]);
                 curNode.set(oldPos[stIdx]);
-                //ChocoLogging.getSearchLogger().info("New curNode=" + curNode.get());
+                ChocoLogging.getSearchLogger().info("New curNode=" + curNode.get());
                 return starts[stIdx];
             }
-        }      */
+        }
+        return null;   */
 
-        /*
-        Collections.sort(vms, new VirtualMachineComparator(false, ResourcePicker.VMRc.memoryDemand));
-        //TODO: work by VM instead by node
-        for (VirtualMachine vm : vms) {
-            DemandingSlice s = pb.getAssociatedAction(vm).getDemandingSlice();
-            if (s != null && !s.start().isInstantiated()) {
-                return s.start();
-            }
-        } */
-
-        /*for (int i = 0; i < starts.length; i++) {
-            IntDomainVar start = starts[i];
-            if (starts[i] != null && !start.isInstantiated()) {
-                Plan.logger.info(starts[i].pretty());
-                return start;
-            }
-        } */
-        //ChocoLogging.getBranchingLogger().info("No more variables to instantiate here");
-        //return null;
+        return  minInf();
     }
 
 
     private IntDomainVar minInf() {
         IntDomainVar best = null;
         VirtualMachine bestVM = null;
+        int x = 0;
         for (int i = 0; i < starts.length; i++) {
             IntDomainVar v = starts[i];
             VirtualMachine vm = vms.get(i);
@@ -217,20 +197,31 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
                     (best == null || best.getInf() > v.getInf() || (best.getInf() == v.getInf() && vm.getMemoryDemand() > bestVM.getMemoryDemand()))) {
                 bestVM = vm;
                 best = v;
+                x = i;
             }
         }
+        ChocoLogging.getSearchLogger().info("Looking on " + best.pretty() + " that must go to " + hoster[x].getVal() + " from " + oldPos[x]);
         return best;
     }
 
     private IStateInt curNode;
 
     private int firstIncoming(int node) {
+        int x = -1;
+        IntDomainVar best = null;
+        VirtualMachine bestVM = null;
         for (int i = ins[node].nextSetBit(0); i >= 0; i = ins[node].nextSetBit(i + 1)) {
-            if (starts[i] != null && !starts[i].isInstantiated()) {
-                return i;
+            IntDomainVar v = starts[i];
+            VirtualMachine vm = vms.get(i);
+            if (v != null && !v.isInstantiated() &&
+                    (x == -1 || (best.getInf() > v.getInf() || (best.getInf() == v.getInf() && vm.getMemoryDemand() > bestVM.getMemoryDemand())))
+                    ) {
+                bestVM = vm;
+                best = v;
+                x = i;
             }
         }
-        return -1;
+        return x;
     }
 
     private int randomStartMoment() {
