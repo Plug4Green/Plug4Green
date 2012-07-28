@@ -4,7 +4,7 @@
 	<property file="../Commons/build.properties" />
 	<property file="../Commons/local.build.properties" />
 	<property name="jar.name" value="f4g-${ant.project.name}.jar" />
-
+	<property name="bench.dir" value="${dist.dir}/benchOptimizer"/>
 	<path id="classpath">
 		<pathelement path="src" />
 		<fileset dir="${lib.dir}" includes="*.jar" />
@@ -61,4 +61,10 @@
 	    </junit>
 	</target>	
 
+	<target name="dist" depends="package">
+	  <mkdir dir="${bench.dir}"/>
+	  <copy todir="${bench.dir}/lib">
+	    <fileset dir="${lib.dir}" />
+	  </copy>
+	</target>
 </project>

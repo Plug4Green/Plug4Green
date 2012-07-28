@@ -1,43 +1,39 @@
 package org.f4g.entropy.plan.objective;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.HashMap;
-
+import choco.Choco;
+import choco.cp.solver.constraints.reified.FastIFFEq;
+import choco.cp.solver.constraints.reified.ReifiedFactory;
 import choco.cp.solver.variables.integer.BoolVarNot;
-
-import choco.cp.solver.variables.integer.BooleanVarImpl;
-
 import choco.kernel.solver.constraints.SConstraint;
-import com.google.gwt.logging.client.SystemLogHandler;
+import choco.kernel.solver.constraints.integer.IntExp;
+import choco.kernel.solver.variables.integer.IntDomainVar;
+import entropy.configuration.Configuration;
+import entropy.configuration.ManagedElementSet;
+import entropy.configuration.Node;
+import entropy.configuration.VirtualMachine;
+import entropy.plan.Plan;
+import entropy.plan.choco.ReconfigurationProblem;
+import entropy.plan.choco.actionModel.BootableNodeActionModel2;
+import entropy.plan.choco.actionModel.ManageableNodeActionModel;
+import entropy.plan.choco.actionModel.ShutdownableNodeActionModel;
+import entropy.plan.choco.actionModel.slice.Slice;
+import entropy.vjob.VJob;
 import org.f4g.entropy.configuration.F4GNode;
+import org.f4g.optimizer.OptimizationObjective;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.power.IPowerCalculator;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType.VMType;
 import org.f4g.schema.metamodel.FIT4GreenType;
 import org.f4g.schema.metamodel.NetworkNodeType;
-import org.f4g.schema.metamodel.ServerStatusType;
 import org.f4g.schema.metamodel.ServerType;
 import org.f4g.util.StaticPowerCalculation;
-import org.f4g.optimizer.OptimizationObjective;
 
-import choco.Choco;
-import choco.cp.solver.constraints.reified.ReifiedFactory;
-import choco.cp.solver.constraints.reified.FastIFFEq;
-import choco.kernel.solver.constraints.integer.IntExp;
-import choco.kernel.solver.variables.integer.IntDomainVar;
-import entropy.configuration.*;
-import entropy.plan.Plan;
-import entropy.plan.choco.ReconfigurationProblem;
-import entropy.plan.choco.actionModel.ManageableNodeActionModel;
-import entropy.plan.choco.actionModel.slice.Slice;
-import entropy.vjob.VJob;
-import static choco.cp.solver.constraints.integer.bool.BooleanFactory.*;
-import static choco.cp.solver.CPSolver.*;
-import entropy.plan.choco.actionModel.BootableNodeActionModel2;
-import entropy.plan.choco.actionModel.ShutdownableNodeActionModel;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static choco.cp.solver.CPSolver.mult;
+import static choco.cp.solver.constraints.integer.bool.BooleanFactory.or;
 
 public class PowerObjective extends Objective {
 
