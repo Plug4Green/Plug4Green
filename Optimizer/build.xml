@@ -61,10 +61,35 @@
 	    </junit>
 	</target>	
 
-	<target name="dist" depends="package">
+	<target name="bench-dist" depends="package">
 	  <mkdir dir="${bench.dir}"/>
 	  <copy todir="${bench.dir}/lib">
 	    <fileset dir="${lib.dir}" />
+	  </copy>
+	  <copy todir="${bench.dir}/lib" file="${dist.dir}/${jar.name}"/>
+	  <!-- other dependencies -->
+	  <copy todir="${bench.dir}/lib" file="../PowerCalculator/dist/f4g-powercalculator.jar"/>
+	  <copy todir="${bench.dir}/lib" file="../Commons/dist/f4g-commons.jar"/>
+	  <copy todir="${bench.dir}/lib">
+	    <fileset dir="../Commons/lib" />
+	  </copy>
+
+	  <copy todir="${bench.dir}/lib" file="../Schemas/dist/f4g-schemas.jar"/>
+	  <copy todir="${bench.dir}/lib">
+	    <fileset dir="../Schemas/lib"/>
+	  </copy>
+
+	  <!-- configuration files -->
+	  <mkdir dir="${bench.dir}/config"/>
+	  <copy todir="${bench.dir}/config" file="src/main/config/log4j-benchmark.properties"/>
+	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_void.xml"/>
+	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buffer_migs_vcpu.xml"/>
+	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buffer_migs.xml"/>
+	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buffer.xml"/>
+
+	  <!-- shell scripts -->
+	  <copy todir="${bench.dir}">
+	    <fileset dir="src/main/bin"/>
 	  </copy>
 	</target>
 </project>
