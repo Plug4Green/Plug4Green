@@ -36,6 +36,11 @@ public class BenchServer implements CommitedJobHandler {
         this.output = output;
         this.timeout = timeout;
 
+        File outF = new File(output);
+        File p = outF.getParentFile();
+        if (!p.exists()) {
+            p.mkdirs();
+        }
         fillServer(input, sla);
     }
 
