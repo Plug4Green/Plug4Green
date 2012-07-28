@@ -19,6 +19,8 @@ import entropy.plan.choco.actionModel.ShutdownableNodeActionModel;
 import entropy.plan.choco.actionModel.slice.Slice;
 import entropy.vjob.VJob;
 import org.f4g.entropy.configuration.F4GNode;
+import org.f4g.entropy.plan.constraint.Cardinalities;
+import org.f4g.entropy.plan.constraint.PackingBasedCardinalities;
 import org.f4g.optimizer.OptimizationObjective;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.power.IPowerCalculator;
@@ -186,12 +188,18 @@ public class PowerObjective extends Objective {
         IntDomainVar[] cards = new IntDomainVar[nodes.size()];
                     
         int[] nodesEnergyPerVM = new int[allServers.size()];
-        
+
+        //Cardinalities c = OccurencesBasedCardinalities.getInstances();
+        Cardinalities c = PackingBasedCardinalities.getInstances();
+        if (c == null) {
+            c = new PackingBasedCardinalities(m, 50);
+        }
         Plan.logger.debug(nodes.toString());
         for (int i = 0; i < nodes.size(); i++) {
         	F4GNode f4gNode = (F4GNode)nodes.get(i);		
  
-        	cards[i] = m.getSetModel(nodes.get(i)).getCard();
+        	//cards[i] = m.getSetModel(nodes.get(i)).getCard();
+            cards[i] = c.getCardinality(nodes.get(i));
             nodesEnergyPerVM[i] = f4gNode.getPperVM();
         }
 
