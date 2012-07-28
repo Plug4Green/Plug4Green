@@ -36,7 +36,7 @@ echo "-- Benching the impact of the datacenter size--"
     for SIZE in 500 1000 1500 2000 2500; do
 	    o="$OUTPUT/s${SIZE}-void.txt"
 	    echo "size=${SIZE};  output=$o"
-	    if [ -d $o ]; then
+	    if [ -e $o ]; then
 		echo "Skipping"
 	    else
 		runJob "-i bench${SIZE} -sla config/sla_void.xml -o $o -t 0 -p ${PORT}"

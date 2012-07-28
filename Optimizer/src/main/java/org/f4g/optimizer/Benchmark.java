@@ -378,6 +378,7 @@ public class Benchmark {
             }
         } else if (args[0].equals("-run")) {
             ModelGenerator g = new ModelGenerator();
+            g.schema_location = "../FIT4Green/Schemas/src/main/schema/MetaModel.xsd";
             if (args.length < 6) {
                 usage(1);
             } else {
