@@ -235,7 +235,7 @@ public class Benchmark {
         	sla.getCluster().getCluster().get(0).getNodeController().getNodeName().add(server.getFrameworkID());
         }       
 
-        BenchmarkStatistics st = new BenchmarkStatistics(pathName);
+        BenchmarkStatistics st = new BenchmarkStatistics(pathName.substring(pathName.lastIndexOf(File.separator) + 1));
 
         OptimizerEngineCloudTraditional optimizer = new OptimizerEngineCloudTraditional(new MockController(st), powerCalculator, new NetworkCost(), CloudTradCS.CLOUD, sla);
     	

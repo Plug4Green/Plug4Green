@@ -86,10 +86,13 @@
 	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buffer_migs_vcpu.xml"/>
 	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buffer_migs.xml"/>
 	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buffer.xml"/>
+	  <copy todir="${bench.dir}/config" file="../Schemas/src/main/schema/MetaModel.xsd"/>
+
 
 	  <!-- shell scripts -->
 	  <copy todir="${bench.dir}">
 	    <fileset dir="src/main/bin"/>
 	  </copy>
+	  <chmod dir="${bench.dir}" perm="ugo+rx" includes="**/*.sh"/>
 	</target>
 </project>
