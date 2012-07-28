@@ -4,6 +4,7 @@ import entropy.jobsManager.Job;
 import entropy.jobsManager.JobHandler;
 import org.f4g.optimizer.CloudTraditional.SLAReader;
 import org.f4g.optimizer.utils.Utils;
+import org.f4g.test.ModelGenerator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,6 +38,8 @@ public class BenchClient {
         Job j = client.dequeue();
 
         SLAReader sla = null;
+        ModelGenerator modelGenerator = new ModelGenerator();
+        modelGenerator.schema_location = "config/MetaModel.xsd";
         while (j != null) {
             File model = storeResource(client, j.get(BenchServer.MODEL_KEY), root);
             if (sla == null) {
@@ -44,7 +47,7 @@ public class BenchClient {
                 sla = new SLAReader(f);
             }
             int timeout = Integer.parseInt(j.get(BenchServer.TIMEOUT_KEY));
-            BenchmarkStatistics st = Benchmark.runConfiguration(sla, model.getPath(), timeout);
+            BenchmarkStatistics st = Benchmark.runConfiguration(modelGenerator, sla, model.getPath(), timeout);
 
             j.put(BenchServer.RESULT_KEY, st.toRaw());
             client.commit(j);

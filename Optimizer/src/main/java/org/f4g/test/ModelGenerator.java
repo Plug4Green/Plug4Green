@@ -16,40 +16,27 @@
 
 package org.f4g.test;
 
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.Random;
-import java.lang.Math;
+import org.apache.log4j.Logger;
+import org.f4g.optimizer.utils.AggregatedUsage;
+import org.f4g.optimizer.utils.Utils;
+import org.f4g.schema.metamodel.*;
+import org.f4g.util.Util;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
-import javax.xml.bind.ValidationEventLocator;
+import javax.xml.bind.*;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Random;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.f4g.schema.metamodel.*;
-import org.f4g.optimizer.utils.AggregatedUsage;
-import org.f4g.optimizer.utils.Utils;
-
-import org.f4g.util.Util;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-import org.f4g.optimizer.utils.Utils;
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 public class ModelGenerator {
 	
@@ -141,9 +128,8 @@ public class ModelGenerator {
     public static BandwidthType defaultSwitchProcessingBandwidth = new BandwidthType(1000000000);
     
 
+    public String schema_location =  "../Schemas/src/main/schema/MetaModel.xsd";
 
-
-	
 	public ModelGenerator() {
 		
 		log = Logger.getLogger(ModelGenerator.class.getName()); 
@@ -783,7 +769,7 @@ public class ModelGenerator {
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	    
 		try {
-			Schema schema = schemaFactory.newSchema(new File("../Schemas/src/main/schema/MetaModel.xsd"));
+			Schema schema = schemaFactory.newSchema(new File(schema_location));
 			Marshaller marshaller = Util.getJaxbContext().createMarshaller();
 		    marshaller.setSchema(schema);
 		    JAXBElement<FIT4GreenType> element = (new ObjectFactory()).createFIT4Green(FIT4Green);
@@ -834,7 +820,7 @@ public class ModelGenerator {
 			// ****** VALIDATION ******
 			SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 			try {
-				Schema schema = sf.newSchema(new File("../FIT4Green/Schemas/src/main/schema/MetaModel.xsd"));
+				Schema schema = sf.newSchema(new File(schema_location));
 				u.setSchema(schema);
 				u.setEventHandler(new ValidationEventHandler() {
 					// allow unmarshalling to continue even if there are errors
@@ -1017,8 +1003,6 @@ public class ModelGenerator {
 	public void setNB_ROUTERS(int v) {
         NB_ROUTERS = v;
     }
-
-	
 	
 }
 

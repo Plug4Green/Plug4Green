@@ -9,24 +9,19 @@ import entropy.configuration.Configuration;
 import entropy.configuration.Configurations;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
-import org.f4g.entropy.plan.constraint.sliceScheduling.LocalScheduler;
 import org.apache.log4j.Logger;
 import org.f4g.controller.IController;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.entropy.configuration.F4GConfigurationAdapter;
+import org.f4g.entropy.plan.constraint.sliceScheduling.LocalScheduler;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import org.f4g.optimizer.CloudTraditional.SLAReader;
 import org.f4g.optimizer.Optimizer.CloudTradCS;
 import org.f4g.optimizer.utils.Recorder;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.power.PowerCalculator;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.actions.LiveMigrateVMActionType;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
-import org.f4g.schema.constraints.optimizerconstraints.*;
+import org.f4g.schema.actions.*;
+import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.metamodel.FIT4GreenType;
 import org.f4g.schema.metamodel.RackableServerType;
 import org.f4g.schema.metamodel.ServerType;
@@ -51,7 +46,7 @@ import java.util.*;
  */
 public class Benchmark {
 	
-	private static Logger log;
+	private static Logger log = Logger.getLogger(Benchmark.class.getName());
 
     private static PowerCalculator powerCalculator = new PowerCalculator();
 
@@ -205,7 +200,7 @@ public class Benchmark {
     }
 
     //run all configurations in a directory
-    static List<BenchmarkStatistics> runConfigurations(SLAReader sla, String pathName, int timeout) {
+    static List<BenchmarkStatistics> runConfigurations(ModelGenerator modelGenerator, SLAReader sla, String pathName, int timeout) {
         List<BenchmarkStatistics> stats = new LinkedList<BenchmarkStatistics>();
 
         String fileName;
@@ -218,7 +213,7 @@ public class Benchmark {
                 fileName = f.getName();
                 if (fileName.endsWith(".xml")) {
                     log.info("Benching " + fileName);
-                    BenchmarkStatistics st = runConfiguration(sla, pathName + File.separator + fileName, timeout);
+                    BenchmarkStatistics st = runConfiguration(modelGenerator, sla, pathName + File.separator + fileName, timeout);
                     stats.add(st);
                 }
             }
@@ -230,11 +225,10 @@ public class Benchmark {
     }
 
     //run a configuration file
-    static BenchmarkStatistics runConfiguration(SLAReader sla, String pathName, int timeout) {
+    static BenchmarkStatistics runConfiguration(ModelGenerator modelGenerator, SLAReader sla, String pathName, int timeout) {
         ChocoLogging.setVerbosity(Verbosity.SILENT);
         ChocoLogging.setLoggingMaxDepth(10000);
         LocalScheduler.DEBUG = -1;
-        ModelGenerator modelGenerator = new ModelGenerator();
         FIT4GreenType model = modelGenerator.getModel(pathName);
 
         for(ServerType server : Utils.getAllServers(model)) {
@@ -289,7 +283,9 @@ public class Benchmark {
 				}
 				if (action.getValue() instanceof MoveVMActionType) {
 					MoveVMActionType move = (MoveVMActionType)action.getValue();
-					log.debug("executeActionList: move VM " + move.getVirtualMachine() + " from " + move.getSourceNodeController() + " to " + move.getDestNodeController());
+					log.debug("executeActionList: move VM " + move.getVirtualMachine()
+                            + " from " + move.getSourceNodeController()
+                            + " to " + move.getDestNodeController());
 					moves++;
 				}
 				if (action.getValue() instanceof LiveMigrateVMActionType) {
@@ -343,8 +339,7 @@ public class Benchmark {
     public static void main(String[] args) {
 
     	Utils.initLogger("../FIT4Green/Optimizer/src/main/config/log4j-benchmark.properties");
-    	log = Logger.getLogger(Benchmark.class.getName());
-    	
+
         if (args.length == 0) {
             usage(0);
         }
@@ -382,6 +377,7 @@ public class Benchmark {
                 usage(1);
             }
         } else if (args[0].equals("-run")) {
+            ModelGenerator g = new ModelGenerator();
             if (args.length < 6) {
                 usage(1);
             } else {
@@ -397,9 +393,9 @@ public class Benchmark {
                 File f = new File(args[1]);
                 List<BenchmarkStatistics> stats = new LinkedList<BenchmarkStatistics>();
                 if (f.isDirectory()) {
-                    stats.addAll(runConfigurations(sla, args[1], timeout));
+                    stats.addAll(runConfigurations(g, sla, args[1], timeout));
                 } else {
-                    BenchmarkStatistics st = runConfiguration(sla, args[1], timeout);
+                    BenchmarkStatistics st = runConfiguration(g, sla, args[1], timeout);
                     stats.add(st);
                 }
 
