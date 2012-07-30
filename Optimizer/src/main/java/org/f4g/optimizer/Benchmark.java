@@ -3,8 +3,6 @@ package org.f4g.optimizer;
 import choco.kernel.common.logging.ChocoLogging;
 import choco.kernel.common.logging.Verbosity;
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
 import entropy.configuration.Configuration;
 import entropy.configuration.Configurations;
 import entropy.configuration.ManagedElementSet;
@@ -27,7 +25,6 @@ import org.f4g.schema.metamodel.RackableServerType;
 import org.f4g.schema.metamodel.ServerType;
 import org.f4g.schema.metamodel.VirtualMachineType;
 import org.f4g.test.ModelGenerator;
-import org.f4g.util.Util;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -108,8 +105,14 @@ public class Benchmark {
         }
         List<ServerType> servers;
 
+        final HashMap<String, VMTypeType.VMType> vmNameToObject = new HashMap<String, VMTypeType.VMType>(NBVMsTotal);
+        for(VMTypeType.VMType t : sla.getVMtypes().getVMType()) {
+            vmNameToObject.put(t.getName(), t);
+        }
+
         //predicate to determine is a server is full according to our known constraints
         Predicate<ServerType> isFull = new Predicate<ServerType>() {
+
             @Override
             public boolean apply(ServerType server) {
 
@@ -118,8 +121,10 @@ public class Benchmark {
                 int sumCPUs = 0;
                 int sumCPUDemands = 0;
                 int sumMemoryDemands = 0;
-                for (VirtualMachineType vm : vms) {
-                    VMTypeType.VMType SLAVM = Util.findVMByName(vm.getCloudVmType(), sla.getVMtypes());
+                for (int i = 0; i < vms.size(); i++/*VirtualMachineType vm : vms*/) {
+                    VirtualMachineType vm = vms.get(i);
+                    //VMTypeType.VMType SLAVM = Util.findVMByName(vm.getCloudVmType(), sla.getVMtypes());
+                    VMTypeType.VMType SLAVM = vmNameToObject.get(vm.getCloudVmType());
                     sumCPUs += SLAVM.getCapacity().getVCpus().getValue();
                     sumCPUDemands += SLAVM.getExpectedLoad().getVCpuLoad().getValue();
                     sumMemoryDemands += SLAVM.getCapacity().getVRam().getValue(); //in GB
@@ -176,14 +181,18 @@ public class Benchmark {
             VirtualMachineType VM = modelGenerator1.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);
             VM.setCloudVmType(VMType[rand.nextInt(VMType.length)]);
             VM.setLastMigrationTimestamp(LastMigrationTimestamps[(rand.nextInt(100)<probaRecentMigration) ? 0 : 1]);
-            
-            Collection<ServerType> nonFullServers = Collections2.filter(servers, Predicates.not(isFull));
-            if (nonFullServers.isEmpty()) {
+
+
+            List<ServerType> myList = new ArrayList<ServerType>();
+            for (ServerType s : servers) {
+                if (!isFull.apply(s)) {
+                    myList.add(s);
+                }
+            }
+            if (myList.isEmpty()) {
                 break;
             }
-            int item = rand.nextInt(nonFullServers.size());
-            List<ServerType> myList = new ArrayList<ServerType>();
-            myList.addAll(nonFullServers);
+            int item = rand.nextInt(myList.size());
             ServerType s = myList.get(item);
             //set a framework ID related to its origin server
             VM.setFrameworkID("VMa" + i + "_" + s.getFrameworkID());
