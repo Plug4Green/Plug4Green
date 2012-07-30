@@ -308,7 +308,7 @@ public class IntegrationTest extends OptimizerTest {
         log.debug("moves=" + moves.size());
         log.debug("powerOffs=" + powerOffs.size());
         //one VM is moving to switch off a server
-        assertEquals(moves.get(0).getSourceNodeController(), "id200000");
+        assertEquals(moves.size(), 1);
 
 
         //TEST 2
