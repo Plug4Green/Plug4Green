@@ -1,14 +1,21 @@
 #!/bin/sh
-if [ $# -ne 3 ]; then
-    echo "Usage: $0 type workers output_file"
+if [ -f $OAR_NODEFILE ]; then
+	WORKERS="/tmp/$(basename $0).$$.tmp"
+	cat $OAR_NODEFILE|sort|uniq|tail -n +2 > $WORKERS
+else
+	echo "This script must be launched from the main node that contains the variable \$OAR_NODEFILE"
+	exit 1
+fi
+
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 type output_file"
     exit 1
 fi
 
 ROOT=`pwd`
 PORT=8080
 MASTER=`hostname -s`
-OUTPUT=$3
-WORKERS=$2
+OUTPUT=$2
 TYPE=$1
 
 #set -x
@@ -46,3 +53,5 @@ echo "-- Benching the impact of the datacenter size--"
 *)
 echo "Unknown type ${TYPE}"
 esac
+
+rm -rf $WORKERS
