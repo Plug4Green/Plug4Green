@@ -32,6 +32,7 @@ import org.f4g.util.Util;
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -52,10 +53,14 @@ public class Benchmark {
 
     public static boolean generateConfiguration(final SLAReader sla, int nbServers, String path, String prefix) {
 
+    	//number of VMs
         int NbVMsperServer = 6;
         int NBVMsTotal = nbServers * NbVMsperServer;
+        //distribution of the servers 
         int nbServers1 = nbServers / 2;
         int nbServers2 = (nbServers % 2 == 0 ? nbServers / 2 : nbServers / 2 + 1);
+        //probability for a VM to have been migrated recently (instead of one hour ago), in %
+        int probaRecentMigration = 5; 
 
         ModelGenerator modelGenerator1 = new ModelGenerator();
         //Server1:
@@ -149,27 +154,29 @@ public class Benchmark {
             }
         };
 
-
-        Date date = new Date();
-        GregorianCalendar gCalendar = new GregorianCalendar();
-        gCalendar.setTime(date);
-        XMLGregorianCalendar now = null;
-        try {
-            now = DatatypeFactory.newInstance().newXMLGregorianCalendar(gCalendar);
-        } catch (DatatypeConfigurationException e1) {
-            e1.printStackTrace();
-        }
+        
+		XMLGregorianCalendar now = model.getDatetime();
+		DatatypeFactory factory = null;
+		try {
+			factory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
+			e.printStackTrace();
+		}
+		Duration duration = factory .newDuration(false, 0, 0, 0, 1, 0, 0); // 1 hour negative Duration
+        XMLGregorianCalendar oneHourAgo = (XMLGregorianCalendar)now.clone();
+        oneHourAgo.add(duration);
 
         //List<VirtualMachineType> vms = new ArrayList<VirtualMachineType>();
         Random rand = new Random(System.currentTimeMillis());
 
         String [] VMType = {"m1.small", "m1.large", "m1.xlarge"};
+        XMLGregorianCalendar [] LastMigrationTimestamps = {now, oneHourAgo};
         for (int i = 0; i < NBVMsTotal; i++) {
             servers = Utils.getAllServers(model);
             VirtualMachineType VM = modelGenerator1.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);
             VM.setCloudVmType(VMType[rand.nextInt(VMType.length)]);
-            VM.setLastMigrationTimestamp(now);
-
+            VM.setLastMigrationTimestamp(LastMigrationTimestamps[(rand.nextInt(100)<probaRecentMigration) ? 0 : 1]);
+            
             Collection<ServerType> nonFullServers = Collections2.filter(servers, Predicates.not(isFull));
             if (nonFullServers.isEmpty()) {
                 break;
