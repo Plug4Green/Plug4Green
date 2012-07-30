@@ -83,9 +83,9 @@
 	  <mkdir dir="${bench.dir}/config"/>
 	  <copy todir="${bench.dir}/config" file="src/main/config/log4j-benchmark.properties"/>
 	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_void.xml"/>
-	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buffer_migs_vcpu.xml"/>
-	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buffer_migs.xml"/>
-	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buffer.xml"/>
+	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buf.xml"/>
+	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buf_migs.xml"/>
+	  <copy todir="${bench.dir}/config" file="src/main/resources/sla_buf_migs_vcpu.xml"/>
 	  <copy todir="${bench.dir}/config" file="../Schemas/src/main/schema/MetaModel.xsd"/>
 
 
