@@ -3,13 +3,11 @@ package org.f4g.optimizer;
 import entropy.jobsManager.CommitedJobHandler;
 import entropy.jobsManager.Job;
 import entropy.jobsManager.JobDispatcher;
-import org.apache.log4j.Logger;
-import org.f4g.optimizer.CloudTraditional.SLAReader;
-import org.omg.CORBA.TIMEOUT;
 
-import java.io.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * A server to dispatch models to solve to clients.
@@ -38,8 +36,10 @@ public class BenchServer implements CommitedJobHandler {
 
         File outF = new File(output);
         File p = outF.getParentFile();
-        if (!p.exists()) {
-            p.mkdirs();
+        if (p != null && !p.exists()) {
+            if (!p.mkdirs()) {
+               JobDispatcher.getLogger().error("Unable to create the folder '" + p.getPath() + "'");
+            }
         }
         fillServer(input, sla);
     }

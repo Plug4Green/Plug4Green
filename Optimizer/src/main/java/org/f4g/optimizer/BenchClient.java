@@ -52,6 +52,8 @@ public class BenchClient {
             j.put(BenchServer.RESULT_KEY, st.toRaw());
             client.commit(j);
             j = client.dequeue();
+            System.gc();
+            System.gc();
         }
 
     }

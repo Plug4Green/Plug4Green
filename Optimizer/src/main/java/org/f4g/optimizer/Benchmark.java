@@ -226,7 +226,7 @@ public class Benchmark {
 
     //run a configuration file
     static BenchmarkStatistics runConfiguration(ModelGenerator modelGenerator, SLAReader sla, String pathName, int timeout) {
-        ChocoLogging.setVerbosity(Verbosity.SOLUTION);
+        ChocoLogging.setVerbosity(Verbosity.SILENT);
         ChocoLogging.setLoggingMaxDepth(10000);
         LocalScheduler.DEBUG = -1;
         FIT4GreenType model = modelGenerator.getModel(pathName);
@@ -246,6 +246,7 @@ public class Benchmark {
         optimizer.runGlobalOptimization(model);
         long ed = System.currentTimeMillis();
         st.setSolvingDuration(ed - start);
+        optimizer = null;
         return st;
     }
 

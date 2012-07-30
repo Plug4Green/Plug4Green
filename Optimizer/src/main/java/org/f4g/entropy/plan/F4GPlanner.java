@@ -9,11 +9,8 @@ import choco.kernel.solver.search.ISolutionPool;
 import choco.kernel.solver.search.SolutionPoolFactory;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.*;
-import entropy.configuration.parser.FileConfigurationSerializer;
-import entropy.configuration.parser.FileConfigurationSerializerFactory;
 import entropy.plan.*;
 import entropy.plan.action.Action;
-import entropy.plan.choco.BasicPlacementHeuristic2;
 import entropy.plan.choco.DefaultReconfigurationProblem;
 import entropy.plan.choco.DummyPlacementHeuristic;
 import entropy.plan.choco.ReconfigurationProblem;
@@ -22,24 +19,17 @@ import entropy.plan.choco.actionModel.VirtualMachineActionModel;
 import entropy.plan.choco.actionModel.slice.Slice;
 import entropy.plan.choco.constraint.pack.SatisfyDemandingSliceHeights;
 import entropy.plan.choco.constraint.pack.SatisfyDemandingSlicesHeightsFastBP;
-import entropy.plan.choco.constraint.pack.SatisfyDemandingSlicesHeightsSimpleBP;
 import entropy.plan.durationEvaluator.DurationEvaluationException;
 import entropy.plan.durationEvaluator.MockDurationEvaluator;
-import entropy.plan.parser.FileTimedReconfigurationPlanSerializerFactory;
-import entropy.plan.visualization.DotVisualizer;
-import entropy.plan.visualization.PlanVisualizer;
 import entropy.vjob.PlacementConstraint;
 import entropy.vjob.VJob;
-
-import java.io.IOException;
-import java.util.*;
-
-
 import org.apache.log4j.Logger;
+import org.f4g.entropy.plan.constraint.PackingBasedCardinalities;
+import org.f4g.entropy.plan.constraint.sliceScheduling.SlicesPlanner;
 import org.f4g.entropy.plan.objective.PowerObjective;
 import org.f4g.entropy.plan.search_heuristic.F4GPlacementHeuristic;
 
-import org.f4g.entropy.plan.constraint.sliceScheduling.*;
+import java.util.*;
 
 /**
  * A CustomizablePlannerModule based on Choco.
@@ -254,6 +244,8 @@ public class F4GPlanner extends CustomizablePlannerModule {
         //model.solve();
         model.launch();
 	    Boolean ret = model.isFeasible();
+
+        PackingBasedCardinalities.getInstances().reset();
 	    if (ret == null) {
 	        throw new PlanException("Unable to check wether a solution exists or not");
 	    } else {

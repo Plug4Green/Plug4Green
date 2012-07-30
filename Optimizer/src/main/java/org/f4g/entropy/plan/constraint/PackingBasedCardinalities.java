@@ -71,7 +71,8 @@ public class PackingBasedCardinalities implements Cardinalities {
 
     @Override
     public void reset() {
-        cards = null;
+        this.rp = null;
+        this.cards = null;
         instances = null;
     }
     @Override
