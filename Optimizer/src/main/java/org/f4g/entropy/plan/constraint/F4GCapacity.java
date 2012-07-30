@@ -12,19 +12,9 @@
 */
 package org.f4g.entropy.plan.constraint;
 
-import choco.kernel.solver.ContradictionException;
 import choco.kernel.solver.variables.integer.IntDomainVar;
-import choco.kernel.solver.variables.set.SetVar;
-import entropy.configuration.Configuration;
-import entropy.configuration.ManagedElementSet;
-import entropy.configuration.Node;
-import entropy.configuration.SimpleManagedElementSet;
-import entropy.configuration.VirtualMachine;
-import entropy.plan.Plan;
+import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
-import entropy.plan.choco.actionModel.VirtualMachineActionModel;
-import entropy.plan.choco.actionModel.slice.DemandingSlice;
-import entropy.vjob.*;
 
 
 /**
@@ -60,9 +50,14 @@ public class F4GCapacity extends F4GConstraint {
 		
 		// For each node, we define a set denoting the VMs it may hosts
 		IntDomainVar[] cards = new IntDomainVar[nodes.size()];
-		
-		for (int i = 0; i < nodes.size(); i++) {
-			cards[i] = core.getSetModel(nodes.get(i)).getCard();
+
+        Cardinalities c = PackingBasedCardinalities.getInstances();
+        if (c == null) {
+            c = new PackingBasedCardinalities(core, 50);
+        }
+
+        for (int i = 0; i < nodes.size(); i++) {
+			cards[i] = c.getCardinality(nodes.get(i));
 			core.post(core.leq(cards[i], max));
 		}
     	

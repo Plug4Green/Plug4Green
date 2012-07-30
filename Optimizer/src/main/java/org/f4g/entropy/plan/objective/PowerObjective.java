@@ -11,7 +11,6 @@ import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.configuration.VirtualMachine;
-import entropy.plan.Plan;
 import entropy.plan.choco.ReconfigurationProblem;
 import entropy.plan.choco.actionModel.BootableNodeActionModel2;
 import entropy.plan.choco.actionModel.ManageableNodeActionModel;
@@ -189,16 +188,13 @@ public class PowerObjective extends Objective {
                     
         int[] nodesEnergyPerVM = new int[allServers.size()];
 
-        //Cardinalities c = OccurencesBasedCardinalities.getInstances();
         Cardinalities c = PackingBasedCardinalities.getInstances();
         if (c == null) {
             c = new PackingBasedCardinalities(m, 50);
         }
-        Plan.logger.debug(nodes.toString());
         for (int i = 0; i < nodes.size(); i++) {
         	F4GNode f4gNode = (F4GNode)nodes.get(i);		
- 
-        	//cards[i] = m.getSetModel(nodes.get(i)).getCard();
+
             cards[i] = c.getCardinality(nodes.get(i));
             nodesEnergyPerVM[i] = f4gNode.getPperVM();
         }

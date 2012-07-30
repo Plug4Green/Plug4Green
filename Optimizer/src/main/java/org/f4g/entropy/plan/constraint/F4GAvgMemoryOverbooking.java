@@ -12,23 +12,18 @@
  */
 package org.f4g.entropy.plan.constraint;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import choco.cp.solver.constraints.reified.FastIFFEq;
+import choco.cp.solver.constraints.reified.ReifiedFactory;
+import choco.kernel.solver.variables.integer.IntDomainVar;
+import entropy.configuration.*;
+import entropy.plan.choco.ReconfigurationProblem;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.schema.metamodel.FIT4GreenType;
 import org.f4g.schema.metamodel.ServerType;
 import org.f4g.schema.metamodel.VirtualMachineType;
 
-import choco.cp.solver.constraints.reified.FastIFFEq;
-import choco.cp.solver.constraints.reified.ReifiedFactory;
-import choco.kernel.solver.variables.integer.IntDomainVar;
-import entropy.configuration.Configuration;
-import entropy.configuration.ManagedElementSet;
-import entropy.configuration.Node;
-import entropy.configuration.SimpleManagedElementSet;
-import entropy.configuration.VirtualMachine;
-import entropy.plan.choco.ReconfigurationProblem;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -89,8 +84,14 @@ public class F4GAvgMemoryOverbooking extends F4GConstraint {
 		IntDomainVar[] eidleServer = new IntDomainVar[nodes.size()];
 		int i = 0;
 		double rest;
-		for (Node n : nodes) {
-			IntDomainVar card = core.getSetModel(n).getCard();
+        Cardinalities c = PackingBasedCardinalities.getInstances();
+        if (c == null) {
+            c = new PackingBasedCardinalities(core, 50);
+        }
+
+        for (Node n : nodes) {
+			IntDomainVar card = c.getCardinality(nodes.get(i));
+
 			int nbOfRAMSpace = n.getMemoryCapacity();
 			// rest = (nbOfRAMSpace * max * 100) % 100;
 			int overbookedNumberOfRAM = (int) ((int) nbOfRAMSpace * max);

@@ -13,11 +13,10 @@
 package org.f4g.entropy.plan.constraint;
 
 
-import org.f4g.schema.metamodel.FIT4GreenType;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
-import entropy.vjob.*;
+import org.f4g.schema.metamodel.FIT4GreenType;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -108,9 +107,15 @@ public class F4GOverbookingConstraint extends F4GConstraint {
 
 		// For each node, we define a set denoting the VMs it may hosts
 		IntDomainVar[] cards = new IntDomainVar[nodes.size()];
-		if(vms.size()!=0) {
+
+        Cardinalities c = PackingBasedCardinalities.getInstances();
+        if (c == null) {
+            c = new PackingBasedCardinalities(core, 50);
+        }
+
+        if(vms.size()!=0) {
 			for (int i = 0; i < nodes.size(); i++) {
-				cards[i] = core.getSetModel(nodes.get(i)).getCard();
+				cards[i] = c.getCardinality(nodes.get(i));
 				core.post(core.leq(cards[i], calculateMaxVMsPerNode(nodes.get(i))));
 			}
 		}

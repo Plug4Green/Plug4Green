@@ -12,18 +12,11 @@
  */
 package org.f4g.entropy.plan.constraint;
 
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.DatacenterType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.MainboardType;
-import org.f4g.schema.metamodel.RAMStickType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.SiteType;
-
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
-import entropy.vjob.*;
+import org.f4g.optimizer.utils.Utils;
+import org.f4g.schema.metamodel.*;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -110,9 +103,13 @@ public class F4GMemoryConstraint extends F4GConstraint {
 		
 		// For each node, we define a set denoting the VMs it may hosts
 		IntDomainVar[] cards = new IntDomainVar[nodes.size()];
-		
-		for (int i = 0; i < nodes.size(); i++) {
-			cards[i] = core.getSetModel(nodes.get(i)).getCard();
+
+        Cardinalities c = PackingBasedCardinalities.getInstances();
+        if (c == null) {
+            c = new PackingBasedCardinalities(core, 50);
+        }
+        for (int i = 0; i < nodes.size(); i++) {
+			cards[i] = c.getCardinality(nodes.get(i));
 			core.post(core.leq(cards[i], getRAMCap(nodes.get(i).getName())/x));
 		}
 	}
