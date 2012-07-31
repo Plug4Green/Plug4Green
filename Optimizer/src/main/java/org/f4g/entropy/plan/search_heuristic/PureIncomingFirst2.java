@@ -101,7 +101,6 @@ public class PureIncomingFirst2 extends AbstractIntVarSelector {
 
     @Override
     public IntDomainVar selectVar() {
-
         if (first) {
             first = !first;
             planner.activateQualityOrientedConstraints();

@@ -123,6 +123,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	public void testGlobalConstraintOnCPUUsage(){
 		//generate one VM per server
 		//VMs ressource usage is 0
+        ChocoLogging.setVerbosity(Verbosity.SOLUTION);
 		ModelGenerator modelGenerator = new ModelGenerator();
 
 		modelGenerator.setNB_SERVERS(8); //8

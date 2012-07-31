@@ -113,9 +113,11 @@ public class OptimizerTest extends TestCase {
 		@Override
 		public boolean executeActionList(ActionRequestType myActionRequest) {
 			actionRequest = myActionRequest;
+            System.err.println("foo:" + myActionRequest.getActionList().getAction());
 			actionRequestAvailable.release();
-			
+            System.err.println("foo:" + myActionRequest.getActionList().getAction());
 			for (JAXBElement<? extends AbstractBaseActionType> action : myActionRequest.getActionList().getAction()){
+
 				if (action.getValue() instanceof PowerOnActionType) {
 					PowerOnActionType on = (PowerOnActionType)action.getValue();
 					log.debug("executeActionList: power ON on :" + on.getNodeName());
@@ -132,8 +134,8 @@ public class OptimizerTest extends TestCase {
 					LiveMigrateVMActionType move = (LiveMigrateVMActionType)action.getValue();
 					log.debug("executeActionList: live migrate VM " + move.getVirtualMachine() + " from " + move.getSourceNodeController() + " to " + move.getDestNodeController());
 				}
+
 			}
-			
 			log.debug("executeActionList: ComputedPowerBefore = " + myActionRequest.getComputedPowerBefore().getValue());
 			log.debug("executeActionList: ComputedPowerAfter = " + myActionRequest.getComputedPowerAfter().getValue());
 			
