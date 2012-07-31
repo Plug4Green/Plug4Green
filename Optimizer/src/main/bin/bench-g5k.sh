@@ -26,7 +26,7 @@ function runJob {
     sleep 5
     echo "Starting workers"
     taktuk --connector /usr/bin/oarsh -o connector -o status -f $WORKERS \
-    broadcast exec [ "cd $ROOT/$prg; ./benchmark_client.sh $MASTER:$PORT" ] 2>&1 > taktuk.log
+    broadcast exec [ "cd $ROOT/$prg; ./benchmark_client.sh $MASTER:$PORT" ] 2>&1 >> taktuk.$$.log
     echo "Workers are terminated"
     sleep 15
     echo "Cleaning"
