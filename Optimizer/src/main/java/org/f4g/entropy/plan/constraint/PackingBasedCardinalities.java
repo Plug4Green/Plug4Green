@@ -65,6 +65,7 @@ public class PackingBasedCardinalities implements Cardinalities {
         Plan.logger.debug("SatisfyDemandingSlicesHeightsFastBP branched");
 
     }
+
     public static Cardinalities getInstances() {
         return instances;
     }

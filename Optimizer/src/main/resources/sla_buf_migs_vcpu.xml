@@ -111,7 +111,7 @@
         <SLA id="ID11">
             <HardwareMetrics/>
             <CommonQoSRelatedMetrics>
-                <MaxServerAvg_vCPUperCore>2.5</MaxServerAvg_vCPUperCore>
+                <MaxVirtualCPUPerCore>2.5</MaxVirtualCPUPerCore>
             </CommonQoSRelatedMetrics>
             <AdditionalMetrics/>
         </SLA>
