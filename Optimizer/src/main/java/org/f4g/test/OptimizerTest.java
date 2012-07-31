@@ -13,70 +13,38 @@
 package org.f4g.test;
 
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.Semaphore;
+import junit.framework.TestCase;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.f4g.com.util.PowerData;
+import org.f4g.controller.IController;
+import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import org.f4g.optimizer.ICostEstimator;
+import org.f4g.optimizer.utils.Utils;
+import org.f4g.power.IPowerCalculator;
+import org.f4g.schema.actions.*;
+import org.f4g.schema.allocation.AllocationRequestType;
+import org.f4g.schema.allocation.CloudVmAllocationType;
+import org.f4g.schema.allocation.ObjectFactory;
+import org.f4g.schema.allocation.TraditionalVmAllocationType;
+import org.f4g.schema.constraints.optimizerconstraints.*;
+import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
+import org.f4g.schema.metamodel.*;
+import org.jscience.economics.money.Money;
+import org.jscience.physics.measures.Measure;
 
 import javax.measure.quantities.Duration;
 import javax.measure.quantities.Energy;
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.Semaphore;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.f4g.com.util.PowerData;
-import org.f4g.controller.IController;
-import org.f4g.optimizer.ICostEstimator;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.metamodel.CPUType;
-import org.f4g.schema.metamodel.CoreType;
-import org.f4g.schema.metamodel.DatacenterType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.FanType;
-import org.f4g.schema.metamodel.HardDiskType;
-import org.f4g.schema.metamodel.MainboardType;
-import org.f4g.schema.metamodel.NASType;
-import org.f4g.schema.metamodel.NetworkNodeType;
-import org.f4g.schema.metamodel.OperatingSystemTypeType;
-import org.f4g.schema.metamodel.RAIDType;
-import org.f4g.schema.metamodel.RackType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.SiteType;
-import org.f4g.schema.metamodel.SolidStateDiskType;
-import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.actions.LiveMigrateVMActionType;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.CloudVmAllocationType;
-import org.f4g.schema.allocation.ObjectFactory;
-import org.f4g.schema.allocation.TraditionalVmAllocationType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedClustersType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedPoliciesType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedSLAsType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.constraints.optimizerconstraints.FederationType;
-import org.f4g.schema.constraints.optimizerconstraints.NodeControllerType;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.SLAType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
-import org.jscience.economics.money.Money;
-import org.jscience.physics.measures.Measure;
-
-import choco.kernel.common.logging.ChocoLogging;
-import choco.kernel.common.logging.Verbosity;
-
-
-import junit.framework.TestCase;
-import static javax.measure.units.SI.*;
+import static javax.measure.units.SI.JOULE;
 
 
 /**
@@ -113,9 +81,7 @@ public class OptimizerTest extends TestCase {
 		@Override
 		public boolean executeActionList(ActionRequestType myActionRequest) {
 			actionRequest = myActionRequest;
-            System.err.println("foo:" + myActionRequest.getActionList().getAction());
 			actionRequestAvailable.release();
-            System.err.println("foo:" + myActionRequest.getActionList().getAction());
 			for (JAXBElement<? extends AbstractBaseActionType> action : myActionRequest.getActionList().getAction()){
 
 				if (action.getValue() instanceof PowerOnActionType) {

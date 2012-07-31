@@ -135,7 +135,7 @@ public class PowerObjective extends Objective {
         IntExp c = m.sum(getPIdle(m), getPVMs(m), getPNetwork(m));
         SConstraint s = m.eq(c, globalPower);
         //TODO quality constraint ?
-    	//m.post(s);
+    	qualityConstraints.add(s);
     	m.post(m.eq(mult((int)reconfTime/1000, globalPower), stableEnergy));
     	//this equation represents the energy spent between two reconfigurations (that we'll try to minimize).
         m.post(m.eq(m.sum(stableEnergy, getEMove(m), getEOnOff(m)), reconfEnergy));
