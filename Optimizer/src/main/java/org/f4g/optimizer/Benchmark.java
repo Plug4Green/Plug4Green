@@ -51,7 +51,7 @@ public class Benchmark {
     public static boolean generateConfiguration(final SLAReader sla, int nbServers, String path, String prefix) {
 
     	//number of VMs
-        int NbVMsperServer = 6;
+        int NbVMsperServer = 5;
         int NBVMsTotal = nbServers * NbVMsperServer;
         //distribution of the servers 
         int nbServers1 = nbServers / 2;
