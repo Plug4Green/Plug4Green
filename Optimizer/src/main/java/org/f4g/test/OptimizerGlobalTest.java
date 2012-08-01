@@ -46,6 +46,8 @@ import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType;
 import org.f4g.schema.constraints.optimizerconstraints.SLAType;
+import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
+import org.f4g.schema.constraints.optimizerconstraints.UnitType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
@@ -74,7 +76,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 
 		SLAGenerator slaGenerator = new SLAGenerator();
 		
-		PeriodType period = new PeriodType(begin, end, null, null, new LoadType("m1.small", -1, -1));
+		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
 		
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -584,7 +586,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		vmTypes.getVMType().add(type1);
 					
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("small", 300, 6));
+				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -667,7 +669,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		model.getSite().get(0).setPUE(new PUEType(1.8));
 		
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("small", 300, 6));
+				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -794,7 +796,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 					
 		
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", 300, 6));
+				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -871,7 +873,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
     	  		
     	
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", 800, 12));
+				begin, end, null, null, new LoadType(new SpareCPUs(8, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -937,7 +939,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
     	optimizer.setVmTypes(vmTypes);
     	  		
     	PeriodType period = new PeriodType(
-    			begin, end, null, null, new LoadType("m1.small", 300, 6));
+    			begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -1079,7 +1081,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 
 		
 		PeriodType period = new PeriodType(
-    			begin, end, null, null, new LoadType("m1.small", 300, 7));
+    			begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 		
 
 		PolicyType.Policy pol = new Policy();
@@ -1183,7 +1185,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
 		
 		PeriodType period = new PeriodType(
-    			begin, end, null, null, new LoadType("m1.small", -1, -1));
+    			begin, end, null, null, new LoadType(null, null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
