@@ -60,13 +60,14 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		this.currentFit4Green = currentFIT4Green;
 	}
 
-	public F4GConfigurationAdapter(FIT4GreenType f4g, VMTypeType vmType, IPowerCalculator powerCalculator) {
+	public F4GConfigurationAdapter(FIT4GreenType f4g, VMTypeType vmType, IPowerCalculator powerCalculator, OptimizationObjective optiObjective) {
 		currentFit4Green = f4g;
 		currentVMType = vmType;
 		log = Logger.getLogger(F4GConfigurationAdapter.class.getName());
 		allServers = Utils.getAllServers(f4g);
 		this.powerCalculator = powerCalculator;
 		powerCalculation = new StaticPowerCalculation(null);
+		this.optiObjective = optiObjective;
 	}
 	
 	

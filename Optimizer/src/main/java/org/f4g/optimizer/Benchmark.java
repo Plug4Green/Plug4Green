@@ -202,7 +202,7 @@ public class Benchmark {
 
 
         //Check the current configuration, just in case
-        F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(model, sla.getVMtypes(), powerCalculator);
+        F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(model, sla.getVMtypes(), powerCalculator, OptimizationObjective.Power);
         Configuration cfg = confAdapter.extractConfiguration();
         ManagedElementSet<Node> ns = Configurations.currentlyOverloadedNodes(cfg);
         if (!ns.isEmpty()) {
