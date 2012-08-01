@@ -57,7 +57,7 @@ public class OptimizerTest extends TestCase {
 	
 	//this actionRequest is filled by the MockController after being called. 
 	protected ActionRequestType actionRequest = null;
-	protected final Semaphore actionRequestAvailable = new Semaphore(1);
+	protected final Semaphore actionRequestAvailable = new Semaphore(10);
 	
 	/**
 	 * @uml.property  name="optimizer"
@@ -415,6 +415,57 @@ public class OptimizerTest extends TestCase {
 		
 		return fed;
 
+	}
+	
+	List <MoveVMActionType> getMoves() {
+		try {
+			actionRequestAvailable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		ActionRequestType.ActionList response = actionRequest.getActionList();
+		
+		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
+			
+		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
+			if (action.getValue() instanceof MoveVMActionType) 
+				moves.add((MoveVMActionType)action.getValue());
+		}
+		return moves;
+	}
+	
+	List <PowerOffActionType> getPowerOffs() {
+		try {
+			actionRequestAvailable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		ActionRequestType.ActionList response = actionRequest.getActionList();
+		
+		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
+		
+		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
+			if (action.getValue() instanceof PowerOffActionType) 
+				powerOffs.add((PowerOffActionType)action.getValue());
+		}
+		return powerOffs;
+	}
+	
+	List <PowerOnActionType> getPowerOns() {
+		try {
+			actionRequestAvailable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		ActionRequestType.ActionList response = actionRequest.getActionList();
+		
+		List <PowerOnActionType> powerOns = new ArrayList<PowerOnActionType>();
+		
+		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
+			if (action.getValue() instanceof PowerOffActionType) 
+				powerOns.add((PowerOnActionType)action.getValue());
+		}
+		return powerOns;
 	}
 	
 }

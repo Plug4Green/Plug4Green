@@ -438,69 +438,22 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	 */
 	public void test2DCMigrationInter() {
 		
-		//generate one VM per server
-		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(2);
+		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-
-		//servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4); //4 cores
-		
-		//VM settings
-		modelGenerator.VM_TYPE = "Ridiculous";
-				
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("Ridiculous");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		optimizer.getVmTypes().getVMType().add(type1);
-		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();				
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		
-		//optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).get
-		optimizer.setSearchTimeLimit(30);
 		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-		
-		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
-	         	
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-	
-		assertTrue(moves.size()==3);
-		assertTrue(powerOffs.size()==3);
-		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(moves.get(0).getDestNodeController(),"id1000000");
-		assertEquals(moves.get(0).getFrameworkName(),"DC1");
-		assertEquals(moves.get(1).getDestNodeController(),"id1000000");
-		assertEquals(moves.get(1).getFrameworkName(),"DC2");
-		assertEquals(moves.get(2).getDestNodeController(),"id1000000");
-		assertEquals(moves.get(2).getFrameworkName(),"DC1");
-		
-		SiteType s = Utils.getServerSite(model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(0), model);
-		log.debug(s.getPUE());
+		     		
+		assertEquals(getMoves().size(), 1);
+		assertEquals(getPowerOffs().size(), 1);		
 	}
 		
 
 
+	
+	
 	/**
 	 * Test global optimization with 2 DC and migrations between allowed
 	 *
@@ -555,7 +508,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		assertTrue(moves.size()==2);
 		assertTrue(powerOffs.size()==2);
 		//Check that VMs moves only inside a DC
-		assertEquals(moves.get(0).getDestNodeController(), "id0");
+		assertEquals(moves.get(0).getDestNodeController(), "id100000");
 		assertEquals(moves.get(1).getDestNodeController(), "id1000000");
 		
 
@@ -617,7 +570,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	
 		assertTrue(moves.size()==1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(moves.get(0).getDestNodeController(),"id1000000");
+		assertEquals(moves.get(0).getDestNodeController(),"id0");
 		
 		//TEST 2
 		
@@ -838,7 +791,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	
 		assertTrue(moves.size()==1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(moves.get(0).getDestNodeController(),"id1000000");
+		assertEquals(moves.get(0).getDestNodeController(),"id0");
 		
 	}
 	
