@@ -1,6 +1,7 @@
 package org.f4g.optimizer;
 
 import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.common.logging.Verbosity;
 import com.google.common.base.Predicate;
 import entropy.configuration.Configuration;
 import entropy.configuration.Configurations;
@@ -351,7 +352,7 @@ public class Benchmark {
     }
 
     public static void main(String[] args) {
-        //ChocoLogging.setVerbosity(Verbosity.SEARCH);
+        ChocoLogging.setVerbosity(Verbosity.SILENT);
         ChocoLogging.setLoggingMaxDepth(10000);
     	Utils.initLogger("../FIT4Green/Optimizer/src/main/config/log4j-benchmark.properties");
 
