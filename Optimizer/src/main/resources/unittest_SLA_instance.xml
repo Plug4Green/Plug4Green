@@ -81,9 +81,7 @@
 							<type name="m1.large"  cpu="2" cpuLoad="40" hd="12" ram="2" />
 						</VMTypes>
 						<VMMargin>
-							<VMname>m1.large</VMname>
-							<lowVMSlotsThreshold>300</lowVMSlotsThreshold>
-							<highVMSlotsThreshold>7</highVMSlotsThreshold>
+							<spareCPUs>3</spareCPUs>
 						</VMMargin>
 					</Metrics>
 				</HardwareNeeds>

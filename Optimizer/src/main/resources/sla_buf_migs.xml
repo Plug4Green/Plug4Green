@@ -110,8 +110,7 @@
     <ListOfSLA>
         <SLA id="ID11">
             <HardwareMetrics/>
-            <CommonQoSRelatedMetrics>
-            </CommonQoSRelatedMetrics>
+            <CommonQoSRelatedMetrics/>
             <AdditionalMetrics/>
         </SLA>
     </ListOfSLA>
@@ -121,9 +120,7 @@
                 <Starts>2011-05-04T11:51:36Z</Starts>
                 <Ends>2013-05-04T11:51:36Z</Ends>
                 <Load>
-                    <VMnameRef>m1.xlarge</VMnameRef>
-                    <lowVMSlotsThreshold>0</lowVMSlotsThreshold>
-                    <highVMSlotsThreshold>6</highVMSlotsThreshold>
+                   <spareCPUs>16</spareCPUs>
                 </Load>
             </PeriodVMThreshold>
             <DelayBetweenMove>30</DelayBetweenMove>

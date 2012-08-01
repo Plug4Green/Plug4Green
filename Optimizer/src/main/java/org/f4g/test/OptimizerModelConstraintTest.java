@@ -44,6 +44,8 @@ import org.f4g.schema.constraints.optimizerconstraints.LoadType;
 import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
 import org.f4g.schema.constraints.optimizerconstraints.SLAType;
+import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
+import org.f4g.schema.constraints.optimizerconstraints.UnitType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.test.OptimizerTest.MockController;
@@ -71,7 +73,7 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		SLAGenerator slaGenerator = new SLAGenerator();
 		
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", 300, 6));
+				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -248,7 +250,7 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		SLAType slas = new SLAType();
 		
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", -1, -1));
+				begin, end, null, null, new LoadType(null, null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -372,7 +374,7 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		allocationRequest.setRequest(operationType);
 		
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", -1, 6));
+				begin, end, null, null, new LoadType(null, null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);

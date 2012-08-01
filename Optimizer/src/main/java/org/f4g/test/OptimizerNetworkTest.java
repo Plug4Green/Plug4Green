@@ -49,7 +49,7 @@ public class OptimizerNetworkTest extends OptimizerTest {
 
 		SLAGenerator slaGenerator = new SLAGenerator();
 		
-		PeriodType period = new PeriodType(begin, end, null, null, new LoadType("m1.small", -1, -1));
+		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
 		
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);

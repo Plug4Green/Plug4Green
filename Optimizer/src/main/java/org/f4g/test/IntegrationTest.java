@@ -13,11 +13,7 @@
 package org.f4g.test;
 
 
-import choco.kernel.common.logging.ChocoLogging;
-import choco.kernel.common.logging.Verbosity;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
+
 import org.apache.log4j.Logger;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
@@ -25,7 +21,6 @@ import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoTy
 import org.f4g.optimizer.CloudTraditional.SLAReader;
 import org.f4g.optimizer.utils.OptimizerWorkload;
 import org.f4g.optimizer.utils.OptimizerWorkload.CreationImpossible;
-import org.f4g.optimizer.utils.Recorder;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.power.IPowerCalculator;
 import org.f4g.power.PowerCalculator;
@@ -39,9 +34,8 @@ import org.f4g.schema.constraints.optimizerconstraints.*;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType.VMType;
 import org.f4g.schema.metamodel.*;
-import org.f4g.util.Util;
+
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -49,7 +43,8 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.util.*;
-
+import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
+import org.f4g.schema.constraints.optimizerconstraints.UnitType;
 
 /**
  * Integration with the power calculator tests
@@ -71,11 +66,11 @@ public class IntegrationTest extends OptimizerTest {
         log = Logger.getLogger(this.getClass().getName());
 
         List<LoadType> load = new LinkedList<LoadType>();
-        load.add(new LoadType("m1.small", 300, 6));
+        load.add(new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 
         PeriodType period = new PeriodType(
-                begin, end, null, null, new LoadType("m1.small", 300, 6));
+                begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
         PolicyType.Policy pol = new Policy();
         pol.getPeriodVMThreshold().add(period);
@@ -180,10 +175,10 @@ public class IntegrationTest extends OptimizerTest {
         vmTypes.getVMType().add(type1);
 
         List<LoadType> load = new LinkedList<LoadType>();
-        load.add(new LoadType("m1.small", 300, 6));
+        load.add(new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
         PeriodType period = new PeriodType(
-                begin, end, null, null, new LoadType("m1.small", 300, 6));
+                begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
         PolicyType.Policy pol = new Policy();
         pol.getPeriodVMThreshold().add(period);
@@ -266,7 +261,7 @@ public class IntegrationTest extends OptimizerTest {
 
 
         PeriodType period = new PeriodType(
-                begin, end, null, null, new LoadType("small", 300, 6));
+                begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
         PolicyType.Policy pol = new Policy();
         pol.getPeriodVMThreshold().add(period);

@@ -19,8 +19,6 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-import choco.kernel.common.logging.ChocoLogging;
-import choco.kernel.common.logging.Verbosity;
 import org.f4g.com.util.PowerData;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
@@ -58,8 +56,8 @@ import org.f4g.schema.constraints.optimizerconstraints.SLAType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
-
-
+import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
+import org.f4g.schema.constraints.optimizerconstraints.UnitType;
 
 /**
  * Test singe allocation with Entropy
@@ -75,12 +73,8 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		List<LoadType> load = new LinkedList<LoadType>();
-		load.add(new LoadType("m1.small", 300, 6));
-
-
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", 300, 6));
+				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -539,10 +533,10 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		vmTypes.getVMType().add(type1);
 		
 		List<LoadType> load = new LinkedList<LoadType>();
-		load.add(new LoadType("m1.small", 300, 6));
+		load.add(new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", 300, 6));
+				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -922,7 +916,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		
 		//This policy is not met by the configuration
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("small", 1000, 6));
+				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);

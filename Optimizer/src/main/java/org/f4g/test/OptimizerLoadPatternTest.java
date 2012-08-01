@@ -43,6 +43,8 @@ import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType;
 import org.f4g.schema.constraints.optimizerconstraints.RepeatsType;
 import org.f4g.schema.constraints.optimizerconstraints.SLAType;
+import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
+import org.f4g.schema.constraints.optimizerconstraints.UnitType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
@@ -73,7 +75,7 @@ public class OptimizerLoadPatternTest extends OptimizerTest {
 
 		SLAGenerator slaGenerator = new SLAGenerator();
 		
-		PeriodType period = new PeriodType(begin, end, null, null, new LoadType("m1.small", -1, -1));
+		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
 		
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -169,8 +171,8 @@ public class OptimizerLoadPatternTest extends OptimizerTest {
 		//thresholds with no begin and end
 		
 		PolicyType.Policy pol = new Policy();
-		pol.getPeriodVMThreshold().add(0, new PeriodType(null, null, null, null, new LoadType("small", 300, 6)));
-		pol.getPeriodVMThreshold().add(1, new PeriodType(null, null, null, null, new LoadType("small", 700, 10)));
+		pol.getPeriodVMThreshold().add(0, new PeriodType(null, null, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null)));
+		pol.getPeriodVMThreshold().add(1, new PeriodType(null, null, null, null, new LoadType(new SpareCPUs(7, UnitType.ABSOLUTE), null)));
 		List<Policy> polL = new LinkedList<Policy>();
 		polL.add(pol);
 		PolicyType myVmMargins = new PolicyType(polL);
@@ -191,7 +193,7 @@ public class OptimizerLoadPatternTest extends OptimizerTest {
 		
 		//TEST 2
 		//test with two non overlapping periods.
-		myVmMargins.getPolicy().get(0).getPeriodVMThreshold().add(new PeriodType(null, null, null, null, new LoadType("small", 700, 10)));		
+		myVmMargins.getPolicy().get(0).getPeriodVMThreshold().add(new PeriodType(null, null, null, null, new LoadType(new SpareCPUs(7, UnitType.ABSOLUTE), null)));		
 		
 		try {
 			myVmMargins.getPolicy().get(0).getPeriodVMThreshold().get(0).setStarts(begin);

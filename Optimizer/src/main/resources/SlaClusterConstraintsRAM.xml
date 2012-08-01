@@ -88,9 +88,7 @@
 				<Duration>P1D</Duration>
 				<Repeats>DAILY</Repeats>
 				<Load>
-					<VMnameRef>m1.small</VMnameRef>
-					<lowVMSlotsThreshold>200</lowVMSlotsThreshold>
-					<highVMSlotsThreshold>8</highVMSlotsThreshold>
+					<spareCPUs>2</spareCPUs>
 				</Load>
 			</PeriodVMThreshold>
 			<DelayBetweenMove>0</DelayBetweenMove>

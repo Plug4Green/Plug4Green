@@ -194,11 +194,12 @@ public class SLAReader {
      * @return the readed SLA
      */
     public FIT4GreenOptimizerConstraint readSLA(File path) throws FileNotFoundException {
-        return this.readSLA(new FileInputStream(path));
+    	log.debug("SLA location: " + path);
+    	return this.readSLA(new FileInputStream(path));
     }
 
     private FIT4GreenOptimizerConstraint readSLA(InputStream in) {
-        log.debug("SLA location: " + in);
+        
         // JAXBElement<FIT4GreenOptimizerConstraint> poElement = null;
         try {
             // create an Unmarshaller
@@ -211,7 +212,7 @@ public class SLAReader {
             URL url = this.getClass().getClassLoader()
                     .getResource("schema/SlaClusterConstraints.xsd");
 
-            log.debug("URL: " + url);
+            log.debug("Schema: " + url);
 
             SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
             try {
