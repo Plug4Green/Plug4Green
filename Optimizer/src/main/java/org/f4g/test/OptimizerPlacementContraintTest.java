@@ -41,6 +41,8 @@ import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType;
 import org.f4g.schema.constraints.optimizerconstraints.SLAType;
+import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
+import org.f4g.schema.constraints.optimizerconstraints.UnitType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.schema.constraints.placement.Capacity;
@@ -67,7 +69,7 @@ public class OptimizerPlacementContraintTest extends OptimizerTest {
 		SLAGenerator slaGenerator = new SLAGenerator();
 		
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", 300, 6));
+				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);

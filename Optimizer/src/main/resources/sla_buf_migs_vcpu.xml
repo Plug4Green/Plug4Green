@@ -122,9 +122,7 @@
                 <Starts>2011-05-04T11:51:36Z</Starts>
                 <Ends>2013-05-04T11:51:36Z</Ends>
                 <Load>
-                    <VMnameRef>m1.xlarge</VMnameRef>
-                    <lowVMSlotsThreshold>0</lowVMSlotsThreshold>
-                    <highVMSlotsThreshold>6</highVMSlotsThreshold>
+                    <spareCPUs unitType="ABSOLUTE">16</spareCPUs>
                 </Load>
             </PeriodVMThreshold>
             <DelayBetweenMove>30</DelayBetweenMove>

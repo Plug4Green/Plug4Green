@@ -79,9 +79,7 @@
 							<type name="vmname"  cpu="2" hd="40" ram="2" cpuLoad="1"/>
 						</VMTypes>
 						<VMMargin>
-							<VMname>vmname</VMname>
-							<lowVMSlotsThreshold>3</lowVMSlotsThreshold>
-							<highVMSlotsThreshold>6</highVMSlotsThreshold>
+							<spareCPUs>3</spareCPUs>
 						</VMMargin>
 					</Metrics>
 				</HardwareNeeds>

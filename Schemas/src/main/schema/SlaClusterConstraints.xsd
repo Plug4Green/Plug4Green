@@ -449,19 +449,37 @@
 			<xsd:enumeration value="YEARLY" />
 		</xsd:restriction>
 	</xsd:simpleType>
+	<xsd:simpleType name="UnitType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ABSOLUTE" />
+			<xsd:enumeration value="RELATIVE" />
+		</xsd:restriction>
+	</xsd:simpleType>	
+
+	<!-- number of CPUs that we need to keep free in the DC (absolute value in number of CPUs, relative value in percentage)-->
+	<xsd:complexType name="spareCPUs">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:int">
+				<xsd:attribute name="unitType" type="opticon:UnitType" default="ABSOLUTE" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<!-- number of Nodes that we need to keep free in the DC (absolute value in number of CPUs, relative value in percentage)-->
+	<xsd:complexType name="spareNodes">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:int">
+				<xsd:attribute name="unitType" type="opticon:UnitType" default="ABSOLUTE" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
 
 	<xsd:complexType name="LoadType">
 		<xsd:sequence>
-			<!-- Name of the VM taken as model to compute thresholds. This is the 
-				same as the name field inside VMTypeDesciption -->
-			<xsd:element name="VMnameRef" type="xsd:string"
-				minOccurs="1" maxOccurs="1" />
-			<!-- Number of VM slots under which to switch ON servers -->
-			<xsd:element name="lowVMSlotsThreshold" type="xsd:int"
-				minOccurs="1" maxOccurs="1" />
-			<!-- Number of VM slots above which to switch OFF servers -->
-			<xsd:element name="highVMSlotsThreshold" type="xsd:int"
-				minOccurs="1" maxOccurs="1" />
+			<xsd:element name="spareCPUs" type="opticon:spareCPUs"
+				minOccurs="0" maxOccurs="1" />
+			<xsd:element name="spareNodes" type="opticon:spareNodes"
+				minOccurs="0" maxOccurs="1" />
 		</xsd:sequence>
 	</xsd:complexType>
 

@@ -32,6 +32,7 @@ import org.f4g.schema.constraints.optimizerconstraints.FederationType;
 import org.f4g.schema.constraints.optimizerconstraints.LoadType;
 import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
+import org.f4g.schema.constraints.optimizerconstraints.UnitType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
@@ -262,10 +263,17 @@ public class PolicyConstraintFactory {
 	private void addPeriodVMThreshold(ManagedElementSet<Node> nodes, List<PeriodType> periods, float overbooking) {
 		
 		if(model.getDatetime() != null) {
-			LoadType loadType = SLAReader.getVMSlotsThreshold(model.getDatetime().toGregorianCalendar().getTime(), periods);					
+			LoadType load = SLAReader.getVMSlotsThreshold(model.getDatetime().toGregorianCalendar().getTime(), periods);					
 			if(nodes.size() !=0 && 
-			   loadType != null && loadType.getLowVMSlotsThreshold() > 0 ) {
-				v.addConstraint(new SpareCPUs(nodes, loadType.getLowVMSlotsThreshold()/100, overbooking));
+					load != null && load.getSpareCPUs() != null && load.getSpareCPUs().getValue() > 0 ) {
+				
+				int nbCores = 0;
+				switch (load.getSpareCPUs().getUnitType()) {
+					case ABSOLUTE: nbCores = load.getSpareCPUs().getValue(); break;
+					case RELATIVE: nbCores = load.getSpareCPUs().getValue() * src.getAllNodes().size() / 100; break;
+				}
+
+				v.addConstraint(new SpareCPUs(nodes, nbCores, overbooking));
 			}
 			   	
 		} else {

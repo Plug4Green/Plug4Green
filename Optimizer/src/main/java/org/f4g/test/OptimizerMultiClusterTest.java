@@ -56,6 +56,8 @@ import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType;
 import org.f4g.schema.constraints.optimizerconstraints.SLAType;
+import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
+import org.f4g.schema.constraints.optimizerconstraints.UnitType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
@@ -79,10 +81,10 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 
 		List<LoadType> load = new LinkedList<LoadType>();
-		load.add(new LoadType("m1.small", 300, 6));
+		load.add(new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", 0, 6));
+				begin, end, null, null, new LoadType(new SpareCPUs(0, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -237,7 +239,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
 		
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("Ridiculous", 300, 6));
+				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -343,7 +345,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
 		
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("Ridiculous", 300, 3));
+				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -376,7 +378,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		PolicyType.Policy polFed = new Policy();
 		
 		PeriodType periodFed = new PeriodType(
-				begin, end, null, null, new LoadType("Ridiculous", 1700, 3));
+				begin, end, null, null, new LoadType(new SpareCPUs(17, UnitType.ABSOLUTE), null));
 
 		polFed.getPeriodVMThreshold().add(periodFed);
 				
@@ -1044,7 +1046,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		optimizer.setClusterType(clusters);
 
 		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType("m1.small", -1, -1));
+				begin, end, null, null, new LoadType(null, null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
