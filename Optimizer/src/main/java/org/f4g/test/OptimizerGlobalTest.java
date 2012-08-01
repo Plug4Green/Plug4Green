@@ -2,25 +2,21 @@ package org.f4g.test;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
-
-import choco.kernel.common.logging.ChocoLogging;
-import choco.kernel.common.logging.Verbosity;
 import org.f4g.com.util.PowerData;
 import org.f4g.cost_estimator.NetworkCost;
+import org.f4g.optimizer.OptimizationObjective;
 import org.f4g.optimizer.OptimizerEngine;
 import org.f4g.optimizer.utils.Recorder;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.schema.metamodel.CoreType;
 import org.f4g.schema.metamodel.CpuUsageType;
 import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.FrameworkCapabilitiesType;
 import org.f4g.schema.metamodel.IoRateType;
 import org.f4g.schema.metamodel.MemoryUsageType;
 import org.f4g.schema.metamodel.NetworkUsageType;
@@ -38,9 +34,6 @@ import org.f4g.schema.actions.MoveVMActionType;
 import org.f4g.schema.actions.PowerOffActionType;
 import org.f4g.schema.actions.PowerOnActionType;
 import org.f4g.schema.actions.ActionRequestType.ActionList;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.CloudVmAllocationType;
-import org.f4g.schema.allocation.ObjectFactory;
 import org.f4g.schema.constraints.optimizerconstraints.BoundedPoliciesType;
 import org.f4g.schema.constraints.optimizerconstraints.BoundedSLAsType;
 import org.f4g.schema.constraints.optimizerconstraints.CapacityType;
@@ -59,6 +52,9 @@ import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import org.junit.Test;
+
+import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.common.logging.Verbosity;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -98,8 +94,9 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(),
 				        slaGenerator.createVirtualMachineType(), policies, fed);
 	    
+		optimizer.setOptiObjective(OptimizationObjective.Power);
 		//algo = new AlgoGlobal(new MockPowerCalculator(), new NetworkCost(), AlgoType.CLOUD);
-		
+		ChocoLogging.setVerbosity(Verbosity.SEARCH);
 	}
 
 
@@ -123,7 +120,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	public void testGlobalConstraintOnCPUUsage(){
 		//generate one VM per server
 		//VMs ressource usage is 0
-        ChocoLogging.setVerbosity(Verbosity.SOLUTION);
+        
 		ModelGenerator modelGenerator = new ModelGenerator();
 
 		modelGenerator.setNB_SERVERS(8); //8
@@ -711,8 +708,8 @@ public class OptimizerGlobalTest extends OptimizerTest {
               	
 		log.debug("moves=" + moves.size());
 		log.debug("powerOffs=" + powerOffs.size());
-		//one VM is moving to switch off a server
-		assertEquals(moves.get(0).getSourceNodeController(), "id100000");
+		//swtiching off the server that consumes more
+		assertEquals(powerOffs.get(0).getNodeName(), "id100000");
 
 
 		//TEST 2
@@ -758,9 +755,8 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		log.debug("moves=" + moves.size());
 		log.debug("powerOffs=" + powerOffs.size());
 		
-		// going to the low power server
-		assertEquals(moves.get(0).getSourceNodeController(), "id200000");
-		//assertEquals(moves.get(1).getDestNodeController(), "id100000");
+		//switching off the server that consumes more
+		assertEquals(powerOffs.get(0).getNodeName(), "id200000");
 		
 	}
 

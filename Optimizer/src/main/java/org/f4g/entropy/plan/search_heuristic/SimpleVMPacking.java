@@ -65,14 +65,14 @@ public class SimpleVMPacking extends AbstractLargeIntBranchingStrategy {
 		//first criteria: select first the servers with few VMs to empty them
         F4GNodeComparator cmp = new F4GNodeComparator(true, F4GResourcePicker.NodeRc.numberVMsInitial, (Configuration) myPb.getSourceConfiguration());
         //second criteria: select first the servers with a big power idle (to free them and switch them off)
-        cmp.appendCriteria(true, F4GResourcePicker.NodeRc.powerIdle);
+        cmp.appendCriteria(false, F4GResourcePicker.NodeRc.powerIdle);
         
         Collections.sort(nodes, cmp);
         sourceServer = pb.getEnvironment().makeInt(0);
         targetServer = pb.getEnvironment().makeInt(nodes.size()-1);
         
         for(Node n : nodes) {
-        	log.debug("node " + n.getName() + " contains " + myPb.getSourceConfiguration().getRunnings(n).size() + " VMs");
+        	log.debug("node " + n.getName() + " contains " + myPb.getSourceConfiguration().getRunnings(n).size() + " VMs and consumes " + ((F4GNode)n).getPIdle() + " Watts");
         }
 
 
