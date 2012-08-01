@@ -7,7 +7,10 @@ else
 	exit 1
 fi
 
-if [ $# -ne 2 ]; then
+if [ $1 eq "clean" ]; then
+    taktuk --connector /usr/bin/oarsh -o connector -o status -f $WORKERS \
+    broadcast exec [ "killall java" ] 2>&1 >> clean.log
+elif [ $# -ne 2 ]; then
     echo "Usage: $0 type output_file"
     exit 1
 fi
