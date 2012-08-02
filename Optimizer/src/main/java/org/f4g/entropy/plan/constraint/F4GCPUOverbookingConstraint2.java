@@ -18,6 +18,8 @@ import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
 import org.apache.log4j.Logger;
 
+import static choco.cp.solver.CPSolver.minus;
+
 /**
  * New version that uses VcpuPcpuMapping.
  * This constraint establishes a relationship between the number of vCPU hosted on a server
@@ -107,7 +109,23 @@ public class F4GCPUOverbookingConstraint2 extends F4GConstraint {
         for (Node n : nodes) {
             IntDomainVar nbVCpus = mapping.getvCPUCount(n);
             IntDomainVar usedPcpus = mapping.getPcpuUsage(n);
-            core.eq(nbVCpus, core.mult(usedPcpus, (int)overbookingFactor));
+
+            //pCPUused = nbVCPUs / factor
+            //beware of truncation made by choco: 3 = 7 / 2 while here, 4 pCPU will be used
+            //The hack consists in computing the number of free pCPU
+            //freePcpu = ((factor * capaPCpu) - nbVCpu) / factor
+            //usedPCpu = capaPCPu - freePcpu
+            //example: 6 pCPU, 7 vCPU, factor= 2
+            //freePCpu = ((2 * 6) - 7) / 2 = 2
+            //usedPCPU = 6 - 2 = 4 \o/
+            int nbPCpus = n.getNbOfCPUs();
+            int maxVCPU = (int)overbookingFactor * nbPCpus;
+            IntDomainVar freeVCpu = core.createEnumIntVar("freeVCpu(" + n.getName() + ")", 0, maxVCPU);
+
+
+            core.post(core.eq(freeVCpu, minus(maxVCPU, nbVCpus)));
+            IntDomainVar freePCpu = core.div(freeVCpu, (int)overbookingFactor);
+            core.eq(usedPcpus, minus(nbPCpus, freePCpu));
         }
 	}
 
