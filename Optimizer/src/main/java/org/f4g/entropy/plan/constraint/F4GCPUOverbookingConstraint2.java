@@ -107,7 +107,7 @@ public class F4GCPUOverbookingConstraint2 extends F4GConstraint {
         for (Node n : nodes) {
             IntDomainVar nbVCpus = mapping.getvCPUCount(n);
             IntDomainVar usedPcpus = mapping.getPcpuUsage(n);
-            core.eq(usedPcpus, core.div(nbVCpus, (int)overbookingFactor));
+            core.eq(nbVCpus, core.mult(usedPcpus, (int)overbookingFactor));
         }
 	}
 

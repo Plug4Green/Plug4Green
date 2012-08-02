@@ -57,9 +57,9 @@ public class SpareCPUs2 implements PlacementConstraint {
         int i = 0;
 		for (Node n : nodes) {
             IntDomainVar nbFree;
-			if (core.getFutureOfflines().contains(n)) {
+			if (core.getFutureOfflines().contains(n)) { //Offline, no free pCPU
 				nbFree = core.createIntegerConstant("", 0);
-			} else if (core.getFutureOnlines().contains(n)) {
+			} else if (core.getFutureOnlines().contains(n)) { //Online, equals to the capacity - the nb. of used
 				nbFree = core.createBoundIntVar("freePcpu(" + n +")", 0, n.getNbOfCPUs());
                 core.post(core.eq(nbFree, minus(n.getNbOfCPUs(), mapping.getPcpuUsage(n))));
 			} else {

@@ -25,14 +25,23 @@ public class DefaultVcpuPcpuMapping implements VcpuPcpuMapping {
 
     private IntDomainVar [] pCPUUsage;
 
-    private static final int DEFAULT_MAX = 50;
+    private static final int DEFAULT_MAX = 500;
 
     private ReconfigurationProblem rp;
 
+    /**
+     * Initialize the extension with a maximum hosting capacity equals to {@link #DEFAULT_MAX}.
+     * @param rp the core-RP to plug this extension to.
+     */
     public DefaultVcpuPcpuMapping(ReconfigurationProblem rp) {
         this(rp, DEFAULT_MAX);
     }
 
+    /**
+     * Initialize the extension.
+     * @param rp the core-RP to plug this extension to.
+     * @param maxCapacity the default maximum capacity for each node
+     */
     public DefaultVcpuPcpuMapping(ReconfigurationProblem rp, int maxCapacity) {
         if (instances != null) {
             Plan.logger.error("Module already instantiated");
@@ -101,6 +110,7 @@ public class DefaultVcpuPcpuMapping implements VcpuPcpuMapping {
     public void reset() {
         this.rp = null;
         this.vcpuCount = null;
+        this.pCPUUsage = null;
         instances = null;
     }
 
