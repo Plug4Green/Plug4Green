@@ -111,7 +111,7 @@
         <SLA id="ID11">
             <HardwareMetrics/>
             <CommonQoSRelatedMetrics>
-                <MaxVirtualCPUPerCore>2.5</MaxVirtualCPUPerCore>
+                <MaxVirtualCPUPerCore>2</MaxVirtualCPUPerCore>
             </CommonQoSRelatedMetrics>
             <AdditionalMetrics/>
         </SLA>
@@ -122,7 +122,7 @@
                 <Starts>2011-05-04T11:51:36Z</Starts>
                 <Ends>2013-05-04T11:51:36Z</Ends>
                 <Load>
-                    <spareCPUs unitType="ABSOLUTE">16</spareCPUs>
+                    <spareCPUs unitType="RELATIVE">1</spareCPUs>
                 </Load>
             </PeriodVMThreshold>
             <DelayBetweenMove>30</DelayBetweenMove>

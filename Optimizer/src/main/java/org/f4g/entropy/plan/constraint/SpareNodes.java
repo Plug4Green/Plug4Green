@@ -2,6 +2,8 @@
 
 package org.f4g.entropy.plan.constraint;
 
+import static choco.cp.solver.CPSolver.minus;
+import choco.Choco;
 import choco.cp.solver.constraints.integer.bool.BooleanFactory;
 import choco.cp.solver.constraints.reified.ReifiedFactory;
 import choco.kernel.solver.variables.integer.IntDomainVar;
@@ -12,12 +14,6 @@ import entropy.vjob.PlacementConstraint;
 import entropy.vjob.builder.protobuf.PBVJob;
 import entropy.vjob.builder.xml.XmlVJobSerializer;
 
-/**
- * A placement constraint to force nodes that do not host any running
- * VM to be turned off.
- *
- * @author Fabien Hermenier
- */
 public class SpareNodes implements PlacementConstraint {
 
     private ManagedElementSet<Node> nodes;
@@ -29,36 +25,46 @@ public class SpareNodes implements PlacementConstraint {
      *
      * @param nodes the nodes to put offline if they don't host any running VM.
      */
-    public SpareNodes(ManagedElementSet<Node> nodes) {
+    public SpareNodes(ManagedElementSet<Node> nodes, int minSpareNodes) {
         this.nodes = nodes;
+        this.minSpareNodes = minSpareNodes;
     }
     
-    public int minSpareNodes;
+    private int minSpareNodes;
 
     @Override
     public void inject(ReconfigurationProblem core) {
     	
-    	IntDomainVar[] free = new IntDomainVar[nodes.size()];
-		for (int i = 0; i<nodes.size(); i++) {
-        	Node n = nodes.get(i);
-            if (!core.getFutureOnlines().contains(n) && !core.getFutureOfflines().contains(n)) {
-                ManageableNodeActionModel a = (ManageableNodeActionModel) core.getAssociatedAction(n);
-                IntDomainVar unused = core.createBooleanVar("unused(" + n.getName() + ')');
-                core.post(ReifiedFactory.builder(unused, core.eq(core.getUsedMem(n), 0), core));
-                core.post(ReifiedFactory.builder(free[i], BooleanFactory.and(a.getState(), unused), core));
-            }
-        }
-        core.post(core.leq(minSpareNodes, core.sum(free)));
+//    	IntDomainVar[] free = new IntDomainVar[nodes.size()];
+//		for (int i = 0; i<nodes.size(); i++) {
+//        	Node n = nodes.get(i);
+//        	if (core.getFutureOfflines().contains(n)) {
+//        		free[i] = core.createIntegerConstant("", 0);
+//			} else if (core.getFutureOnlines().contains(n)) {
+//				free[i] = core.createBoundIntVar("spareCPU" + i, 0, Choco.MAX_UPPER_BOUND);
+//				//core.post(core.eq(free[i], minus((int)(n.getNbOfCPUs() * overbooking), NbVCPU)));
+//			} else {
+//            if (!core.getFutureOnlines().contains(n) && !core.getFutureOfflines().contains(n)) {
+//                ManageableNodeActionModel a = (ManageableNodeActionModel) core.getAssociatedAction(n);
+//                IntDomainVar unused = core.createBooleanVar("unused(" + n.getName() + ')');
+//                core.post(ReifiedFactory.builder(unused, core.eq(core.getUsedMem(n), 0), core));
+//                core.post(ReifiedFactory.builder(free[i], BooleanFactory.and(a.getState(), unused), core));
+//            }
+			
+            
+        //}
+        //core.post(core.leq(minSpareNodes, core.sum(free)));
     }
 
     @Override
     public boolean isSatisfied(Configuration cfg) {
-        for (Node n : nodes) {
+        int freeNodes = 0;
+    	for (Node n : nodes) {
             if (cfg.isOnline(n) && cfg.getRunnings(n).isEmpty()) {
-                return false;
+            	freeNodes++;
             }
         }
-        return true;
+        return freeNodes >= minSpareNodes;
     }
 
     @Override
