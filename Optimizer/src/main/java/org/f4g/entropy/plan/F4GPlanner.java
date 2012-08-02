@@ -247,9 +247,11 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	    Boolean ret = model.isFeasible();
 
         //Kill the model extensions.
-        PackingBasedCardinalities.getInstances().reset();
-        DefaultVcpuPcpuMapping.getInstances().reset();
-
+        if (PackingBasedCardinalities.getInstances() != null) {
+            PackingBasedCardinalities.getInstances().reset();
+        } if (DefaultVcpuPcpuMapping.getInstances() != null) {
+            DefaultVcpuPcpuMapping.getInstances().reset();
+        }
 
 	    if (ret == null) {
 	        throw new PlanException("Unable to check wether a solution exists or not");
