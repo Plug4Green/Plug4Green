@@ -352,7 +352,7 @@ public class Benchmark {
     }
 
     public static void main(String[] args) {
-        ChocoLogging.setVerbosity(Verbosity.SILENT);
+        ChocoLogging.setVerbosity(Verbosity.SEARCH);
         ChocoLogging.setLoggingMaxDepth(10000);
     	Utils.initLogger("../FIT4Green/Optimizer/src/main/config/log4j-benchmark.properties");
 
