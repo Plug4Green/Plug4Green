@@ -52,14 +52,15 @@ public class SpareCPUs implements PlacementConstraint {
     @Override
     public void inject(ReconfigurationProblem core) {
     	
-    	ManagedElementSet<Node> allNodes = core.getSourceConfiguration().getAllNodes();
+    	
+    	
     	IntDomainVar[] NbVCPUs = getNbVCPUs(core);
     	
     	IntDomainVar[] spareCPU = new IntDomainVar[nodes.size()];
 	    
 		for (int i = 0; i < nodes.size(); i++) {
 			Node n = nodes.get(i);
-			IntDomainVar NbVCPU = NbVCPUs[allNodes.indexOf(n)];
+			IntDomainVar NbVCPU = NbVCPUs[core.getNode(n)];
 						
 			if (core.getFutureOfflines().contains(n)) {
 				spareCPU[i] = core.createIntegerConstant("", 0);
@@ -70,7 +71,7 @@ public class SpareCPUs implements PlacementConstraint {
 				spareCPU[i] = core.createBoundIntVar("spareCPU" + i, 0,	Choco.MAX_UPPER_BOUND);
 				ManageableNodeActionModel a = (ManageableNodeActionModel) core.getAssociatedAction(n);
 
-				IntDomainVar tmpSpare = core.createBoundIntVar("spareCPU", 0, Choco.MAX_UPPER_BOUND);
+				IntDomainVar tmpSpare = core.createBoundIntVar("tmpSpareCPU" + i, 0, Choco.MAX_UPPER_BOUND);
 				core.post(core.eq(tmpSpare, minus((int)(n.getNbOfCPUs() * overbooking), NbVCPU)));
 				core.post(core.eq(spareCPU[i], Chocos.mult(core, a.getState(), tmpSpare)));
 			}
@@ -120,7 +121,6 @@ public class SpareCPUs implements PlacementConstraint {
 	    }
 	    
 	    //Each VM must be packed within each CPU capacity  
-	    //Try SimpleBinPacking first, then FastBinPacking as I'm not sure this last one works...
 		core.post(new FastBinPacking(core.getEnvironment(), capacities, demands, myAssigns));
 		
 		return capacities;
@@ -129,19 +129,18 @@ public class SpareCPUs implements PlacementConstraint {
 
     @Override
     public boolean isSatisfied(Configuration cfg) {
-    	int spareCPU = 0;
-        for (Node n : nodes) {
-        	int CPUOccupied = 0;
-        	for(VirtualMachine vm : cfg.getRunnings(n)){
-        		CPUOccupied += vm.getCPUConsumption();
-        	}
-        	spareCPU += n.getCPUCapacity() - CPUOccupied;
-            
+    	int nbCPUS = 0;
+    	int nbVCPUS = 0;
+    	for (Node n : nodes) {
+    		nbCPUS += n.getNbOfCPUs();
         }
-        if (spareCPU < minSpareCPU)
-            return false;
+        for (VirtualMachine vm : cfg.getAllVirtualMachines()) {
+        	nbVCPUS += vm.getCPUDemand();
+        }
+        if (nbCPUS * overbooking - nbVCPUS > minSpareCPU)
+            return true;
         else
-        	return true;
+        	return false;
     }
 
     @Override
