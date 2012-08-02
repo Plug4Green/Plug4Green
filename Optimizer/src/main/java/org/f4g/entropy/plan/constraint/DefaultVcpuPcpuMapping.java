@@ -105,13 +105,13 @@ public class DefaultVcpuPcpuMapping implements VcpuPcpuMapping {
     }
 
     @Override
-    public IntDomainVar getvCPUUsage(int nIdx) {
+    public IntDomainVar getvCPUCount(int nIdx) {
         return vcpuCount[nIdx];
     }
 
     @Override
-    public IntDomainVar getvCPUUsage(Node n) {
-        return getvCPUUsage(rp.getNode(n));
+    public IntDomainVar getvCPUCount(Node n) {
+        return getvCPUCount(rp.getNode(n));
     }
 
     public static VcpuPcpuMapping getInstances() {

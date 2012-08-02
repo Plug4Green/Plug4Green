@@ -22,7 +22,7 @@ public interface VcpuPcpuMapping {
      * @param nIdx the server index
      * @return the associated variable
      */
-    IntDomainVar getvCPUUsage(int nIdx);
+    IntDomainVar getvCPUCount(int nIdx);
 
 
     /**
@@ -30,7 +30,7 @@ public interface VcpuPcpuMapping {
      * @param n the server
      * @return the associated variable
      */
-    IntDomainVar getvCPUUsage(Node n);
+    IntDomainVar getvCPUCount(Node n);
 
     /**
      * Get the number of pCPU used on a server.
