@@ -51,7 +51,7 @@ public class Benchmark {
     public static boolean generateConfiguration(final SLAReader sla, int nbServers, String path, String prefix) {
 
     	//number of VMs
-        int NbVMsperServer = 5;
+        int NbVMsperServer = 1;
         int NBVMsTotal = nbServers * NbVMsperServer;
         //distribution of the servers 
         int nbServers1 = nbServers / 2;
@@ -352,7 +352,11 @@ public class Benchmark {
     }
 
     public static void main(String[] args) {
+<<<<<<< HEAD
         ChocoLogging.setVerbosity(Verbosity.SEARCH);
+=======
+        ChocoLogging.setVerbosity(Verbosity.SOLUTION);
+>>>>>>> upstream/master
         ChocoLogging.setLoggingMaxDepth(10000);
     	Utils.initLogger("../FIT4Green/Optimizer/src/main/config/log4j-benchmark.properties");
 

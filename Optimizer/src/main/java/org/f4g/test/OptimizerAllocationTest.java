@@ -103,29 +103,9 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 */
 	public void testAllocationSuccess() {
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(10);
-		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-	
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(2); //2 cores
-		modelGenerator.setRAM_SIZE(12);
-		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-				
-		modelGenerator.setVM_TYPE("m1.small");
 		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-				
-		optimizer.setVmTypes(VMs);
-		
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
-		
+		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");		
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response);
@@ -163,34 +143,12 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(10);
 		modelGenerator.setNB_VIRTUAL_MACHINES(6);
+		modelGenerator.setCORE(6);
+		
+    	FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(6); //2 cores
-		modelGenerator.setRAM_SIZE(100);
-		
-		//VM settings
-		modelGenerator.setCPU_USAGE(0.0);
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setNETWORK_USAGE(0);
-		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(0);
-		modelGenerator.setVM_TYPE("oneCPU");
-    	FIT4GreenType modelManyServersFullLoad = modelGenerator.createPopulatedFIT4GreenType();
-    	
-		VMTypeType vmTypes = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("oneCPU");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(0)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-	
-    	
-    	optimizer.setVmTypes(vmTypes);
-    	    	
-		AllocationRequestType request = createAllocationRequestCloud("oneCPU");
-		
-		AllocationResponseType response = optimizer.allocateResource(request, modelManyServersFullLoad);
+		AllocationRequestType request = createAllocationRequestCloud("m1.small");
+		AllocationResponseType response = optimizer.allocateResource(request, model);
 		
 		//No space for new VM		
 		assertNull(response.getResponse());
@@ -201,11 +159,11 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 */
 	public void testAllocationNoServer() {
 		ModelGenerator modelGenerator = new ModelGenerator();
-		FIT4GreenType modelNoServers = modelGenerator.createFIT4GreenType();
+		FIT4GreenType model = modelGenerator.createFIT4GreenType();
 				
 		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
 		
-		AllocationResponseType response = optimizer.allocateResource(allocationRequest, modelNoServers);
+		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		assertNotNull(response);
 		//Null response -> no space for VM
 		assertNull(response.getResponse());
@@ -224,8 +182,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 				
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
-		
+		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");		
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response);
@@ -243,33 +200,16 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 * Test allocation failure and success with respect to the constraint on CPU
 	 */
 	public void testAllocationCPUConstraint() {	
-		
-		//generate one VM per server
-		//VMs ressource usage is 0
-		ModelGenerator modelGenerator = new ModelGenerator();
 
+		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(1); 
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
-		
-		//servers settings
 		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(1);
-		modelGenerator.setRAM_SIZE(100);
 
-		modelGenerator.setVM_TYPE("CPU_constraint");
-		final FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();	
-		
-		VMTypeType VMs = new VMTypeType();
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("CPU_constraint");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(12), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-		
-		optimizer.setVmTypes(VMs);
-			
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("CPU_constraint");
-		
+		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();	
+					
+		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");		
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
 		//enough CPU: New VM should be allocated on first server		
@@ -289,32 +229,15 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 */
 	public void testAllocationRAMConstraint() {	
 		
-		//generate one VM per server
-		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
-
 		modelGenerator.setNB_SERVERS(1); 
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
-		
-		//servers settings
-		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(1);
 		modelGenerator.setRAM_SIZE(10);
 
-		modelGenerator.setVM_TYPE("CPU_constraint");
 		final FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();	
-		
-		VMTypeType VMs = new VMTypeType();
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("CPU_constraint");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-		
-		optimizer.setVmTypes(VMs);
-			
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("CPU_constraint");
-		
+	
+		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");		
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
 		//enough RAM: New VM should be allocated on first server		
@@ -339,8 +262,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 	
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-				
-				
+								
 		AllocationRequestType allocationRequest = new AllocationRequestType();
 		
 		CloudVmAllocationType cloudAlloc = new CloudVmAllocationType();
@@ -470,7 +392,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		}
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(4);
+		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
@@ -488,9 +410,11 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MyPowerCalculator(), new NetworkCost(), 
 		        slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, model));
 		
+		//AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
+		//optimizer.setPowerCalculator(new MyPowerCalculator());
+		//AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");	
 		AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
-	            
-		//server id100000 consumes less than the others.
+		
 		assertEquals(((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId(), "id300000");
 		
 	}

@@ -100,12 +100,12 @@ public class SimpleVMPacking extends AbstractLargeIntBranchingStrategy {
 			for (VirtualMachine vm : sourceVMs) {
 	        	int indexVM = pb.getVirtualMachine(vm);
 	            if (!hosters[indexVM].isInstantiated()) {
-	            	//log.debug("Selected VM " + vm.getName());
+	            	log.debug("Selected VM " + vm.getName());
 	                return hosters[indexVM];
 	            }
 	        }
 			sourceServer.increment();
-			//log.debug("sourceServer incremented: " + sourceServer.get());
+			log.debug("sourceServer incremented: " + sourceServer.get());
 		}
 		log.debug("Packing finished");
 		return null;
@@ -121,12 +121,12 @@ public class SimpleVMPacking extends AbstractLargeIntBranchingStrategy {
 			int indexDest = pb.getNode(dstNode);
 			if(hoster.canBeInstantiatedTo(indexDest)) {
     			if(canContain(dstNode, getVM(hoster))) {
-    				//log.debug("Selected Server " + dstNode.getName());
+    				log.debug("Selected Server " + dstNode.getName());
         			return indexDest;
     			}
     		}
 			targetServer.decrement();
-			//log.debug("targetServer decrement: " + targetServer.get());
+			log.debug("targetServer decrement: " + targetServer.get());
 		}
 
     	log.debug("No more target servers");
@@ -195,6 +195,8 @@ public class SimpleVMPacking extends AbstractLargeIntBranchingStrategy {
 	@Override
 	public void goUpBranch(final IntBranchingDecision decision) throws ContradictionException {
 		decision.remIntVal();
+		log.debug("go up branch");
+		
 	}
 
 	@Override

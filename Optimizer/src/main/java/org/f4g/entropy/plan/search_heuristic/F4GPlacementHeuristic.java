@@ -92,11 +92,9 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
         //add heuritic for runs
         addStayFirst(plan, runActions, oldLocation);
         
-        addEnergyPacking(rp);
-        
-        //add heuritic for remaining VMs
-        addStayFirst(plan, goodActions, oldLocation);
+        addEnergyPacking(rp, oldLocation, plan, goodActions);
 
+    
         ///SCHEDULING PROBLEM
         List<ActionModel> actions = new ArrayList<ActionModel>();
         for (VirtualMachineActionModel vma : rp.getVirtualMachineActions()) {
@@ -106,6 +104,7 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
 
         rp.addGoal(new AssignOrForbidIntVarVal(new PureIncomingFirst2(plan, rp, actions), new MinVal()));
 
+        
         EmptyNodeVarSelector selectShutdown = new EmptyNodeVarSelector(rp, rp.getSourceConfiguration().getAllNodes());
         rp.addGoal(new AssignVar(selectShutdown, new MinVal()));
 
@@ -113,17 +112,13 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
 
     }
 
-	private void addEnergyPacking(ReconfigurationProblem rp) {
+	private void addEnergyPacking(ReconfigurationProblem rp, TLongIntHashMap oldLocation, F4GPlanner plan, List<VirtualMachineActionModel> goodActions) {
 		
-		//selector to select the VM which is on the lowest loaded node 
-		LowestLoadHosterVarSelector selectVM = new LowestLoadHosterVarSelector(rp, rp.getSourceConfiguration().getAllNodes());
-		
-		//selector to select the server with the highest load
-		ConsolidateValSelector selectServer = new ConsolidateValSelector(rp, rp.getSourceConfiguration().getAllNodes());
-       
         //consolidate first: move VMs to low load nodes to high load nodes
         rp.addGoal(new SimpleVMPacking(rp, rp.getSourceConfiguration().getAllNodes()) ); //new AssignVar(selectVM, selectServer));
 		
+        //add heuritic for remaining VMs
+        addStayFirst(plan, goodActions, oldLocation);
 	}
 
 	private void addStayFirst(F4GPlanner plan, List<VirtualMachineActionModel> actions, TLongIntHashMap oldLocation) {

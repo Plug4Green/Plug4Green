@@ -1484,6 +1484,255 @@ public class OptimizerSLATest extends OptimizerTest {
 		assertTrue(powerOffSet.size() == 0);
 	}
 
-	
-	
+
+    /**
+     * Test the constraint F4GCPUOverbookingConstraint2
+     *
+     * @author Fabien Hermenier
+     */
+    public void testOverbookingGlobal2() {
+
+        // generate one VM per server
+        // VMs ressource usage is 0
+        ModelGenerator modelGenerator = new ModelGenerator();
+        modelGenerator.setNB_SERVERS(4);
+        modelGenerator.setNB_VIRTUAL_MACHINES(4); // 16 VMs total
+
+        // VM settings
+        modelGenerator.setCPU_USAGE(0.0);
+        modelGenerator.setNB_CPU(1);
+        modelGenerator.setNETWORK_USAGE(0);
+        modelGenerator.setSTORAGE_USAGE(0);
+        modelGenerator.setMEMORY_USAGE(0);
+        modelGenerator.VM_TYPE = "m1.small";
+
+        // servers settings
+        modelGenerator.setCPU(1);
+        modelGenerator.setCORE(4);
+        modelGenerator.setRAM_SIZE(560);
+        modelGenerator.setSTORAGE_SIZE(10000000);
+
+        VMTypeType vmTypes = new VMTypeType();
+
+        VMTypeType.VMType type1 = new VMTypeType.VMType();
+        type1.setName("m1.small");
+        type1.setCapacity(new CapacityType(new NrOfCpusType(1),
+                new RAMSizeType(1), new StorageCapacityType(1)));
+        type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1),   //only 1% of CPU usage
+                new MemoryUsageType(0), new IoRateType(0),
+                new NetworkUsageType(0)));
+        vmTypes.getVMType().add(type1);
+
+        FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+
+        PeriodType period = new PeriodType(
+                begin, end, null, null, new LoadType(null, null));
+
+        PolicyType.Policy pol = new Policy();
+        pol.getPeriodVMThreshold().add(period);
+
+        List<Policy> polL = new LinkedList<Policy>();
+        polL.add(pol);
+
+        PolicyType vmMargins = new PolicyType(polL);
+        vmMargins.getPolicy().add(pol);
+        // TEST 1: without overbooking setting
+
+        OptimizerEngineCloudTraditional myOptimizer = new OptimizerEngineCloudTraditional(
+                new MockController(), new MockPowerCalculator(),
+                new NetworkCost(), vmTypes, vmMargins, makeSimpleFed(vmMargins, model));
+        myOptimizer.runGlobalOptimization(model);
+
+        try {
+            actionRequestAvailable.acquire();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        ActionRequestType.ActionList response = actionRequest.getActionList();
+
+        List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
+        List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
+
+        for (JAXBElement<? extends AbstractBaseActionType> action : response
+                .getAction()) {
+            if (action.getValue() instanceof MoveVMActionType)
+                moves.add((MoveVMActionType) action.getValue());
+            if (action.getValue() instanceof PowerOffActionType)
+                powerOffs.add((PowerOffActionType) action.getValue());
+        }
+
+        log.debug("moves=" + moves.size());
+        log.debug("powerOffs=" + powerOffs.size());
+
+        assertEquals(moves.size(), 12); // everyone on the same server
+
+        // TEST 2 with overbooking setting = 1
+
+        SLAType slas = createDefaultSLA();
+        QoSDescriptionType qos = new QoSDescriptionType();
+        MaxVirtualCPUPerCore mvCPU = new MaxVirtualCPUPerCore();
+        qos.setMaxVirtualCPUPerCore(mvCPU);
+        qos.getMaxVirtualCPUPerCore().setValue((float) 1.0);
+        slas.getSLA().get(0).setCommonQoSRelatedMetrics(qos);
+
+        ClusterType clusters = createDefaultCluster(
+                modelGenerator.MAX_NB_SERVERS, slas.getSLA().get(0), vmMargins);
+        myOptimizer.setClusterType(clusters);
+        myOptimizer.setVmTypes(vmTypes);
+        myOptimizer.setSla(slas);
+        myOptimizer.runGlobalOptimization(model);
+
+        try {
+            actionRequestAvailable.acquire();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        ActionRequestType.ActionList response2 = actionRequest.getActionList();
+
+        moves.clear();
+        powerOffs.clear();
+
+        for (JAXBElement<? extends AbstractBaseActionType> action : response2
+                .getAction()) {
+            if (action.getValue() instanceof MoveVMActionType)
+                moves.add((MoveVMActionType) action.getValue());
+            if (action.getValue() instanceof PowerOffActionType)
+                powerOffs.add((PowerOffActionType) action.getValue());
+        }
+
+        log.debug("moves=" + moves.size());
+        log.debug("powerOffs=" + powerOffs.size());
+
+        assertEquals(moves.size(), 0); //no Overbooking (==1) -> 1 core per
+        // VM / 4 core per server -> max VMs per server = 4 -> no moves
+
+        // TEST 3 with overbooking setting = 2
+
+        myOptimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
+                .getMaxVirtualCPUPerCore().setValue((float) 2.0);
+
+        myOptimizer.runGlobalOptimization(model);
+
+        try {
+            actionRequestAvailable.acquire();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        ActionRequestType.ActionList response3 = actionRequest.getActionList();
+
+        moves.clear();
+        powerOffs.clear();
+
+        for (JAXBElement<? extends AbstractBaseActionType> action : response3
+                .getAction()) {
+            if (action.getValue() instanceof MoveVMActionType)
+                moves.add((MoveVMActionType) action.getValue());
+            if (action.getValue() instanceof PowerOffActionType)
+                powerOffs.add((PowerOffActionType) action.getValue());
+        }
+
+        log.debug("moves=" + moves.size());
+        log.debug("powerOffs=" + powerOffs.size());
+
+        assertEquals(moves.size(), 8); // Overbooking 2 -> 1 core per VM / 4
+        // core per server -> max VMs per server
+        // = 8 -> 8 moves
+
+        // TEST 4 with overbooking setting = 1.5
+
+        myOptimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
+                .getMaxVirtualCPUPerCore().setValue((float) 1.5);
+
+        myOptimizer.runGlobalOptimization(model);
+
+        try {
+            actionRequestAvailable.acquire();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        ActionRequestType.ActionList response4 = actionRequest.getActionList();
+
+        moves.clear();
+        powerOffs.clear();
+
+        for (JAXBElement<? extends AbstractBaseActionType> action : response4
+                .getAction()) {
+            if (action.getValue() instanceof MoveVMActionType)
+                moves.add((MoveVMActionType) action.getValue());
+            if (action.getValue() instanceof PowerOffActionType)
+                powerOffs.add((PowerOffActionType) action.getValue());
+        }
+
+        log.debug("moves=" + moves.size());
+        log.debug("powerOffs=" + powerOffs.size());
+
+        assertEquals(moves.size(), 4); // Overbooking 1.5 -> 6 VCPUs per server,
+        // 4 moves
+
+        // TEST 5 with overbooking setting = 2, mixed VMs
+
+        modelGenerator.setNB_SERVERS(4);
+        modelGenerator.setNB_VIRTUAL_MACHINES(4); // 16 VMs total
+        model = modelGenerator.createPopulatedFIT4GreenType();
+
+        VMTypeType.VMType type2 = new VMTypeType.VMType();
+        type2.setName("m1.medium");
+        type2.setCapacity(new CapacityType(new NrOfCpusType(2),
+                new RAMSizeType(1), new StorageCapacityType(1)));
+        type2.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(0.01),
+                new MemoryUsageType(0), new IoRateType(0),
+                new NetworkUsageType(0)));
+        vmTypes.getVMType().add(type2);
+
+        List<VirtualMachineType> vms = Utils.getAllVMs(model);
+        vms.get(0).setCloudVmType("m1.medium");
+        vms.get(1).setCloudVmType("m1.medium");
+        vms.get(2).setCloudVmType("m1.medium");
+        vms.get(3).setCloudVmType("m1.medium");
+
+        myOptimizer.setVmTypes(vmTypes);
+        myOptimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
+                .getMaxVirtualCPUPerCore().setValue((float) 2.0);
+
+        myOptimizer.runGlobalOptimization(model);
+
+        try {
+            actionRequestAvailable.acquire();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        ActionRequestType.ActionList response5 = actionRequest.getActionList();
+
+        moves.clear();
+        powerOffs.clear();
+
+        for (JAXBElement<? extends AbstractBaseActionType> action : response5
+                .getAction()) {
+            if (action.getValue() instanceof MoveVMActionType)
+                moves.add((MoveVMActionType) action.getValue());
+            if (action.getValue() instanceof PowerOffActionType)
+                powerOffs.add((PowerOffActionType) action.getValue());
+        }
+
+        log.debug("moves=" + moves.size());
+        log.debug("powerOffs=" + powerOffs.size());
+
+        assertEquals(moves.size(), 4); // Overbooking 2 -> first server is full
+        // (no move) because au medium size. 4
+        // small VMs move to fill a second
+        // server.
+
+    }
+
+
 }

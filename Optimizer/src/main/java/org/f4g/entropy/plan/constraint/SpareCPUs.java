@@ -2,6 +2,9 @@
 package org.f4g.entropy.plan.constraint;
 
 import choco.Choco;
+import choco.cp.solver.constraints.integer.Absolute;
+import choco.cp.solver.constraints.integer.MaxXYZ;
+import choco.cp.solver.constraints.integer.MinXYZ;
 import choco.cp.solver.constraints.reified.FastImpliesEq;
 import choco.cp.solver.variables.integer.BoolVarNot;
 import choco.kernel.solver.variables.integer.IntDomainVar;
@@ -72,9 +75,14 @@ public class SpareCPUs implements PlacementConstraint {
 				spareCPU[i] = core.createBoundIntVar("spareCPU" + i, 0,	Choco.MAX_UPPER_BOUND);
 				ManageableNodeActionModel a = (ManageableNodeActionModel) core.getAssociatedAction(n);
 
-				IntDomainVar tmpSpare = core.createBoundIntVar("tmpSpareCPU" + i, 0, Choco.MAX_UPPER_BOUND);
-				core.post(core.eq(tmpSpare, minus((int)(n.getNbOfCPUs() * overbooking), NbVCPU)));
-				core.post(core.eq(spareCPU[i], Chocos.mult(core, a.getState(), tmpSpare)));
+				//compute the number of free CPUs, can be negative in case of overbooking
+				IntDomainVar rawSpareCPU = core.createBoundIntVar("rawSpareCPU" + i, -1000, Choco.MAX_UPPER_BOUND);
+				core.post(core.eq(rawSpareCPU, minus((int)(n.getNbOfCPUs() * overbooking), NbVCPU)));
+				//the same floored to zero
+				IntDomainVar flooredSpareCPU = core.createBoundIntVar("flooredSpareCPU" + i, 0, Choco.MAX_UPPER_BOUND);
+				core.post(new MaxXYZ(core.createIntegerConstant("", 0), rawSpareCPU, flooredSpareCPU));
+				//spareCPU is zero for a
+				core.post(core.eq(spareCPU[i], Chocos.mult(core, a.getState(), flooredSpareCPU)));
 			}
 		}
 		core.post(core.leq(minSpareCPU, sum(spareCPU)));
@@ -136,7 +144,7 @@ public class SpareCPUs implements PlacementConstraint {
     		nbCPUS += n.getNbOfCPUs();
         }
         for (VirtualMachine vm : cfg.getAllVirtualMachines()) {
-        	nbVCPUS += vm.getCPUDemand();
+        	nbVCPUS += vm.getNbOfCPUs();
         }
         if (nbCPUS * overbooking - nbVCPUS > minSpareCPU)
             return true;
