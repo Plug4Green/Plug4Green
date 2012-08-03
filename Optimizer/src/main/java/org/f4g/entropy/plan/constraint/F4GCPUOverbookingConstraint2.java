@@ -125,7 +125,7 @@ public class F4GCPUOverbookingConstraint2 extends F4GConstraint {
 
             core.post(core.eq(freeVCpu, minus(maxVCPU, nbVCpus)));
             IntDomainVar freePCpu = core.div(freeVCpu, (int)overbookingFactor);
-            core.eq(usedPcpus, minus(nbPCpus, freePCpu));
+            core.post(core.eq(usedPcpus, minus(nbPCpus, freePCpu)));
         }
 	}
 

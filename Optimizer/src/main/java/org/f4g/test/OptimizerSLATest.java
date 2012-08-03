@@ -1,14 +1,34 @@
 package org.f4g.test;
 
-import static javax.measure.units.SI.JOULE;
-
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
+import entropy.configuration.*;
+import entropy.plan.PlanException;
+import entropy.plan.TimedReconfigurationPlan;
+import entropy.plan.choco.ChocoCustomRP;
+import entropy.plan.durationEvaluator.MockDurationEvaluator;
+import entropy.vjob.Ban;
+import entropy.vjob.DefaultVJob;
+import entropy.vjob.VJob;
+import junit.framework.Assert;
+import org.f4g.cost_estimator.NetworkCost;
+import org.f4g.entropy.plan.constraint.DefaultVcpuPcpuMapping;
+import org.f4g.entropy.plan.constraint.F4GCPUOverbookingConstraint2;
+import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import org.f4g.optimizer.CloudTraditional.SLAReader;
+import org.f4g.optimizer.ICostEstimator;
+import org.f4g.optimizer.utils.Utils;
+import org.f4g.schema.actions.AbstractBaseActionType;
+import org.f4g.schema.actions.ActionRequestType;
+import org.f4g.schema.actions.MoveVMActionType;
+import org.f4g.schema.actions.PowerOffActionType;
+import org.f4g.schema.allocation.*;
+import org.f4g.schema.allocation.ObjectFactory;
+import org.f4g.schema.constraints.optimizerconstraints.*;
+import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
+import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
+import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
+import org.f4g.schema.metamodel.*;
+import org.jscience.economics.money.Money;
+import org.jscience.physics.measures.Measure;
 
 import javax.measure.quantities.Duration;
 import javax.measure.quantities.Energy;
@@ -16,54 +36,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.*;
 
-import choco.kernel.common.logging.ChocoLogging;
-import choco.kernel.common.logging.Verbosity;
-import org.f4g.cost_estimator.NetworkCost;
-import org.f4g.optimizer.ICostEstimator;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
-import org.f4g.optimizer.CloudTraditional.SLAReader;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.CpuUsageType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.MemoryUsageType;
-import org.f4g.schema.metamodel.NetworkNodeType;
-import org.f4g.schema.metamodel.NetworkUsageType;
-import org.f4g.schema.metamodel.NrOfCpusType;
-import org.f4g.schema.metamodel.RAMSizeType;
-import org.f4g.schema.metamodel.StorageCapacityType;
-import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
-import org.f4g.schema.allocation.CloudVmAllocationResponseType;
-import org.f4g.schema.allocation.CloudVmAllocationType;
-import org.f4g.schema.allocation.ObjectFactory;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedClustersType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedPoliciesType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedSLAsType;
-import org.f4g.schema.constraints.optimizerconstraints.CapacityType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.constraints.optimizerconstraints.ExpectedLoadType;
-import org.f4g.schema.constraints.optimizerconstraints.FederationType;
-import org.f4g.schema.constraints.optimizerconstraints.LoadType;
-import org.f4g.schema.constraints.optimizerconstraints.NodeControllerType;
-import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
-import org.f4g.schema.constraints.optimizerconstraints.UnitType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType;
-import org.f4g.schema.constraints.optimizerconstraints.SLAType;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.jscience.economics.money.Money;
-import org.jscience.physics.measures.Measure;
+import static javax.measure.units.SI.JOULE;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -1484,255 +1459,85 @@ public class OptimizerSLATest extends OptimizerTest {
 		assertTrue(powerOffSet.size() == 0);
 	}
 
-
     /**
-     * Test the constraint F4GCPUOverbookingConstraint2
-     *
+     * Unit tests to check F4GCPUOverbooking2.
      * @author Fabien Hermenier
      */
-    public void testOverbookingGlobal2() {
+    public void testCPUOverbooking2() {
+        Configuration src = new SimpleConfiguration();
+        Node n1 = new SimpleNode("N1", 10, 30, 30);
+        Node n2 = new SimpleNode("N2", 10, 30, 30);
+        Node n3 = new SimpleNode("N3", 10, 30, 30);
+        src.addOnline(n1);
+        src.addOnline(n2);
+        src.addOnline(n3);
+        for (int i = 0; i < 30; i++) {
+            VirtualMachine vm = new SimpleVirtualMachine("VM" + i, 1, 1, 1);
+            src.setRunOn(vm, src.getOnlines().get(0)); //Only on the first node
+        }
+        ChocoCustomRP rp = new ChocoCustomRP(new MockDurationEvaluator(1, 2, 3, 4, 5, 6, 7, 8 , 9));
+        rp.setRepairMode(false);
+        rp.setTimeLimit(0);
+        rp.doOptimize(false);
+        VJob v = new DefaultVJob("v");
 
-        // generate one VM per server
-        // VMs ressource usage is 0
-        ModelGenerator modelGenerator = new ModelGenerator();
-        modelGenerator.setNB_SERVERS(4);
-        modelGenerator.setNB_VIRTUAL_MACHINES(4); // 16 VMs total
-
-        // VM settings
-        modelGenerator.setCPU_USAGE(0.0);
-        modelGenerator.setNB_CPU(1);
-        modelGenerator.setNETWORK_USAGE(0);
-        modelGenerator.setSTORAGE_USAGE(0);
-        modelGenerator.setMEMORY_USAGE(0);
-        modelGenerator.VM_TYPE = "m1.small";
-
-        // servers settings
-        modelGenerator.setCPU(1);
-        modelGenerator.setCORE(4);
-        modelGenerator.setRAM_SIZE(560);
-        modelGenerator.setSTORAGE_SIZE(10000000);
-
-        VMTypeType vmTypes = new VMTypeType();
-
-        VMTypeType.VMType type1 = new VMTypeType.VMType();
-        type1.setName("m1.small");
-        type1.setCapacity(new CapacityType(new NrOfCpusType(1),
-                new RAMSizeType(1), new StorageCapacityType(1)));
-        type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1),   //only 1% of CPU usage
-                new MemoryUsageType(0), new IoRateType(0),
-                new NetworkUsageType(0)));
-        vmTypes.getVMType().add(type1);
-
-        FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-
-        PeriodType period = new PeriodType(
-                begin, end, null, null, new LoadType(null, null));
-
-        PolicyType.Policy pol = new Policy();
-        pol.getPeriodVMThreshold().add(period);
-
-        List<Policy> polL = new LinkedList<Policy>();
-        polL.add(pol);
-
-        PolicyType vmMargins = new PolicyType(polL);
-        vmMargins.getPolicy().add(pol);
-        // TEST 1: without overbooking setting
-
-        OptimizerEngineCloudTraditional myOptimizer = new OptimizerEngineCloudTraditional(
-                new MockController(), new MockPowerCalculator(),
-                new NetworkCost(), vmTypes, vmMargins, makeSimpleFed(vmMargins, model));
-        myOptimizer.runGlobalOptimization(model);
+        List<VJob> vjobs = new ArrayList<VJob>();
+        vjobs.add(v);
 
         try {
-            actionRequestAvailable.acquire();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        TimedReconfigurationPlan res = rp.compute(src, src.getRunnings(),
+                        src.getWaitings(),
+                        src.getSleepings(),
+                        new SimpleManagedElementSet<VirtualMachine>(),
+                        new SimpleManagedElementSet<Node>(),
+                        new SimpleManagedElementSet<Node>(),
+                        vjobs);
+            Assert.assertEquals(res.size(), 0);
+        } catch (PlanException e) {
+            Assert.fail(e.getMessage());
         }
+        //x.reset();
 
-        ActionRequestType.ActionList response = actionRequest.getActionList();
-
-        List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-        List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-        for (JAXBElement<? extends AbstractBaseActionType> action : response
-                .getAction()) {
-            if (action.getValue() instanceof MoveVMActionType)
-                moves.add((MoveVMActionType) action.getValue());
-            if (action.getValue() instanceof PowerOffActionType)
-                powerOffs.add((PowerOffActionType) action.getValue());
-        }
-
-        log.debug("moves=" + moves.size());
-        log.debug("powerOffs=" + powerOffs.size());
-
-        assertEquals(moves.size(), 12); // everyone on the same server
-
-        // TEST 2 with overbooking setting = 1
-
-        SLAType slas = createDefaultSLA();
-        QoSDescriptionType qos = new QoSDescriptionType();
-        MaxVirtualCPUPerCore mvCPU = new MaxVirtualCPUPerCore();
-        qos.setMaxVirtualCPUPerCore(mvCPU);
-        qos.getMaxVirtualCPUPerCore().setValue((float) 1.0);
-        slas.getSLA().get(0).setCommonQoSRelatedMetrics(qos);
-
-        ClusterType clusters = createDefaultCluster(
-                modelGenerator.MAX_NB_SERVERS, slas.getSLA().get(0), vmMargins);
-        myOptimizer.setClusterType(clusters);
-        myOptimizer.setVmTypes(vmTypes);
-        myOptimizer.setSla(slas);
-        myOptimizer.runGlobalOptimization(model);
-
+        v.addConstraint(new F4GCPUOverbookingConstraint2(src.getOnlines(), 2D));
+        v.addConstraint(new Ban(src.getAllVirtualMachines(), new SimpleManagedElementSet<Node>(n3))); //Prevent the use of node3
+        //Overbooking factor of 2, so 2 nodes will be used. Ideally, 20 VMs on n1, 10 VMs on n2
         try {
-            actionRequestAvailable.acquire();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+         //   x  = new DefaultVcpuPcpuMapping(rp.getModel());
+            TimedReconfigurationPlan res = rp.compute(src, src.getRunnings(),
+                    src.getWaitings(),
+                    src.getSleepings(),
+                    new SimpleManagedElementSet<VirtualMachine>(),
+                    new SimpleManagedElementSet<Node>(),
+                    new SimpleManagedElementSet<Node>(),
+                    vjobs);
+            Assert.assertEquals(10, res.size());
+            Configuration dst = res.getDestination();
+            Assert.assertEquals(20, dst.getRunnings(n1).size());
+            Assert.assertEquals(10, dst.getRunnings(n2).size());
+            //x.reset();
+        } catch (PlanException e) {
+            Assert.fail(e.getMessage());
         }
-
-        ActionRequestType.ActionList response2 = actionRequest.getActionList();
-
-        moves.clear();
-        powerOffs.clear();
-
-        for (JAXBElement<? extends AbstractBaseActionType> action : response2
-                .getAction()) {
-            if (action.getValue() instanceof MoveVMActionType)
-                moves.add((MoveVMActionType) action.getValue());
-            if (action.getValue() instanceof PowerOffActionType)
-                powerOffs.add((PowerOffActionType) action.getValue());
-        }
-
-        log.debug("moves=" + moves.size());
-        log.debug("powerOffs=" + powerOffs.size());
-
-        assertEquals(moves.size(), 0); //no Overbooking (==1) -> 1 core per
-        // VM / 4 core per server -> max VMs per server = 4 -> no moves
-
-        // TEST 3 with overbooking setting = 2
-
-        myOptimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
-                .getMaxVirtualCPUPerCore().setValue((float) 2.0);
-
-        myOptimizer.runGlobalOptimization(model);
-
+        DefaultVcpuPcpuMapping.getInstances().reset();
+        vjobs.clear();
+        v = new DefaultVJob("v");
+        v.addConstraint(new F4GCPUOverbookingConstraint2(src.getOnlines(), 1D)); //No cpu overbooking. 10 VMs per node
+        vjobs.add(v);
         try {
-            actionRequestAvailable.acquire();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            TimedReconfigurationPlan res = rp.compute(src, src.getRunnings(),
+                    src.getWaitings(),
+                    src.getSleepings(),
+                    new SimpleManagedElementSet<VirtualMachine>(),
+                    new SimpleManagedElementSet<Node>(),
+                    new SimpleManagedElementSet<Node>(),
+                    vjobs);
+            Assert.assertEquals(20, res.size());
+            Configuration dst = res.getDestination();
+            Assert.assertEquals(10, dst.getRunnings(n1).size());
+            Assert.assertEquals(10, dst.getRunnings(n2).size());
+            Assert.assertEquals(10, dst.getRunnings(n3).size());
+        } catch (PlanException e) {
+            Assert.fail(e.getMessage());
         }
-
-        ActionRequestType.ActionList response3 = actionRequest.getActionList();
-
-        moves.clear();
-        powerOffs.clear();
-
-        for (JAXBElement<? extends AbstractBaseActionType> action : response3
-                .getAction()) {
-            if (action.getValue() instanceof MoveVMActionType)
-                moves.add((MoveVMActionType) action.getValue());
-            if (action.getValue() instanceof PowerOffActionType)
-                powerOffs.add((PowerOffActionType) action.getValue());
-        }
-
-        log.debug("moves=" + moves.size());
-        log.debug("powerOffs=" + powerOffs.size());
-
-        assertEquals(moves.size(), 8); // Overbooking 2 -> 1 core per VM / 4
-        // core per server -> max VMs per server
-        // = 8 -> 8 moves
-
-        // TEST 4 with overbooking setting = 1.5
-
-        myOptimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
-                .getMaxVirtualCPUPerCore().setValue((float) 1.5);
-
-        myOptimizer.runGlobalOptimization(model);
-
-        try {
-            actionRequestAvailable.acquire();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        ActionRequestType.ActionList response4 = actionRequest.getActionList();
-
-        moves.clear();
-        powerOffs.clear();
-
-        for (JAXBElement<? extends AbstractBaseActionType> action : response4
-                .getAction()) {
-            if (action.getValue() instanceof MoveVMActionType)
-                moves.add((MoveVMActionType) action.getValue());
-            if (action.getValue() instanceof PowerOffActionType)
-                powerOffs.add((PowerOffActionType) action.getValue());
-        }
-
-        log.debug("moves=" + moves.size());
-        log.debug("powerOffs=" + powerOffs.size());
-
-        assertEquals(moves.size(), 4); // Overbooking 1.5 -> 6 VCPUs per server,
-        // 4 moves
-
-        // TEST 5 with overbooking setting = 2, mixed VMs
-
-        modelGenerator.setNB_SERVERS(4);
-        modelGenerator.setNB_VIRTUAL_MACHINES(4); // 16 VMs total
-        model = modelGenerator.createPopulatedFIT4GreenType();
-
-        VMTypeType.VMType type2 = new VMTypeType.VMType();
-        type2.setName("m1.medium");
-        type2.setCapacity(new CapacityType(new NrOfCpusType(2),
-                new RAMSizeType(1), new StorageCapacityType(1)));
-        type2.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(0.01),
-                new MemoryUsageType(0), new IoRateType(0),
-                new NetworkUsageType(0)));
-        vmTypes.getVMType().add(type2);
-
-        List<VirtualMachineType> vms = Utils.getAllVMs(model);
-        vms.get(0).setCloudVmType("m1.medium");
-        vms.get(1).setCloudVmType("m1.medium");
-        vms.get(2).setCloudVmType("m1.medium");
-        vms.get(3).setCloudVmType("m1.medium");
-
-        myOptimizer.setVmTypes(vmTypes);
-        myOptimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
-                .getMaxVirtualCPUPerCore().setValue((float) 2.0);
-
-        myOptimizer.runGlobalOptimization(model);
-
-        try {
-            actionRequestAvailable.acquire();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        ActionRequestType.ActionList response5 = actionRequest.getActionList();
-
-        moves.clear();
-        powerOffs.clear();
-
-        for (JAXBElement<? extends AbstractBaseActionType> action : response5
-                .getAction()) {
-            if (action.getValue() instanceof MoveVMActionType)
-                moves.add((MoveVMActionType) action.getValue());
-            if (action.getValue() instanceof PowerOffActionType)
-                powerOffs.add((PowerOffActionType) action.getValue());
-        }
-
-        log.debug("moves=" + moves.size());
-        log.debug("powerOffs=" + powerOffs.size());
-
-        assertEquals(moves.size(), 4); // Overbooking 2 -> first server is full
-        // (no move) because au medium size. 4
-        // small VMs move to fill a second
-        // server.
-
     }
-
-
 }

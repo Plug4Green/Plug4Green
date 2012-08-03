@@ -29,6 +29,7 @@ public class DefaultVcpuPcpuMapping implements VcpuPcpuMapping {
 
     private ReconfigurationProblem rp;
 
+    private int maxCapacity;
     /**
      * Initialize the extension with a maximum hosting capacity equals to {@link #DEFAULT_MAX}.
      * @param rp the core-RP to plug this extension to.
@@ -47,10 +48,14 @@ public class DefaultVcpuPcpuMapping implements VcpuPcpuMapping {
             Plan.logger.error("Module already instantiated");
         }
         this.rp = rp;
+        this.maxCapacity = maxCapacity;
+        Plan.logger.debug("DefaultVcpuPcpuMapping branched");
+    }
 
+    private void makevCPUCount() {
         vcpuCount = new IntDomainVar[rp.getNodes().length];
-        this.rp = rp;
         instances = this;
+
 
         Node[] ns = rp.getNodes();
         ManagedElementSet<VirtualMachine> vms = rp.getFutureRunnings().clone();
@@ -83,11 +88,7 @@ public class DefaultVcpuPcpuMapping implements VcpuPcpuMapping {
             SConstraint s = new FastBinPacking(rp.getEnvironment(), vcpuCount, vCPUSs, assigns);
             rp.post(s);
         }
-
-        this.makePcpuUsage();
-        Plan.logger.debug("DefaultVcpuPcpuMapping branched");
     }
-
     private void makePcpuUsage() {
         pCPUUsage = new IntDomainVar[rp.getNodes().length];
         for (int i = 0; i < pCPUUsage.length; i++) {
@@ -98,6 +99,10 @@ public class DefaultVcpuPcpuMapping implements VcpuPcpuMapping {
 
     @Override
     public IntDomainVar getPcpuUsage(int nIdx) {
+        if (instances == null) {
+            makePcpuUsage();
+            makevCPUCount();
+        }
         return pCPUUsage[nIdx];
     }
 
@@ -116,6 +121,10 @@ public class DefaultVcpuPcpuMapping implements VcpuPcpuMapping {
 
     @Override
     public IntDomainVar getvCPUCount(int nIdx) {
+        if (instances == null) {
+            makePcpuUsage();
+            makevCPUCount();
+        }
         return vcpuCount[nIdx];
     }
 
