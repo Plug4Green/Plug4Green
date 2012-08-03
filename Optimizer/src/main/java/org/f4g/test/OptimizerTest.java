@@ -463,7 +463,7 @@ public class OptimizerTest extends TestCase {
 		List <PowerOnActionType> powerOns = new ArrayList<PowerOnActionType>();
 		
 		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof PowerOffActionType) 
+			if (action.getValue() instanceof PowerOnActionType) 
 				powerOns.add((PowerOnActionType)action.getValue());
 		}
 		return powerOns;
