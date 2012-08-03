@@ -12,6 +12,8 @@ import junit.framework.Assert;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.entropy.plan.constraint.DefaultVcpuPcpuMapping;
 import org.f4g.entropy.plan.constraint.F4GCPUOverbookingConstraint2;
+import org.f4g.entropy.plan.constraint.SpareCPUs2;
+import org.f4g.entropy.plan.constraint.VcpuPcpuMapping;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import org.f4g.optimizer.CloudTraditional.SLAReader;
 import org.f4g.optimizer.ICostEstimator;
@@ -1465,13 +1467,13 @@ public class OptimizerSLATest extends OptimizerTest {
      */
     public void testCPUOverbooking2() {
         Configuration src = new SimpleConfiguration();
-        Node n1 = new SimpleNode("N1", 10, 30, 30);
-        Node n2 = new SimpleNode("N2", 10, 30, 30);
-        Node n3 = new SimpleNode("N3", 10, 30, 30);
+        Node n1 = new SimpleNode("N1", 5, 30, 30);
+        Node n2 = new SimpleNode("N2", 5, 30, 30);
+        Node n3 = new SimpleNode("N3", 5, 30, 30);
         src.addOnline(n1);
         src.addOnline(n2);
         src.addOnline(n3);
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 15; i++) {
             VirtualMachine vm = new SimpleVirtualMachine("VM" + i, 1, 1, 1);
             src.setRunOn(vm, src.getOnlines().get(0)); //Only on the first node
         }
@@ -1500,7 +1502,7 @@ public class OptimizerSLATest extends OptimizerTest {
 
         v.addConstraint(new F4GCPUOverbookingConstraint2(src.getOnlines(), 2D));
         v.addConstraint(new Ban(src.getAllVirtualMachines(), new SimpleManagedElementSet<Node>(n3))); //Prevent the use of node3
-        //Overbooking factor of 2, so 2 nodes will be used. Ideally, 20 VMs on n1, 10 VMs on n2
+        //Overbooking factor of 2, so 2 nodes will be used. Ideally, 10 VMs on n1, 4 VMs on n2
         try {
          //   x  = new DefaultVcpuPcpuMapping(rp.getModel());
             TimedReconfigurationPlan res = rp.compute(src, src.getRunnings(),
@@ -1510,10 +1512,14 @@ public class OptimizerSLATest extends OptimizerTest {
                     new SimpleManagedElementSet<Node>(),
                     new SimpleManagedElementSet<Node>(),
                     vjobs);
-            Assert.assertEquals(10, res.size());
+            Assert.assertEquals(5, res.size());
             Configuration dst = res.getDestination();
-            Assert.assertEquals(20, dst.getRunnings(n1).size());
-            Assert.assertEquals(10, dst.getRunnings(n2).size());
+            Assert.assertEquals(10, dst.getRunnings(n1).size());
+            Assert.assertEquals(5, dst.getRunnings(n2).size());
+            //Control of the pCPU usage
+            VcpuPcpuMapping mapping = DefaultVcpuPcpuMapping.getInstances();
+            Assert.assertEquals(5, mapping.getPcpuUsage(n1).getVal());
+            Assert.assertEquals(3, mapping.getPcpuUsage(n2).getVal()); //3 but the last is "half full"
             //x.reset();
         } catch (PlanException e) {
             Assert.fail(e.getMessage());
@@ -1521,7 +1527,7 @@ public class OptimizerSLATest extends OptimizerTest {
         DefaultVcpuPcpuMapping.getInstances().reset();
         vjobs.clear();
         v = new DefaultVJob("v");
-        v.addConstraint(new F4GCPUOverbookingConstraint2(src.getOnlines(), 1D)); //No cpu overbooking. 10 VMs per node
+        v.addConstraint(new F4GCPUOverbookingConstraint2(src.getOnlines(), 1D)); //No cpu overbooking. 5 VMs per node
         vjobs.add(v);
         try {
             TimedReconfigurationPlan res = rp.compute(src, src.getRunnings(),
@@ -1531,13 +1537,60 @@ public class OptimizerSLATest extends OptimizerTest {
                     new SimpleManagedElementSet<Node>(),
                     new SimpleManagedElementSet<Node>(),
                     vjobs);
-            Assert.assertEquals(20, res.size());
+            Assert.assertEquals(10, res.size());
             Configuration dst = res.getDestination();
-            Assert.assertEquals(10, dst.getRunnings(n1).size());
-            Assert.assertEquals(10, dst.getRunnings(n2).size());
-            Assert.assertEquals(10, dst.getRunnings(n3).size());
+            Assert.assertEquals(5, dst.getRunnings(n1).size());
+            Assert.assertEquals(10, dst.getRunnings(n1).size() + dst.getRunnings(n2).size());
+            Assert.assertTrue(dst.getRunnings(n3).size() <= 5 && dst.getRunnings(n2).size() <= 5);
         } catch (PlanException e) {
             Assert.fail(e.getMessage());
         }
+    }
+
+    /**
+     * Unit tests to check SpareCPU2.
+     * @author Fabien Hermenier
+     */
+    public void testSpareCPU2() {
+        Configuration src = new SimpleConfiguration();
+        Node n1 = new SimpleNode("N1", 4, 30, 30);
+        Node n2 = new SimpleNode("N2", 4, 30, 30);
+        Node n3 = new SimpleNode("N3", 4, 30, 30);
+        src.addOnline(n1);
+        src.addOnline(n2);
+        src.addOnline(n3);
+        for (int i = 0; i < 20; i++) {
+            VirtualMachine vm = new SimpleVirtualMachine("VM" + i, 1, 1, 1);
+            src.setRunOn(vm, src.getOnlines().get(0)); //Only on the first node
+        }
+        ChocoCustomRP rp = new ChocoCustomRP(new MockDurationEvaluator(1, 2, 3, 4, 5, 6, 7, 8 , 9));
+        rp.setRepairMode(false);
+        rp.setTimeLimit(0);
+        rp.doOptimize(false);
+        VJob v = new DefaultVJob("v");
+
+        List<VJob> vjobs = new ArrayList<VJob>();
+        vjobs.add(v);
+
+        v.addConstraint(new F4GCPUOverbookingConstraint2(src.getOnlines(), 2D)); //at most 2 vCPU per CPU on each node
+        ManagedElementSet<Node> s = new SimpleManagedElementSet<Node>(n1);
+        s.add(n2);
+        v.addConstraint(new SpareCPUs2(s, 2)); //Let 2 free pCPU on n1 + n2. So at most 12 vCPU on the 2 nodes (cumulated)
+        //n3 will then support the last VMs.
+        try {
+            TimedReconfigurationPlan res = rp.compute(src, src.getRunnings(),
+                    src.getWaitings(),
+                    src.getSleepings(),
+                    new SimpleManagedElementSet<VirtualMachine>(),
+                    new SimpleManagedElementSet<Node>(),
+                    new SimpleManagedElementSet<Node>(),
+                    vjobs);
+            Configuration dst = res.getDestination();
+            Assert.assertEquals(12, dst.getRunnings(n1).size() + dst.getRunnings(n2).size());
+            Assert.assertEquals(8, dst.getRunnings(n3).size());
+        } catch (PlanException e) {
+            Assert.fail(e.getMessage());
+        }
+        DefaultVcpuPcpuMapping.getInstances().reset();
     }
 }
