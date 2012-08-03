@@ -104,76 +104,25 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 	
 
 	/**
-	 * 
-	 * 
-	 * @author cdupont
+	 * cloud controllers doesn't host VMs
 	 */
 	public void testNoMovesForController() {
 		
-		//generate one VM per server
-		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(3);
-		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		
-		//servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(6); 
-		modelGenerator.setRAM_SIZE(50);
-	
-		//VM settings
-		modelGenerator.VM_TYPE = "RAM_constraint";
-
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("RAM_constraint");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(0), new RAMSizeType(1), new StorageCapacityType(0)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(0.1), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		
-		
-		optimizer.getVmTypes().getVMType().add(type1);
-		
+		modelGenerator.setNB_VIRTUAL_MACHINES(1);		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();				
-	
-		FederationType federation = makeSimpleFed(optimizer.getPolicies(), model);
-		optimizer.setFederation(federation);
-		ClusterType clusters = new ClusterType();
-		clusters.getCluster().add(federation.getBoundedCluster().getCluster().get(0).getIdref());
-		optimizer.setClusterType(clusters);
-		
 		
 		DatacenterType DC = Utils.getFirstDatacenter(model);
 		
-		log.debug("test 1: without cloud controllers");
-	
+		//test 1: without cloud controllers
 		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-		
-		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}		
-	          	
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertEquals(moves.size(), 2);
-		assertEquals(powerOffs.size(), 2);
+		assertEquals(getMoves().size(), 2);
+		assertEquals(getPowerOffs().size(), 2);
 		
 	
-		log.debug("test 2: with cloud controllers");
-		
+		//test 2: with cloud controllers"		
 		model = modelGenerator.createPopulatedFIT4GreenType();	
 		DC = Utils.getFirstDatacenter(model);
 		
@@ -181,38 +130,16 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		DC.getRack().get(0).getRackableServer().get(1).setName(ServerRoleType.CLOUD_CONTROLLER);
 		
 		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-				
-		response = actionRequest.getActionList();
 		
-		List <MoveVMActionType> moves2 = new ArrayList<MoveVMActionType>();
-		List <PowerOffActionType> powerOffs2 = new ArrayList<PowerOffActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves2.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs2.add((PowerOffActionType)action.getValue());
-		}		
-	          	
-		log.debug("moves=" + moves2.size());
-		log.debug("powerOffs=" + powerOffs2.size());
-	
 		//No VMs on could controller and no power off
-		assertEquals(moves2.size(), 2);
-		assertEquals(powerOffs2.size(), 0);
+		assertEquals(getMoves().size(), 2);
+		assertEquals(getPowerOffs().size(), 0);
 	}
 	
 	
 	
 	/**
 	 * Test if the framework cabability ispoweron/ispoweroff  is working
-	 * @author cdupont
 	 */
 	
 	public void testOnOffCapability() {
@@ -220,104 +147,29 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-	
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(8); 
-		modelGenerator.setRAM_SIZE(24);
-		
+
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();
-				
-		modelGenerator.setVM_TYPE("m1.small");
-		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-		
-		
-		SLAType.SLA sla = new SLAType.SLA();
-		BoundedSLAsType bSlas = new BoundedSLAsType();
-		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
-		
-		PolicyType.Policy policy = new PolicyType.Policy();
-		
-		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy));	
-
-		SLAType slas = new SLAType();
-		
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(null, null));
-
-		PolicyType.Policy pol = new Policy();
-		pol.getPeriodVMThreshold().add(period);
-
-		List<Policy> polL = new LinkedList<Policy>();
-		polL.add(pol);
-
-		PolicyType vmMargins = new PolicyType(polL);
-		vmMargins.getPolicy().add(pol);
-			
+							
 		//TEST 1 - power off capability
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getNode().setPowerOff(false);
 		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getNode().setPowerOff(false);
 
-		OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				VMs, vmMargins, makeSimpleFed(vmMargins, model));
-		
-		MyOptimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-		
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
-	         	
-		log.debug("powerOffs=" + powerOffs.size());
-	
-		assertTrue(powerOffs.size()==0);
-		
-		
+		optimizer.runGlobalOptimization(model);
+			
+		assertEquals(getPowerOffs().size(), 0);
+				
 		//TEST 2 - power on capability
-		//TODO: this is not working
-//		for(ServerType s : Utils.getAllServers(model)) {
-//			s.setStatus(ServerStatusType.OFF);
-//			s.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
-//		}
-//		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getNode().setPowerOn(false);
-//		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getNode().setPowerOn(false);
-//	
-//		MyOptimizer.runGlobalOptimization(model);
-//		try {
-//			actionRequestAvailable.acquire();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		response = actionRequest.getActionList();
-//		
-//		powerOffs.clear();
-//		
-//		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-//			if (action.getValue() instanceof PowerOffActionType) 
-//				powerOffs.add((PowerOffActionType)action.getValue());
-//		}
-//	         	
-//		log.debug("powerOffs=" + powerOffs.size());
-//	
-//		assertTrue(powerOffs.size()==0);
+		for(ServerType s : Utils.getAllServers(model)) {
+			s.setStatus(ServerStatusType.OFF);
+			s.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
+		}
+		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getNode().setPowerOn(false);
+		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getNode().setPowerOn(false);
+	
+		optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).getLoad().setSpareCPUs(new SpareCPUs(3, UnitType.ABSOLUTE));
+		optimizer.runGlobalOptimization(model);
+		
+		assertEquals(getPowerOns().size(), 0);
 	
 		
 	}
@@ -331,88 +183,23 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		//generate one VM per server
 		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(4); //8
-		modelGenerator.setNB_VIRTUAL_MACHINES(4);
-		
-		//servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4); //4 cores
-		
-		//VM settings
-		modelGenerator.setCPU_USAGE(0.0);
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setNETWORK_USAGE(0);
-		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(0);
-
-		FrameworkCapabilitiesType frameworkCapabilitie = new FrameworkCapabilitiesType();
-		frameworkCapabilitie.setFrameworkName("FM");
-						
+		modelGenerator.setNB_SERVERS(2); 
+		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 		
 		List<ServerType> servers = Utils.getAllServers(model.getSite().get(0).getDatacenter().get(0));
 			
 		servers.get(0).setStatus(ServerStatusType.POWERING_OFF);
-		servers.get(1).setStatus(ServerStatusType.POWERING_ON);
-		
-		//add a supplementary core to S1 -> should be turned on
-		servers.get(1).getMainboard().get(0).getCPU().get(0).getCore().add(new CoreType());
-		
-		//add a supplementary core to S2 -> should get allocated
-		servers.get(2).getMainboard().get(0).getCPU().get(0).getCore().add(new CoreType());
 				
-		CloudVmAllocationType cloudAlloc = new CloudVmAllocationType();
-		cloudAlloc.setVmType("m1.small");
-		cloudAlloc.getClusterId().add("c1");
-		cloudAlloc.setImageId("i1");
-		cloudAlloc.setUserId("u1");
+		optimizer.runGlobalOptimization(model);
 		
-		//Simulates a CloudVmAllocationType operation
-		JAXBElement<CloudVmAllocationType>  operationType = (new ObjectFactory()).createCloudVmAllocation(cloudAlloc);
-	
-		AllocationRequestType allocationRequest = new AllocationRequestType();
-		allocationRequest.setRequest(operationType);
+		assertEquals(getMoves().size(), 0);
 		
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(null, null));
-
-		PolicyType.Policy pol = new Policy();
-		pol.getPeriodVMThreshold().add(period);
-
-		List<Policy> polL = new LinkedList<Policy>();
-		polL.add(pol);
-
-		PolicyType myVmMargins = new PolicyType(polL);
-		myVmMargins.getPolicy().add(pol);
+		servers.get(0).setStatus(ServerStatusType.POWERING_ON);
 		
-		VMTypeType vmTypes = new VMTypeType();
+		optimizer.runGlobalOptimization(model);
 		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(0)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-		
-		OptimizerEngineCloudTraditional myOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				vmTypes, myVmMargins, makeSimpleFed(myVmMargins, model));
-		
-		myOptimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		List <PowerOnActionType>  powerOns = new ArrayList<PowerOnActionType>();
-		for (JAXBElement<? extends AbstractBaseActionType> action : actionRequest.getActionList().getAction()){
-			if (action.getValue() instanceof PowerOnActionType) 
-				powerOns.add((PowerOnActionType)action.getValue());
-		}		
-		
-		//turning On only one machine, id1 is more efficient than id0
-		assertEquals(actionRequest.getActionList().getAction().size(), 0);
-		assertEquals(powerOns.size(), 0);
+		assertEquals(getMoves().size(), 0);
 
 		
 	}

@@ -82,15 +82,16 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		for(ServerType server : Utils.getAllServers(currentFit4Green)) {
 			Node node = getNode(server);
 			
+			
 			if(server.getStatus() == ServerStatusType.ON ||
-			   server.getStatus() == ServerStatusType.POWERING_ON) {
+			   server.getStatus() == ServerStatusType.POWERING_ON) { //POWERING_ON nodes are seen as ON by entropy as they will be soon on. This avoids ping-pong effect on the state.
 				config.addOnline(node);
 			
 				for(VirtualMachineType VM : Utils.getVMs(server)) {
 					VirtualMachine vm = getVM(node, VM);	
 					config.setRunOn(vm, node);
 				}	
-			} else {
+			} else { //OFF, POWERING_OFF
 				config.addOffline(node);
 			}
 		}

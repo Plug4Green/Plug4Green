@@ -69,22 +69,22 @@ public class SimpleVMPacking extends AbstractLargeIntBranchingStrategy {
         
         Collections.sort(nodes, cmp);
         sourceServer = pb.getEnvironment().makeInt(0);
-        targetServer = pb.getEnvironment().makeInt(nodes.size()-1);
-        
+        if(nodes.size() != 0) {
+        	targetServer = pb.getEnvironment().makeInt(nodes.size()-1);
+        } else {
+        	targetServer = pb.getEnvironment().makeInt(0);
+        }
         for(Node n : nodes) {
         	log.debug("node " + n.getName() + " contains " + myPb.getSourceConfiguration().getRunnings(n).size() + " VMs and consumes " + ((F4GNode)n).getPIdle() + " Watts");
         }
 
-
         ManagedElementSet<VirtualMachine> allVMS = pb.getSourceConfiguration().getAllVirtualMachines();
         hosters = new IntDomainVar[allVMS.size()];
         for(int i = 0; i < allVMS.size(); i++) {
-            VirtualMachine vm = pb.getVirtualMachine(i);
-            hosters[i] = myPb.getAssociatedAction(vm).getDemandingSlice().hoster();
+        	VirtualMachine vm = pb.getVirtualMachine(i);
+        	hosters[i] = myPb.getAssociatedAction(vm).getDemandingSlice().hoster();
         }
-
     }
-
 
 	/**
 	 * Select the VM
@@ -201,7 +201,9 @@ public class SimpleVMPacking extends AbstractLargeIntBranchingStrategy {
 	@Override
 	public void goUpBranch(final IntBranchingDecision decision) throws ContradictionException {
 		decision.remIntVal();
-		log.debug("go up branch");
+		//targetServer.increment();
+		log.debug("go up branch targetServer= " + targetServer.get());
+		log.debug("go up branch sourceServer= " + sourceServer.get());
 		
 	}
 
