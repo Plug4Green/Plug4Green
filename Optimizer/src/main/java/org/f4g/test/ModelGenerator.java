@@ -382,13 +382,6 @@ public class ModelGenerator {
 		DatacenterType DC1 = createDatacenterType("DC1");
 		fIT4Green.getSite().get(0).getDatacenter().add(DC1);
 
-
-//		
-//		for(int i=0; i<MAX_NB_SERVERS; i++)
-//			DC1.getRack().get(0).getRackableServer()
-//				.add( createRandomServer(DC1.getFrameworkCapabilities().get(0), SERVER_FRAMEWORK_ID * i));
-
-
         int frameworkid = SERVER_FRAMEWORK_ID;
 		
 		for(int i=0; i<MAX_NB_SERVERS; i++) {

@@ -442,8 +442,8 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		modelGenerator.IS_CLOUD = false;
 		
 		modelGenerator.setNB_CPU(1);
-		modelGenerator.setCPU_USAGE(100);
-		modelGenerator.setMEMORY_USAGE(200);
+		modelGenerator.setCPU_USAGE(1);
+		modelGenerator.setMEMORY_USAGE(2);
 		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 	
