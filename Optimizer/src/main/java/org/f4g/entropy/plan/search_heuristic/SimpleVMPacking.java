@@ -131,7 +131,13 @@ public class SimpleVMPacking extends AbstractLargeIntBranchingStrategy {
 
     	log.debug("No more target servers");
     	//returning the current server which should be the source.
-		return pb.getNode(nodes.get(targetServer.get()));
+    	int indexDest = pb.getNode(nodes.get(targetServer.get()));
+    	if(hoster.canBeInstantiatedTo(indexDest)) {
+    		return indexDest;
+    	} else {
+    		log.debug("VM cannot be instancied on source server");
+    		return hoster.getInf();
+    	}
 		
     }
     
