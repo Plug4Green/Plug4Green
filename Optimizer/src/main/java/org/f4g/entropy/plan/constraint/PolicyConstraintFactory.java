@@ -151,7 +151,7 @@ public class PolicyConstraintFactory {
 						PolicyType.Policy myPol = pol.getIdref();
 						if (myPol.getPeriodVMThreshold() != null) {
 							
-							float overbooking = -1;
+							float overbooking = 1;
 							if(c.getBoundedSLAs() != null && (c.getBoundedSLAs().getSLA().size() > 0) && 
 									c.getBoundedSLAs().getSLA().get(0).getIdref().getCommonQoSRelatedMetrics() != null &&
 									c.getBoundedSLAs().getSLA().get(0).getIdref().getCommonQoSRelatedMetrics().getMaxVirtualCPUPerCore() != null) {
