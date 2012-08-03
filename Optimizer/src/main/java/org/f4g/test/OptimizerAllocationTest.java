@@ -65,7 +65,6 @@ import org.f4g.schema.constraints.optimizerconstraints.UnitType;
  */
 public class OptimizerAllocationTest extends OptimizerTest {
 	
-	SLAGenerator slaGenerator = new SLAGenerator();
 	PolicyType vmMargins;
 	/**
 	 * Construction of the test suite
@@ -81,12 +80,13 @@ public class OptimizerAllocationTest extends OptimizerTest {
 
 		List<Policy> polL = new LinkedList<Policy>();
 		polL.add(pol);
+		
 
 		vmMargins = new PolicyType(polL);
 		vmMargins.getPolicy().add(pol);
 		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				        slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, null));
-	    
+				        SLAGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, null));
+		optimizer.setSla(SLAGenerator.createDefaultSLA());
 	}
 
 
@@ -144,6 +144,9 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(10);
 		modelGenerator.setNB_VIRTUAL_MACHINES(6);
 		modelGenerator.setCORE(6);
+		
+		//VMs takes 100% CPU
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().getVCpuLoad().setValue(100);
 		
     	FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 
@@ -209,6 +212,8 @@ public class OptimizerAllocationTest extends OptimizerTest {
 
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();	
 					
+		//VMs takes 100% CPU
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().getVCpuLoad().setValue(100);
 		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");		
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
@@ -301,6 +306,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	
 	/**
 	 * Test allocation: VM should be allocated on the server with lowest energy profile
+	 * TODO: power idle doesn't have any impact on VM allocation now
 	 */
 	public void testAllocationPowerIdle() {
 		
@@ -337,7 +343,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		
 		//Create a new optimizer with the special power calculator
 		OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MyPowerCalculator(), new NetworkCost(), 
-		        slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, model));
+		        SLAGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, model));
 		
 		AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
 	            
@@ -362,7 +368,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 				
 		//Create a new optimizer with the special power calculator
 		OptimizerEngineCloudTraditional MyOptimizer2 = new OptimizerEngineCloudTraditional(new MockController(), new MyPowerCalculator2(), new NetworkCost(), 
-		        slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, model));
+				SLAGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, model));
 		
 		AllocationResponseType response2 = MyOptimizer2.allocateResource(allocationRequest, model);
 	            
@@ -381,7 +387,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		class MyPowerCalculator extends MockPowerCalculator {
 			public PowerData computePowerServer(ServerType server) {
 				PowerData power = new PowerData();
-				if(server.getFrameworkID().equals("id300000"))
+				if(server.getFrameworkID().equals("id100000"))
 					power.setActualConsumption(10.0 + 0.8 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
 				else
 					power.setActualConsumption(10.0  + 1.0 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
@@ -393,105 +399,14 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
-		modelGenerator.setNB_VIRTUAL_MACHINES(0);
-		
+		modelGenerator.setNB_VIRTUAL_MACHINES(0);		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 				
-		ArrayList<String> clusterId = new ArrayList<String>();
-		clusterId.add("c1");
-		CloudVmAllocationType cloudAlloc = new CloudVmAllocationType("i1", clusterId, "m1.small", "u1", 0); 
+		optimizer.setPowerCalculator(new MyPowerCalculator());		
+		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");	
+		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
-		//Simulates a CloudVmAllocationType operation
-		JAXBElement<CloudVmAllocationType>  operationType = (new ObjectFactory()).createCloudVmAllocation(cloudAlloc);
-		AllocationRequestType allocationRequest = new AllocationRequestType();
-		allocationRequest.setRequest(operationType);
-		
-		//Create a new optimizer with the special power calculator
-		OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MyPowerCalculator(), new NetworkCost(), 
-		        slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, model));
-		
-		//AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
-		//optimizer.setPowerCalculator(new MyPowerCalculator());
-		//AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");	
-		AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
-		
-		assertEquals(((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId(), "id300000");
-		
-	}
-	
-	
-	/**
-	 * Test allocation: VM should be allocated on the server with lowest energy profile
-	 */
-	public void testAllocationPowerPerVMCharged() {
-		//Create a Power Calculator that computes a more feeble power for server #1.
-		class MyPowerCalculator extends MockPowerCalculator {
-			public PowerData computePowerServer(ServerType server) {
-				PowerData power = new PowerData();
-				if(server.getFrameworkID().equals("id300000"))
-					power.setActualConsumption(1000.0 + 4.0 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
-				else
-					power.setActualConsumption(1000.0  + 5.0 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
-								
-				log.debug("computePowerServer:" + power.getActualConsumption());
-				return power;
-			}								
-		}
-		
-		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(5);
-		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		//servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4); //4 cores
-		modelGenerator.setVM_TYPE("small");
-		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-		
-		VMTypeType vmTypes = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(0)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-		
-		List<LoadType> load = new LinkedList<LoadType>();
-		load.add(new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
-
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
-
-		PolicyType.Policy pol = new Policy();
-		pol.getPeriodVMThreshold().add(period);
-
-		List<Policy> polL = new LinkedList<Policy>();
-		polL.add(pol);
-
-		PolicyType myVmMargins = new PolicyType(polL);
-		myVmMargins.getPolicy().add(pol);
-		
-		ArrayList<String> clusterId = new ArrayList<String>();
-		clusterId.add("c1");
-		CloudVmAllocationType cloudAlloc = new CloudVmAllocationType("i1", clusterId, "small", "u1", 0); 
-		
-		//Simulates a CloudVmAllocationType operation
-		JAXBElement<CloudVmAllocationType>  operationType = (new ObjectFactory()).createCloudVmAllocation(cloudAlloc);
-		AllocationRequestType allocationRequest = new AllocationRequestType();
-		allocationRequest.setRequest(operationType);
-		
-		//TEST 1
-		
-		//Create a new optimizer with the special power calculator
-		OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MyPowerCalculator(), new NetworkCost(), 
-				vmTypes, myVmMargins, makeSimpleFed(myVmMargins, model));
-		
-		AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
-				
-		//server xxx consumes less than the others.
-		assertEquals(((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId(), "id300000");
-		
-		//TEST 2
+		assertEquals(((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId(), "id100000");
 		
 		//Create a Power Calculator that computes a more feeble power for server #2.
 		class MyPowerCalculator2 extends MockPowerCalculator {
@@ -506,19 +421,14 @@ public class OptimizerAllocationTest extends OptimizerTest {
 				return power;
 			}								
 		}
-				
-		//Create a new optimizer with the special power calculator
-		OptimizerEngineCloudTraditional MyOptimizer2 = new OptimizerEngineCloudTraditional(new MockController(), new MyPowerCalculator2(), new NetworkCost(), 
-				vmTypes, myVmMargins, makeSimpleFed(myVmMargins, model));
 		
-		AllocationResponseType response2 = MyOptimizer2.allocateResource(allocationRequest, model);
-	            
-		//server xxx consumes less than the others.
-		assertEquals(((CloudVmAllocationResponseType)response2.getResponse().getValue()).getNodeId(), "id200000");
+		optimizer.setPowerCalculator(new MyPowerCalculator2());		
+		response = optimizer.allocateResource(allocationRequest, model);
 		
-		
+		assertEquals(((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId(), "id200000");
 	}
-
+	
+	
 		
 
 	/**
@@ -529,10 +439,6 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(3);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-	
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(2); //2 cores
-		modelGenerator.setRAM_SIZE(100);
 		modelGenerator.IS_CLOUD = false;
 		
 		modelGenerator.setNB_CPU(1);
@@ -542,25 +448,9 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 	
 		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-				
-		optimizer.setVmTypes(VMs);
 		optimizer.setComputingStyle(CloudTradCS.TRADITIONAL);
 		AllocationRequestType allocationRequest = createAllocationRequestTrad();
-		List<String> nodeName = new ArrayList<String>();
-		nodeName.add("id0");
-		nodeName.add("id100000");
-		nodeName.add("id200000");
-		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
-		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , null, null, "idc1"));
-		ClusterType clusterType = new ClusterType(cluster);
-		optimizer.setClusterType(clusterType);
+		optimizer.setClusterType(createDefaultCluster(3, null, null));
 		
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
@@ -584,30 +474,13 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(10);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 	
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(2); //2 cores
-		modelGenerator.setRAM_SIZE(100);
-		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 		
 		for(ServerType s : Utils.getAllServers(model)){
 			s.setStatus(ServerStatusType.OFF);
 		}
 				
-		modelGenerator.setVM_TYPE("m1.small");
-		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-				
-		optimizer.setVmTypes(VMs);
-		
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
-		
+		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");		
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response);
@@ -617,6 +490,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	
 	/**
 	 * Test allocation with constraints not satisfied
+	 * MaxVirtualCPUPerCore is not satisfied on a node -> suppress this node and hosted VMs and allocate anyway
 	 */
 	public void testAllocationTooMuchVMs() {
 		
@@ -626,57 +500,13 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		
 		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(1); 
-		modelGenerator.setRAM_SIZE(100);//24
 		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-				
-		modelGenerator.setVM_TYPE("m1.small");
-		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-				
-		optimizer.setVmTypes(VMs);
-		
-		SLAType slas = new SLAType();
-		
+					
+		optimizer.setClusterType(createDefaultCluster(8, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		QoSDescriptionType qos = new QoSDescriptionType();
-		MaxVirtualCPUPerCore mvCPU = new MaxVirtualCPUPerCore();
-		qos.setMaxVirtualCPUPerCore(mvCPU);
-		qos.getMaxVirtualCPUPerCore().setValue((float) 1.0);
-				
-		SLAType.SLA sla = new SLAType.SLA();
-		slas.getSLA().add(sla);
-		sla.setCommonQoSRelatedMetrics(qos);
-		BoundedSLAsType bSlas = new BoundedSLAsType();
-		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
-		
-		PolicyType.Policy policy = new PolicyType.Policy();
-		
-		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy));	
-		
-		List<String> nodeName = new ArrayList<String>();
-		nodeName.add("id0");
-		nodeName.add("id100000");
-		nodeName.add("id200000");
-		nodeName.add("id300000");
-		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
-		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc1"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id400000");
-		nodeName.add("id500000");
-		nodeName.add("id600000");
-		nodeName.add("id700000");
-		cluster.add(new Cluster("c2", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc2"));
-		ClusterType clusters = new ClusterType(cluster);
-		
-		optimizer.setClusterType(clusters);
-		
+		qos.setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
+		optimizer.getSla().getSLA().get(0).setCommonQoSRelatedMetrics(qos);
 		//TEST 1 
 		
 		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
@@ -690,120 +520,24 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		
 		//clearing space on c2
 		List<VirtualMachineType> VMs4 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(4).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
-		List<VirtualMachineType> VMs5 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(5).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 		List<VirtualMachineType> VMs6 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(6).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
-		List<VirtualMachineType> VMs7 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(7).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 		
-		//seriously overloaded server
+		//overloaded server
 		VMs4.addAll(VMs6);
 		VMs6.clear();
-		
+	
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response);
 		assertNotNull(response.getResponse());
 		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
-				
-		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
-		
-	}
-	
-	/**
-	 * Test allocation with constraints not satisfied
-	 */
-	public void testAllocationFull() {
-		
-		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(8);
-		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(1); 
-		modelGenerator.setRAM_SIZE(100);//24
-		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-				
-		modelGenerator.setVM_TYPE("m1.small");
-		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-				
-		optimizer.setVmTypes(VMs);
-		
-		SLAType slas = new SLAType();
-		
-		QoSDescriptionType qos = new QoSDescriptionType();
-		MaxVirtualCPUPerCore mvCPU = new MaxVirtualCPUPerCore();
-		qos.setMaxVirtualCPUPerCore(mvCPU);
-		qos.getMaxVirtualCPUPerCore().setValue((float) 1.0);
-				
-		SLAType.SLA sla = new SLAType.SLA();
-		slas.getSLA().add(sla);
-		sla.setCommonQoSRelatedMetrics(qos);
-		BoundedSLAsType bSlas = new BoundedSLAsType();
-		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
-		
-		PolicyType.Policy policy = new PolicyType.Policy();
-		
-		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy));	
-		
-		List<String> nodeName = new ArrayList<String>();
-		nodeName.add("id0");
-		nodeName.add("id100000");
-		nodeName.add("id200000");
-		nodeName.add("id300000");
-		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
-		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc1"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id400000");
-		nodeName.add("id500000");
-		nodeName.add("id600000");
-		nodeName.add("id700000");
-		cluster.add(new Cluster("c2", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc2"));
-		ClusterType clusters = new ClusterType(cluster);
-		
-		optimizer.setClusterType(clusters);
-		
-		//TEST 1 
-		
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().clear();
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c2");
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
-	
-		
-		//8 VMS -> full serverss		
-		model = modelGenerator.createPopulatedFIT4GreenType();
-		
-		//clearing space on c2
-		List<VirtualMachineType> VMs4 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(4).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
-		List<VirtualMachineType> VMs5 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(5).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
-		List<VirtualMachineType> VMs6 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(6).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
-		List<VirtualMachineType> VMs7 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(7).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
-		
-		//seriously overloaded server
-		VMs4.addAll(VMs6);
-		VMs6.clear();
-		
-		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
-		
-		assertNotNull(response);
-		assertNotNull(response.getResponse());
-		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
-				
-		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
-		
+
 	}
 	
 	
 	/**
-	 *
+	 * A policy is not satisfied
+	 * The policies are not taken into account in allocation, so allocation is possible.		
 	 */
 	public void testAllocationPolicyNotSatisfied() {
 		
@@ -814,48 +548,15 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(6); //2 cores
 		modelGenerator.setRAM_SIZE(100);
-		
-		//VM settings
-		modelGenerator.setCPU_USAGE(0.0);
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setNETWORK_USAGE(0);
-		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(0);
-		modelGenerator.setVM_TYPE("oneCPU");
+
     	FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-    	
-		VMTypeType vmTypes = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("oneCPU");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(0)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-	
-		//clearing one VM
-		model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(0).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
-    	
-    	    	
-		AllocationRequestType request = createAllocationRequestCloud("oneCPU");
+    	    	    	
+		AllocationRequestType request = createAllocationRequestCloud("m1.small");
 		
 		//This policy is not met by the configuration
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
-
-		PolicyType.Policy pol = new Policy();
-		pol.getPeriodVMThreshold().add(period);
-
-		List<Policy> polL = new LinkedList<Policy>();
-		polL.add(pol);
-
-		PolicyType myVmMargins = new PolicyType(polL);
-		myVmMargins.getPolicy().add(pol);
-				
-		OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				vmTypes, myVmMargins, makeSimpleFed(myVmMargins, model));
+		optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).getLoad().setSpareCPUs(new SpareCPUs(3, UnitType.ABSOLUTE));
 		
-		
-		AllocationResponseType response = MyOptimizer.allocateResource(request, model);
+		AllocationResponseType response = optimizer.allocateResource(request, model);
 		
 		assertNotNull(response);
 		assertNotNull(response.getResponse());

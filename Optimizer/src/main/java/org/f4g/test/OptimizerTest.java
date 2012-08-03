@@ -29,6 +29,8 @@ import org.f4g.schema.allocation.ObjectFactory;
 import org.f4g.schema.allocation.TraditionalVmAllocationType;
 import org.f4g.schema.constraints.optimizerconstraints.*;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
+import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
+import org.f4g.schema.constraints.optimizerconstraints.SLAType.SLA;
 import org.f4g.schema.metamodel.*;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.measures.Measure;
@@ -362,15 +364,7 @@ public class OptimizerTest extends TestCase {
 		return request;
 	}
 	
-	protected SLAType createDefaultSLA(){
-		SLAType slas = new SLAType();
-		SLAType.SLA sla = new SLAType.SLA();
-		
-		slas.getSLA().add(sla);
-		return slas;
-	}
-	
-	protected ClusterType createDefaultCluster(int NumberOfNodes, SLAType.SLA sla, PolicyType policy) {
+	protected ClusterType createDefaultCluster(int NumberOfNodes, List<SLA> sla, List<Policy> policy) {
 	
 		List<String> nodeName = new ArrayList<String>();
 		for(int i=1; i<=NumberOfNodes; i++){
@@ -378,11 +372,18 @@ public class OptimizerTest extends TestCase {
 		}		
 		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
 
-		BoundedSLAsType bSlas = new BoundedSLAsType();
-		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
+		BoundedSLAsType bSlas = null;
+		if(sla != null) {
+			bSlas = new BoundedSLAsType();
+			bSlas.getSLA().add(new BoundedSLAsType.SLA(sla.get(0)));	
+		} 		
 		
-		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy.getPolicy().get(0)));	
+		BoundedPoliciesType bPolicies = null;
+		if(bPolicies != null) {
+			bPolicies = new BoundedPoliciesType();
+			bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy.get(0)));	
+		}
+		
 		
 		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "id"));
 		return new ClusterType(cluster);

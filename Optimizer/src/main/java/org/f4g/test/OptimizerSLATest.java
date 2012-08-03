@@ -401,7 +401,7 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		// TEST 2 with overbooking setting = 1
 
-		SLAType slas = createDefaultSLA();
+		SLAType slas = SLAGenerator.createDefaultSLA();
 		QoSDescriptionType qos = new QoSDescriptionType();
 		MaxVirtualCPUPerCore mvCPU = new MaxVirtualCPUPerCore();
 		qos.setMaxVirtualCPUPerCore(mvCPU);
@@ -409,7 +409,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		slas.getSLA().get(0).setCommonQoSRelatedMetrics(qos);
 
 		ClusterType clusters = createDefaultCluster(
-				modelGenerator.MAX_NB_SERVERS, slas.getSLA().get(0), vmMargins);
+				modelGenerator.MAX_NB_SERVERS, slas.getSLA(), polL);
 		myOptimizer.setClusterType(clusters);
 		myOptimizer.setVmTypes(vmTypes);
 		myOptimizer.setSla(slas);
@@ -1024,11 +1024,11 @@ public class OptimizerSLATest extends OptimizerTest {
 		
 		// TEST 2: with payback time = 10 min
 
-		SLAType slas = createDefaultSLA();
+		SLAType slas = SLAGenerator.createDefaultSLA();
 				
 		pol.setVMMigrationPaybacktime(10);
 		ClusterType clusters = createDefaultCluster(
-				modelGenerator.MAX_NB_SERVERS, slas.getSLA().get(0), pols);
+				modelGenerator.MAX_NB_SERVERS, slas.getSLA(), polL);
 		
 		FederationType fed = makeSimpleFed(pols, model);
 		for(Cluster cs : clusters.getCluster()) {

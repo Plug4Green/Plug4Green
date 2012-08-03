@@ -996,7 +996,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		vmTypes.getVMType().add(type1);
 		optimizer.setVmTypes(vmTypes);
 		
-		SLAType slas = createDefaultSLA();
+		SLAType slas = SLAGenerator.createDefaultSLA();
 		SLAType.SLA sla = new SLAType.SLA();
 		SLAType.SLA sla2 = new SLAType.SLA();
 		BoundedSLAsType bSlas = new BoundedSLAsType();

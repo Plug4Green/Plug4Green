@@ -1109,7 +1109,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
 		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy));	
 		
-		ClusterType clusters = createDefaultCluster(modelGenerator.MAX_NB_SERVERS, slas.getSLA().get(0), vmMargins); 
+		ClusterType clusters = createDefaultCluster(modelGenerator.MAX_NB_SERVERS, slas.getSLA(), polL); 
 		
 		OptimizerEngineCloudTraditional myOptimizer2 = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
 				VMs, vmMargins, makeSimpleFed(vmMargins, model));
