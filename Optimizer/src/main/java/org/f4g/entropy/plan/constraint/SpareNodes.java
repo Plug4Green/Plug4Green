@@ -2,7 +2,6 @@
 
 package org.f4g.entropy.plan.constraint;
 
-import static choco.cp.solver.CPSolver.minus;
 import choco.Choco;
 import choco.cp.solver.constraints.integer.bool.BooleanFactory;
 import choco.cp.solver.constraints.reified.ReifiedFactory;
@@ -23,7 +22,7 @@ public class SpareNodes implements PlacementConstraint {
     /**
      * Make a new constraint.
      *
-     * @param nodes the nodes to put offline if they don't host any running VM.
+     * @param nodes the nodes
      */
     public SpareNodes(ManagedElementSet<Node> nodes, int minSpareNodes) {
         this.nodes = nodes;
@@ -35,25 +34,23 @@ public class SpareNodes implements PlacementConstraint {
     @Override
     public void inject(ReconfigurationProblem core) {
     	
-//    	IntDomainVar[] free = new IntDomainVar[nodes.size()];
-//		for (int i = 0; i<nodes.size(); i++) {
-//        	Node n = nodes.get(i);
-//        	if (core.getFutureOfflines().contains(n)) {
-//        		free[i] = core.createIntegerConstant("", 0);
-//			} else if (core.getFutureOnlines().contains(n)) {
-//				free[i] = core.createBoundIntVar("spareCPU" + i, 0, Choco.MAX_UPPER_BOUND);
-//				//core.post(core.eq(free[i], minus((int)(n.getNbOfCPUs() * overbooking), NbVCPU)));
-//			} else {
-//            if (!core.getFutureOnlines().contains(n) && !core.getFutureOfflines().contains(n)) {
-//                ManageableNodeActionModel a = (ManageableNodeActionModel) core.getAssociatedAction(n);
-//                IntDomainVar unused = core.createBooleanVar("unused(" + n.getName() + ')');
-//                core.post(ReifiedFactory.builder(unused, core.eq(core.getUsedMem(n), 0), core));
-//                core.post(ReifiedFactory.builder(free[i], BooleanFactory.and(a.getState(), unused), core));
-//            }
-			
-            
-        //}
-        //core.post(core.leq(minSpareNodes, core.sum(free)));
+    	IntDomainVar[] free = new IntDomainVar[nodes.size()];
+		for (int i = 0; i<nodes.size(); i++) {
+        	Node n = nodes.get(i);
+        	
+        	if (core.getFutureOfflines().contains(n)) {
+        		free[i] = core.createIntegerConstant("", 0);
+			} else if (core.getFutureOnlines().contains(n)) {
+				free[i] = core.createBoundIntVar("spareCPU" + i, 0, Choco.MAX_UPPER_BOUND);
+				core.post(ReifiedFactory.builder(free[i], core.eq(core.getUsedMem(n), 0), core));
+			} else {
+                ManageableNodeActionModel a = (ManageableNodeActionModel) core.getAssociatedAction(n);
+                IntDomainVar unused = core.createBooleanVar("unused(" + n.getName() + ')');
+                core.post(ReifiedFactory.builder(unused, core.eq(core.getUsedMem(n), 0), core));
+                core.post(ReifiedFactory.builder(free[i], BooleanFactory.and(a.getState(), unused), core));
+            }
+        }
+        core.post(core.leq(minSpareNodes, core.sum(free)));
     }
 
     @Override
@@ -111,7 +108,7 @@ public class SpareNodes implements PlacementConstraint {
 
     @Override
     public String toString() {
-        return new StringBuilder("SpareNodes(").append(nodes).append(')').toString();
+        return new StringBuilder("SpareNodes(").append(nodes).append(',').append(minSpareNodes).append(')').toString();
     }
 
     @Override

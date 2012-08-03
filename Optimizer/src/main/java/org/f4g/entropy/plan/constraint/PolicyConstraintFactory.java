@@ -151,7 +151,7 @@ public class PolicyConstraintFactory {
 						PolicyType.Policy myPol = pol.getIdref();
 						if (myPol.getPeriodVMThreshold() != null) {
 							
-							float overbooking = 1;
+							float overbooking = -1;
 							if(c.getBoundedSLAs() != null && (c.getBoundedSLAs().getSLA().size() > 0) && 
 									c.getBoundedSLAs().getSLA().get(0).getIdref().getCommonQoSRelatedMetrics() != null &&
 									c.getBoundedSLAs().getSLA().get(0).getIdref().getCommonQoSRelatedMetrics().getMaxVirtualCPUPerCore() != null) {
@@ -264,17 +264,33 @@ public class PolicyConstraintFactory {
 		
 		if(model.getDatetime() != null) {
 			LoadType load = SLAReader.getVMSlotsThreshold(model.getDatetime().toGregorianCalendar().getTime(), periods);					
-			if(nodes.size() !=0 && 
-					load != null && load.getSpareCPUs() != null && load.getSpareCPUs().getValue() > 0 ) {
-				
-				int nbCores = 0;
-				switch (load.getSpareCPUs().getUnitType()) {
-					case ABSOLUTE: nbCores = load.getSpareCPUs().getValue(); break;
-					case RELATIVE: nbCores = load.getSpareCPUs().getValue() * src.getAllNodes().size() / 100; break;
-				}
+			if(nodes.size() !=0 && load != null) {
+				if(load.getSpareCPUs() != null && load.getSpareCPUs().getValue() > 0 ) {
+					
+					int nbCores = 0;
+					switch (load.getSpareCPUs().getUnitType()) {
+						case ABSOLUTE: nbCores = load.getSpareCPUs().getValue(); break;
+						case RELATIVE: nbCores = load.getSpareCPUs().getValue() * src.getAllNodes().size() / 100; break;
+					}
 
-				v.addConstraint(new SpareCPUs(nodes, nbCores, overbooking));
+					v.addConstraint(new SpareCPUs(nodes, nbCores, overbooking));
+				}
+				
+
+				if(load.getSpareNodes() != null && load.getSpareNodes().getValue() > 0 ) {
+					
+					int nbCores = 0;
+					switch (load.getSpareNodes().getUnitType()) {
+						case ABSOLUTE: nbCores = load.getSpareNodes().getValue(); break;
+						case RELATIVE: nbCores = load.getSpareNodes().getValue() * src.getAllNodes().size() / 100; break;
+					}
+
+					v.addConstraint(new SpareNodes(nodes, nbCores));
+				}
 			}
+				
+				
+			
 			   	
 		} else {
 			log.warn("the model doesn't specify the current time: cannot use the on/off policy");
