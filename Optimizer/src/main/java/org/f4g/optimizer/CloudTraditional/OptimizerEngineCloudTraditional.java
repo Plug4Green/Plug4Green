@@ -164,6 +164,10 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		this.federation = federation;
 	}
 
+	public FederationType getFederation() {
+		return federation;
+	}
+	
 	public PolicyType getPolicies() {
 		return policies;
 	}
@@ -770,11 +774,11 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		return vmTypes;
 	}
 
-	public ClusterType getClusterType() {
+	public ClusterType getClusters() {
 		return clusters;
 	}
 
-	public void setClusterType(ClusterType clusterType) {
+	public void setClusters(ClusterType clusterType) {
 		this.clusters = clusterType;
 	}
 

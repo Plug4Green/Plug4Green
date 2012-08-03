@@ -140,7 +140,7 @@ public class OptimizerPlacementContraintTest extends OptimizerTest {
 		
 		FIT4GreenType modelManyServersNoLoad = modelGenerator.createPopulatedFIT4GreenType();				
 		SLAReader sla = new SLAReader("resources\\SLAClusterConstraints2.xml");
-		optimizer.setClusterType(sla.getCluster());
+		optimizer.setClusters(sla.getCluster());
 		optimizer.setConstraintType(sla.getPCs());
 		optimizer.runGlobalOptimization(modelManyServersNoLoad);
 					

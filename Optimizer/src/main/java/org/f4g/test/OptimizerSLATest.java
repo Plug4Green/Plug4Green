@@ -129,7 +129,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		String sep = System.getProperty("file.separator");
 		SLAReader sla = new SLAReader("resources" + sep
 				+ "SlaClusterConstraintsHDD.xml");
-		optimizer.setClusterType(sla.getCluster());
+		optimizer.setClusters(sla.getCluster());
 
 		FIT4GreenType modelManyServersNoLoad = modelGenerator
 				.createPopulatedFIT4GreenType();
@@ -254,7 +254,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		String sep = System.getProperty("file.separator");
 		SLAReader sla = new SLAReader("resources" + sep
 				+ "SlaClusterConstraintsCPULoad.xml");
-		optimizer.setClusterType(sla.getCluster());
+		optimizer.setClusters(sla.getCluster());
 
 		optimizer.runGlobalOptimization(modelManyServersNoLoad);
 
@@ -387,7 +387,7 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		ClusterType clusters = createDefaultCluster(
 				modelGenerator.MAX_NB_SERVERS, slas.getSLA(), polL);
-		myOptimizer.setClusterType(clusters);
+		myOptimizer.setClusters(clusters);
 		myOptimizer.setVmTypes(vmTypes);
 		myOptimizer.setSla(slas);
 		myOptimizer.runGlobalOptimization(model);
@@ -583,7 +583,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		String sep = System.getProperty("file.separator");
 		SLAReader sla = new SLAReader("resources" + sep
 				+ "SlaClusterConstraints.xml");
-		optimizer.setClusterType(sla.getCluster());
+		optimizer.setClusters(sla.getCluster());
 		optimizer.setSla(sla.getSLAs());
 		optimizer.runGlobalOptimization(modelManyServersNoLoad);
 
@@ -666,7 +666,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		String sep = System.getProperty("file.separator");
 		SLAReader sla = new SLAReader("resources" + sep
 				+ "SlaClusterConstraints2.xml");
-		optimizer.setClusterType(sla.getCluster());
+		optimizer.setClusters(sla.getCluster());
 		optimizer.setSla(sla.getSLAs());
 
 		FIT4GreenType modelManyServersNoLoad = modelGenerator
@@ -764,7 +764,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		String sep = System.getProperty("file.separator");
 		SLAReader sla = new SLAReader("resources" + sep
 				+ "SlaClusterConstraints2.xml");
-		optimizer.setClusterType(sla.getCluster());
+		optimizer.setClusters(sla.getCluster());
 		optimizer.setSla(sla.getSLAs());
 
 		FIT4GreenType modelManyServersNoLoad = modelGenerator
@@ -842,7 +842,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		String sep = System.getProperty("file.separator");
 		SLAReader sla = new SLAReader("resources" + sep
 				+ "SlaClusterConstraintsCoreLoad.xml");
-		optimizer.setClusterType(sla.getCluster());
+		optimizer.setClusters(sla.getCluster());
 		optimizer.setSla(sla.getSLAs());
 		optimizer.setFederation(sla.getFeds());
 
@@ -1017,7 +1017,7 @@ public class OptimizerSLATest extends OptimizerTest {
 			
 		}
 		myOptimizer.setFederation(fed);
-		myOptimizer.setClusterType(clusters);
+		myOptimizer.setClusters(clusters);
 		myOptimizer.setVmTypes(vmTypes);
 		myOptimizer.setSla(slas);
 		myOptimizer.runGlobalOptimization(model);
@@ -1239,7 +1239,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		String sep = System.getProperty("file.separator");
 		SLAReader sla = new SLAReader("resources" + sep
 				+ "SlaClusterConstraintsAvgCPUOverbooking2.xml");
-		optimizer.setClusterType(sla.getCluster());
+		optimizer.setClusters(sla.getCluster());
 		optimizer.setSla(sla.getSLAs());
 		System.out.println("Name: " + sla.getCluster().getCluster().get(0).getName());
 		System.out.println("ID: " + sla.getCluster().getCluster().get(0).getId());
@@ -1316,7 +1316,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		cluster.add(new Cluster("c2", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc2"));
 		ClusterType clusters = new ClusterType(cluster);
 		
-		optimizer.setClusterType(clusters);
+		optimizer.setClusters(clusters);
 		
 		//TEST 1 
 				
@@ -1399,7 +1399,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		String sep = System.getProperty("file.separator");
 		SLAReader sla = new SLAReader("resources" + sep
 				+ "SlaClusterConstraintsDelayBetweenMove.xml");
-		optimizer.setClusterType(sla.getCluster());
+		optimizer.setClusters(sla.getCluster());
 		optimizer.setSla(sla.getSLAs());
 		optimizer.setFederation(sla.getFeds());
 		

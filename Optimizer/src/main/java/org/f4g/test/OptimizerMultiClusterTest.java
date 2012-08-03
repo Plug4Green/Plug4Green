@@ -62,6 +62,7 @@ import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
+import org.f4g.schema.constraints.optimizerconstraints.SLAType.SLA;
 
 
 /**
@@ -79,12 +80,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-
-		List<LoadType> load = new LinkedList<LoadType>();
-		load.add(new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
-
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(new SpareCPUs(0, UnitType.ABSOLUTE), null));
+		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -103,8 +99,12 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 		
 		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				        slaGenerator.createVirtualMachineType(), vmMargins, fed);
-	    
+				        SLAGenerator.createVirtualMachineType(), vmMargins, fed);
+		
+		optimizer.setSla(SLAGenerator.createDefaultSLA());
+		optimizer.setClusters(createDefaultCluster(2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
+    	
+		
 	}
 
 
@@ -115,64 +115,49 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		super.tearDown();
 		optimizer = null;
 	}
-
+	
+	protected ClusterType createMultiCluster(int NumberOfNodes, int NumberOfClusters, List<SLA> sla, List<Policy> policy) {
+		
+		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
+		for(int c=0; c<NumberOfClusters; c++){
+						
+			List<String> nodeName = new ArrayList<String>();
+			for(int i=0; i<NumberOfNodes; i++){
+				nodeName.add("id" + (c*1000000 + i*100000 ));	
+			}
+			
+			BoundedSLAsType bSlas = null;
+			if(sla != null) {
+				bSlas = new BoundedSLAsType();
+				bSlas.getSLA().add(new BoundedSLAsType.SLA(sla.get(0)));	
+			} 		
+			
+			BoundedPoliciesType bPolicies = null;
+			if(policy != null) {
+				bPolicies = new BoundedPoliciesType();
+				bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy.get(0)));	
+			}
+			cluster.add(new Cluster("c" + c, new NodeControllerType(nodeName) , bSlas, bPolicies, "c" + c));
+		}
+		return new ClusterType(cluster);
+	}
+	
+	
 	/**
 	 * Test allocation with multiple clusters
 	 */
 	public void testAllocationWithClusters() {
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(4);
+		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-	
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(2); //2 cores
-		modelGenerator.setRAM_SIZE(100);
-		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();
-				
-		modelGenerator.setVM_TYPE("m1.small");
-		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-				
-		optimizer.setVmTypes(VMs);
-		
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().clear();
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c2");
-		
-		SLAType.SLA sla = new SLAType.SLA();
-		BoundedSLAsType bSlas = new BoundedSLAsType();
-		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
-		
-		PolicyType.Policy policy = new PolicyType.Policy();
-		
-		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy));	
-		
-		
-		List<String> nodeName = new ArrayList<String>();
-		nodeName.add("id0");
-		nodeName.add("id100000");
-		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
-		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc1"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id200000");
-		nodeName.add("id300000");
-		cluster.add(new Cluster("c2", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc2"));
-		ClusterType clusters = new ClusterType(cluster);
-		SLAType slas = new SLAType();
-
-		optimizer.setClusterType(clusters);
-		
+					
+		optimizer.setClusters(createMultiCluster(1, 2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		//TEST 1
-		
+		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");	
+		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().clear();
+		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response);
@@ -182,16 +167,15 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
-		assertEquals(VMAllocResponse.getNodeId(),"id200000");
-		assertEquals(VMAllocResponse.getClusterId(),"c2");
+		assertEquals(VMAllocResponse.getNodeId(),"id1000000");
+		assertEquals(VMAllocResponse.getClusterId(),"c1");
 		
 		//TEST 2
 		
 		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().clear();
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c2");
 		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
+		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c0");
 		
-
 		AllocationResponseType response2 = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response);
@@ -202,7 +186,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 		//New VM should be allocated on first server		
 		assertEquals(VMAllocResponse2.getNodeId(),"id0");
-		assertEquals(VMAllocResponse2.getClusterId(),"c1");
+		assertEquals(VMAllocResponse2.getClusterId(),"c0");
 	}
 	
 
@@ -211,103 +195,18 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	 *
 	 * @author cdupont
 	 */
-	public void testPowerOnOffClusters() {
+public void testPowerOnOffClusters() {
 		
-		//generate one VM per server
-		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(4);
+		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 
-		//servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4); //4 cores
-		
-		//VM settings
-		modelGenerator.VM_TYPE = "Ridiculous";
-		
-		VMTypeType vmTypes = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("Ridiculous");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-		
-		SLAType.SLA sla = new SLAType.SLA();
-		BoundedSLAsType bSlas = new BoundedSLAsType();
-		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
-		
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
-
-		PolicyType.Policy pol = new Policy();
-		pol.getPeriodVMThreshold().add(period);
-		
-		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(pol));	
-				
-		List<String> nodeName = new ArrayList<String>();
-		nodeName.add("id0");
-		nodeName.add("id100000");
-		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
-		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc1"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id200000");
-		nodeName.add("id300000");
-		cluster.add(new Cluster("c2", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc2"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id1000000");
-		nodeName.add("id1100000");
-		cluster.add(new Cluster("c3", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc3"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id1200000");
-		nodeName.add("id1300000");
-		cluster.add(new Cluster("c4", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc4"));
-		ClusterType clusters = new ClusterType(cluster);
-		SLAType slas = new SLAType();
-
-		
-		PolicyType vmMargins = new PolicyType();
-		vmMargins.getPolicy().add(pol);
-		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();			
-		
-		//Create a new optimizer with the special power calculator
-		OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				vmTypes, vmMargins, makeSimpleFed(vmMargins, model));
-
-		MyOptimizer.setClusterType(clusters);
-		MyOptimizer.setVmTypes(vmTypes);
-		MyOptimizer.setSla(slas);
-		
+	
+		optimizer.setClusters(createMultiCluster(2, 2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
+		optimizer.runGlobalOptimization(model);
 			
-	
-		MyOptimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-		
-		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
-	         	
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-	
-		assertEquals(moves.size(), 0);
-		assertEquals(powerOffs.size(), 4);
+		assertEquals(getPowerOffs().size(), 4);
 
 	}
 
@@ -319,117 +218,35 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	 */
 	public void testPowerOnOffClustersAndFederation() {
 		
-		//generate one VM per server
-		//VMs ressource usage is 0
+
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(4);
+		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
-
-		//servers settings
 		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4); //4 cores
-		
-		//VM settings
-		modelGenerator.VM_TYPE = "Ridiculous";
-		
-		VMTypeType vmTypes = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("Ridiculous");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-		
-		SLAType.SLA sla = new SLAType.SLA();
-		BoundedSLAsType bSlas = new BoundedSLAsType();
-		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
-		
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
+		modelGenerator.setCORE(1); 
+		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();
 
-		PolicyType.Policy pol = new Policy();
-		pol.getPeriodVMThreshold().add(period);
-		
-		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(pol));	
-				
-		List<String> nodeName = new ArrayList<String>();
-		nodeName.add("id0");
-		nodeName.add("id100000");
-		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
-		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc1"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id200000");
-		nodeName.add("id300000");
-		cluster.add(new Cluster("c2", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc2"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id1000000");
-		nodeName.add("id1100000");
-		cluster.add(new Cluster("c3", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc3"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id1200000");
-		nodeName.add("id1300000");
-		cluster.add(new Cluster("c4", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc4"));
-		ClusterType clusters = new ClusterType(cluster);
-		SLAType slas = new SLAType();
-		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();			
-
-		PolicyType.Policy polFed = new Policy();
-		
-		PeriodType periodFed = new PeriodType(
-				begin, end, null, null, new LoadType(new SpareCPUs(17, UnitType.ABSOLUTE), null));
-
-		polFed.getPeriodVMThreshold().add(periodFed);
-				
-		FederationType fed = new FederationType();
-		BoundedPoliciesType.Policy bpol = new BoundedPoliciesType.Policy(polFed);
-		BoundedPoliciesType bpols = new BoundedPoliciesType();
-		bpols.getPolicy().add(bpol);		
-		fed.setBoundedPolicies(bpols);
-		
+		optimizer.setClusters(createMultiCluster(2, 2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		BoundedClustersType bcls = new BoundedClustersType();
-		for(Cluster cl: clusters.getCluster()) {
+		for(Cluster cl: optimizer.getClusters().getCluster()) {
 			BoundedClustersType.Cluster bcl = new BoundedClustersType.Cluster();
 			bcl.setIdref(cl);
 			bcls.getCluster().add(bcl);
+			cl.getBoundedPolicies().getPolicy().get(0).getIdref().getPeriodVMThreshold().get(0).getLoad().setSpareCPUs(new SpareCPUs(1, UnitType.ABSOLUTE));
 		}
 		
-		fed.setBoundedCluster(bcls);
-			
-		
-		//Create a new optimizer with the special power calculator
-		OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				vmTypes, vmMargins, fed);
+		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
-		MyOptimizer.setClusterType(clusters);
-		MyOptimizer.setVmTypes(vmTypes);
-		MyOptimizer.setSla(slas);
-		
-			
-	
-		MyOptimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		ActionRequestType.ActionList response = actionRequest.getActionList();
+		PolicyType.Policy pol = new Policy();
+		pol.getPeriodVMThreshold().add(period);
 
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
+		BoundedPoliciesType bpols = new BoundedPoliciesType();
+		bpols.getPolicy().add(new BoundedPoliciesType.Policy(pol));		
 		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
+		optimizer.getFederation().setBoundedPolicies(bpols);
+		optimizer.runGlobalOptimization(model);
 
-		log.debug("powerOffs=" + powerOffs.size());
-
-		//with 17 cores needed, the federation policy enforces to have 5 servers on
-		//whereas the cluster per cluster policy needed only 4.
-		assertEquals(powerOffs.size(), 3);
+		assertEquals(getPowerOffs().size(), 1);
 
 	}
 	
@@ -445,166 +262,51 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();				
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
+		model.getSite().get(0).getDatacenter().get(1).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		
 		optimizer.runGlobalOptimization(model);
 		     		
 		assertEquals(getMoves().size(), 1);
-		assertEquals(getPowerOffs().size(), 1);		
-	}
 		
-
-
-	
-	
-	/**
-	 * Test global optimization with 2 DC and migrations between allowed
-	 *
-	 * @author cdupont
-	 */
-	public void test2DCMigrationIntra() {
+		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(false);
+		model.getSite().get(0).getDatacenter().get(1).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(false);
 		
-		//generate one VM per server
-		//VMs ressource usage is 0
-		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(2);
-		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-
-		//servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4); //4 cores
 		
-		//VM settings
-		modelGenerator.VM_TYPE = "Ridiculous";
-				
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("Ridiculous");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		optimizer.getVmTypes().getVMType().add(type1);
-		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();				
-	
 		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-		
-		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
-	         	
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-	
-		assertTrue(moves.size()==2);
-		assertTrue(powerOffs.size()==2);
-		//Check that VMs moves only inside a DC
-		assertEquals(moves.get(0).getDestNodeController(), "id100000");
-		assertEquals(moves.get(1).getDestNodeController(), "id1000000");
-		
+		     		
+		assertEquals(getMoves().size(), 0);
 
 	}
+		
 	
 	/**
 	 * Test global optimization based on PUE
-	 * @author cdupont
 	 */
 	public void test2SitesMigrationInterPUE() {
 		
-		//generate one VM per server
-		//VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-
-		//servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4); //4 cores
-		
-		//VM settings
-		modelGenerator.VM_TYPE = "Ridiculous";
-				
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("Ridiculous");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		optimizer.getVmTypes().getVMType().add(type1);
-		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();				
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		
 		//TEST 1
-		
 		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-		
-		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
-	         	
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
 	
-		assertTrue(moves.size()==1);
+		assertEquals(getMoves().size(), 1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(moves.get(0).getDestNodeController(),"id0");
+		assertEquals(getMoves().get(0).getDestNodeController(),"id0");
 		
-		//TEST 2
-		
+		//TEST 2		
 		//set a different PUE
 		model.getSite().get(0).getPUE().setValue(3.0);
 		
 		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		response = actionRequest.getActionList();
-		
-		moves.clear();
-		powerOffs.clear();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
-	         	
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-	
-		assertTrue(moves.size()==1);
+			
+		assertEquals(getMoves().size(), 1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(moves.get(0).getDestNodeController(),"id1000000");
+		assertEquals(getMoves().get(0).getDestNodeController(),"id1000000");
 			
 	}
 	
@@ -613,26 +315,11 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	 * @author cdupont
 	 */
 	public void test2SitesMigrationInterCUE() {
-		
-		//generate one VM per server
-		//VMs ressource usage is 0
+
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-
-		//servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4); //4 cores
-		
-		//VM settings
-		modelGenerator.VM_TYPE = "Ridiculous";
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("Ridiculous");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		optimizer.getVmTypes().getVMType().add(type1);
-		
+				
 		//optimizer according to CO2
 		optimizer.setOptiObjective(OptimizationObjective.CO2);
 		
@@ -641,33 +328,11 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		
 		//TEST 1
-		
 		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-		
-		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
-	         	
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-	
-		assertTrue(moves.size()==1);
+		assertTrue(getMoves().size()==1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(moves.get(0).getDestNodeController(),"id1000000");
+		assertEquals(getMoves().get(0).getDestNodeController(),"id1000000");
 		
 		//TEST 2
 		
@@ -675,31 +340,10 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		model.getSite().get(0).getCUE().setValue(10.0);
 		
 		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		response = actionRequest.getActionList();
-		
-		moves.clear();
-		powerOffs.clear();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
-	         	
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-	
-		assertTrue(moves.size()==1);
+
+		assertTrue(getMoves().size()==1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(moves.get(0).getDestNodeController(),"id0");
+		assertEquals(getMoves().get(0).getDestNodeController(),"id0");
 		
 	}
 	
@@ -714,86 +358,29 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-
-		//servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4); //4 cores
-		
-		//VM settings
-		modelGenerator.VM_TYPE = "Ridiculous";
-				
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("Ridiculous");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		optimizer.getVmTypes().getVMType().add(type1);
-		
-		//optimizer according to CO2
-		optimizer.setOptiObjective(OptimizationObjective.CO2);
-		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();				
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		
 		//TEST 1
+		//optimizer according to CO2
 		
+		optimizer.setOptiObjective(OptimizationObjective.CO2);
 		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-		
-		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
-	         	
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
 	
-		assertTrue(moves.size()==1);
+	
+		assertEquals(getMoves().size(), 1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(moves.get(0).getDestNodeController(),"id1000000");
+		assertEquals(getMoves().get(0).getDestNodeController(),"id1000000");
 		
 		//TEST 2
 		
-		optimizer.setOptiObjective(OptimizationObjective.Power);
-		
+		optimizer.setOptiObjective(OptimizationObjective.Power);		
 		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		response = actionRequest.getActionList();
-		
-		moves.clear();
-		powerOffs.clear();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
-	         	
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
 	
-		assertTrue(moves.size()==1);
+		assertEquals(getMoves().size(), 1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(moves.get(0).getDestNodeController(),"id0");
+		assertEquals(getMoves().get(0).getDestNodeController(),"id0");
 		
 	}
 	
@@ -804,57 +391,22 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	public void testAllocationAllOffSecondCluster() {
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(4);
-		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-	
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(2); //2 cores
-		modelGenerator.setRAM_SIZE(100);
-		
+		modelGenerator.setNB_SERVERS(2);
+		modelGenerator.setNB_VIRTUAL_MACHINES(0);
+
+		optimizer.setClusters(createMultiCluster(1, 2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
+		optimizer.getClusters().getCluster().get(0).getNodeController().getNodeName().clear();
+		optimizer.getClusters().getCluster().get(0).getNodeController().getNodeName().add("id100000");
+		optimizer.getClusters().getCluster().get(1).getNodeController().getNodeName().clear();
+		optimizer.getClusters().getCluster().get(1).getNodeController().getNodeName().add("id200000");
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-		model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(2).setStatus(ServerStatusType.OFF);
-		//model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(3).setStatus(ServerStatusType.OFF);
-		
-		modelGenerator.setVM_TYPE("m1.small");
-		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-				
-		optimizer.setVmTypes(VMs);
+		model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1).setStatus(ServerStatusType.OFF);
+
 		
 		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
 		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().clear();
+		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c0");
 		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c2");
-		
-		SLAType.SLA sla = new SLAType.SLA();
-		BoundedSLAsType bSlas = new BoundedSLAsType();
-		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
-		
-		PolicyType.Policy policy = new PolicyType.Policy();
-		
-		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy));	
-		
-		
-		List<String> nodeName = new ArrayList<String>();
-		nodeName.add("id0");
-		nodeName.add("id100000");
-		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
-		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc1"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id200000");
-		nodeName.add("id300000");
-		cluster.add(new Cluster("c2", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc2"));
-		ClusterType clusters = new ClusterType(cluster);
-		SLAType slas = new SLAType();
-			
-		optimizer.setClusterType(clusters);
 		
 		//TEST 1
 		
@@ -868,7 +420,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 		//New VM should be allocated on first server		
 		assertEquals(VMAllocResponse.getNodeId(),"id100000");
-		assertEquals(VMAllocResponse.getClusterId(),"c1");
+		assertEquals(VMAllocResponse.getClusterId(),"c0");
 		
 	}
 	
@@ -878,60 +430,24 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	public void testAllocationOneClusterFull() {
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(8);
-		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-	
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(8); 
-		modelGenerator.setRAM_SIZE(24);
+		modelGenerator.setNB_SERVERS(2);
+		modelGenerator.setNB_VIRTUAL_MACHINES(1);	
+		modelGenerator.setCORE(6);
 		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 				
-		modelGenerator.setVM_TYPE("m1.small");
-	
-		VMTypeType vmTypes = new VMTypeType();
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(1), new IoRateType(0), new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-		optimizer.setVmTypes(vmTypes);
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(100));	
+		optimizer.setClusters(createMultiCluster(1, 2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
+		optimizer.getClusters().getCluster().get(0).getNodeController().getNodeName().clear();
+		optimizer.getClusters().getCluster().get(0).getNodeController().getNodeName().add("id100000");
+		optimizer.getClusters().getCluster().get(1).getNodeController().getNodeName().clear();
+		optimizer.getClusters().getCluster().get(1).getNodeController().getNodeName().add("id200000");
 		
-		SLAType.SLA sla = new SLAType.SLA();
-		BoundedSLAsType bSlas = new BoundedSLAsType();
-		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
-		
-		PolicyType.Policy policy = new PolicyType.Policy();
-		
-		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy));	
-		
-		
-		List<String> nodeName = new ArrayList<String>();
-		nodeName.add("id0");
-		nodeName.add("id100000");
-		nodeName.add("id200000");
-		nodeName.add("id300000");
-		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
-		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc1"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id400000");
-		nodeName.add("id500000");
-		nodeName.add("id600000");
-		nodeName.add("id700000");
-		cluster.add(new Cluster("c2", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc2"));
-		ClusterType clusters = new ClusterType(cluster);
-			
-		optimizer.setClusterType(clusters);
-
-		
-		//TEST 1 two clusters, free space
-		
+		//TEST 1 two clusters, free space		
 		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
 		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().clear();
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c2");
 		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
-		
+		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c0");
 
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
@@ -943,29 +459,23 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 		//New VM should be allocated on first cluster		
 		assertEquals(VMAllocResponse2.getNodeId(),"id100000");
-		assertEquals(VMAllocResponse2.getClusterId(),"c1");
+		assertEquals(VMAllocResponse2.getClusterId(),"c0");
 		
 		//TEST 2 two clusters, no more space on c1
-		
-		//8 VMS -> full servers
-		modelGenerator.setNB_VIRTUAL_MACHINES(8);
-		model = modelGenerator.createPopulatedFIT4GreenType();
-		
-		//clearing space on c2
-		model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(4).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
-		model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(5).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
-		
+		//clearing c0
+		model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
+		//c1 full
+		optimizer.getVmTypes().getVMType().get(0).getCapacity().setVCpus(new NrOfCpusType(6));
 		response = optimizer.allocateResource(allocationRequest, model);
 		
-		assertNotNull(response);
 		assertNotNull(response.getResponse());
 		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
 				
 		VMAllocResponse2 = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on second cluster		
-		assertEquals(VMAllocResponse2.getNodeId(),"id500000");
-		assertEquals(VMAllocResponse2.getClusterId(),"c2");
+		assertEquals(VMAllocResponse2.getNodeId(),"id200000");
+		assertEquals(VMAllocResponse2.getClusterId(),"c1");
 			
 	}
 	
@@ -1043,7 +553,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 
 		
 		optimizer.setFederation(fed);
-		optimizer.setClusterType(clusters);
+		optimizer.setClusters(clusters);
 
 		PeriodType period = new PeriodType(
 				begin, end, null, null, new LoadType(null, null));
@@ -1067,30 +577,9 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 
 		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-		
-		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
-		}
-	         	
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-	
 		//no moves should be issued on cluster one because it is broken
-		assertEquals(moves.size(), 2);
+		assertEquals(getMoves().size(), 2);
 				
 	}
 	
@@ -1104,61 +593,15 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-	
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(8); 
-		modelGenerator.setRAM_SIZE(24);
-		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();
-				
-		modelGenerator.setVM_TYPE("m1.small");
-		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(50), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-		
-		
-		SLAType.SLA sla = new SLAType.SLA();
-		BoundedSLAsType bSlas = new BoundedSLAsType();
-		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
-		
-		PolicyType.Policy policy = new PolicyType.Policy();
-		
-		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy));	
-
-		SLAType slas = new SLAType();
 			
+		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();
+					
 		//TEST 1 - with Move capability
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 
-		OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				VMs, vmMargins, makeSimpleFed(vmMargins, model));
-		
-		MyOptimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-		
-		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
-		}
-	         	
-		log.debug("moves=" + moves.size());
-	
-		assertTrue(moves.size()==3);
+		optimizer.runGlobalOptimization(model);
+		assertTrue(getMoves().size()==3);
 		
 		
 		//TEST 2 - with Live Migrate
@@ -1170,29 +613,10 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setIntraLiveMigrate(true);
 		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setIntraLiveMigrate(true);
 	
-		MyOptimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		optimizer.runGlobalOptimization(model);
 		
-		response = actionRequest.getActionList();
-		
-		List <LiveMigrateVMActionType> liveMigrate = new ArrayList<LiveMigrateVMActionType>();
-		
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof LiveMigrateVMActionType) 
-				liveMigrate.add((LiveMigrateVMActionType)action.getValue());
-		}
-	         	
-		log.debug("liveMigrate=" + liveMigrate.size());
-	
-		assertTrue(liveMigrate.size()==3);
-	
-		
+		assertTrue(getLiveMigrate().size()==3);
+			
 		//TEST 3 - with a mix
 		
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setIntraMoveVM(false);
@@ -1204,33 +628,10 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterLiveMigrate(false);
 		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterLiveMigrate(false);
 	
-		MyOptimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		optimizer.runGlobalOptimization(model);
 		
-		response = actionRequest.getActionList();
-		
-		List <LiveMigrateVMActionType> liveMigrate2 = new ArrayList<LiveMigrateVMActionType>();
-		List <MoveVMActionType> move2 = new ArrayList<MoveVMActionType>();
-		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof LiveMigrateVMActionType) 
-				liveMigrate2.add((LiveMigrateVMActionType)action.getValue());
-		}
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				move2.add((MoveVMActionType)action.getValue());
-		}
-
-	    log.debug("moves=" + move2.size());
-		log.debug("liveMigrates=" + liveMigrate2.size());
-	
-		assertTrue(liveMigrate2.size()==1);
-		assertTrue(move2.size()==2);
+		assertTrue(getLiveMigrate().size()==1);
+		assertTrue(getMoves().size()==2);
 	}
 	
 	

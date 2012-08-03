@@ -435,6 +435,23 @@ public class OptimizerTest extends TestCase {
 		return moves;
 	}
 	
+	List <LiveMigrateVMActionType> getLiveMigrate() {
+		try {
+			actionRequestAvailable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		ActionRequestType.ActionList response = actionRequest.getActionList();
+		
+		List <LiveMigrateVMActionType> moves = new ArrayList<LiveMigrateVMActionType>();
+			
+		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
+			if (action.getValue() instanceof LiveMigrateVMActionType) 
+				moves.add((LiveMigrateVMActionType)action.getValue());
+		}
+		return moves;
+	}
+	
 	List <PowerOffActionType> getPowerOffs() {
 		try {
 			actionRequestAvailable.acquire();

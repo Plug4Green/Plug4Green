@@ -284,7 +284,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
 		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , null, null, "idc1"));
 		ClusterType clusterType = new ClusterType(cluster);
-		optimizer.setClusterType(clusterType);
+		optimizer.setClusters(clusterType);
 		
 		
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
@@ -450,7 +450,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		
 		optimizer.setComputingStyle(CloudTradCS.TRADITIONAL);
 		AllocationRequestType allocationRequest = createAllocationRequestTrad();
-		optimizer.setClusterType(createDefaultCluster(3, null, null));
+		optimizer.setClusters(createDefaultCluster(3, null, null));
 		
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
@@ -503,7 +503,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 					
-		optimizer.setClusterType(createDefaultCluster(8, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
+		optimizer.setClusters(createDefaultCluster(8, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		QoSDescriptionType qos = new QoSDescriptionType();
 		qos.setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
 		optimizer.getSla().getSLA().get(0).setCommonQoSRelatedMetrics(qos);

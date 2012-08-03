@@ -229,7 +229,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.runGlobalOptimization(model);
 		
 		assertEquals(getMoves().size(), 0);
-		assertEquals(getPowerOffs().size(), 9);
+		assertEquals(getPowerOffs().size(), 10);
 	}
 
 
@@ -396,7 +396,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 			
-		optimizer.setClusterType(createDefaultCluster(8, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
+		optimizer.setClusters(createDefaultCluster(8, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		QoSDescriptionType qos = new QoSDescriptionType();
 		qos.setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
 		optimizer.getSla().getSLA().get(0).setCommonQoSRelatedMetrics(qos);

@@ -422,7 +422,7 @@ public class IntegrationTest extends OptimizerTest {
         OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new PowerCalculator(), new NetworkCost(),
                 VMs, vmMargins, fed);
 
-        MyOptimizer.setClusterType(clusters);
+        MyOptimizer.setClusters(clusters);
 
         //TEST 1
 
@@ -467,10 +467,10 @@ public class IntegrationTest extends OptimizerTest {
 
 
         SLAReader sla = new SLAReader("resources" + sep + "unittest_SLA_instance_ComHP.xml");
-        optimizer.setClusterType(sla.getCluster());
+        optimizer.setClusters(sla.getCluster());
         optimizer.setSla(sla.getSLAs());
         optimizer.setFederation(sla.getFeds());
-        optimizer.setClusterType(sla.getCluster());
+        optimizer.setClusters(sla.getCluster());
         optimizer.setPolicies(sla.getPolicies());
         optimizer.setVmTypes(sla.getVMtypes());
 
