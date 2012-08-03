@@ -120,7 +120,7 @@
         <Starts>2011-05-04T11:51:36Z</Starts>
         <Ends>2013-05-04T11:51:36Z</Ends>
         <Load>
-          <spareCPUs unitType="ABSOLUTE">9</spareCPUs>          
+          <spareCPUs unitType="RELATIVE">1</spareCPUs>
         </Load>
       </PeriodVMThreshold>
     </policy>

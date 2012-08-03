@@ -1,12 +1,6 @@
 
 package org.f4g.entropy.plan.constraint;
 
-import static choco.cp.solver.CPSolver.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import choco.Choco;
 import choco.cp.solver.constraints.integer.Absolute;
 import choco.cp.solver.constraints.integer.MaxXYZ;
@@ -22,6 +16,13 @@ import entropy.plan.choco.constraint.pack.FastBinPacking;
 import entropy.vjob.PlacementConstraint;
 import entropy.vjob.builder.protobuf.PBVJob;
 import entropy.vjob.builder.xml.XmlVJobSerializer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static choco.cp.solver.CPSolver.minus;
+import static choco.cp.solver.CPSolver.sum;
 
 /**
  * 
@@ -135,7 +136,7 @@ public class SpareCPUs implements PlacementConstraint {
 	}
 	
 
-    @Override
+/*    @Override
     public boolean isSatisfied(Configuration cfg) {
     	int nbCPUS = 0;
     	int nbVCPUS = 0;
@@ -149,6 +150,22 @@ public class SpareCPUs implements PlacementConstraint {
             return true;
         else
         	return false;
+    }  */
+
+
+    @Override
+    public boolean isSatisfied(Configuration cfg) {
+        int nbSpare = 0;
+        for (Node n : nodes) {
+            if (cfg.isOnline(n)) {
+                int nb = 0;
+                for (VirtualMachine vm : cfg.getRunnings(n)) {
+                    nb += vm.getNbOfCPUs();
+                }
+                nbSpare += (n.getCPUCapacity() - nb);
+            }
+        }
+        return nbSpare >= (minSpareCPU * overbooking);
     }
 
     @Override

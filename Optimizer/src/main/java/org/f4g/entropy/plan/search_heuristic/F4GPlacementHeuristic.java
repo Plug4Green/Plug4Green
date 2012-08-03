@@ -4,28 +4,23 @@ package org.f4g.entropy.plan.search_heuristic;
 
 import choco.cp.solver.search.integer.branching.AssignOrForbidIntVarVal;
 import choco.cp.solver.search.integer.branching.AssignVar;
-import choco.cp.solver.search.integer.valiterator.IncreasingDomain;
-import choco.cp.solver.search.integer.valselector.MaxVal;
 import choco.cp.solver.search.integer.valselector.MinVal;
 import choco.cp.solver.search.integer.varselector.StaticVarOrder;
-import choco.cp.solver.search.task.SetTimes;
 import choco.kernel.solver.variables.integer.IntDomainVar;
-import choco.kernel.solver.variables.scheduling.TaskVar;
 import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
-import entropy.plan.choco.actionModel.ActionModels;
-import entropy.plan.choco.actionModel.VirtualMachineActionModel;
-import entropy.plan.choco.actionModel.slice.DemandingSlice;
-import entropy.plan.choco.search.*;
+import entropy.plan.choco.actionModel.*;
+import entropy.plan.choco.search.HosterVarSelector;
+import entropy.plan.choco.search.NodeGroupSelector;
+import entropy.plan.choco.search.StayFirstSelector2;
+import entropy.plan.choco.search.VMGroupVarSelector;
 import gnu.trove.TLongIntHashMap;
-
 import org.apache.log4j.Logger;
 import org.f4g.entropy.plan.F4GPlanner;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import entropy.plan.choco.actionModel.*;
 
 /**
  * A placement heuristic focused on each VM.
@@ -129,7 +124,7 @@ public class F4GPlacementHeuristic implements F4GCorePlanHeuristic {
 	private void addStayFirst(F4GPlanner plan, List<VirtualMachineActionModel> actions, TLongIntHashMap oldLocation) {
 		 	        
 		HosterVarSelector select = new HosterVarSelector(plan.getModel(), ActionModels.extractDemandingSlices(actions));
-		plan.getModel().addGoal(new AssignVar(select, new StayFirstSelector2(plan.getModel(), oldLocation, plan.getPackingConstraintClass(), StayFirstSelector2.Option.wfMem)));
+		plan.getModel().addGoal(new AssignVar(select, new StayFirstSelector2(plan.getModel(), oldLocation, plan.getPackingConstraintClass(), StayFirstSelector2.Option.bfMem)));
 	}
 
 //	private void addInGroupAction(ReconfigurationProblem rp) {

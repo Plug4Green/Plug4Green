@@ -24,6 +24,7 @@ import entropy.plan.durationEvaluator.MockDurationEvaluator;
 import entropy.vjob.PlacementConstraint;
 import entropy.vjob.VJob;
 import org.apache.log4j.Logger;
+import org.f4g.entropy.plan.constraint.DefaultVcpuPcpuMapping;
 import org.f4g.entropy.plan.constraint.PackingBasedCardinalities;
 import org.f4g.entropy.plan.constraint.sliceScheduling.SlicesPlanner;
 import org.f4g.entropy.plan.objective.PowerObjective;
@@ -245,7 +246,13 @@ public class F4GPlanner extends CustomizablePlannerModule {
         model.launch();
 	    Boolean ret = model.isFeasible();
 
-        PackingBasedCardinalities.getInstances().reset();
+        //Kill the model extensions.
+        if (PackingBasedCardinalities.getInstances() != null) {
+            PackingBasedCardinalities.getInstances().reset();
+        } if (DefaultVcpuPcpuMapping.getInstances() != null) {
+            DefaultVcpuPcpuMapping.getInstances().reset();
+        }
+
 	    if (ret == null) {
 	        throw new PlanException("Unable to check wether a solution exists or not");
 	    } else {
@@ -264,7 +271,7 @@ public class F4GPlanner extends CustomizablePlannerModule {
 	            if (Configurations.futureOverloadedNodes(res).size() != 0) {
 	                throw new PlanException("Resulting configuration is not viable: Overloaded nodes=" + Configurations.futureOverloadedNodes(res));
 	            }
-	
+
 	            int cost = 0;
 	            for (Action a : plan) {
 	                cost += a.getFinishMoment();

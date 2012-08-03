@@ -11,11 +11,8 @@ import entropy.plan.choco.constraint.pack.FastBinPacking;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: fhermeni
- * Date: 28/07/12
- * Time: 18:21
- * To change this template use File | Settings | File Templates.
+ * Implementation based on a bin packing constraint.
+ * @author Fabien Hermenier
  */
 public class PackingBasedCardinalities implements Cardinalities {
 
@@ -27,7 +24,6 @@ public class PackingBasedCardinalities implements Cardinalities {
 
     private ReconfigurationProblem rp;
 
-    private int max;
     public PackingBasedCardinalities(ReconfigurationProblem rp) {
         this(rp, DEFAULT_MAX);
     }
@@ -39,7 +35,6 @@ public class PackingBasedCardinalities implements Cardinalities {
         cards = new IntDomainVar[rp.getNodes().length];
         this.rp = rp;
         instances = this;
-        this.max = max;
 
         List<DemandingSlice> dSlices = rp.getDemandingSlices();
 
@@ -62,7 +57,7 @@ public class PackingBasedCardinalities implements Cardinalities {
             SConstraint s = new FastBinPacking(rp.getEnvironment(), cards, demand, assigns);
             rp.post(s);
         }
-        Plan.logger.debug("SatisfyDemandingSlicesHeightsFastBP branched");
+        Plan.logger.debug("PackingBasedCardinalities branched");
 
     }
 

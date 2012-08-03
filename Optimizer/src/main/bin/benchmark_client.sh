@@ -3,7 +3,7 @@
 
 MY=`dirname $0`
 
-JAVA_OPTS="-Xmx6G -Xms6G -server -da"
+JAVA_OPTS="-Xmx10G -Xms10G -server -da"
 #Define the classpath
 JARS=`ls $MY/lib/*.jar`
  
