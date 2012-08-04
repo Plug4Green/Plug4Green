@@ -56,7 +56,6 @@ public class IntegrationTest extends OptimizerTest {
     public Logger log;
 
     OptimizerEngineCloudTraditional optimizer = null;
-    SLAGenerator slaGenerator = new SLAGenerator();
     PolicyType vmMargins;
 
 
@@ -81,7 +80,7 @@ public class IntegrationTest extends OptimizerTest {
         vmMargins = new PolicyType(polL);
         vmMargins.getPolicy().add(pol);
         optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(),
-                slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, null));
+                SLAGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, null));
 
     }
 
@@ -280,30 +279,9 @@ public class IntegrationTest extends OptimizerTest {
 
 
         MyOptimizer.runGlobalOptimization(model);
-        try {
-            actionRequestAvailable.acquire();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-        List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-        if (actionRequest != null) {
-            for (JAXBElement<? extends AbstractBaseActionType> action : actionRequest.getActionList().getAction()) {
-                if (action.getValue() instanceof MoveVMActionType)
-                    moves.add((MoveVMActionType) action.getValue());
-                if (action.getValue() instanceof PowerOffActionType)
-                    powerOffs.add((PowerOffActionType) action.getValue());
-            }
-        }
-
-
-        log.debug("moves=" + moves.size());
-        log.debug("powerOffs=" + powerOffs.size());
+     
         //one VM is moving to switch off a server
-        assertEquals(moves.size(), 1);
+        assertEquals(1, getMoves().size());
 
 
         //TEST 2
@@ -314,30 +292,9 @@ public class IntegrationTest extends OptimizerTest {
         servers.get(0).getMainboard().get(0).getCPU().get(0).getCore().get(0).setFrequency(new FrequencyType(0.5));
 
         MyOptimizer.runGlobalOptimization(model);
-        try {
-            actionRequestAvailable.acquire();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        moves.clear();
-        powerOffs.clear();
-
-        if (actionRequest != null) {
-            for (JAXBElement<? extends AbstractBaseActionType> action : actionRequest.getActionList().getAction()) {
-                if (action.getValue() instanceof MoveVMActionType)
-                    moves.add((MoveVMActionType) action.getValue());
-                if (action.getValue() instanceof PowerOffActionType)
-                    powerOffs.add((PowerOffActionType) action.getValue());
-            }
-        }
-
-        log.debug("moves=" + moves.size());
-        log.debug("powerOffs=" + powerOffs.size());
-
+      
         // going to the low power server
-        assertEquals(moves.get(0).getSourceNodeController(), "id100000");
+        assertEquals(getMoves().get(0).getSourceNodeController(), "id100000");
 
     }
 
@@ -535,41 +492,10 @@ public class IntegrationTest extends OptimizerTest {
             VM.setLastMigrationTimestamp(now);
             VM.setFrameworkID("VMa" + i);
         }
-//		maxVM = 16;
-//		for(int i=0; i<maxVM; i++) {
-//			VirtualMachineType VM = modelGenerator.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);		
-//			servers.get(1).getNativeHypervisor().getVirtualMachine().add(VM);
-//			VM.setCloudVmType("m1.xlarge");
-//			VM.setLastMigrationTimestamp(now);
-//			VM.setFrameworkID("VMb" + i);
-//		}
 
-        //servers.get(2).setStatus(ServerStatusType.OFF);
-        //servers.get(3).setStatus(ServerStatusType.OFF);
         optimizer.runGlobalOptimization(model);
-        try {
-            actionRequestAvailable.acquire();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        ActionList response3 = actionRequest.getActionList();
-
-        moves.clear();
-        powerOffs.clear();
-
-        for (JAXBElement<? extends AbstractBaseActionType> action : response3.getAction()) {
-            if (action.getValue() instanceof MoveVMActionType)
-                moves.add((MoveVMActionType) action.getValue());
-            if (action.getValue() instanceof PowerOffActionType)
-                powerOffs.add((PowerOffActionType) action.getValue());
-        }
-
-        log.debug("moves=" + moves.size());
-        log.debug("powerOffs=" + powerOffs.size());
-
-        assertTrue(response3.getAction().size() > 0);
+   
+        assertTrue(getMoves().size() > 0);
 
     }
 

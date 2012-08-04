@@ -658,7 +658,7 @@ public class ModelGenerator {
 		
 		virtualMachine.setHostedOperatingSystem(hostedOperatingSystem);
 		virtualMachine.setName("none");
-	
+
 		
 		return virtualMachine;
 	}

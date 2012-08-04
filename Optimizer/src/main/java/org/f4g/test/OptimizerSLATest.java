@@ -84,6 +84,11 @@ public class OptimizerSLATest extends OptimizerTest {
 		optimizer.setSla(SLAGenerator.createDefaultSLA());
 		optimizer.setOptiObjective(OptimizationObjective.Power);
 		optimizer.setClusters(createDefaultCluster(4, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
+		
+		BoundedClustersType.Cluster bclu = new BoundedClustersType.Cluster(optimizer.getClusters().getCluster().get(0));
+		BoundedClustersType bclus = new BoundedClustersType();
+		bclus.getCluster().add(bclu);	
+		optimizer.getFederation().setBoundedCluster(bclus);
 	}
 
 	/**
@@ -505,229 +510,36 @@ public class OptimizerSLATest extends OptimizerTest {
 					FIT4GreenType model) {
 				return null;
 			}
-			
 		}
-		
-		// generate one VM per server
-		// VMs ressource usage is 0
-		ModelGenerator modelGenerator = new ModelGenerator();
+
 		modelGenerator.setNB_SERVERS(4);
 		modelGenerator.setNB_VIRTUAL_MACHINES(4); // 16 VMs total
 
-		// VM settings
-		modelGenerator.setCPU_USAGE(0.0);
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setNETWORK_USAGE(0);
-		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(0);
-		modelGenerator.VM_TYPE = "m1.small";
-
-		// servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4);
-		modelGenerator.setRAM_SIZE(560);
-		modelGenerator.setSTORAGE_SIZE(10000000);
-
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-
+		optimizer.setCostEstimator(new MyNetworkCost());
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
 		
-		// TEST 1: without payback time setting
-
+		// TEST 1: with payback time = 1 min		
+		optimizer.getPolicies().getPolicy().get(0).setVMMigrationPaybacktime(1);
+		
 		optimizer.runGlobalOptimization(model);
-
-		assertEquals(getMoves().size(), 12); // everyone on the same server
-
 		
-		// TEST 2: with payback time = 10 min
-
-		SLAType slas = SLAGenerator.createDefaultSLA();
-				
-		pol.setVMMigrationPaybacktime(10);
-		ClusterType clusters = createDefaultCluster(
-				modelGenerator.MAX_NB_SERVERS, slas.getSLA(), polL);
-		
-		FederationType fed = makeSimpleFed(pols, model);
-		for(Cluster cs : clusters.getCluster()) {
-			BoundedClustersType bc = new BoundedClustersType();
-			BoundedClustersType.Cluster bcc = new BoundedClustersType.Cluster();
-			bcc.setIdref(cs);	
-			bc.getCluster().add(bcc);				
-			fed.setBoundedCluster(bc);
-			
-		}
-		myOptimizer.setFederation(fed);
-		myOptimizer.setClusters(clusters);
-		myOptimizer.setVmTypes(vmTypes);
-		myOptimizer.setSla(slas);
-		myOptimizer.runGlobalOptimization(model);
-
-
-		//payback time = 600s, move = 100J, power saved = 2.5W (A server is 10W, we have to move 4 VMs to switch is off, 
-		// all servers energy profile are equivalent).
-		// 2.5*600 > 1000, move allowed
-		assertEquals(getMoves().size(), 12);
-		
-		
-		// TEST 3: with payback time = 1 min
-		
-		myOptimizer.getPolicies().getPolicy().get(0).setVMMigrationPaybacktime(1);
-		
-		myOptimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response3 = actionRequest.getActionList();
-
-		moves.clear();
-		powerOffs.clear();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response3
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
 		//payback time = 60s, move = 100J, power saved = 2.5W (A server is 10W, we have to move 4 VMs to switch is off, 
 		// all servers energy profile are equivalent).
 		// 2.5*60 < 1000, move disallowed
-		assertEquals(moves.size(), 0);
+		assertEquals(getMoves().size(), 0);
+		
+		// TEST 2: with payback time = 10 min		
+		optimizer.getPolicies().getPolicy().get(0).setVMMigrationPaybacktime(10);
+		
+		optimizer.runGlobalOptimization(model);
+
+		assertEquals(getMoves().size(), 12);
 		
 
 	}
 	
 	
-	/**
-	 * Test global optimization with one VM per servers and no load
-	 * 
-	 * @author Ts
-	 */
-	// public void testCapacityGlobal() {
-	//
-	// //generate one VM per server
-	// //VMs ressource usage is 0
-	// ModelGenerator modelGenerator = new ModelGenerator();
-	// modelGenerator.setNB_SERVERS(2);
-	// modelGenerator.setNB_VIRTUAL_MACHINES(4);
-	//
-	// //VM settings
-	// modelGenerator.setCPU_USAGE(0.0);
-	// modelGenerator.setNB_CPU(1);
-	// modelGenerator.setNETWORK_USAGE(0);
-	// modelGenerator.setSTORAGE_USAGE(0);
-	// modelGenerator.setMEMORY_USAGE(0);
-	// modelGenerator.VM_TYPE = "m1.small";
-	//
-	// //servers settings
-	// modelGenerator.setCPU(1);
-	// modelGenerator.setCORE(4);
-	// modelGenerator.setRAM_SIZE(560*1024);
-	// modelGenerator.setSTORAGE_SIZE(1000); //Not enough space to have 8 VMs on
-	// one server (200GB HDD each)
-	//
-	// VMTypeType vmTypes = new VMTypeType();
-	//
-	// VMTypeType.VMType type1 = new VMTypeType.VMType();
-	// type1.setName("m1.small");
-	// type1.setCapacity(new CapacityType(new NrOfCpusType(1), new
-	// RAMSizeType(1), new StorageCapacityType(1)));
-	// type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(0.1), new
-	// MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-	// vmTypes.getVMType().add(type1);
-	//
-	// ((OptimizerEngineCloudTraditional)optimizer).setVmTypes(vmTypes);
-	//
-	// // SLAReader sla = new SLAReader("resources\\SLAClusterConstraints.xml");
-	// // optimizer.setClusterType(sla.getCluster());
-	// // optimizer.setSlaType(sla.getSLAs());
-	//
-	// ConstraintReader cp = new
-	// ConstraintReader("resources\\PlacementConstraints.xml");
-	// List<Capacity> c =
-	// cp.CP.getDataCentre().getTargetSys().getConstraint().getCapacity();
-	// System.out.println(c.get(0).getMaxNbOfVMs());
-	// System.out.println(c.get(0).getServerName().get(0) + " + " +
-	// c.get(0).getServerName().get(1));
-	//
-	// FIT4GreenType modelManyServersNoLoad =
-	// modelGenerator.createPopulatedFIT4GreenType();
-	//
-	// optimizer.runGlobalOptimization(modelManyServersNoLoad);
-	//
-	// try {
-	// actionRequestAvailable.acquire();
-	// } catch (InterruptedException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	//
-	// ActionRequestType.ActionList response = actionRequest.getActionList();
-	//
-	// List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-	// List <PowerOffActionType> powerOffs = new
-	// ArrayList<PowerOffActionType>();
-	//
-	// for (JAXBElement<? extends AbstractBaseActionType> action :
-	// response.getAction()){
-	// if (action.getValue() instanceof MoveVMActionType)
-	// moves.add((MoveVMActionType)action.getValue());
-	// if (action.getValue() instanceof PowerOffActionType)
-	// powerOffs.add((PowerOffActionType)action.getValue());
-	// }
-	//
-	//
-	// log.debug("moves=" + moves.size());
-	// log.debug("powerOffs=" + powerOffs.size());
-	//
-	// assertTrue(moves.size()==0);
-	// assertTrue(powerOffs.size()==0);
-	//
-	// //no duplicate moves or power offs should be found
-	// Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(moves);
-	// Set<PowerOffActionType> powerOffSet = new
-	// HashSet<PowerOffActionType>(powerOffs);
-	// assertTrue(moveSet.size()==0);
-	// assertTrue(powerOffSet.size()==0);
-	//
-	// }
-
-	/**
-	 * helper function
-	 */
-	protected AllocationRequestType createAllocationRequestCloud(String VMType) {
-
-		AllocationRequestType request = new AllocationRequestType();
-
-		CloudVmAllocationType cloudAlloc = new CloudVmAllocationType();
-		cloudAlloc.setVmType(VMType);
-
-		// Simulates a CloudVmAllocationType operation
-		JAXBElement<CloudVmAllocationType> operationType = (new ObjectFactory())
-				.createCloudVmAllocation(cloudAlloc);
-
-		request.setRequest(operationType);
-
-		return request;
-	}
-
-	// public void testCapacityReader(){
-	// ConstraintReader cp = new
-	// ConstraintReader("resources\\PlacementConstraints.xml");
-	// List<Capacity> c =
-	// cp.CP.getDataCentre().getTargetSys().getConstraint().getCapacity();
-	// System.out.println(c.get(0).getMaxNbOfVMs());
-	// System.out.println(c.get(0).getServerName().get(0) + " + " +
-	// c.get(0).getServerName().get(1));
-	// assertEquals(4, c.get(0).getMaxNbOfVMs());
-	// }
-
 	/**
 	 * Test allocation success
 	 */
@@ -772,8 +584,6 @@ public class OptimizerSLATest extends OptimizerTest {
 	}
 	
 	
-
-
 	/**
 	 * Test allocation with constraints not satisfied
 	 */
@@ -866,117 +676,33 @@ public class OptimizerSLATest extends OptimizerTest {
 	}
 	
 	public void testDelayBetweenMoveGlobal() {
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
-		modelGenerator.setNB_VIRTUAL_MACHINES(4);
-		
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4); 
-		modelGenerator.setRAM_SIZE(24);
-		
+		modelGenerator.setNB_VIRTUAL_MACHINES(1);
+
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-				
-		modelGenerator.setVM_TYPE("m1.small");
-		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(10), new MemoryUsageType(1), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-				
-		optimizer.setVmTypes(VMs);
-		
-		
+					
 		DatatypeFactory factory;
 		try {
 			TimeZone gmt = TimeZone.getTimeZone("GMT");
 			GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance(gmt);
 			factory = DatatypeFactory.newInstance();
-			javax.xml.datatype.Duration duration = factory.newDuration(false, 0, 0, 0, 0,
-					4, 0); // 4 Minutes negative Duration
+			javax.xml.datatype.Duration duration = factory.newDuration(false, 0, 0, 0, 0, 4, 0); // 4 Minutes negative Duration
 			XMLGregorianCalendar VMLastTimeMove = factory.newXMLGregorianCalendar(gc);
 			VMLastTimeMove.add(duration);
 			List<VirtualMachineType> vms = Utils.getAllVMs(model);
 			for (VirtualMachineType vmt : vms){
 				vmt.setLastMigrationTimestamp(VMLastTimeMove);
 			}	
-//			XMLGregorianCalendar VMLastTimeMove2 = (XMLGregorianCalendar) VMLastTimeMove.clone();
-//			VMLastTimeMove2.add(duration);
-//			vms.get(0).setLastMigrationTimestamp(VMLastTimeMove2);
-//			vms.get(1).setLastMigrationTimestamp(VMLastTimeMove2);
-//			vms.get(2).setLastMigrationTimestamp(VMLastTimeMove2);
-//			vms.get(3).setLastMigrationTimestamp(VMLastTimeMove2);
+
 		} catch (DatatypeConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		String sep = System.getProperty("file.separator");
-		SLAReader sla = new SLAReader("resources" + sep
-				+ "SlaClusterConstraintsDelayBetweenMove.xml");
-		optimizer.setClusters(sla.getCluster());
-		optimizer.setSla(sla.getSLAs());
-		optimizer.setFederation(sla.getFeds());
-		
-//		sla.getPolicies().getPolicy().get(0).getDelayBetweenMove();
-		
-//		int delayTimeBetweenMove = 5;
-//		
-//		try {
-//			factory = DatatypeFactory.newInstance();
-//			Duration duration = factory.newDuration(false, 0, 0, 0, 0,
-//					delayTimeBetweenMove, 0); // negative Duration
-//			XMLGregorianCalendar earliestLastTimeMove = new XMLGregorianCalendarImpl(
-//					(GregorianCalendar) java.util.GregorianCalendar
-//							.getInstance());
-//			earliestLastTimeMove.add(duration);
-//			System.out.println(earliestLastTimeMove.toString());
-//		} catch (DatatypeConfigurationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}		
-		
-		
-
-		
-
+		optimizer.getPolicies().getPolicy().get(0).setDelayBetweenMove(5);
 		optimizer.runGlobalOptimization(model);
 
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		assertEquals(getMoves().size(), 0);
+		assertEquals(getPowerOffs().size(), 0);
 
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-
-		List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertTrue(moves.size() == 0);
-		assertTrue(powerOffs.size() == 0);
-
-		// no duplicate moves or power offs should be found
-		Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(moves);
-		Set<PowerOffActionType> powerOffSet = new HashSet<PowerOffActionType>(
-				powerOffs);
-		assertTrue(moveSet.size() == 0);
-		assertTrue(powerOffSet.size() == 0);
 	}
 
     /**
