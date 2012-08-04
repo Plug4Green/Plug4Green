@@ -151,8 +151,8 @@ public class OptimizerSLATest extends OptimizerTest {
 		optimizer.runGlobalOptimization(modelManyServersNoLoad);
 
 		
-		assertEquals(getMoves().size(), 0);
-		assertEquals(getPowerOffs().size(), 0);
+		assertEquals(0, getMoves().size());
+		assertEquals(0, getPowerOffs().size());
 
 	}
 
@@ -173,25 +173,25 @@ public class OptimizerSLATest extends OptimizerTest {
 		//TEST 1: no Spare CPU
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(getPowerOffs().size(), 1);
+		assertEquals(1, getPowerOffs().size());
 
 		//TEST 2: absolute CPU
 		optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).getLoad().setSpareCPUs(new SpareCPUs(1, UnitType.ABSOLUTE));
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(getPowerOffs().size(), 0);
+		assertEquals(0, getPowerOffs().size());
 
 		//TEST 3: relative CPU
 		optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).getLoad().setSpareCPUs(new SpareCPUs(50, UnitType.RELATIVE));
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(getPowerOffs().size(), 0);
+		assertEquals(0, getPowerOffs().size());
 		
 		//TEST 4: relative CPU
 		optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).getLoad().setSpareCPUs(new SpareCPUs(0, UnitType.RELATIVE));
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(getPowerOffs().size(), 1);
+		assertEquals(1, getPowerOffs().size());
 	}
 
 	/**
@@ -210,8 +210,8 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(getMoves().size(), 0);
-		assertEquals(getPowerOffs().size(), 0);
+		assertEquals(0, getMoves().size());
+		assertEquals(0, getPowerOffs().size());
 
 	}
 
@@ -232,7 +232,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(getMoves().size(), 12); // everyone on the same server
+		assertEquals(12, getMoves().size()); // everyone on the same server
 
 		// TEST 2 with overbooking setting = 1
 		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
@@ -240,7 +240,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		optimizer.runGlobalOptimization(model);
 
 
-		assertEquals(getMoves().size(), 0); //no Overbooking (==1) -> 1 core per
+		assertEquals(0, getMoves().size()); //no Overbooking (==1) -> 1 core per
 		// VM / 4 core per server -> max VMs per server = 4 -> no moves
 
 		// TEST 3 with overbooking setting = 2
@@ -249,7 +249,7 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(getMoves().size(), 8); // Overbooking 2 -> 1 core per VM / 4
+		assertEquals(8, getMoves().size()); // Overbooking 2 -> 1 core per VM / 4
 										// core per server -> max VMs per server
 										// = 8 -> 8 moves
 
@@ -259,7 +259,7 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(getMoves().size(), 4); // Overbooking 1.5 -> 6 VCPUs per server,
+		assertEquals(4, getMoves().size()); // Overbooking 1.5 -> 6 VCPUs per server,
 										// 4 moves
 
 		// TEST 5 with overbooking setting = 2, mixed VMs
@@ -278,7 +278,7 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		optimizer.runGlobalOptimization(model);
 		
-		assertEquals(getMoves().size(), 4); // Overbooking 2 -> first server is full
+		assertEquals(4, getMoves().size()); // Overbooking 2 -> first server is full
 										// (no move) because au medium size. 4
 										// small VMs move to fill a second
 										// server.
@@ -327,8 +327,8 @@ public class OptimizerSLATest extends OptimizerTest {
 		optimizer.runGlobalOptimization(modelManyServersNoLoad);
 
 
-		assertEquals(getMoves().size(), 0);
-		assertEquals(getPowerOffs().size(), 0);
+		assertEquals(0, getMoves().size());
+		assertEquals(0, getPowerOffs().size());
 
 
 
@@ -380,8 +380,8 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		optimizer.runGlobalOptimization(modelManyServersNoLoad);
 
-		assertEquals(getMoves().size(), 2);
-		assertEquals(getPowerOffs().size(), 1);
+		assertEquals(2, getMoves().size());
+		assertEquals(1, getPowerOffs().size());
 	}
 
 	/**
@@ -527,14 +527,14 @@ public class OptimizerSLATest extends OptimizerTest {
 		//payback time = 60s, move = 100J, power saved = 2.5W (A server is 10W, we have to move 4 VMs to switch is off, 
 		// all servers energy profile are equivalent).
 		// 2.5*60 < 1000, move disallowed
-		assertEquals(getMoves().size(), 0);
+		assertEquals(0, getMoves().size());
 		
 		// TEST 2: with payback time = 10 min		
 		optimizer.getPolicies().getPolicy().get(0).setVMMigrationPaybacktime(10);
 		
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(getMoves().size(), 12);
+		assertEquals(12, getMoves().size());
 		
 
 	}
@@ -580,7 +580,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		System.out.println("NodeID: " );//+ VMAllocResponse.getNodeId());
 		//New VM should be allocated on first server		
-		assertEquals(VMAllocResponse.getNodeId(),"id100000");
+		assertEquals("id100000", VMAllocResponse.getNodeId());
 	}
 	
 	
@@ -672,7 +672,7 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		log.debug("moves=" + moves.size());
 
-		assertEquals(moves.size(), 4);
+		assertEquals(4, moves.size());
 	}
 	
 	public void testDelayBetweenMoveGlobal() {
@@ -700,8 +700,8 @@ public class OptimizerSLATest extends OptimizerTest {
 		optimizer.getPolicies().getPolicy().get(0).setDelayBetweenMove(5);
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(getMoves().size(), 0);
-		assertEquals(getPowerOffs().size(), 0);
+		assertEquals(0, getMoves().size());
+		assertEquals(0, getPowerOffs().size());
 
 	}
 
@@ -738,7 +738,7 @@ public class OptimizerSLATest extends OptimizerTest {
                         new SimpleManagedElementSet<Node>(),
                         new SimpleManagedElementSet<Node>(),
                         vjobs);
-            Assert.assertEquals(res.size(), 0);
+            Assert.assertEquals(0, res.size());
         } catch (PlanException e) {
             Assert.fail(e.getMessage());
         }

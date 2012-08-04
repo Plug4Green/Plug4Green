@@ -106,45 +106,45 @@ public class OptimizerNetworkTestBasic extends TestCase {
     public void testIds() {
 
         // Start tests
-        assertEquals( allServers.size(), 4 );   
-        assertEquals( allSwitches.size(), 3 );   
+        assertEquals(4 ,  allServers.size());   
+        assertEquals(3 ,  allSwitches.size());   
 
-        assertEquals( allServers.get(0).getFrameworkID(), "id100000");      // server0
-        assertEquals( allServers.get(1).getFrameworkID(), "id200000");      // server1
-        assertEquals( allServers.get(2).getFrameworkID(), "id300000");      // server2
-        assertEquals( allServers.get(3).getFrameworkID(), "id400000");      // server3
-        assertEquals( allSwitches.get(0).getFrameworkID(), "id1000000");     // switch0
-        assertEquals( allSwitches.get(1).getFrameworkID(), "id2000000");     // switch1
-        assertEquals( allSwitches.get(2).getFrameworkID(), "id3000000");     // switch2
+        assertEquals("id100000",  allServers.get(0).getFrameworkID());      // server0
+        assertEquals("id200000",  allServers.get(1).getFrameworkID());      // server1
+        assertEquals("id300000",  allServers.get(2).getFrameworkID());      // server2
+        assertEquals("id400000",  allServers.get(3).getFrameworkID());      // server3
+        assertEquals("id1000000",  allSwitches.get(0).getFrameworkID());     // switch0
+        assertEquals("id2000000",  allSwitches.get(1).getFrameworkID());     // switch1
+        assertEquals("id3000000",  allSwitches.get(2).getFrameworkID());     // switch2
     }
         
     public void testSwitchConnections() {
 
         // verify who is connected to switch0 
-        assertEquals(allSwitches.get(0).getNetworkPort().size(), 2);
+        assertEquals(2, allSwitches.get(0).getNetworkPort().size());
 
         String n0 = (String) allSwitches.get(0).getNetworkPort().get(0).getNetworkPortRef();    // node connected to switch0's port 0
         String n1 = (String) allSwitches.get(0).getNetworkPort().get(1).getNetworkPortRef();    // node connected to switch0's port 1
-        assertEquals(n0, "id2000000");        // should be switch1
-        assertEquals(n1, "id3000000");        // should be switch2
+        assertEquals("id2000000", n0);        // should be switch1
+        assertEquals("id3000000", n1);        // should be switch2
 
         // verify who is connected to switch1
-        assertEquals(allSwitches.get(1).getNetworkPort().size(), 3);
+        assertEquals(3, allSwitches.get(1).getNetworkPort().size());
         String n2 = (String) allSwitches.get(1).getNetworkPort().get(0).getNetworkPortRef();    // node connected to switch1's port 0
         String n3 = (String) allSwitches.get(1).getNetworkPort().get(1).getNetworkPortRef();    // node connected to switch1's port 1
         String n4 = (String) allSwitches.get(1).getNetworkPort().get(2).getNetworkPortRef();    // node connected to switch1's port 2
-        assertEquals(n2, "id1000000");        // should be switch0
-        assertEquals(n3, "id100000");        // should be server0
-        assertEquals(n4, "id200000");   // should be server1
+        assertEquals("id1000000", n2);        // should be switch0
+        assertEquals("id100000", n3);        // should be server0
+        assertEquals("id200000", n4);   // should be server1
         
         // verify who is connected to switch2
-        assertEquals(allSwitches.get(2).getNetworkPort().size(), 3);
+        assertEquals(3, allSwitches.get(2).getNetworkPort().size());
         String n5 = (String) allSwitches.get(2).getNetworkPort().get(0).getNetworkPortRef();    // node connected to switch2's port 0
         String n6 = (String) allSwitches.get(2).getNetworkPort().get(1).getNetworkPortRef();    // node connected to switch2's port 1
         String n7 = (String) allSwitches.get(2).getNetworkPort().get(2).getNetworkPortRef();    // node connected to switch2's port 2
-        assertEquals(n5, "id1000000");        // should be connected to switch0
-        assertEquals(n6, "id300000");   // should be connected to server2
-        assertEquals(n7, "id400000");   // should be connected to server3
+        assertEquals("id1000000", n5);        // should be connected to switch0
+        assertEquals("id300000", n6);   // should be connected to server2
+        assertEquals("id400000", n7);   // should be connected to server3
          
     }
 

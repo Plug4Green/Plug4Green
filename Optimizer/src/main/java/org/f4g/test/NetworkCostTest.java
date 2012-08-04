@@ -111,13 +111,13 @@ public class NetworkCostTest extends TestCase {
         NetworkNodeType srcNetNode = allServers.get(0).getMainboard().get(0).getEthernetNIC().get(0);
         NetworkNodeType dstNetNode = allServers.get(1).getMainboard().get(0).getEthernetNIC().get(0);
 
-        assertEquals(srcNetNode.getNetworkPort().size(), 1); 
-        assertEquals(dstNetNode.getNetworkPort().size(), 1);
-        assertEquals(allNetdevs.get(0).getNetworkPort().size(), 2);
-        assertEquals(allNetdevs.get(1).getNetworkPort().size(), 2);
-        assertEquals(allNetdevs.get(2).getNetworkPort().size(), 2);
-        assertEquals(allNetdevs.get(3).getNetworkPort().size(), 2);
-        assertEquals(allNetdevs.get(4).getNetworkPort().size(), 2);
+        assertEquals(1, srcNetNode.getNetworkPort().size()); 
+        assertEquals(1, dstNetNode.getNetworkPort().size());
+        assertEquals(2, allNetdevs.get(0).getNetworkPort().size());
+        assertEquals(2, allNetdevs.get(1).getNetworkPort().size());
+        assertEquals(2, allNetdevs.get(2).getNetworkPort().size());
+        assertEquals(2, allNetdevs.get(3).getNetworkPort().size());
+        assertEquals(2, allNetdevs.get(4).getNetworkPort().size());
 
         // NICs match servers' IDs
         assertEquals( allServers.get(0).getFrameworkID(), srcNetNode.getFrameworkID() );
@@ -139,7 +139,7 @@ public class NetworkCostTest extends TestCase {
         vm.setActualStorageUsage( new StorageUsageType(0.0) );
         vm.setActualMemoryUsage( new MemoryUsageType(0.0) );
         energycost = networkCost.moveEnergyCost(srcServer, dstServer, vm, model).doubleValue(JOULE);
-        assertEquals( energycost, 0.0 );
+        assertEquals(0.0 ,  energycost);
 
         // 2
         vm.setActualStorageUsage( new StorageUsageType(45.0) );

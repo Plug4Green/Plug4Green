@@ -72,47 +72,47 @@ public class LoadCalculatorTest extends TestCase {
         // 1
         vm.setActualCPUUsage( new CpuUsageType( 50. ) );
         server = loadCalculator.addVMLoadOnServer(server, vm);
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue(), 50.0/4 );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue(), 50. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue(),  0. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(2).getCoreLoad().getValue(),  0. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(3).getCoreLoad().getValue(),  0. );
+        assertEquals(50.0/4 ,  server.getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue());
+        assertEquals(50. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
+        assertEquals( 0. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue());
+        assertEquals( 0. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(2).getCoreLoad().getValue());
+        assertEquals( 0. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(3).getCoreLoad().getValue());
 
         // 2
         vm.setActualCPUUsage( new CpuUsageType( 100. ) );
         server = loadCalculator.addVMLoadOnServer(server, vm);        
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue(), 150.0/4 );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue(), 100. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue(),  50. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(2).getCoreLoad().getValue(),   0. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(3).getCoreLoad().getValue(),   0. );
+        assertEquals(150.0/4 ,  server.getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue());
+        assertEquals(100. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
+        assertEquals( 50. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue());
+        assertEquals(  0. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(2).getCoreLoad().getValue());
+        assertEquals(  0. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(3).getCoreLoad().getValue());
         
          // 3
         vm.setActualCPUUsage( new CpuUsageType( 75. ) );
         server = loadCalculator.addVMLoadOnServer(server, vm);
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue(), 225.0/4 );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue(), 100. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue(), 100. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(2).getCoreLoad().getValue(),  25. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(3).getCoreLoad().getValue(),   0. );
+        assertEquals(225.0/4 ,  server.getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue());
+        assertEquals(100. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
+        assertEquals(100. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue());
+        assertEquals( 25. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(2).getCoreLoad().getValue());
+        assertEquals(  0. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(3).getCoreLoad().getValue());
        
          // 4
         vm.setActualCPUUsage( new CpuUsageType( 100. ) );
         server = loadCalculator.addVMLoadOnServer(server, vm);
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue(), 325.0/4 );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue(), 100. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue(), 100. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(2).getCoreLoad().getValue(), 100. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(3).getCoreLoad().getValue(),  25. );
+        assertEquals(325.0/4 ,  server.getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue());
+        assertEquals(100. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
+        assertEquals(100. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue());
+        assertEquals(100. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(2).getCoreLoad().getValue());
+        assertEquals( 25. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(3).getCoreLoad().getValue());
 
          // 5
         vm.setActualCPUUsage( new CpuUsageType( 100. ) );
         server = loadCalculator.addVMLoadOnServer(server, vm);
-        // assertEquals( server.getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue(), 100.0 );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue(), 100. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue(), 100. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(2).getCoreLoad().getValue(), 100. );
-        assertEquals( server.getMainboard().get(0).getCPU().get(0).getCore().get(3).getCoreLoad().getValue(), 100. );
+        // assertEquals(100.0 ,  server.getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue());
+        assertEquals(100. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
+        assertEquals(100. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue());
+        assertEquals(100. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(2).getCoreLoad().getValue());
+        assertEquals(100. ,  server.getMainboard().get(0).getCPU().get(0).getCore().get(3).getCoreLoad().getValue());
 
        
         // Test VM with multiple CPU

@@ -82,38 +82,38 @@ public class OptimizerNetworkTest extends OptimizerTest {
     public void checkNetworkConnections() {
     
         // verify who is connected to switch0 
-        assertEquals(allSwitches.get(0).getNetworkPort().size(), 2);
+        assertEquals(2, allSwitches.get(0).getNetworkPort().size());
         String n0 = (String) allSwitches.get(0).getNetworkPort().get(0).getNetworkPortRef();    // node connected to switch0's port 0
         String n1 = (String) allSwitches.get(0).getNetworkPort().get(1).getNetworkPortRef();    // node connected to switch0's port 1
-        assertEquals(n0, "id2000000");        // should be switch1
-        assertEquals(n1, "id3000000");        // should be switch2
+        assertEquals("id2000000", n0);        // should be switch1
+        assertEquals("id3000000", n1);        // should be switch2
         
         // verify who is connected to switch1
-        assertEquals(allSwitches.get(1).getNetworkPort().size(), 5);
+        assertEquals(5, allSwitches.get(1).getNetworkPort().size());
         String n2 = (String) allSwitches.get(1).getNetworkPort().get(0).getNetworkPortRef();    // node connected to switch1's port 0
         String s0 = (String) allSwitches.get(1).getNetworkPort().get(1).getNetworkPortRef();    // node connected to switch1's port 1
         String s1 = (String) allSwitches.get(1).getNetworkPort().get(2).getNetworkPortRef();    // node connected to switch1's port 2
         String s2 = (String) allSwitches.get(1).getNetworkPort().get(3).getNetworkPortRef();    // node connected to switch1's port 2
         String s3 = (String) allSwitches.get(1).getNetworkPort().get(4).getNetworkPortRef();    // node connected to switch1's port 2
-        assertEquals(n2, "id1000000");               // should be switch0
-        assertEquals(s0, "id100000");               // should be server0
-        assertEquals(s1, "id200000");          // should be server1
-        assertEquals(s2, "id300000");          // should be server2
-        assertEquals(s3, "id400000");          // should be server3
+        assertEquals("id1000000", n2);               // should be switch0
+        assertEquals("id100000", s0);               // should be server0
+        assertEquals("id200000", s1);          // should be server1
+        assertEquals("id300000", s2);          // should be server2
+        assertEquals("id400000", s3);          // should be server3
         
     
         // verify who is connected to switch2
-        assertEquals(allSwitches.get(2).getNetworkPort().size(), 5);
+        assertEquals(5, allSwitches.get(2).getNetworkPort().size());
         String n3 = (String) allSwitches.get(2).getNetworkPort().get(0).getNetworkPortRef();    // node connected to switch2's port 0
         String s4 = (String) allSwitches.get(2).getNetworkPort().get(1).getNetworkPortRef();    // node connected to switch2's port 1
         String s5 = (String) allSwitches.get(2).getNetworkPort().get(2).getNetworkPortRef();    // node connected to switch2's port 2
         String s6 = (String) allSwitches.get(2).getNetworkPort().get(3).getNetworkPortRef();    // node connected to switch2's port 2
         String s7 = (String) allSwitches.get(2).getNetworkPort().get(4).getNetworkPortRef();    // node connected to switch2's port 2
-        assertEquals(n3, "id1000000");             // should be connected to switch0
-        assertEquals(s4, "id500000");        // should be connected to server2
-        assertEquals(s5, "id600000");        // should be connected to server3
-        assertEquals(s6, "id700000");        // should be connected to server2
-        assertEquals(s7, "id800000");        // should be connected to server3
+        assertEquals("id1000000", n3);             // should be connected to switch0
+        assertEquals("id500000", s4);        // should be connected to server2
+        assertEquals("id600000", s5);        // should be connected to server3
+        assertEquals("id700000", s6);        // should be connected to server2
+        assertEquals("id800000", s7);        // should be connected to server3
          
     }
 

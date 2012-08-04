@@ -206,7 +206,7 @@ public class IntegrationTest extends OptimizerTest {
         AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
 
         //server xxx consumes less than the others.
-        assertEquals(((CloudVmAllocationResponseType) response.getResponse().getValue()).getNodeId(), "id100000");
+        assertEquals("id100000", ((CloudVmAllocationResponseType) response.getResponse().getValue()).getNodeId());
 
         //TEST 2
 
@@ -225,7 +225,7 @@ public class IntegrationTest extends OptimizerTest {
         AllocationResponseType response2 = MyOptimizer.allocateResource(allocationRequest, model);
 
         //server xxx consumes less than the others.
-        assertEquals(((CloudVmAllocationResponseType) response2.getResponse().getValue()).getNodeId(), "id100000");
+        assertEquals("id100000", ((CloudVmAllocationResponseType) response2.getResponse().getValue()).getNodeId());
 
 
     }
@@ -294,7 +294,7 @@ public class IntegrationTest extends OptimizerTest {
         MyOptimizer.runGlobalOptimization(model);
       
         // going to the low power server
-        assertEquals(getMoves().get(0).getSourceNodeController(), "id100000");
+        assertEquals("id100000", getMoves().get(0).getSourceNodeController());
 
     }
 
@@ -469,7 +469,7 @@ public class IntegrationTest extends OptimizerTest {
         log.debug("moves=" + moves.size());
         log.debug("powerOffs=" + powerOffs.size());
 
-        //assertEquals(powerOffs.size(), 6);
+        //assertEquals(6, powerOffs.size());
 
         //TEST 3
         Date date = new Date();

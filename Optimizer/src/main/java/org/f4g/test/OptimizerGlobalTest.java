@@ -101,13 +101,13 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		
 		optimizer.runGlobalOptimization(model);
 			
-		assertEquals(getMoves().size(), 1);
-		assertEquals(getMoves().get(0).getFrameworkName(), "DC1");
+		assertEquals(1, getMoves().size());
+		assertEquals("DC1", getMoves().get(0).getFrameworkName());
 
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(100));
 		optimizer.runGlobalOptimization(model);
 		
-		assertEquals(getMoves().size(), 0);
+		assertEquals(0, getMoves().size());
 		
 	}
 	
@@ -126,8 +126,8 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
 		optimizer.runGlobalOptimization(model);
 				
-		assertEquals(getMoves().size(), 9);
-		assertEquals(getPowerOffs().size(), 9);
+		assertEquals(9, getMoves().size());
+		assertEquals(9, getPowerOffs().size());
 	
 		//no duplicate moves or power offs should be found
 		Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(getMoves());
@@ -157,7 +157,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVRam().setValue(1);
 		optimizer.runGlobalOptimization(model);
         		
-		assertEquals(getMoves().size(), 5);
+		assertEquals(5, getMoves().size());
 	
 	}
 
@@ -201,8 +201,8 @@ public class OptimizerGlobalTest extends OptimizerTest {
 			
 		optimizer.runGlobalOptimization(model);
 		
-		assertEquals(getMoves().size(), 0);
-		assertEquals(getPowerOffs().size(), 10);
+		assertEquals(0, getMoves().size());
+		assertEquals(10, getPowerOffs().size());
 	}
 
 
@@ -237,7 +237,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.runGlobalOptimization(model);
 		
 		//switching off the server that consumes more
-		assertEquals(getPowerOffs().get(0).getNodeName(), "id100000");
+		assertEquals("id100000", getPowerOffs().get(0).getNodeName());
 
 		//TEST 2 same with different server
 	
@@ -258,7 +258,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.runGlobalOptimization(model);
 	
 		//switching off the server that consumes more
-		assertEquals(getPowerOffs().get(0).getNodeName(), "id200000");
+		assertEquals("id200000", getPowerOffs().get(0).getNodeName());
 		
 	}
 
@@ -295,8 +295,8 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.runGlobalOptimization(model);
 		
 		//turning On only one machine, id1 is more efficient than id0
-		assertEquals(getPowerOns().size(), 1);
-		assertEquals(getPowerOns().get(0).getNodeName(), "id200000");
+		assertEquals(1, getPowerOns().size());
+		assertEquals("id200000", getPowerOns().get(0).getNodeName());
 		
 	}
 	
@@ -329,9 +329,9 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.runGlobalOptimization(model);
 	
 		//VM are packed 4 by servers, following number of cores
-		assertEquals(getMoves().size(), 16);
+		assertEquals(16, getMoves().size());
 		//one machine is kept alive
-		assertEquals(getPowerOffs().size(), 4);
+		assertEquals(4, getPowerOffs().size());
 
 	}
 	
@@ -383,7 +383,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 				
 		optimizer.runGlobalOptimization(model);
 		
-		assertEquals(getMoves().size(),4);
+		assertEquals(4, getMoves().size());
 			
 	}
 }

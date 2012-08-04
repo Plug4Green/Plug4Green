@@ -167,8 +167,8 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
-		assertEquals(VMAllocResponse.getNodeId(),"id1000000");
-		assertEquals(VMAllocResponse.getClusterId(),"c1");
+		assertEquals("id1000000", VMAllocResponse.getNodeId());
+		assertEquals("c1", VMAllocResponse.getClusterId());
 		
 		//TEST 2
 		
@@ -185,8 +185,8 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		CloudVmAllocationResponseType VMAllocResponse2 = (CloudVmAllocationResponseType) response2.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
-		assertEquals(VMAllocResponse2.getNodeId(),"id0");
-		assertEquals(VMAllocResponse2.getClusterId(),"c0");
+		assertEquals("id0", VMAllocResponse2.getNodeId());
+		assertEquals("c0", VMAllocResponse2.getClusterId());
 	}
 	
 
@@ -206,7 +206,7 @@ public void testPowerOnOffClusters() {
 		optimizer.setClusters(createMultiCluster(2, 2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		optimizer.runGlobalOptimization(model);
 			
-		assertEquals(getPowerOffs().size(), 4);
+		assertEquals(4, getPowerOffs().size());
 
 	}
 
@@ -246,7 +246,7 @@ public void testPowerOnOffClusters() {
 		optimizer.getFederation().setBoundedPolicies(bpols);
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(getPowerOffs().size(), 1);
+		assertEquals(1, getPowerOffs().size());
 
 	}
 	
@@ -266,7 +266,7 @@ public void testPowerOnOffClusters() {
 		
 		optimizer.runGlobalOptimization(model);
 		     		
-		assertEquals(getMoves().size(), 1);
+		assertEquals(1, getMoves().size());
 		
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(false);
 		model.getSite().get(0).getDatacenter().get(1).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(false);
@@ -274,7 +274,7 @@ public void testPowerOnOffClusters() {
 		
 		optimizer.runGlobalOptimization(model);
 		     		
-		assertEquals(getMoves().size(), 0);
+		assertEquals(0, getMoves().size());
 
 	}
 		
@@ -294,9 +294,9 @@ public void testPowerOnOffClusters() {
 		//TEST 1
 		optimizer.runGlobalOptimization(model);
 	
-		assertEquals(getMoves().size(), 1);
+		assertEquals(1, getMoves().size());
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(getMoves().get(0).getDestNodeController(),"id0");
+		assertEquals("id0", getMoves().get(0).getDestNodeController());
 		
 		//TEST 2		
 		//set a different PUE
@@ -304,9 +304,9 @@ public void testPowerOnOffClusters() {
 		
 		optimizer.runGlobalOptimization(model);
 			
-		assertEquals(getMoves().size(), 1);
+		assertEquals(1, getMoves().size());
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(getMoves().get(0).getDestNodeController(),"id1000000");
+		assertEquals("id1000000", getMoves().get(0).getDestNodeController());
 			
 	}
 	
@@ -332,7 +332,7 @@ public void testPowerOnOffClusters() {
 		
 		assertTrue(getMoves().size()==1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(getMoves().get(0).getDestNodeController(),"id1000000");
+		assertEquals("id1000000", getMoves().get(0).getDestNodeController());
 		
 		//TEST 2
 		
@@ -343,7 +343,7 @@ public void testPowerOnOffClusters() {
 
 		assertTrue(getMoves().size()==1);
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(getMoves().get(0).getDestNodeController(),"id0");
+		assertEquals("id0", getMoves().get(0).getDestNodeController());
 		
 	}
 	
@@ -369,18 +369,18 @@ public void testPowerOnOffClusters() {
 		optimizer.runGlobalOptimization(model);
 	
 	
-		assertEquals(getMoves().size(), 1);
+		assertEquals(1, getMoves().size());
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(getMoves().get(0).getDestNodeController(),"id1000000");
+		assertEquals("id1000000", getMoves().get(0).getDestNodeController());
 		
 		//TEST 2
 		
 		optimizer.setOptiObjective(OptimizationObjective.Power);		
 		optimizer.runGlobalOptimization(model);
 	
-		assertEquals(getMoves().size(), 1);
+		assertEquals(1, getMoves().size());
 		//everyone goes on the same server because inter DC migration is allowed
-		assertEquals(getMoves().get(0).getDestNodeController(),"id0");
+		assertEquals("id0", getMoves().get(0).getDestNodeController());
 		
 	}
 	
@@ -419,8 +419,8 @@ public void testPowerOnOffClusters() {
 		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
-		assertEquals(VMAllocResponse.getNodeId(),"id100000");
-		assertEquals(VMAllocResponse.getClusterId(),"c0");
+		assertEquals("id100000", VMAllocResponse.getNodeId());
+		assertEquals("c0", VMAllocResponse.getClusterId());
 		
 	}
 	
@@ -458,8 +458,8 @@ public void testPowerOnOffClusters() {
 		CloudVmAllocationResponseType VMAllocResponse2 = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on first cluster		
-		assertEquals(VMAllocResponse2.getNodeId(),"id100000");
-		assertEquals(VMAllocResponse2.getClusterId(),"c0");
+		assertEquals("id100000", VMAllocResponse2.getNodeId());
+		assertEquals("c0", VMAllocResponse2.getClusterId());
 		
 		//TEST 2 two clusters, no more space on c1
 		//clearing c0
@@ -474,8 +474,8 @@ public void testPowerOnOffClusters() {
 		VMAllocResponse2 = (CloudVmAllocationResponseType) response.getResponse().getValue();
 		
 		//New VM should be allocated on second cluster		
-		assertEquals(VMAllocResponse2.getNodeId(),"id200000");
-		assertEquals(VMAllocResponse2.getClusterId(),"c1");
+		assertEquals("id200000", VMAllocResponse2.getNodeId());
+		assertEquals("c1", VMAllocResponse2.getClusterId());
 			
 	}
 	
@@ -579,7 +579,7 @@ public void testPowerOnOffClusters() {
 		optimizer.runGlobalOptimization(model);
 		
 		//no moves should be issued on cluster one because it is broken
-		assertEquals(getMoves().size(), 2);
+		assertEquals(2, getMoves().size());
 				
 	}
 	

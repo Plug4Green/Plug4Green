@@ -118,8 +118,8 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		//test 1: without cloud controllers
 		optimizer.runGlobalOptimization(model);
 		
-		assertEquals(getMoves().size(), 2);
-		assertEquals(getPowerOffs().size(), 2);
+		assertEquals(2, getMoves().size());
+		assertEquals(2, getPowerOffs().size());
 		
 	
 		//test 2: with cloud controllers"		
@@ -132,8 +132,8 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		optimizer.runGlobalOptimization(model);
 		
 		//No VMs on could controller and no power off
-		assertEquals(getMoves().size(), 2);
-		assertEquals(getPowerOffs().size(), 0);
+		assertEquals(2, getMoves().size());
+		assertEquals(0, getPowerOffs().size());
 	}
 	
 	
@@ -156,7 +156,7 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 
 		optimizer.runGlobalOptimization(model);
 			
-		assertEquals(getPowerOffs().size(), 0);
+		assertEquals(0, getPowerOffs().size());
 				
 		//TEST 2 - power on capability
 		for(ServerType s : Utils.getAllServers(model)) {
@@ -169,7 +169,7 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).getLoad().setSpareCPUs(new SpareCPUs(3, UnitType.ABSOLUTE));
 		optimizer.runGlobalOptimization(model);
 		
-		assertEquals(getPowerOns().size(), 0);
+		assertEquals(0, getPowerOns().size());
 	
 		
 	}
@@ -193,13 +193,13 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 				
 		optimizer.runGlobalOptimization(model);
 		
-		assertEquals(getMoves().size(), 0);
+		assertEquals(0, getMoves().size());
 		
 		servers.get(0).setStatus(ServerStatusType.POWERING_ON);
 		
 		optimizer.runGlobalOptimization(model);
 		
-		assertEquals(getMoves().size(), 0);
+		assertEquals(0, getMoves().size());
 
 		
 	}
