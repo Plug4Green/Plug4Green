@@ -31,12 +31,12 @@ public class F4GCapacity extends F4GConstraint {
     /**
      * Make a new constraint.
      *
-     * @param nodes2 the nodes to consider
+     * @param nodes the nodes to consider
      * @param m  the maximum hosting capacity of all the nodes.
      */
-    public F4GCapacity(ManagedElementSet<Node> nodes2, int m) {
+    public F4GCapacity(ManagedElementSet<Node> nodes, int m) {
         max = m;
-        nodes = nodes2;
+        this.nodes = nodes;
     }
 
     @Override
@@ -61,45 +61,6 @@ public class F4GCapacity extends F4GConstraint {
 			core.post(core.leq(cards[i], max));
 		}
     	
-//        ManagedElementSet<Node> elems = nodes.getElements().clone();
-//
-//        elems.retainAll(core.getFutureOnlines());
-//
-//        //For each node, we define a set denoting the VMs it may hosts
-//        IntDomainVar[] cards = new IntDomainVar[elems.size()];
-//
-//        if (max == 0 && elems.size() > 0) {
-//            //max == 0, so we directly remove the nodes
-//            // from the VMs d-slices hoster variable.
-//            int[] nIdxs = new int[nodes.size()];
-//            int i = 0;
-//            for (Node n : nodes.flatten()) {
-//                nIdxs[i++] = core.getNode(n);
-//            }
-//            for (VirtualMachineActionModel a : core.getVirtualMachineActions()) {
-//                DemandingSlice dSlice = a.getDemandingSlice();
-//                if (dSlice != null) {
-//                    for (int x = 0; i < nIdxs.length; x++) {
-//                        try {
-//                            dSlice.hoster().remVal(nIdxs[x]);
-//                        } catch (ContradictionException e) {
-//                            VJob.logger.error(e.getMessage(), e);
-//                        }
-//                    }
-//                }
-//            }
-//        } else if (elems.size() > 1) {   //More than one node, so we restrict the sum of sets cardinality
-//            Plan.logger.debug(elems.toString());
-//            for (int i = 0; i < elems.size(); i++) {
-//                SetVar s = core.getSetModel(elems.get(i));
-//                //Plan.logger.debug(elems.get(i).getName() + " " + s.pretty());
-//                cards[i] = core.getSetModel(elems.get(i)).getCard();
-//            }
-//            core.post(core.leq(core.sum(cards), max));
-//        } else { //One node, only restrict the cardinality of its set model.
-//        	cards[0] = core.getSetModel(elems.get(0)).getCard();
-//            core.post(core.leq(cards[0], max));
-//        }
     }
 
     /**
@@ -117,15 +78,6 @@ public class F4GCapacity extends F4GConstraint {
             }
         }
         return true;
-//        int nb = 0;
-//        for (Node n : nodes.getElements()) {
-//            nb += configuration.getRunnings(n).size();
-//        }
-//        if (nb > max) {
-//            VJob.logger.debug(nodes.pretty() + " host " + nb + " virtual machinew but maximum allowed is " + max);
-//            return false;
-//        }
-//        return true;
     }
 
     @Override

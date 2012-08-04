@@ -19,26 +19,23 @@ import org.f4g.optimizer.CloudTraditional.SLAReader;
 import org.f4g.optimizer.ICostEstimator;
 import org.f4g.optimizer.OptimizationObjective;
 import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.PowerOffActionType;
 import org.f4g.schema.allocation.*;
-import org.f4g.schema.allocation.ObjectFactory;
 import org.f4g.schema.constraints.optimizerconstraints.*;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
+import org.f4g.schema.constraints.optimizerconstraints.HWMetricsType.HDDCapacity;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxServerCPULoad;
+import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVMperServer;
+import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVRAMperPhyRAM;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
 import org.f4g.schema.metamodel.*;
-import org.f4g.test.OptimizerTest.MockController;
-import org.f4g.test.OptimizerTest.MockPowerCalculator;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.measures.Measure;
 
+import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.common.logging.Verbosity;
+
 import javax.measure.quantities.Duration;
 import javax.measure.quantities.Energy;
-import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -107,52 +104,18 @@ public class OptimizerSLATest extends OptimizerTest {
 	 * @author Ts
 	 */
 	public void testHDDGlobal() {
-
-		// generate one VM per server
-		// VMs ressource usage is 0
-		ModelGenerator modelGenerator = new ModelGenerator();
+		ChocoLogging.setVerbosity(Verbosity.SOLUTION);
 		modelGenerator.setNB_SERVERS(2);
-		modelGenerator.setNB_VIRTUAL_MACHINES(4);
-
-		// VM settings
-		modelGenerator.setCPU_USAGE(0.0);
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setNETWORK_USAGE(0);
-		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(0);
-		modelGenerator.VM_TYPE = "myVM";
-
-		// servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4);
-		modelGenerator.setRAM_SIZE(560);
-		modelGenerator.setSTORAGE_SIZE(1000); // Not enough space to have 8 VMs
-											  // on one server (200GB HDD
-											  // each)
-
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("myVM");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1),
-				new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1),
-				new MemoryUsageType(0), new IoRateType(0),
-				new NetworkUsageType(0)));
-
-		optimizer.getVmTypes().getVMType().add(type1);
-
-		String sep = System.getProperty("file.separator");
-		SLAReader sla = new SLAReader("resources" + sep
-				+ "SlaClusterConstraintsHDD.xml");
-		optimizer.setClusters(sla.getCluster());
-
-		FIT4GreenType modelManyServersNoLoad = modelGenerator
-				.createPopulatedFIT4GreenType();
-
-		optimizer.runGlobalOptimization(modelManyServersNoLoad);
-
+		modelGenerator.setNB_VIRTUAL_MACHINES(1);
+		modelGenerator.setSTORAGE_SIZE(100);
+		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 		
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		optimizer.getSla().getSLA().get(0).getHardwareMetrics().setHDDCapacity(new HDDCapacity(100, 1));
+
+		optimizer.runGlobalOptimization(model);
+
 		assertEquals(0, getMoves().size());
-		assertEquals(0, getPowerOffs().size());
 
 	}
 
@@ -240,8 +203,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		optimizer.runGlobalOptimization(model);
 
 
-		assertEquals(0, getMoves().size()); //no Overbooking (==1) -> 1 core per
-		// VM / 4 core per server -> max VMs per server = 4 -> no moves
+		assertEquals(0, getMoves().size()); //no Overbooking (==1) -> servers already full
 
 		// TEST 3 with overbooking setting = 2
 		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
@@ -249,18 +211,15 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(8, getMoves().size()); // Overbooking 2 -> 1 core per VM / 4
-										// core per server -> max VMs per server
-										// = 8 -> 8 moves
-
+		assertEquals(8, getMoves().size()); 
+		
 		// TEST 4 with overbooking setting = 1.5
 		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
 				.getMaxVirtualCPUPerCore().setValue((float) 1.5);
 
 		optimizer.runGlobalOptimization(model);
 
-		assertEquals(4, getMoves().size()); // Overbooking 1.5 -> 6 VCPUs per server,
-										// 4 moves
+		assertEquals(4, getMoves().size()); 
 
 		// TEST 5 with overbooking setting = 2, mixed VMs
 		modelGenerator.setNB_SERVERS(4);
@@ -278,202 +237,37 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		optimizer.runGlobalOptimization(model);
 		
-		assertEquals(4, getMoves().size()); // Overbooking 2 -> first server is full
-										// (no move) because au medium size. 4
-										// small VMs move to fill a second
-										// server.
-
-	}
-
-	
-	public void testVirtualLoadPerCoreGlobal() {
-
-		// generate one VM per server
-		// VMs ressource usage is 0
-		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(2);
-		modelGenerator.setNB_VIRTUAL_MACHINES(4);
-
-		// VM settings
-		modelGenerator.setCPU_USAGE(0.0);
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setNETWORK_USAGE(0);
-		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(0);
-		modelGenerator.VM_TYPE = "m1.small";
-
-		// servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4);
-		modelGenerator.setRAM_SIZE(560);
-		modelGenerator.setSTORAGE_SIZE(10000000);
-
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1),
-				new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(0.2),
-				new MemoryUsageType(0), new IoRateType(0),
-				new NetworkUsageType(0)));
-		optimizer.getVmTypes().getVMType().add(type1);
-
-		FIT4GreenType modelManyServersNoLoad = modelGenerator
-				.createPopulatedFIT4GreenType();
-		String sep = System.getProperty("file.separator");
-		SLAReader sla = new SLAReader("resources" + sep
-				+ "SlaClusterConstraints.xml");
-		optimizer.setClusters(sla.getCluster());
-		optimizer.setSla(sla.getSLAs());
-		optimizer.runGlobalOptimization(modelManyServersNoLoad);
-
-
-		assertEquals(0, getMoves().size());
-		assertEquals(0, getPowerOffs().size());
-
-
-
+		assertEquals(4, getMoves().size()); 
 	}
 
 	
 	public void testMaxVMperServerGlobal() {
-
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
-		modelGenerator.setNB_VIRTUAL_MACHINES(2);
+		modelGenerator.setNB_VIRTUAL_MACHINES(1);
+		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxVMperServer(new MaxVMperServer(1, 1));
 
-		// VM settings
-		modelGenerator.setCPU_USAGE(0.0);
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setNETWORK_USAGE(0);
-		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(0);
-		modelGenerator.VM_TYPE = "m1.small";
+		optimizer.runGlobalOptimization(model);
 
-		// servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(4);
-		modelGenerator.setRAM_SIZE(560);
-		modelGenerator.setSTORAGE_SIZE(1000); // Not enough space to have 8 VMs
-												// on one server (200GB HDD
-												// each)
-
-		VMTypeType vmTypes = new VMTypeType();
-
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1),
-				new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1),
-				new MemoryUsageType(0), new IoRateType(0),
-				new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-
-		((OptimizerEngineCloudTraditional) optimizer).setVmTypes(vmTypes);
-		String sep = System.getProperty("file.separator");
-		SLAReader sla = new SLAReader("resources" + sep
-				+ "SlaClusterConstraints2.xml");
-		optimizer.setClusters(sla.getCluster());
-		optimizer.setSla(sla.getSLAs());
-
-		FIT4GreenType modelManyServersNoLoad = modelGenerator
-				.createPopulatedFIT4GreenType();
-
-		optimizer.runGlobalOptimization(modelManyServersNoLoad);
-
-		assertEquals(2, getMoves().size());
-		assertEquals(1, getPowerOffs().size());
+		assertEquals(0, getMoves().size());
 	}
 
-	/**
-	 * Test global optimization with one VM per servers and no load
-	 * 
-	 * @author Ts
-	 */
+
 	public void testMemoryOverbookingGlobal() {
-
-		// generate one VM per server
-		// VMs ressource usage is 0
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
-		modelGenerator.setNB_VIRTUAL_MACHINES(4);
-
-		// VM settings
-		modelGenerator.setCPU_USAGE(0.0);
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setNETWORK_USAGE(0);
-		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(50);
-		modelGenerator.VM_TYPE = "m1.small";
-
-		// servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(1);
+		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		modelGenerator.setRAM_SIZE(100);
-		modelGenerator.setSTORAGE_SIZE(1000); // Not enough space to have 8 VMs
-												// on one server (200GB HDD
-												// each)
-
-		VMTypeType vmTypes = new VMTypeType();
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(null, null));
-
-		PolicyType.Policy pol = new Policy();
-		pol.getPeriodVMThreshold().add(period);
-
-		List<Policy> polL = new LinkedList<Policy>();
-		polL.add(pol);
-
-		PolicyType vmMargins = new PolicyType(polL);
-		vmMargins.getPolicy().add(pol);
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1),
-				new RAMSizeType(50), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1),
-				new MemoryUsageType(50), new IoRateType(0),
-				new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-
+		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 		
-		//TODO: this xml file is outdated
-		((OptimizerEngineCloudTraditional) optimizer).setVmTypes(vmTypes);
-		String sep = System.getProperty("file.separator");
-		SLAReader sla = new SLAReader("resources" + sep
-				+ "SlaClusterConstraints2.xml");
-		optimizer.setClusters(sla.getCluster());
-		optimizer.setSla(sla.getSLAs());
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		optimizer.getVmTypes().getVMType().get(0).getCapacity().setVRam(new RAMSizeType(50));
+		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxVRAMperPhyRAM(new MaxVRAMperPhyRAM((float)0.9, 1));
 
-		FIT4GreenType modelManyServersNoLoad = modelGenerator
-				.createPopulatedFIT4GreenType();
+		optimizer.runGlobalOptimization(model);
 
-		optimizer.runGlobalOptimization(modelManyServersNoLoad);
-
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-
-		List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-		
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-//		assertTrue(moves.size() == 1);
-//		assertTrue(powerOffs.size() == 0);
-
-
+		assertEquals(0, getMoves().size());
 	}
 
 
@@ -539,141 +333,7 @@ public class OptimizerSLATest extends OptimizerTest {
 
 	}
 	
-	
-	/**
-	 * Test allocation success
-	 */
-	public void testAvgCPUOverbookingAllocation() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(10);
-		modelGenerator.setNB_VIRTUAL_MACHINES(2);
-	
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(2); //2 cores
-		modelGenerator.setRAM_SIZE(1024);
-		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-				
-		modelGenerator.setVM_TYPE("m1.small");
-		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(12), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(50), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-				
-		optimizer.setVmTypes(VMs);
-		String sep = System.getProperty("file.separator");
-		SLAReader sla = new SLAReader("resources" + sep
-				+ "SlaClusterConstraintsAvgCPUOverbooking2.xml");
-		optimizer.setClusters(sla.getCluster());
-		optimizer.setSla(sla.getSLAs());
-		System.out.println("Name: " + sla.getCluster().getCluster().get(0).getName());
-		System.out.println("ID: " + sla.getCluster().getCluster().get(0).getId());
-		
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
-		System.out.println("AllocCID: " + (((CloudVmAllocationType) allocationRequest.getRequest().getValue()).getClusterId()));
-		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
-		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
-		System.out.println("NodeID: " );//+ VMAllocResponse.getNodeId());
-		//New VM should be allocated on first server		
-		assertEquals("id100000", VMAllocResponse.getNodeId());
-	}
-	
-	
-	/**
-	 * Test allocation with constraints not satisfied
-	 */
-	public void test2ClustersOverbookingGlobal() {
-		
-		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(8);
-		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		
-		modelGenerator.setCPU(2);
-		modelGenerator.setCORE(1); 
-		modelGenerator.setRAM_SIZE(100);//24
-		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-				
-		modelGenerator.setVM_TYPE("m1.small");
-		
-		VMTypeType VMs = new VMTypeType();
-		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-		VMs.getVMType().add(type1);
-				
-		optimizer.setVmTypes(VMs);
-		
-		SLAType slas = new SLAType();
-		
-		QoSDescriptionType qos = new QoSDescriptionType();
-		MaxVirtualCPUPerCore mvCPU = new MaxVirtualCPUPerCore();
-		qos.setMaxVirtualCPUPerCore(mvCPU);
-		qos.getMaxVirtualCPUPerCore().setValue((float) 1.0);
-				
-		SLAType.SLA sla = new SLAType.SLA();
-		slas.getSLA().add(sla);
-		sla.setCommonQoSRelatedMetrics(qos);
-		BoundedSLAsType bSlas = new BoundedSLAsType();
-		bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));	
-		
-		PolicyType.Policy policy = new PolicyType.Policy();
-		
-		BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-		bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy));	
-		
-		List<String> nodeName = new ArrayList<String>();
-		nodeName.add("id0");
-		nodeName.add("id100000");
-		nodeName.add("id200000");
-		nodeName.add("id300000");
-		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
-		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc1"));
-		nodeName = new ArrayList<String>();
-		nodeName.add("id400000");
-		nodeName.add("id500000");
-		nodeName.add("id600000");
-		nodeName.add("id700000");
-		cluster.add(new Cluster("c2", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc2"));
-		ClusterType clusters = new ClusterType(cluster);
-		
-		optimizer.setClusters(clusters);
-		
-		//TEST 1 
-				
-		model = modelGenerator.createPopulatedFIT4GreenType();
-			
-		optimizer.runGlobalOptimization(model);
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-
-		List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-
-		assertEquals(4, moves.size());
-	}
 	
 	public void testDelayBetweenMoveGlobal() {
 		modelGenerator.setNB_SERVERS(2);

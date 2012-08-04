@@ -103,15 +103,15 @@ public class F4GHDDConstraint extends F4GConstraint {
 
 			
 		// For each node, we define a set denoting the VMs it may hosts
-		IntDomainVar[] cards2 = new IntDomainVar[nodes.size()];
+		IntDomainVar[] cards = new IntDomainVar[nodes.size()];
 
         Cardinalities c = PackingBasedCardinalities.getInstances();
         if (c == null) {
             c = new PackingBasedCardinalities(core, 50);
         }
         for (int i = 0; i < nodes.size(); i++) {
-			cards2[i] = c.getCardinality(nodes.get(i));
-			core.post(core.leq(cards2[i], getHDDCap(nodes.get(i).getName())/x));
+			cards[i] = c.getCardinality(nodes.get(i));
+			core.post(core.leq(cards[i], getHDDCap(nodes.get(i).getName())/x));
 		}
 	}
 
