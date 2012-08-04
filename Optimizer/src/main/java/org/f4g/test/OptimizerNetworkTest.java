@@ -214,14 +214,6 @@ public class OptimizerNetworkTest extends OptimizerTest {
         System.out.println("Moves: " + moves.size());
         System.out.println("Poweroffs: " + powerOffs.size());
 		
-		//no overbooking is made
-//		assertEquals(moves.size(), 6);
-//		//only 3 powers off since we keep a margin of max 6 slots = 3 machines
-//		assertEquals(powerOffs.size(), 7);                              // 6 machines + 1 switch
-        
-//        assertEquals(powerOffs.get(powerOffs.size()-1).getNodeName(), "id0");       // the last one is Switch 0
-
-//		assertEquals(moves.get(0).getFrameworkName(), "DC1");
 	}
 	    
     

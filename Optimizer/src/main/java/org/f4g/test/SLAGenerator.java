@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.f4g.schema.constraints.optimizerconstraints.CapacityType;
 import org.f4g.schema.constraints.optimizerconstraints.ExpectedLoadType;
 import org.f4g.schema.constraints.optimizerconstraints.FIT4GreenOptimizerConstraint;
+import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType;
 import org.f4g.schema.constraints.optimizerconstraints.SLAType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.metamodel.CpuUsageType;
@@ -47,7 +48,8 @@ public class SLAGenerator {
 	public static SLAType createDefaultSLA(){
 		SLAType slas = new SLAType();
 		SLAType.SLA sla = new SLAType.SLA();
-		
+		QoSDescriptionType qos = new QoSDescriptionType();
+		sla.setCommonQoSRelatedMetrics(qos);		
 		slas.getSLA().add(sla);
 		return slas;
 	}

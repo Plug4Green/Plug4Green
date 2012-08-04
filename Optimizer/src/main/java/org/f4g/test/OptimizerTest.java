@@ -71,6 +71,8 @@ public class OptimizerTest extends TestCase {
 
 	protected XMLGregorianCalendar end;
 	
+	ModelGenerator modelGenerator;
+	
 	//protected abstract OptimizerEngine getOptimizer();
 	
 	/**
@@ -299,6 +301,7 @@ public class OptimizerTest extends TestCase {
 		}
 			
 		log = Logger.getLogger(this.getClass().getName()); 
+		modelGenerator = new ModelGenerator();
 		
 		actionRequestAvailable.acquire();	    
 	}

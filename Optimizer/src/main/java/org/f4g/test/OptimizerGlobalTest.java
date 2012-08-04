@@ -1,61 +1,34 @@
 package org.f4g.test;
 
-
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXBElement;
 import org.f4g.com.util.PowerData;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.optimizer.OptimizationObjective;
-import org.f4g.optimizer.OptimizerEngine;
 import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.CoreType;
 import org.f4g.schema.metamodel.CpuUsageType;
 import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.MemoryUsageType;
-import org.f4g.schema.metamodel.NetworkUsageType;
-import org.f4g.schema.metamodel.NrOfCpusType;
-import org.f4g.schema.metamodel.PUEType;
-import org.f4g.schema.metamodel.RAMSizeType;
 import org.f4g.schema.metamodel.RackableServerType;
 import org.f4g.schema.metamodel.ServerStatusType;
 import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.StorageCapacityType;
 import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.ActionRequestType;
 import org.f4g.schema.actions.MoveVMActionType;
 import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
-import org.f4g.schema.actions.ActionRequestType.ActionList;
 import org.f4g.schema.constraints.optimizerconstraints.BoundedPoliciesType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedSLAsType;
-import org.f4g.schema.constraints.optimizerconstraints.CapacityType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.constraints.optimizerconstraints.ExpectedLoadType;
 import org.f4g.schema.constraints.optimizerconstraints.FederationType;
 import org.f4g.schema.constraints.optimizerconstraints.LoadType;
-import org.f4g.schema.constraints.optimizerconstraints.NodeControllerType;
 import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType;
-import org.f4g.schema.constraints.optimizerconstraints.SLAType;
 import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
 import org.f4g.schema.constraints.optimizerconstraints.UnitType;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import org.junit.Test;
 
-import choco.kernel.common.logging.ChocoLogging;
-import choco.kernel.common.logging.Verbosity;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -397,9 +370,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 			
 		optimizer.setClusters(createDefaultCluster(8, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
-		QoSDescriptionType qos = new QoSDescriptionType();
-		qos.setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
-		optimizer.getSla().getSLA().get(0).setCommonQoSRelatedMetrics(qos);
+		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
 		
 		//TEST 1
 		//8 VMS -> full servers

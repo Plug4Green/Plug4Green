@@ -17,6 +17,7 @@ import org.f4g.entropy.plan.constraint.VcpuPcpuMapping;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import org.f4g.optimizer.CloudTraditional.SLAReader;
 import org.f4g.optimizer.ICostEstimator;
+import org.f4g.optimizer.OptimizationObjective;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.schema.actions.AbstractBaseActionType;
 import org.f4g.schema.actions.ActionRequestType;
@@ -27,8 +28,11 @@ import org.f4g.schema.allocation.ObjectFactory;
 import org.f4g.schema.constraints.optimizerconstraints.*;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
+import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxServerCPULoad;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
 import org.f4g.schema.metamodel.*;
+import org.f4g.test.OptimizerTest.MockController;
+import org.f4g.test.OptimizerTest.MockPowerCalculator;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.measures.Measure;
 
@@ -57,24 +61,29 @@ public class OptimizerSLATest extends OptimizerTest {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-
-		SLAGenerator slaGenerator = new SLAGenerator();
-
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(null, null));
-
+		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
+		
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
 
 		List<Policy> polL = new LinkedList<Policy>();
 		polL.add(pol);
 
-		PolicyType vmMargins = new PolicyType(polL);
-		vmMargins.getPolicy().add(pol);
-		optimizer = new OptimizerEngineCloudTraditional(new MockController(),
-				new MockPowerCalculator(), new NetworkCost(),
-				slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, null));
-
+		PolicyType policies = new PolicyType(polL);
+		policies.getPolicy().add(pol);
+		
+		FederationType fed = new FederationType();
+		BoundedPoliciesType.Policy bpol = new BoundedPoliciesType.Policy(pol);
+		BoundedPoliciesType bpols = new BoundedPoliciesType();
+		bpols.getPolicy().add(bpol);		
+		fed.setBoundedPolicies(bpols);
+		
+		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(),
+				SLAGenerator.createVirtualMachineType(), policies, fed);
+	    
+		optimizer.setSla(SLAGenerator.createDefaultSLA());
+		optimizer.setOptiObjective(OptimizationObjective.Power);
+		optimizer.setClusters(createDefaultCluster(4, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 	}
 
 	/**
@@ -136,38 +145,9 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		optimizer.runGlobalOptimization(modelManyServersNoLoad);
 
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-
-		List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertTrue(moves.size() == 0);
-		assertTrue(powerOffs.size() == 0);
-
-		// no duplicate moves or power offs should be found
-		Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(moves);
-		Set<PowerOffActionType> powerOffSet = new HashSet<PowerOffActionType>(
-				powerOffs);
-		assertTrue(moveSet.size() == 0);
-		assertTrue(powerOffSet.size() == 0);
+		
+		assertEquals(getMoves().size(), 0);
+		assertEquals(getPowerOffs().size(), 0);
 
 	}
 
@@ -215,81 +195,18 @@ public class OptimizerSLATest extends OptimizerTest {
 	 * @author Ts
 	 */
 	public void testCPUGlobal() {
-
-		// generate one VM per server
-		// VMs ressource usage is 0
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
-		modelGenerator.setNB_VIRTUAL_MACHINES(4);
+		modelGenerator.setNB_VIRTUAL_MACHINES(1);
+		modelGenerator.setCORE(1);
+		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(50));
+		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxServerCPULoad(new MaxServerCPULoad(0.6, 1));
 
-		// VM settings
-		modelGenerator.setCPU_USAGE(20); // set to 80% in SLA therefore not
-										 // enough space for 8 VMs on one
-										 // server
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setNETWORK_USAGE(0);
-		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(0);
-		modelGenerator.VM_TYPE = "m1.small";
+		optimizer.runGlobalOptimization(model);
 
-		// servers settings
-		modelGenerator.setCPU(4);
-		modelGenerator.setCORE(4);
-		modelGenerator.setRAM_SIZE(560);
-		modelGenerator.setSTORAGE_SIZE(10000000);
-
-
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1),
-				new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(20),
-				new MemoryUsageType(0), new IoRateType(0),
-				new NetworkUsageType(0)));
-		optimizer.getVmTypes().getVMType().add(type1);
-
-		FIT4GreenType modelManyServersNoLoad = modelGenerator
-				.createPopulatedFIT4GreenType();
-
-		String sep = System.getProperty("file.separator");
-		SLAReader sla = new SLAReader("resources" + sep
-				+ "SlaClusterConstraintsCPULoad.xml");
-		optimizer.setClusters(sla.getCluster());
-
-		optimizer.runGlobalOptimization(modelManyServersNoLoad);
-
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-
-		List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertTrue(moves.size() == 0);
-		assertTrue(powerOffs.size() == 0);
-
-		// no duplicate moves or power offs should be found
-		Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(moves);
-		Set<PowerOffActionType> powerOffSet = new HashSet<PowerOffActionType>(
-				powerOffs);
-		assertTrue(moveSet.size() == 0);
-		assertTrue(powerOffSet.size() == 0);
+		assertEquals(getMoves().size(), 0);
+		assertEquals(getPowerOffs().size(), 0);
 
 	}
 
@@ -300,253 +217,70 @@ public class OptimizerSLATest extends OptimizerTest {
 	 */
 	public void testOverbookingGlobal() {
 
-		// generate one VM per server
-		// VMs ressource usage is 0
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(4);
 		modelGenerator.setNB_VIRTUAL_MACHINES(4); // 16 VMs total
-
-		// VM settings
-		modelGenerator.setCPU_USAGE(0.0);
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setNETWORK_USAGE(0);
-		modelGenerator.setSTORAGE_USAGE(0);
-		modelGenerator.setMEMORY_USAGE(0);
-		modelGenerator.VM_TYPE = "m1.small";
-
-		// servers settings
-		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(4);
 		modelGenerator.setRAM_SIZE(560);
 		modelGenerator.setSTORAGE_SIZE(10000000);
-
-		VMTypeType vmTypes = new VMTypeType();
-
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1),
-				new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(1),   //only 1% of CPU usage
-				new MemoryUsageType(0), new IoRateType(0),
-				new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(null, null));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		optimizer.runGlobalOptimization(model);
 
-		PolicyType.Policy pol = new Policy();
-		pol.getPeriodVMThreshold().add(period);
-
-		List<Policy> polL = new LinkedList<Policy>();
-		polL.add(pol);
-
-		PolicyType vmMargins = new PolicyType(polL);
-		vmMargins.getPolicy().add(pol);
-		// TEST 1: without overbooking setting
-
-		OptimizerEngineCloudTraditional myOptimizer = new OptimizerEngineCloudTraditional(
-				new MockController(), new MockPowerCalculator(),
-				new NetworkCost(), vmTypes, vmMargins, makeSimpleFed(vmMargins, model));
-		myOptimizer.runGlobalOptimization(model);
-
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-
-		List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertEquals(moves.size(), 12); // everyone on the same server
+		assertEquals(getMoves().size(), 12); // everyone on the same server
 
 		// TEST 2 with overbooking setting = 1
+		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
+		
+		optimizer.runGlobalOptimization(model);
 
-		SLAType slas = SLAGenerator.createDefaultSLA();
-		QoSDescriptionType qos = new QoSDescriptionType();
-		MaxVirtualCPUPerCore mvCPU = new MaxVirtualCPUPerCore();
-		qos.setMaxVirtualCPUPerCore(mvCPU);
-		qos.getMaxVirtualCPUPerCore().setValue((float) 1.0);
-		slas.getSLA().get(0).setCommonQoSRelatedMetrics(qos);
 
-		ClusterType clusters = createDefaultCluster(
-				modelGenerator.MAX_NB_SERVERS, slas.getSLA(), polL);
-		myOptimizer.setClusters(clusters);
-		myOptimizer.setVmTypes(vmTypes);
-		myOptimizer.setSla(slas);
-		myOptimizer.runGlobalOptimization(model);
-
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response2 = actionRequest.getActionList();
-
-		moves.clear();
-		powerOffs.clear();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response2
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertEquals(moves.size(), 0); //no Overbooking (==1) -> 1 core per
+		assertEquals(getMoves().size(), 0); //no Overbooking (==1) -> 1 core per
 		// VM / 4 core per server -> max VMs per server = 4 -> no moves
 
 		// TEST 3 with overbooking setting = 2
-
-		myOptimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
+		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
 				.getMaxVirtualCPUPerCore().setValue((float) 2.0);
 
-		myOptimizer.runGlobalOptimization(model);
+		optimizer.runGlobalOptimization(model);
 
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response3 = actionRequest.getActionList();
-
-		moves.clear();
-		powerOffs.clear();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response3
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertEquals(moves.size(), 8); // Overbooking 2 -> 1 core per VM / 4
+		assertEquals(getMoves().size(), 8); // Overbooking 2 -> 1 core per VM / 4
 										// core per server -> max VMs per server
 										// = 8 -> 8 moves
 
 		// TEST 4 with overbooking setting = 1.5
-
-		myOptimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
+		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
 				.getMaxVirtualCPUPerCore().setValue((float) 1.5);
 
-		myOptimizer.runGlobalOptimization(model);
+		optimizer.runGlobalOptimization(model);
 
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response4 = actionRequest.getActionList();
-
-		moves.clear();
-		powerOffs.clear();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response4
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertEquals(moves.size(), 4); // Overbooking 1.5 -> 6 VCPUs per server,
+		assertEquals(getMoves().size(), 4); // Overbooking 1.5 -> 6 VCPUs per server,
 										// 4 moves
 
 		// TEST 5 with overbooking setting = 2, mixed VMs
-
 		modelGenerator.setNB_SERVERS(4);
 		modelGenerator.setNB_VIRTUAL_MACHINES(4); // 16 VMs total
 		model = modelGenerator.createPopulatedFIT4GreenType();
 
-		VMTypeType.VMType type2 = new VMTypeType.VMType();
-		type2.setName("m1.medium");
-		type2.setCapacity(new CapacityType(new NrOfCpusType(2),
-				new RAMSizeType(1), new StorageCapacityType(1)));
-		type2.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(0.01),
-				new MemoryUsageType(0), new IoRateType(0),
-				new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type2);
-
 		List<VirtualMachineType> vms = Utils.getAllVMs(model);
-		vms.get(0).setCloudVmType("m1.medium");
-		vms.get(1).setCloudVmType("m1.medium");
-		vms.get(2).setCloudVmType("m1.medium");
-		vms.get(3).setCloudVmType("m1.medium");
+		vms.get(0).setCloudVmType("m1.xlarge");
+		vms.get(1).setCloudVmType("m1.xlarge");
+		vms.get(2).setCloudVmType("m1.xlarge");
+		vms.get(3).setCloudVmType("m1.xlarge");
 
-		myOptimizer.setVmTypes(vmTypes);
-		myOptimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
+		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
 				.getMaxVirtualCPUPerCore().setValue((float) 2.0);
 
-		myOptimizer.runGlobalOptimization(model);
-
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response5 = actionRequest.getActionList();
-
-		moves.clear();
-		powerOffs.clear();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response5
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertEquals(moves.size(), 4); // Overbooking 2 -> first server is full
+		optimizer.runGlobalOptimization(model);
+		
+		assertEquals(getMoves().size(), 4); // Overbooking 2 -> first server is full
 										// (no move) because au medium size. 4
 										// small VMs move to fill a second
 										// server.
 
 	}
 
-	/**
-	 * Test global optimization with one VM per servers and no load
-	 * 
-	 * @author Ts
-	 */
+	
 	public void testVirtualLoadPerCoreGlobal() {
 
 		// generate one VM per server
@@ -587,50 +321,17 @@ public class OptimizerSLATest extends OptimizerTest {
 		optimizer.setSla(sla.getSLAs());
 		optimizer.runGlobalOptimization(modelManyServersNoLoad);
 
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		ActionRequestType.ActionList response = actionRequest.getActionList();
+		assertEquals(getMoves().size(), 0);
+		assertEquals(getPowerOffs().size(), 0);
 
-		List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
 
-		for (JAXBElement<? extends AbstractBaseActionType> action : response
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertTrue(moves.size() == 0);
-		assertTrue(powerOffs.size() == 0);
-
-		// no duplicate moves or power offs should be found
-		Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(moves);
-		Set<PowerOffActionType> powerOffSet = new HashSet<PowerOffActionType>(
-				powerOffs);
-		assertTrue(moveSet.size() == 0);
-		assertTrue(powerOffSet.size() == 0);
 
 	}
 
-	/**
-	 * Test global optimization with one VM per servers and no load
-	 * 
-	 * @author Ts
-	 */
+	
 	public void testMaxVMperServerGlobal() {
 
-		// generate one VM per server
-		// VMs ressource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(2);
@@ -674,38 +375,8 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		optimizer.runGlobalOptimization(modelManyServersNoLoad);
 
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-
-		List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertTrue(moves.size() == 2);
-		assertTrue(powerOffs.size() == 1);
-
-		// no duplicate moves or power offs should be found
-		Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(moves);
-		Set<PowerOffActionType> powerOffSet = new HashSet<PowerOffActionType>(
-				powerOffs);
-		assertTrue(moveSet.size() == 2);
-		assertTrue(powerOffSet.size() == 1);
+		assertEquals(getMoves().size(), 2);
+		assertEquals(getPowerOffs().size(), 1);
 	}
 
 	/**
@@ -797,93 +468,7 @@ public class OptimizerSLATest extends OptimizerTest {
 //		assertTrue(moves.size() == 1);
 //		assertTrue(powerOffs.size() == 0);
 
-		// no duplicate moves or power offs should be found
-		Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(moves);
-		Set<PowerOffActionType> powerOffSet = new HashSet<PowerOffActionType>(
-				powerOffs);
-//		log.debug("moves=" + moveSet.size());
-//		log.debug("powerOffs=" + powerOffSet.size());
-		assertTrue(moveSet.size() == 1);
-		assertTrue(powerOffSet.size() == 1);
-	}
 
-	/**
-	 * 
-	 * @author Ts
-	 */
-	public void testVLoadPerCoreGlobal() {
-
-		// generate one VM per server
-		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(2);
-		modelGenerator.setNB_VIRTUAL_MACHINES(2);
-
-		// VM settings
-		modelGenerator.VM_TYPE = "m1.small";
-
-		// servers settings
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(2);
-		modelGenerator.setRAM_SIZE(560);
-		modelGenerator.setSTORAGE_SIZE(1000);
-
-		VMTypeType type = new VMTypeType();
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1),
-				new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(50),
-				new MemoryUsageType(0), new IoRateType(0),
-				new NetworkUsageType(0)));
-		type.getVMType().add(type1);
-		
-		optimizer.setVmTypes(type);
-		
-		String sep = System.getProperty("file.separator");
-		SLAReader sla = new SLAReader("resources" + sep
-				+ "SlaClusterConstraintsCoreLoad.xml");
-		optimizer.setClusters(sla.getCluster());
-		optimizer.setSla(sla.getSLAs());
-		optimizer.setFederation(sla.getFeds());
-
-		FIT4GreenType myModel = modelGenerator.createPopulatedFIT4GreenType();
-
-		//clearing one servers
-		//myModel.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(0).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
-		optimizer.runGlobalOptimization(myModel);
-
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-
-		List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertEquals(moves.size(), 1);
-		assertEquals(powerOffs.size(), 0);
-
-		// no duplicate moves or power offs should be found
-		Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(moves);
-		Set<PowerOffActionType> powerOffSet = new HashSet<PowerOffActionType>(
-				powerOffs);
-		assertTrue(moveSet.size() == 1);
-		assertTrue(powerOffSet.size() == 0);
 	}
 
 
@@ -943,60 +528,14 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setRAM_SIZE(560);
 		modelGenerator.setSTORAGE_SIZE(10000000);
 
-		VMTypeType vmTypes = new VMTypeType();
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
-		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1),
-				new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(0.01),
-				new MemoryUsageType(0), new IoRateType(0),
-				new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(new SpareCPUs(0, UnitType.ABSOLUTE), null));
-
-		PolicyType.Policy pol = new Policy();
-		pol.getPeriodVMThreshold().add(period);
-
-		List<Policy> polL = new LinkedList<Policy>();
-		polL.add(pol);
-
-		PolicyType pols = new PolicyType(polL);
-		pols.getPolicy().add(pol);
 		
 		// TEST 1: without payback time setting
 
-		OptimizerEngineCloudTraditional myOptimizer = new OptimizerEngineCloudTraditional(
-				new MockController(), new MockPowerCalculator(),
-				new MyNetworkCost(), vmTypes, pols, makeSimpleFed(pols, model));
-		myOptimizer.runGlobalOptimization(model);
+		optimizer.runGlobalOptimization(model);
 
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response = actionRequest.getActionList();
-
-		List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
-
-		assertEquals(moves.size(), 12); // everyone on the same server
+		assertEquals(getMoves().size(), 12); // everyone on the same server
 
 		
 		// TEST 2: with payback time = 10 min
@@ -1022,32 +561,11 @@ public class OptimizerSLATest extends OptimizerTest {
 		myOptimizer.setSla(slas);
 		myOptimizer.runGlobalOptimization(model);
 
-		try {
-			actionRequestAvailable.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		ActionRequestType.ActionList response2 = actionRequest.getActionList();
-
-		moves.clear();
-		powerOffs.clear();
-
-		for (JAXBElement<? extends AbstractBaseActionType> action : response2
-				.getAction()) {
-			if (action.getValue() instanceof MoveVMActionType)
-				moves.add((MoveVMActionType) action.getValue());
-			if (action.getValue() instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action.getValue());
-		}
-
-		log.debug("moves=" + moves.size());
-		log.debug("powerOffs=" + powerOffs.size());
 
 		//payback time = 600s, move = 100J, power saved = 2.5W (A server is 10W, we have to move 4 VMs to switch is off, 
 		// all servers energy profile are equivalent).
 		// 2.5*600 > 1000, move allowed
-		assertEquals(moves.size(), 12);
+		assertEquals(getMoves().size(), 12);
 		
 		
 		// TEST 3: with payback time = 1 min
