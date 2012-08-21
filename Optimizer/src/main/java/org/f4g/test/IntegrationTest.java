@@ -224,6 +224,7 @@ public class IntegrationTest extends OptimizerTest {
      * test global optimization with real power calculator
      */
     public void testGlobal() {
+
         modelGenerator.setNB_SERVERS(3);
         modelGenerator.setNB_VIRTUAL_MACHINES(1);
         modelGenerator.setCPU(1);
