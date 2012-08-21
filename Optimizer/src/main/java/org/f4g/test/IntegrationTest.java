@@ -94,18 +94,9 @@ public class IntegrationTest extends OptimizerTest {
 
     public void testaddVM() {
 
-        //Creating a new model generator
-        ModelGenerator modelGenerator = new ModelGenerator();
         modelGenerator.setNB_VIRTUAL_MACHINES(1);
-        //servers settings
         modelGenerator.setCPU(2);
         modelGenerator.setCORE(6);
-        //VM settings
-        modelGenerator.setCPU_USAGE(0.0);
-        modelGenerator.setNB_CPU(1);
-        modelGenerator.setNETWORK_USAGE(1.0);
-        modelGenerator.setSTORAGE_USAGE(1.0);
-        modelGenerator.setMEMORY_USAGE(1.0);
 
         FrameworkCapabilitiesType frameworkCapabilitie = new FrameworkCapabilitiesType();
         frameworkCapabilitie.setFrameworkName("FM");
@@ -155,7 +146,6 @@ public class IntegrationTest extends OptimizerTest {
      */
     public void testAllocation() {
 
-        ModelGenerator modelGenerator = new ModelGenerator();
         modelGenerator.setNB_SERVERS(5);
         modelGenerator.setNB_VIRTUAL_MACHINES(1);
         //servers settings
@@ -234,64 +224,33 @@ public class IntegrationTest extends OptimizerTest {
      * test global optimization with real power calculator
      */
     public void testGlobal() {
-        //generate one VM per server
-        //VMs ressource usage is 0
-        ModelGenerator modelGenerator = new ModelGenerator();
-
         modelGenerator.setNB_SERVERS(3);
         modelGenerator.setNB_VIRTUAL_MACHINES(1);
-
-        //servers settings
         modelGenerator.setCPU(1);
         modelGenerator.setCORE(4);
         modelGenerator.setRAM_SIZE(100);
         modelGenerator.CPU_VOLTAGE = 2;
 
-        modelGenerator.setVM_TYPE("small");
-
-        VMTypeType vmTypes = new VMTypeType();
-        VMTypeType.VMType type1 = new VMTypeType.VMType();
-        type1.setName("small");
-        type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(12), new StorageCapacityType(1)));
-        type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(50), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-        vmTypes.getVMType().add(type1);
-
+      
         FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 
-
-        PeriodType period = new PeriodType(
-                begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
-
-        PolicyType.Policy pol = new Policy();
-        pol.getPeriodVMThreshold().add(period);
-
-        List<Policy> polL = new LinkedList<Policy>();
-        polL.add(pol);
-
-        PolicyType vmMargins = new PolicyType(polL);
-        vmMargins.getPolicy().add(pol);
-
         //TEST 1
+        optimizer.setPowerCalculator(new PowerCalculator());
+        optimizer.setCostEstimator(new NetworkCost());
+        optimizer.runGlobalOptimization(model);
 
-        //Create a new optimizer with the power calculator
-        OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new PowerCalculator(), new NetworkCost(),
-                vmTypes, vmMargins, makeSimpleFed(vmMargins, model));
-
-
-        MyOptimizer.runGlobalOptimization(model);
-     
-        //one VM is moving to switch off a server
-        assertEquals(1, getMoves().size());
+        assertEquals(2, getMoves().size());
 
 
         //TEST 2
-
         List<ServerType> servers = Utils.getAllServers(model);
 
         //server 0 has less power usage
-        servers.get(0).getMainboard().get(0).getCPU().get(0).getCore().get(0).setFrequency(new FrequencyType(0.5));
+        //servers.get(0).getMainboard().get(0).getCPU().get(0).getCore().get(0).setFrequencyMin(new FrequencyType(0.5));
+       // servers.get(0).getMainboard().get(0).getCPU().get(0).getCore().get(0).setFrequency(new FrequencyType(0.5));
+        servers.get(0).getMainboard().get(0).setPowerIdle(new PowerType(10));//.getCPU().get(0).getCore().get(0).setVoltage(new VoltageType(1));
 
-        MyOptimizer.runGlobalOptimization(model);
+        optimizer.runGlobalOptimization(model);
       
         // going to the low power server
         assertEquals("id100000", getMoves().get(0).getSourceNodeController());
@@ -303,19 +262,14 @@ public class IntegrationTest extends OptimizerTest {
      * Test allocation with constraints not satisfied
      */
     public void testconstraintnotsatisfied() {
-
-
-        ModelGenerator modelGenerator = new ModelGenerator();
         modelGenerator.setNB_SERVERS(4);
         modelGenerator.setNB_VIRTUAL_MACHINES(1);
-
         modelGenerator.setCPU(8);
         modelGenerator.setCORE(1);
-        modelGenerator.setRAM_SIZE(24);//24
+        modelGenerator.setRAM_SIZE(24);
 
         FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();
 
-        modelGenerator.setVM_TYPE("m1.small");
 
         VMTypeType VMs = new VMTypeType();
 
@@ -408,7 +362,6 @@ public class IntegrationTest extends OptimizerTest {
     public void testHPSLA() {
 
         String sep = System.getProperty("file.separator");
-        ModelGenerator modelGenerator = new ModelGenerator();
         FIT4GreenType model = modelGenerator.getModel("resources" + sep + "unittest_f4gmodel_instance_ComHP_federated.xml");
 
         try {
@@ -447,29 +400,8 @@ public class IntegrationTest extends OptimizerTest {
         //TEST 2
 
         optimizer.runGlobalOptimization(model);
-        try {
-            actionRequestAvailable.acquire();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        ActionList response2 = actionRequest.getActionList();
-
-        List<MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-        List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-
-        for (JAXBElement<? extends AbstractBaseActionType> action : response2.getAction()) {
-            if (action.getValue() instanceof MoveVMActionType)
-                moves.add((MoveVMActionType) action.getValue());
-            if (action.getValue() instanceof PowerOffActionType)
-                powerOffs.add((PowerOffActionType) action.getValue());
-        }
-
-        log.debug("moves=" + moves.size());
-        log.debug("powerOffs=" + powerOffs.size());
-
-        //assertEquals(6, powerOffs.size());
+      
+        assertEquals(6, getPowerOffs().size());
 
         //TEST 3
         Date date = new Date();
@@ -495,7 +427,7 @@ public class IntegrationTest extends OptimizerTest {
 
         optimizer.runGlobalOptimization(model);
    
-        assertTrue(getMoves().size() > 0);
+        assertEquals(getMoves().size(), 0);
 
     }
 

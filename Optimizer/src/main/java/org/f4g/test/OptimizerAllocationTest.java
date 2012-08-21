@@ -16,24 +16,15 @@ package org.f4g.test;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.xml.bind.JAXBElement;
-
 import org.f4g.com.util.PowerData;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import org.f4g.optimizer.Optimizer.CloudTradCS;
 import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.CpuUsageType;
 import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.MemoryUsageType;
-import org.f4g.schema.metamodel.NetworkUsageType;
-import org.f4g.schema.metamodel.NrOfCpusType;
-import org.f4g.schema.metamodel.RAMSizeType;
 import org.f4g.schema.metamodel.ServerStatusType;
 import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.StorageCapacityType;
 import org.f4g.schema.metamodel.VirtualMachineType;
 import org.f4g.schema.allocation.CloudVmAllocationResponseType;
 import org.f4g.schema.allocation.CloudVmAllocationType;
@@ -41,20 +32,12 @@ import org.f4g.schema.allocation.AllocationRequestType;
 import org.f4g.schema.allocation.AllocationResponseType;
 import org.f4g.schema.allocation.ObjectFactory;
 import org.f4g.schema.allocation.TraditionalVmAllocationResponseType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedPoliciesType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedSLAsType;
-import org.f4g.schema.constraints.optimizerconstraints.CapacityType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.constraints.optimizerconstraints.ExpectedLoadType;
 import org.f4g.schema.constraints.optimizerconstraints.LoadType;
 import org.f4g.schema.constraints.optimizerconstraints.NodeControllerType;
 import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxServerCPULoad;
 import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
-import org.f4g.schema.constraints.optimizerconstraints.SLAType;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
@@ -103,9 +86,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 * Test allocation success
 	 */
 	public void testAllocationSuccess() {
-		ModelGenerator modelGenerator = new ModelGenerator();
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-		
 		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");		
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
@@ -141,7 +122,6 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 */
 	public void testAllocationManyServersFullLoad() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(10);
 		modelGenerator.setNB_VIRTUAL_MACHINES(6);
 		modelGenerator.setCORE(6);
@@ -162,9 +142,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 * Test allocation with no servers
 	 */
 	public void testAllocationNoServer() {
-		ModelGenerator modelGenerator = new ModelGenerator();
 		FIT4GreenType model = modelGenerator.createFIT4GreenType();
-				
 		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
 		
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
@@ -180,7 +158,6 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 */
 	public void testAllocationOneServerNoVM() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 	
@@ -204,8 +181,6 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 * Test allocation failure and success with respect to the constraint on CPU
 	 */
 	public void testAllocationCPUConstraint() {	
-
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(1); 
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 		modelGenerator.setCPU(1);
@@ -234,8 +209,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 * Test allocation failure and success with respect to the constraint on RAM
 	 */
 	public void testAllocationRAMConstraint() {	
-		
-		ModelGenerator modelGenerator = new ModelGenerator();
+
 		modelGenerator.setNB_SERVERS(1); 
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 		modelGenerator.setCORE(1);
@@ -263,7 +237,6 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 */
 	public void testResponseFields() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 	
@@ -324,8 +297,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 				return power;
 			}						
 		}
-		
-		ModelGenerator modelGenerator = new ModelGenerator();
+
 		modelGenerator.setNB_SERVERS(4);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 		
@@ -397,8 +369,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 				return power;
 			}								
 		}
-		
-		ModelGenerator modelGenerator = new ModelGenerator();
+
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
@@ -437,7 +408,6 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 */
 	public void testAllocationSuccessTraditional() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(3);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		modelGenerator.IS_CLOUD = false;
@@ -447,7 +417,6 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		modelGenerator.setMEMORY_USAGE(2);
 		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-	
 		
 		optimizer.setComputingStyle(CloudTradCS.TRADITIONAL);
 		AllocationRequestType allocationRequest = createAllocationRequestTrad();
@@ -471,7 +440,6 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 */
 	public void testAllocationAllOff() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(10);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 	
@@ -495,7 +463,6 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 */
 	public void testAllocationTooMuchVMs() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(8);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		
@@ -540,10 +507,8 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 */
 	public void testAllocationPolicyNotSatisfied() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(10);
 		modelGenerator.setNB_VIRTUAL_MACHINES(6);
-
 		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(6); //2 cores
 		modelGenerator.setRAM_SIZE(100);

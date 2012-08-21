@@ -31,14 +31,8 @@ import org.f4g.schema.metamodel.NetworkUsageType;
 import org.f4g.schema.metamodel.NrOfCpusType;
 import org.f4g.schema.metamodel.RAMSizeType;
 import org.f4g.schema.metamodel.ServerStatusType;
-import org.f4g.schema.metamodel.SiteType;
 import org.f4g.schema.metamodel.StorageCapacityType;
 import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.actions.LiveMigrateVMActionType;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.PowerOffActionType;
 import org.f4g.schema.allocation.CloudVmAllocationResponseType;
 import org.f4g.schema.allocation.CloudVmAllocationType;
 import org.f4g.schema.allocation.AllocationRequestType;
@@ -148,7 +142,6 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	 */
 	public void testAllocationWithClusters() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();
@@ -197,7 +190,6 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	 */
 public void testPowerOnOffClusters() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 
@@ -218,8 +210,6 @@ public void testPowerOnOffClusters() {
 	 */
 	public void testPowerOnOffClustersAndFederation() {
 		
-
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 		modelGenerator.setCPU(1);
@@ -257,7 +247,6 @@ public void testPowerOnOffClusters() {
 	 */
 	public void test2DCMigrationInter() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();				
@@ -284,7 +273,6 @@ public void testPowerOnOffClusters() {
 	 */
 	public void test2SitesMigrationInterPUE() {
 		
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();				
@@ -316,7 +304,6 @@ public void testPowerOnOffClusters() {
 	 */
 	public void test2SitesMigrationInterCUE() {
 
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 				
@@ -353,9 +340,6 @@ public void testPowerOnOffClusters() {
 	 */
 	public void test2SitesMigrationInterPUEorCUE() {
 		
-		//generate one VM per server
-		//VMs ressource usage is 0
-		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();				
@@ -389,8 +373,7 @@ public void testPowerOnOffClusters() {
 	 * 
 	 */
 	public void testAllocationAllOffSecondCluster() {
-		
-		ModelGenerator modelGenerator = new ModelGenerator();
+
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 
@@ -428,8 +411,7 @@ public void testPowerOnOffClusters() {
 	 * Test allocation with multiple clusters
 	 */
 	public void testAllocationOneClusterFull() {
-		
-		ModelGenerator modelGenerator = new ModelGenerator();
+
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);	
 		modelGenerator.setCORE(6);
@@ -485,8 +467,7 @@ public void testPowerOnOffClusters() {
 	 * Test global with one cluster non repairable
 	 */
 	public void testGlobalOneClusterBroken() {
-		
-		ModelGenerator modelGenerator = new ModelGenerator();
+
 		modelGenerator.setNB_SERVERS(8);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 	
@@ -589,8 +570,7 @@ public void testPowerOnOffClusters() {
 	 */
 	
 	public void testMoveVSLiveMigrate() {
-		
-		ModelGenerator modelGenerator = new ModelGenerator();
+
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 			

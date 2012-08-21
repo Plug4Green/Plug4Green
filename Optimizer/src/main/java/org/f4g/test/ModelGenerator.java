@@ -500,6 +500,8 @@ public class ModelGenerator {
 			for (int j=0; j< nbCorePerCPU; j++ ){
 				CoreType core = new CoreType();
 				core.setFrequency(new FrequencyType(CPUfrequency));
+				//core.setFrequencyMin(new FrequencyType(MIN_FREQUENCY));
+				//core.setFrequencyMax(new FrequencyType(MAX_FREQUENCY));
 				core.setCoreLoad(new CoreLoadType(0.1));
 				core.setVoltage(new VoltageType(CPU_VOLTAGE));
 				core.setLastPstate(new NrOfPstatesType(0));
