@@ -32,14 +32,11 @@ import org.f4g.schema.constraints.optimizerconstraints.FederationType;
 import org.f4g.schema.constraints.optimizerconstraints.LoadType;
 import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.UnitType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
 import org.f4g.schema.metamodel.FIT4GreenType;
 import org.f4g.schema.metamodel.ServerType;
 import org.f4g.schema.metamodel.VirtualMachineType;
-
 import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
@@ -153,9 +150,9 @@ public class PolicyConstraintFactory {
 							
 							float overbooking = 1;
 							if(c.getBoundedSLAs() != null && (c.getBoundedSLAs().getSLA().size() > 0) && 
-									c.getBoundedSLAs().getSLA().get(0).getIdref().getCommonQoSRelatedMetrics() != null &&
-									c.getBoundedSLAs().getSLA().get(0).getIdref().getCommonQoSRelatedMetrics().getMaxVirtualCPUPerCore() != null) {
-								overbooking = c.getBoundedSLAs().getSLA().get(0).getIdref().getCommonQoSRelatedMetrics().getMaxVirtualCPUPerCore().getValue();
+									c.getBoundedSLAs().getSLA().get(0).getIdref().getQoSConstraints() != null &&
+									c.getBoundedSLAs().getSLA().get(0).getIdref().getQoSConstraints().getMaxVirtualCPUPerCore() != null) {
+								overbooking = c.getBoundedSLAs().getSLA().get(0).getIdref().getQoSConstraints().getMaxVirtualCPUPerCore().getValue();
 							}
 							List<PeriodType> periodVMThreshold = pol.getIdref().getPeriodVMThreshold();
 							ManagedElementSet<Node> nodes = Utils.getNodesFromCluster(c, src);

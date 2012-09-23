@@ -48,14 +48,14 @@ import org.f4g.schema.constraints.optimizerconstraints.LoadType;
 import org.f4g.schema.constraints.optimizerconstraints.NodeControllerType;
 import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType;
+import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType;
 import org.f4g.schema.constraints.optimizerconstraints.SLAType;
 import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
 import org.f4g.schema.constraints.optimizerconstraints.UnitType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
+import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
 import org.f4g.schema.constraints.optimizerconstraints.SLAType.SLA;
 
 
@@ -496,11 +496,11 @@ public void testPowerOnOffClusters() {
 		bSlas2.getSLA().add(new BoundedSLAsType.SLA(sla2));	
 		
 		//adding a constraint in sla2
-		QoSDescriptionType qos = new QoSDescriptionType();
+		QoSConstraintsType qos = new QoSConstraintsType();
 		MaxVirtualCPUPerCore mvCPU = new MaxVirtualCPUPerCore();
 		qos.setMaxVirtualCPUPerCore(mvCPU);
 		qos.getMaxVirtualCPUPerCore().setValue((float) 1.0);
-		sla.setCommonQoSRelatedMetrics(qos);
+		sla.setQoSConstraints(qos);
 		
 		
 		optimizer.setSla(slas);

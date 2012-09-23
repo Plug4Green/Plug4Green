@@ -19,10 +19,11 @@ import org.apache.log4j.Logger;
 
 
 import org.f4g.schema.constraints.optimizerconstraints.CapacityType;
+import org.f4g.schema.constraints.optimizerconstraints.EnergyConstraintsType;
 import org.f4g.schema.constraints.optimizerconstraints.ExpectedLoadType;
 import org.f4g.schema.constraints.optimizerconstraints.FIT4GreenOptimizerConstraint;
-import org.f4g.schema.constraints.optimizerconstraints.HWMetricsType;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType;
+import org.f4g.schema.constraints.optimizerconstraints.HardwareConstraintsType;
+import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType;
 import org.f4g.schema.constraints.optimizerconstraints.SLAType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.metamodel.CpuUsageType;
@@ -49,10 +50,12 @@ public class SLAGenerator {
 	public static SLAType createDefaultSLA(){
 		SLAType slas = new SLAType();
 		SLAType.SLA sla = new SLAType.SLA();
-		QoSDescriptionType qos = new QoSDescriptionType();
-		sla.setCommonQoSRelatedMetrics(qos);	
-		HWMetricsType hwm = new HWMetricsType();
-		sla.setHardwareMetrics(hwm);
+		QoSConstraintsType qos = new QoSConstraintsType();
+		sla.setQoSConstraints(qos);	
+		HardwareConstraintsType hwm = new HardwareConstraintsType();
+		sla.setHardwareConstraints(hwm);
+		EnergyConstraintsType en = new EnergyConstraintsType();
+		sla.setEnergyConstraints(en);
 		slas.getSLA().add(sla);
 		return slas;
 	}

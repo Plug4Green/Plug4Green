@@ -19,10 +19,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.f4g.optimizer.OptimizerEngine;
-import org.f4g.schema.constraints.optimizerconstraints.AdditionalMetricsType;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.constraints.optimizerconstraints.HWMetricsType;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType;
+import org.f4g.schema.constraints.optimizerconstraints.EnergyConstraintsType;
+import org.f4g.schema.constraints.optimizerconstraints.HardwareConstraintsType;
+import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType;
+import org.f4g.schema.constraints.optimizerconstraints.SecurityConstraintsType;
 import org.f4g.schema.constraints.optimizerconstraints.ServerGroupType;
 import org.f4g.schema.constraints.optimizerconstraints.BoundedSLAsType.SLA;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
@@ -164,19 +165,22 @@ public class SLAConstraintFactory {
 			org.f4g.schema.constraints.optimizerconstraints.SLAType.SLA sla,
 			ManagedElementSet<VirtualMachine> vms, ManagedElementSet<Node> nodes) {
 
-		if (sla.getCommonQoSRelatedMetrics() != null) {
-			addQoS(sla.getCommonQoSRelatedMetrics(), nodes, vms);
+		if (sla.getQoSConstraints() != null) {
+			addQoS(sla.getQoSConstraints(), nodes, vms);
 		}
-		if (sla.getAdditionalMetrics() != null) {
-			addAdditional(sla.getAdditionalMetrics(), vms, nodes);
+		if (sla.getSecurityConstraints() != null) {
+			addSecurity(sla.getSecurityConstraints(), vms, nodes);
 		}
-		if (sla.getHardwareMetrics() != null) {
-			addHardware(sla.getHardwareMetrics(), vms, nodes);
+		if (sla.getHardwareConstraints() != null) {
+			addHardware(sla.getHardwareConstraints(), vms, nodes);
+		}
+		if (sla.getEnergyConstraints() != null) {
+			addEnergy(sla.getEnergyConstraints(), vms, nodes);
 		}
 
 	}
 
-	private void addQoS(QoSDescriptionType type, ManagedElementSet<Node> nodes,
+	private void addQoS(QoSConstraintsType type, ManagedElementSet<Node> nodes,
 			ManagedElementSet<VirtualMachine> vms) {
 
 		try {
@@ -284,7 +288,7 @@ public class SLAConstraintFactory {
 
 	}
 
-	private void addAdditional(AdditionalMetricsType type,
+	private void addSecurity(SecurityConstraintsType type,
 			ManagedElementSet<VirtualMachine> vms, ManagedElementSet<Node> nodes) {
 
 		try {
@@ -317,7 +321,7 @@ public class SLAConstraintFactory {
 		}
 	}
 
-	private void addHardware(HWMetricsType type,
+	private void addHardware(HardwareConstraintsType type,
 			ManagedElementSet<VirtualMachine> vms, ManagedElementSet<Node> nodes) {
 		try {
 			// CPU Frequency of the node
@@ -394,4 +398,12 @@ public class SLAConstraintFactory {
 		}
 	}
 
+	private void addEnergy(EnergyConstraintsType energyConstraints,
+			ManagedElementSet<VirtualMachine> vms, ManagedElementSet<Node> nodes) {
+
+				if (energyConstraints.getMaxPowerServer().getPriority() >= minPriority) {
+					v.addConstraint(new MaxServerPower(nodes, energyConstraints.getMaxPowerServer().getValue()));
+				}
+			}
+		
 }

@@ -216,9 +216,10 @@
 			<xsd:element name="SLA" maxOccurs="unbounded">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="HardwareMetrics" type="opticon:HWMetricsType" />
-						<xsd:element name="CommonQoSRelatedMetrics" type="opticon:QoSDescriptionType" />
-						<xsd:element name="AdditionalMetrics" type="opticon:AdditionalMetricsType" />
+						<xsd:element name="HardwareConstraints" type="opticon:HardwareConstraintsType" />
+						<xsd:element name="QoSConstraints" type="opticon:QoSConstraintsType" />
+						<xsd:element name="SecurityConstraints" type="opticon:SecurityConstraintsType" />
+						<xsd:element name="EnergyConstraints" type="opticon:EnergyConstraintsType" />
 					</xsd:sequence>
 					<xsd:attribute name="id" type="xsd:ID" use="required" />
 				</xsd:complexType>
@@ -227,7 +228,7 @@
 	</xsd:complexType>
 
 	<!--Hardware needs per SLA instance -->
-	<xsd:complexType name="HWMetricsType">
+	<xsd:complexType name="HardwareConstraintsType">
 		<xsd:sequence>
 			<xsd:element name="HDDCapacity" minOccurs="0">
 				<xsd:complexType>
@@ -303,7 +304,7 @@
 	</xsd:complexType>
 
 	<!--Common QoS Description -->
-	<xsd:complexType name="QoSDescriptionType">
+	<xsd:complexType name="QoSConstraintsType">
 		<xsd:sequence>
 			<xsd:element name="MaxServerCPULoad" minOccurs="0">
 				<xsd:complexType>
@@ -388,8 +389,8 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<!--Additional Metrics Description -->
-	<xsd:complexType name="AdditionalMetricsType">
+	<!--Security Constraints Description -->
+	<xsd:complexType name="SecurityConstraintsType">
 		<xsd:sequence>
 			<xsd:element name="DedicatedServer" minOccurs="0">
 				<xsd:complexType>
@@ -405,6 +406,24 @@
 				<xsd:complexType>
 					<xsd:simpleContent>
 						<xsd:extension base="xsd:boolean">
+							<xsd:attribute name="priority" type="xsd:int"
+								default="1" />
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<!--Energy Constraints Description -->
+	<xsd:complexType name="EnergyConstraintsType">
+		<xsd:sequence>
+			<!-- Maximum power a server can consume, in Watts-->
+			<xsd:element name="MaxPowerServer" minOccurs="0"> 
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="xsd:int"> 
 							<xsd:attribute name="priority" type="xsd:int"
 								default="1" />
 						</xsd:extension>

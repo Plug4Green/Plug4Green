@@ -9,6 +9,8 @@ import entropy.vjob.Ban;
 import entropy.vjob.DefaultVJob;
 import entropy.vjob.VJob;
 import junit.framework.Assert;
+
+import org.f4g.com.util.PowerData;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.entropy.plan.constraint.DefaultVcpuPcpuMapping;
 import org.f4g.entropy.plan.constraint.F4GCPUOverbookingConstraint2;
@@ -21,13 +23,15 @@ import org.f4g.optimizer.OptimizationObjective;
 import org.f4g.optimizer.utils.Utils;
 import org.f4g.schema.allocation.*;
 import org.f4g.schema.constraints.optimizerconstraints.*;
-import org.f4g.schema.constraints.optimizerconstraints.HWMetricsType.HDDCapacity;
+import org.f4g.schema.constraints.optimizerconstraints.EnergyConstraintsType.MaxPowerServer;
+import org.f4g.schema.constraints.optimizerconstraints.HardwareConstraintsType.HDDCapacity;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxServerCPULoad;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVMperServer;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVRAMperPhyRAM;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
+import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxServerCPULoad;
+import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVMperServer;
+import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVRAMperPhyRAM;
+import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
 import org.f4g.schema.metamodel.*;
+import org.f4g.test.OptimizerTest.MockPowerCalculator;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.measures.Measure;
 
@@ -111,7 +115,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 		
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
-		optimizer.getSla().getSLA().get(0).getHardwareMetrics().setHDDCapacity(new HDDCapacity(100, 1));
+		optimizer.getSla().getSLA().get(0).getHardwareConstraints().setHDDCapacity(new HDDCapacity(100, 1));
 
 		optimizer.runGlobalOptimization(model);
 
@@ -168,7 +172,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 		
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(50));
-		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxServerCPULoad(new MaxServerCPULoad(0.6, 1));
+		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxServerCPULoad(new MaxServerCPULoad(0.6, 1));
 
 		optimizer.runGlobalOptimization(model);
 
@@ -197,7 +201,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		assertEquals(12, getMoves().size()); // everyone on the same server
 
 		// TEST 2 with overbooking setting = 1
-		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
+		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
 		
 		optimizer.runGlobalOptimization(model);
 
@@ -205,7 +209,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		assertEquals(0, getMoves().size()); //no Overbooking (==1) -> servers already full
 
 		// TEST 3 with overbooking setting = 2
-		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
+		optimizer.getSla().getSLA().get(0).getQoSConstraints()
 				.getMaxVirtualCPUPerCore().setValue((float) 2.0);
 
 		optimizer.runGlobalOptimization(model);
@@ -213,7 +217,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		assertEquals(8, getMoves().size()); 
 		
 		// TEST 4 with overbooking setting = 1.5
-		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
+		optimizer.getSla().getSLA().get(0).getQoSConstraints()
 				.getMaxVirtualCPUPerCore().setValue((float) 1.5);
 
 		optimizer.runGlobalOptimization(model);
@@ -231,7 +235,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		vms.get(2).setCloudVmType("m1.xlarge");
 		vms.get(3).setCloudVmType("m1.xlarge");
 
-		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics()
+		optimizer.getSla().getSLA().get(0).getQoSConstraints()
 				.getMaxVirtualCPUPerCore().setValue((float) 2.0);
 
 		optimizer.runGlobalOptimization(model);
@@ -246,7 +250,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 		
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
-		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxVMperServer(new MaxVMperServer(1, 1));
+		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVMperServer(new MaxVMperServer(1, 1));
 
 		optimizer.runGlobalOptimization(model);
 
@@ -262,7 +266,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
 		optimizer.getVmTypes().getVMType().get(0).getCapacity().setVRam(new RAMSizeType(50));
-		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxVRAMperPhyRAM(new MaxVRAMperPhyRAM((float)0.9, 1));
+		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVRAMperPhyRAM(new MaxVRAMperPhyRAM((float)0.9, 1));
 
 		optimizer.runGlobalOptimization(model);
 
@@ -492,4 +496,35 @@ public class OptimizerSLATest extends OptimizerTest {
         }
         DefaultVcpuPcpuMapping.getInstances().reset();
     }
+    
+	/**
+	 * Test Max Power per Server constraint
+	 */
+	public void testMaxPowerServerGlobal() {
+		
+		ChocoLogging.setVerbosity(Verbosity.SOLUTION);
+		modelGenerator.setNB_SERVERS(2);
+		modelGenerator.setNB_VIRTUAL_MACHINES(1);
+		modelGenerator.setSTORAGE_SIZE(100);
+		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		
+		class MyPowerCalculator extends MockPowerCalculator {
+			public PowerData computePowerServer(ServerType server) {
+				PowerData power = new PowerData();
+				power.setActualConsumption(1000.0  + 1.0 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
+								
+				log.debug("computePowerServer:" + power.getActualConsumption());
+				return power;
+			}								
+		}
+		
+		optimizer.setPowerCalculator(new MyPowerCalculator());
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(100));
+		optimizer.getSla().getSLA().get(0).getEnergyConstraints().setMaxPowerServer(new MaxPowerServer(1200, 1));
+
+		optimizer.runGlobalOptimization(model);
+
+		assertEquals(0, getMoves().size());
+
+	}
 }

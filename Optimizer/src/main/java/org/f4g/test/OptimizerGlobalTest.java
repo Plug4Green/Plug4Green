@@ -25,7 +25,7 @@ import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
 import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
 import org.f4g.schema.constraints.optimizerconstraints.UnitType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
+import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import org.junit.Test;
 
@@ -370,7 +370,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 			
 		optimizer.setClusters(createDefaultCluster(8, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
-		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
+		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
 		
 		//TEST 1
 		//8 VMS -> full servers

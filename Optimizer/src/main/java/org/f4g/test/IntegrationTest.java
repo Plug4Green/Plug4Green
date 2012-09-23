@@ -33,7 +33,7 @@ import org.f4g.schema.allocation.ObjectFactory;
 import org.f4g.schema.constraints.optimizerconstraints.*;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
+import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
 import org.f4g.schema.metamodel.*;
 
 
@@ -287,14 +287,14 @@ public class IntegrationTest extends OptimizerTest {
 
         SLAType slas = new SLAType();
 
-        QoSDescriptionType qos = new QoSDescriptionType();
+        QoSConstraintsType qos = new QoSConstraintsType();
         MaxVirtualCPUPerCore mvCPU = new MaxVirtualCPUPerCore();
         qos.setMaxVirtualCPUPerCore(mvCPU);
         qos.getMaxVirtualCPUPerCore().setValue((float) 1.0);
 
         SLAType.SLA sla = new SLAType.SLA();
         slas.getSLA().add(sla);
-        sla.setCommonQoSRelatedMetrics(qos);
+        sla.setQoSConstraints(qos);
         BoundedSLAsType bSlas = new BoundedSLAsType();
         bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));
 

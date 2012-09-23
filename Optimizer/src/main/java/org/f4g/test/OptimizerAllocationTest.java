@@ -37,7 +37,7 @@ import org.f4g.schema.constraints.optimizerconstraints.LoadType;
 import org.f4g.schema.constraints.optimizerconstraints.NodeControllerType;
 import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.QoSDescriptionType.MaxVirtualCPUPerCore;
+import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
 import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
 import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
 import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
@@ -472,7 +472,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 					
 		optimizer.setClusters(createDefaultCluster(8, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
-		optimizer.getSla().getSLA().get(0).getCommonQoSRelatedMetrics().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
+		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
 		//TEST 1 
 		
 		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
