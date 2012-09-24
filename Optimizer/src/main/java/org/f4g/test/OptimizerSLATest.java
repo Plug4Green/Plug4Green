@@ -1,5 +1,7 @@
 package org.f4g.test;
 
+import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.common.logging.Verbosity;
 import entropy.configuration.*;
 import entropy.plan.PlanException;
 import entropy.plan.TimedReconfigurationPlan;
@@ -9,7 +11,6 @@ import entropy.vjob.Ban;
 import entropy.vjob.DefaultVJob;
 import entropy.vjob.VJob;
 import junit.framework.Assert;
-
 import org.f4g.com.util.PowerData;
 import org.f4g.cost_estimator.NetworkCost;
 import org.f4g.entropy.plan.constraint.DefaultVcpuPcpuMapping;
@@ -17,11 +18,9 @@ import org.f4g.entropy.plan.constraint.F4GCPUOverbookingConstraint2;
 import org.f4g.entropy.plan.constraint.SpareCPUs2;
 import org.f4g.entropy.plan.constraint.VcpuPcpuMapping;
 import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
-import org.f4g.optimizer.CloudTraditional.SLAReader;
 import org.f4g.optimizer.ICostEstimator;
 import org.f4g.optimizer.OptimizationObjective;
 import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.allocation.*;
 import org.f4g.schema.constraints.optimizerconstraints.*;
 import org.f4g.schema.constraints.optimizerconstraints.EnergyConstraintsType.MaxPowerServer;
 import org.f4g.schema.constraints.optimizerconstraints.HardwareConstraintsType.HDDCapacity;
@@ -31,12 +30,8 @@ import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVMp
 import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVRAMperPhyRAM;
 import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
 import org.f4g.schema.metamodel.*;
-import org.f4g.test.OptimizerTest.MockPowerCalculator;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.measures.Measure;
-
-import choco.kernel.common.logging.ChocoLogging;
-import choco.kernel.common.logging.Verbosity;
 
 import javax.measure.quantities.Duration;
 import javax.measure.quantities.Energy;
@@ -520,7 +515,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		
 		optimizer.setPowerCalculator(new MyPowerCalculator());
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(100));
-		optimizer.getSla().getSLA().get(0).getEnergyConstraints().setMaxPowerServer(new MaxPowerServer(1200, 1));
+		optimizer.getSla().getSLA().get(0).getEnergyConstraints().setMaxPowerServer(new MaxPowerServer(1100, 1));
 
 		optimizer.runGlobalOptimization(model);
 

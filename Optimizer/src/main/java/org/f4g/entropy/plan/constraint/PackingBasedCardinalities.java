@@ -5,6 +5,7 @@ import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.Node;
 import entropy.plan.Plan;
 import entropy.plan.choco.ReconfigurationProblem;
+import entropy.plan.choco.actionModel.ActionModels;
 import entropy.plan.choco.actionModel.slice.DemandingSlice;
 import entropy.plan.choco.constraint.pack.FastBinPacking;
 
@@ -36,7 +37,8 @@ public class PackingBasedCardinalities implements Cardinalities {
         this.rp = rp;
         instances = this;
 
-        List<DemandingSlice> dSlices = rp.getDemandingSlices();
+        //Just get the VMs dSlices
+        List<DemandingSlice> dSlices = ActionModels.extractDemandingSlices(rp.getVirtualMachineActions());
 
         Node[] ns = rp.getNodes();
         if (!dSlices.isEmpty()) {
