@@ -12,9 +12,7 @@
 */
 package org.f4g.entropy.plan.constraint;
 
-import static javax.measure.units.SI.*;
 
-import javax.measure.quantities.*;
 import org.apache.log4j.Logger;
 import org.f4g.optimizer.ICostEstimator;
 import org.f4g.optimizer.utils.Utils;
@@ -27,7 +25,6 @@ import org.f4g.schema.metamodel.ServerType;
 import org.f4g.schema.metamodel.VirtualMachineType;
 import org.f4g.util.StaticPowerCalculation;
 import org.f4g.util.Util;
-import org.jscience.physics.measures.Measure;
 
 import choco.kernel.solver.ContradictionException;
 import choco.kernel.solver.variables.integer.IntDomainVar;
@@ -40,7 +37,10 @@ import entropy.configuration.VirtualMachine;
 import entropy.plan.choco.ReconfigurationProblem;
 import entropy.plan.choco.actionModel.VirtualMachineActionModel;
 import entropy.vjob.*;
-
+import org.jscience.physics.amount.*;
+import org.jscience.economics.money.*;
+import javax.measure.quantity.*;
+import static javax.measure.unit.SI.*;
 /**
  * {To be completed; use html notation, if necessary}
  * 
@@ -52,7 +52,7 @@ public class F4GVMPaybackTimeConstraint extends F4GConstraint {
 	
 	Logger log;
     private ManagedElementSet<VirtualMachine> vms;
-    private Measure<Duration> paybackTime;
+    private Amount<Duration> paybackTime;
     FIT4GreenType model;
     StaticPowerCalculation powerCalculation;
     IPowerCalculator powerCalculator;
@@ -68,7 +68,7 @@ public class F4GVMPaybackTimeConstraint extends F4GConstraint {
     		VMTypeType mySLAVMs, IPowerCalculator myPowerCalculator, ICostEstimator myNetCost) {
     	log = Logger.getLogger(this.getClass().getName());
     	vms = MyVMs;
-    	paybackTime = Measure.valueOf(myPaybackTime*60, SECOND);
+    	paybackTime = Amount.valueOf(myPaybackTime*60, SECOND);
     	model = myModel;
     	powerCalculation = new StaticPowerCalculation(mySLAVMs);
     	powerCalculator = myPowerCalculator;
@@ -95,13 +95,13 @@ public class F4GVMPaybackTimeConstraint extends F4GConstraint {
 			        for(Node dest : nodes) {
 			        	int host = nodes.indexOf(dest);
 			        	if(origin != dest && hoster.canBeInstantiatedTo(host)) {
-			        		Measure<Power> Psaved = powerSavedByMove(vm, origin, dest);
+			        		Amount<Power> Psaved = powerSavedByMove(vm, origin, dest);
 			        		log.debug("VM " + vm.getName() + " origin " + origin.getName() + " dest " + dest.getName());
 			        		log.debug("Psaved=" + Psaved.doubleValue(WATT));
-			        		Measure<Energy> Emove = energyCostOfMove(vm, origin, dest);
+			        		Amount<Energy> Emove = energyCostOfMove(vm, origin, dest);
 			        		log.debug("Emove=" + Emove.doubleValue(JOULE));
 			        		
-			        		Measure<Energy> ePayback = (Measure<Energy>) Psaved.times(paybackTime);
+			        		Amount<Energy> ePayback = (Amount<Energy>) Psaved.times(paybackTime);
 			        		
 			        		if(ePayback.isLessThan(Emove)) {
 			        			log.debug("move forbidden, suppressed from search space");
@@ -123,7 +123,7 @@ public class F4GVMPaybackTimeConstraint extends F4GConstraint {
     /**
      * Power saved by the move 
      */
-    public Measure<Power> powerSavedByMove(VirtualMachine vm, Node from, Node to) {
+    public Amount<Power> powerSavedByMove(VirtualMachine vm, Node from, Node to) {
     	ServerType fromServer = Utils.findServerByName(model, from.getName());
     	ServerType toServer = Utils.findServerByName(model, to.getName());
     	int numberOfVMs = Utils.getVMs(fromServer).size();
@@ -136,10 +136,10 @@ public class F4GVMPaybackTimeConstraint extends F4GConstraint {
 		double PAfter = powerCalculation.computePowerForVM(toServer, slaVM, powerCalculator);
 		
 		//We consider in the calculus of the power saved that the server will be switched off.
-		return Measure.valueOf(POriginServer/numberOfVMs + PBefore - PAfter, WATT);
+		return Amount.valueOf(POriginServer/numberOfVMs + PBefore - PAfter, WATT);
     }
     
-    public Measure<Energy> energyCostOfMove(VirtualMachine vm, Node from, Node to) {
+    public Amount<Energy> energyCostOfMove(VirtualMachine vm, Node from, Node to) {
     	ServerType fromServer = Utils.findServerByName(model, from.getName());
     	ServerType toServer = Utils.findServerByName(model, to.getName());
     	

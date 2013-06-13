@@ -1,13 +1,17 @@
 package org.f4g.optimizer;
 
 
+import javax.measure.quantity.Duration;
+import javax.measure.quantity.Energy;
+
 import org.f4g.schema.metamodel.FIT4GreenType;
 import org.f4g.schema.metamodel.ServerType;
 import org.f4g.schema.metamodel.NetworkNodeType;
 import org.f4g.schema.metamodel.VirtualMachineType;
-import org.jscience.physics.measures.Measure;
+import org.jscience.physics.amount.*;
+import org.jscience.physics.model.*;
 import org.jscience.economics.money.*;
-import javax.measure.quantities.*;
+
 
 /**
  * Interface for the f4g Cost Estimator component
@@ -22,7 +26,7 @@ public interface ICostEstimator {
 	 * @param the origin server, the destination server, the VM to move, the complete model
 	 * @return the energy
 	 */
-	public Measure<Energy> moveEnergyCost(NetworkNodeType fromServer, NetworkNodeType toServer, VirtualMachineType VM, FIT4GreenType model);
+	public Amount<Energy> moveEnergyCost(NetworkNodeType fromServer, NetworkNodeType toServer, VirtualMachineType VM, FIT4GreenType model);
 
 	/**
 	 * Calculates the financial cost of moving a VM from one server to another
@@ -30,7 +34,7 @@ public interface ICostEstimator {
 	 * @param the origin server, the destination server, the VM to move, the complete model
 	 * @return the money amount
 	 */
-	public Measure<Money> moveFinancialCost(NetworkNodeType fromServer, NetworkNodeType toServer, VirtualMachineType VM, FIT4GreenType model);
+	public Amount<Money> moveFinancialCost(NetworkNodeType fromServer, NetworkNodeType toServer, VirtualMachineType VM, FIT4GreenType model);
 	
 	
 	/**
@@ -39,7 +43,7 @@ public interface ICostEstimator {
 	 * @param the origin server, the destination server, the VM to move, the complete model
 	 * @return the duration
 	 */
-	public Measure<Duration> moveDownTimeCost(NetworkNodeType fromServer, NetworkNodeType toServer, VirtualMachineType VM, FIT4GreenType model);
+	public Amount<Duration> moveDownTimeCost(NetworkNodeType fromServer, NetworkNodeType toServer, VirtualMachineType VM, FIT4GreenType model);
 
 	
 	/**

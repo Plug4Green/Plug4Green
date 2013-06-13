@@ -4,6 +4,7 @@ package org.f4g.entropy.configuration;
 import entropy.configuration.SimpleNode;
 
 /**
+ * Augments Entropy simple nodes with energetic data.
  * @author Corentin Dupont
  */
 public class F4GNode extends SimpleNode {
@@ -11,7 +12,7 @@ public class F4GNode extends SimpleNode {
 	//Power idle of the server
 	private int PIdle;
 	
-	//Power con of consumed by a VM on average on this server
+	//Power consumed by a VM on average on this server
 	private int PperVM;
 	
 	

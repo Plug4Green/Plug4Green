@@ -40,7 +40,6 @@ import org.f4g.entropy.plan.objective.PowerObjective;
 import org.f4g.optimizer.ICostEstimator;
 import org.f4g.optimizer.utils.IOptimizerServer;
 import org.f4g.optimizer.OptimizerEngine;
-import org.f4g.optimizer.utils.OptimizerWorkload;
 import org.f4g.optimizer.CloudTraditional.SLAReader;
 import org.f4g.optimizer.Optimizer.CloudTradCS;
 import org.f4g.optimizer.utils.Utils;
@@ -65,7 +64,7 @@ import org.f4g.schema.constraints.optimizerconstraints.ServerGroupType;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.schema.constraints.optimizerconstraints.BoundedClustersType.Cluster;
 import org.f4g.util.Util;
-
+import org.f4g.optimizer.utils.OptimizerWorkload;
 
 
 import entropy.configuration.Configuration;

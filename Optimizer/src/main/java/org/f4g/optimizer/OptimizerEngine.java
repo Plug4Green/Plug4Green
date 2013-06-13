@@ -15,8 +15,6 @@
 package org.f4g.optimizer;
 
 
-import static javax.measure.units.SI.SECOND;
-
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -50,7 +48,10 @@ import org.f4g.schema.allocation.AllocationResponseType;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.rits.cloning.Cloner;
-
+import org.jscience.physics.amount.*;
+import org.jscience.economics.money.*;
+import javax.measure.quantity.*;
+import static javax.measure.unit.SI.*;
 
 
 /**

@@ -1,20 +1,24 @@
 package org.f4g.power;
 import java.util.*;
+
+import javax.measure.Measure;
+import javax.measure.quantity.Power;
+
 import org.f4g.power.PoweredComponent;
 
 import org.apache.log4j.Logger;
 import org.f4g.schema.metamodel.NetworkPortType;
 import org.f4g.schema.metamodel.NetworkNodeStatusType;
 import org.apache.log4j.Logger;
-
 import org.f4g.schema.metamodel.BoxNetworkType;
 import org.f4g.schema.metamodel.NetworkNodeType;
 import org.f4g.schema.metamodel.NetworkNodeStatusType;
-import javax.measure.quantities.*;
-import static javax.measure.units.NonSI.*;
-import static javax.measure.units.SI.*;
-import org.jscience.physics.measures.Measure;
 
+import org.jscience.physics.amount.*;
+import org.jscience.physics.model.*;
+import org.jscience.economics.money.*;
+import javax.measure.quantity.*;
+import static javax.measure.unit.SI.*;
 
 /**
  * PoweredNetworkNode Class 
@@ -64,7 +68,7 @@ public class PoweredNetworkNode extends NetworkNodeType implements PoweredCompon
 		// Power is due to switching fabric (if router/switch) + all ports
 		// If NIC, there is no switching fabric and just one port
 		
-		Measure<Power> networkNodePower = Measure.valueOf(0.0, WATT);
+		Amount<Power> networkNodePower = Amount.valueOf(0.0, WATT);
         
         if( node.getStatus() == NetworkNodeStatusType.ON ) {
             
@@ -103,9 +107,9 @@ public class PoweredNetworkNode extends NetworkNodeType implements PoweredCompon
 	 * @param model parameters and operating point (in packets per second)
 	 * @return class Measure  
 	 */
-    public static Measure<Power> trafficToPower(double pidle, double pmax, double pps, double bandwidth)
+    public static Amount<Power> trafficToPower(double pidle, double pmax, double pps, double bandwidth)
     {
-        return Measure.valueOf( pidle + (pmax-pidle)*pps/bandwidth, WATT );
+        return Amount.valueOf( pidle + (pmax-pidle)*pps/bandwidth, WATT );
     }
     
 }

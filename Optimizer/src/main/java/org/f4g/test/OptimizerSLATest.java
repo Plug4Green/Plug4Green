@@ -30,17 +30,15 @@ import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVMp
 import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVRAMperPhyRAM;
 import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
 import org.f4g.schema.metamodel.*;
-import org.jscience.economics.money.Money;
-import org.jscience.physics.measures.Measure;
-
-import javax.measure.quantities.Duration;
-import javax.measure.quantities.Energy;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 
-import static javax.measure.units.SI.JOULE;
+import org.jscience.physics.amount.*;
+import org.jscience.economics.money.*;
+import javax.measure.quantity.*;
+import static javax.measure.unit.SI.*;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -282,22 +280,22 @@ public class OptimizerSLATest extends OptimizerTest {
 			public boolean dispose() {return false;}
 
 			@Override
-			public Measure<Duration> moveDownTimeCost(NetworkNodeType fromServer,
+			public Amount<Duration> moveDownTimeCost(NetworkNodeType fromServer,
 					NetworkNodeType toServer, VirtualMachineType VM,
 					FIT4GreenType model) {
 				return null;
 			}
 
 			@Override
-			public Measure<Energy> moveEnergyCost(NetworkNodeType fromServer,
+			public Amount<Energy> moveEnergyCost(NetworkNodeType fromServer,
 					NetworkNodeType toServer, VirtualMachineType VM,
 					FIT4GreenType model) {
 				
-				return Measure.valueOf(1000, JOULE);
+				return Amount.valueOf(1000, JOULE);
 			}
 
 			@Override
-			public Measure<Money> moveFinancialCost(NetworkNodeType fromServer,
+			public Amount<Money> moveFinancialCost(NetworkNodeType fromServer,
 					NetworkNodeType toServer, VirtualMachineType VM,
 					FIT4GreenType model) {
 				return null;

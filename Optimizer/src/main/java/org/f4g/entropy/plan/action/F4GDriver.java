@@ -15,8 +15,10 @@ import org.f4g.schema.actions.AbstractBaseActionType;
 import org.f4g.schema.actions.ActionRequestType;
 import org.f4g.schema.metamodel.FIT4GreenType;
 
-
-
+/**
+ * Adding energetic considerations to NodeComparator
+ * @author Corentin Dupont
+ */
 public abstract class F4GDriver extends Driver {
 			
 

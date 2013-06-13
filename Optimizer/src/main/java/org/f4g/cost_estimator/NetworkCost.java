@@ -7,15 +7,14 @@
 package org.f4g.cost_estimator;
 import java.util.*;
 
-import static javax.measure.units.NonSI.*;
-import static javax.measure.units.SI.*;
-import org.jscience.physics.measures.Measure;
-import org.jscience.economics.money.*;
+
 import org.jscience.economics.money.Currency;
-import javax.measure.quantities.*;
+import org.jscience.physics.amount.*;
+import org.jscience.economics.money.*;
+import javax.measure.quantity.*;
+import static javax.measure.unit.SI.*;
 
 import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.ServerStatusType;
 import org.f4g.schema.metamodel.ServerType;
 import org.f4g.schema.metamodel.NetworkNodeType;
 import org.f4g.schema.metamodel.NetworkPortType;
@@ -90,7 +89,7 @@ public class NetworkCost implements ICostEstimator {
 	 * @param the origin server, the destination server, the VM to move, the complete model
 	 * @return the energy
 	 */
-	public Measure<Energy> moveEnergyCost(NetworkNodeType srcServer, NetworkNodeType dstServer, VirtualMachineType VM, FIT4GreenType model) 
+	public Amount<Energy> moveEnergyCost(NetworkNodeType srcServer, NetworkNodeType dstServer, VirtualMachineType VM, FIT4GreenType model) 
     {  
         ArrayList<NetworkNodeType> route = calculateRoute(srcServer, dstServer, model);   
         double throughput = estimateThroughput(route);   
@@ -105,14 +104,14 @@ public class NetworkCost implements ICostEstimator {
             nbytes = VM.getActualStorageUsage().getValue() + VM.getActualMemoryUsage().getValue();
         }
 
-        Measure<Duration> xfer_time = estimateXferTime(throughput, nbytes);   
-        Measure<Power> totalPower = calculatePowerNetwork(route, throughput, model).plus( calculatePowerEndHosts(srcServer, dstServer, throughput, model) );
+		Amount<Duration> xfer_time = estimateXferTime(throughput, nbytes);   
+		Amount<Power> totalPower = calculatePowerNetwork(route, throughput, model).plus( calculatePowerEndHosts(srcServer, dstServer, throughput, model) );
 
-        return Measure.valueOf(totalPower.doubleValue(WATT) * xfer_time.doubleValue(SECOND), JOULE);        
+        return Amount.valueOf(totalPower.doubleValue(WATT) * xfer_time.doubleValue(SECOND), JOULE);        
     }
     
     
-    public Measure<Duration> 
+    public Amount<Duration> 
     moveDownTimeCost(NetworkNodeType srcServer, NetworkNodeType dstServer, VirtualMachineType VM, FIT4GreenType model)
     {
         ArrayList<NetworkNodeType> route = calculateRoute(srcServer, dstServer, model);
@@ -133,9 +132,9 @@ public class NetworkCost implements ICostEstimator {
     }
     
     
-    public Measure<Money> moveFinancialCost(NetworkNodeType srcServer, NetworkNodeType dstServer, VirtualMachineType VM, FIT4GreenType model) {
+    public Amount<Money> moveFinancialCost(NetworkNodeType srcServer, NetworkNodeType dstServer, VirtualMachineType VM, FIT4GreenType model) {
         
-        Measure<Money> money = Measure.valueOf(0.0, Currency.EUR);
+    	Amount<Money> money = Amount.valueOf(0.0, Currency.EUR);
         return money;
     }
     
@@ -143,7 +142,7 @@ public class NetworkCost implements ICostEstimator {
     // ========================================================================================================
     
     
-    protected Measure<Duration> 
+    protected Amount<Duration> 
     estimateXferTime(double throughput, double nbytes) 
     {
         double xfer_time = 0.0;
@@ -151,14 +150,14 @@ public class NetworkCost implements ICostEstimator {
         if( throughput > 0.0 )
                 xfer_time = (nbytes * estimateProtocolOverhead()) / throughput;
                 
-        return Measure.valueOf(xfer_time, SECOND);    
+        return Amount.valueOf(xfer_time, SECOND);    
     }
     
     
-    protected Measure<Power> 
+    protected Amount<Power> 
     calculatePowerEndHosts(NetworkNodeType srcServer, NetworkNodeType dstServer, double throughput, FIT4GreenType model)
     {
-        Measure<Power> total = Measure.valueOf(0.0, WATT);
+    	Amount<Power> total = Amount.valueOf(0.0, WATT);
         List<NetworkPortType> sportlst = srcServer.getNetworkPort();
         List<NetworkPortType> dportlst = dstServer.getNetworkPort();
         
@@ -205,7 +204,7 @@ public class NetworkCost implements ICostEstimator {
                 dpower = dpower * f;
             }
             
-            total = Measure.valueOf(spower + dpower, WATT);
+            total = Amount.valueOf(spower + dpower, WATT);
         }
         
         return total;
@@ -213,17 +212,17 @@ public class NetworkCost implements ICostEstimator {
     
     
     
-    protected Measure<Power> 
+    protected Amount<Power> 
     calculatePowerNetwork(ArrayList<NetworkNodeType> route, double throughput, FIT4GreenType model)
     {
-        Measure<Power> total = Measure.valueOf(0.0, WATT);
+    	Amount<Power> total = Amount.valueOf(0.0, WATT);
         
         if( route.size() > 2 ) {
             // add network cost
             for(int i=1; i<(route.size()-1); i++) {
                 NetworkNodeType node = route.get(i);
                 double a = node.getPowerIdle().getValue(), b = node.getPowerMax().getValue(), c = node.getProcessingBandwidth().getValue();                
-                Measure<Power> node_pwr = PoweredNetworkNode.trafficToPower( a, b, throughput, c ).minus(PoweredNetworkNode.trafficToPower( a, b, 0, c ));
+                Amount<Power> node_pwr = PoweredNetworkNode.trafficToPower( a, b, throughput, c ).minus(PoweredNetworkNode.trafficToPower( a, b, 0, c ));
                 
                 
                 SiteType site = Utils.getNetworkNodeSite(node, model);

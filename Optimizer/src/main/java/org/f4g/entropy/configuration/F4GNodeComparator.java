@@ -12,8 +12,8 @@ import org.f4g.entropy.configuration.F4GNode;
 import org.f4g.entropy.configuration.F4GResourcePicker;
 
 /**
- * Compare servers wrt. the amount of free resources on them.
- * @author Fabien Hermenier
+ * Adding energetic considerations to NodeComparator
+ * @author Corentin Dupont
  */
 public class F4GNodeComparator implements Serializable, Comparator<Node> {
 

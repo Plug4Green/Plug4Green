@@ -10,12 +10,10 @@ import org.f4g.power.IPowerCalculator;
 import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
 import org.f4g.util.LoadCalculator;
 import org.f4g.cost_estimator.NetworkCost;
-import static javax.measure.units.NonSI.*;
-import static javax.measure.units.SI.*;
-import org.jscience.physics.measures.Measure;
+import org.jscience.physics.amount.*;
 import org.jscience.economics.money.*;
-import org.jscience.economics.money.Currency;
-import javax.measure.quantities.*;
+import javax.measure.quantity.*;
+import static javax.measure.unit.SI.*;
 
 import org.f4g.schema.metamodel.FIT4GreenType;
 import org.f4g.schema.metamodel.ServerType;

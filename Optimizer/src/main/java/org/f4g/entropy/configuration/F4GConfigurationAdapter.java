@@ -4,7 +4,6 @@ package org.f4g.entropy.configuration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import org.apache.log4j.Logger;
 import org.f4g.optimizer.OptimizationObjective;
 import org.f4g.optimizer.utils.Utils;
@@ -21,23 +20,19 @@ import org.f4g.schema.metamodel.ServerType;
 import org.f4g.schema.metamodel.VirtualMachineType;
 import org.f4g.util.StaticPowerCalculation;
 import org.f4g.util.Util;
-
-import choco.Choco;
-import choco.kernel.solver.constraints.integer.IntExp;
-import choco.kernel.solver.variables.integer.IntDomainVar;
-
 import entropy.configuration.Configuration;
-import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.configuration.SimpleConfiguration;
-import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
 import entropy.configuration.VirtualMachine;
 import entropy.monitoring.ConfigurationAdapter;
-import entropy.plan.Plan;
-import entropy.plan.choco.ReconfigurationProblem;
 
 
+/**
+ * Adapter to translate FIT4Green configurations to Entropy
+ *
+ * @author Corentin Dupont
+ */
 public class F4GConfigurationAdapter extends ConfigurationAdapter
 {
 	FIT4GreenType currentFit4Green;
@@ -71,8 +66,8 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see entropy.monitoring.ConfigurationAdapter#extractConfiguration()
+	/* 
+	 * extracts the configuration for the metamodel
 	 */
 	@Override
 	public Configuration extractConfiguration() {
