@@ -1,0 +1,108 @@
+FAQ
+
+Q: What is the general approach to use FIT4Green in a supercomputing datacentre?
+A: FIT4Green provides a generic communicator plugin for enabling the 
+communication between FIT4Green and the Resource Management System (RMS) which 
+is used on a dedicated supercomputer.  This com plugin has to be adapted to the 
+needs of the present RMS. There are different ways to adapt the plugin:
+•	Use the already implemented com plugin for Torque/PBS based RMS 
+•	Modify the existent Torque/PBS plugin to the needs of a different RMS
+•	Implement a new com plugin for a dedicated RMS
+
+Q: How to use the com plugin within a Torque/PBS based cluster management?
+A: There is already a com plugin provided in the FIT4Green software stack which 
+is preconfigured to use the common used Torque/PBS resource manager. This com 
+plugin has been tested with the Torque versions <=2.5.9
+It is necessary to edit the Properties file of that Torque com plugin. The name 
+of the PROPERTIES file is predetermined by the name of the plugin. E.g. if the 
+plugin name in the central f4g.properties file is COMDatacentreXYZ_ClusterA the 
+name of the Properties file must be: COMDatacentreXYZ_ClusterA.properties.  
+This file must be placed in the tomcat installation folder of the FIT4Green 
+instance: <FIT4Green_TOMCAT_INSTALLATION>/common/classes/resources/
+COMDatacentreXYZ_ClusterA.properties
+The README file in the project folder of the supercomputing com plugin provides 
+the meaning of the particular properties. The most important properties are the 
+definitions of the used actions to save energy or to start jobs in the cluster 
+environment. 
+
+
+Q: When using a different RMS than Torque?
+A: The provided supercomputing com plugin was designed to use the Torque RMS. 
+However, the implementation reflects typical tasks which have to be performed in 
+the same way by different RMS. So, the main class org.f4g.com.pbs.ComPBS can be 
+likely used and modified only slightly. The classes which send requests to the 
+Torque RMS and parse the output can be found in package org.f4g.com.pbs.common. 
+These classes have to be adapted to the requirements of the used RMS for getting 
+Node and Job information, sending actions to the system, and reading failure 
+messages.
+
+
+Q: What are the Communication channels between FIT4Green and the Cluster?
+A: The simplest way is to place the FIT4Green Server containing the 
+supercomputing com plugin directly on the login node of the cluster machine, so 
+that updates and actions can be directly gathered and started on the cluster. 
+In such a scenario FIT4Green must be executed as the root user, since RMS 
+updates are gathered by requesting the PBS DIS interface.
+ It might be the case that administrators don’t want to install FIT4Green on the 
+ cluster. For that purpose a so called Proxy application is provided which can 
+ be installed on the login node of the cluster. The com plugin connects to the 
+ Proxy by using secure Java Socket connections and the Proxy executes updates 
+ and actions in behalf of the com plugin. For enabling such a connection it is 
+ needed to:
+•	install the Proxy on the cluster’s login node (see Proxy README file) ,
+•	specify an open port for the Proxy Java Socket Server in the com’s 
+Properties file,
+•	and to provide client and server keys for the secure connection (sample test 
+keys are provided)
+
+
+Q: Is it possible to use FIT4Green Torque com plugin without any root access?
+A: Yes. The University of Mannheim implemented a solution where RMS updates can 
+be requested without root access. Please check the README of the Proxy project 
+for that purpose.
+
+
+Q: How to start the Proxy application on the cluster?
+A: The Proxy can simply be started by executing the start_proxy.sh script in the 
+installation directory. After starting the Socket server waits for client 
+requests from the com plugin.
+
+
+Q: How to execute the Torque/PBS RMS actions?
+A: It is necessary to provide some shell scripts on the cluster side which can 
+be used by FIT4Green and the com plugin to execute node, job, and energy saving 
+based actions on the cluster. For that purpose some scripts are already provided 
+which were specified for the testbed environment but can also be used as a basis 
+for customised scripts. These scripts can be found in the ‘conf’ folder of the 
+FZJProxy project. The following scripts were used and can be adapted 
+appropriately:
+•	sleep script for setting a worker node in an energy saving ACPI standby mode
+•	wake-up script for getting the worker node back to active mode
+•	an optional power script to read the current measured power consumption of 
+worker nodes
+Q: How to start the supercomputing com plugin?
+A: Before the com plugin can be used ensure that the following configuration has 
+been done:
+•	The com plugin has been deployed as a jar file to the FIT4Green tomcat’s 
+common/lib folder.
+•	The Properties file of the com plugin has been configured for the dedicated 
+environment.
+•	If needed the Proxy connection must be in place and configured.
+•	The FIT4Green XML Meta model of the used environment has been created.
+•	Configure the common communicator plugin parameters in the f4g.properties 
+file as described there. The only useful operation mode of the supercomputing 
+com plugin is fully automatic.
+•	Start the FIT4Green service.
+
+Q: What is needed when FIT4Green allocation request should be used in federated 
+supercomputing environments for saving energy?
+A: FIT4Green can be used coupled with the Grid middleware UNICORE when jobs 
+should be brokered energy efficiently in federated supercomputing environments. 
+In such a scenario Users submit their jobs by using Unicore to a distributed 
+cluster environment against the background that those jobs should submitted to 
+the most energy efficient machine. Such an installation needs some configuration 
+work to allow UNICORE to send job allocation requests to FIT4Green for getting 
+back the best suitable cluster resource. Please refer to the README file in the 
+supercomputing com plugin project for a detailed description of such a 
+configuration.
+  

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<xs:schema xmlns="http://www.f4g.org/schema/CommonTypes" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"  
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:f4g="http://www.f4g.org/schema/MetaModel"
+	targetNamespace="http://www.f4g.org/schema/CommonTypes" 
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+	
+	<xsd:import namespace="http://www.f4g.org/schema/MetaModel"
+		schemaLocation="MetaModel.xsd" />
+		
+	<xs:simpleType name="NodeType_1.0">
+		<xs:annotation>
+			<xs:documentation>FIT4GREEN node type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--Date and time-->
+	<xsd:simpleType name="MinutesType">
+		<xsd:restriction base="xsd:positiveInteger" />
+	</xsd:simpleType>
+	<xs:complexType name="TimeperiodType">
+		<xs:sequence>
+			<xs:element name="From" type="xs:dateTime" />
+			<xs:element name="To" type="xs:dateTime" />
+		</xs:sequence>
+	</xs:complexType>	
+	
+	<xsd:attributeGroup name="DCAttr">
+		<xsd:attribute name="version" type="xsd:float" use="required" />
+		<xsd:attribute name="date" type="xsd:date" use="required" />
+	</xsd:attributeGroup>
+	
+	<xsd:attributeGroup name="TSAttr">	
+	    <xsd:attribute name="scenario" type="f4g:ScenarioType" use="required" />
+	    <xsd:attribute name="id" type="xsd:string" use="required" />     	
+	</xsd:attributeGroup>
+	
+	<xs:simpleType name="ProcessorFrequencyType">
+		<xs:annotation>
+			<xs:documentation>Processor Frequency in % (0-100)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:integer">
+			<xs:maxInclusive value="100"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="VirtualMachineIDType">
+		<xs:annotation>
+			<xs:documentation>Virtual Machine ID type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="VirtualMachineDumpType">
+		<xs:annotation>
+			<xs:documentation>Virtual Machine Dump type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SecondsType">
+		<xs:annotation>
+			<xs:documentation>Second Type.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:fractionDigits value="3"/>
+			<xs:maxInclusive value="1000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OperatorType">
+		<xs:annotation>
+			<xs:documentation>F4G Operator type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ReasonType">
+		<xs:annotation>
+			<xs:documentation>Action Reason type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IsAutomaticType">
+		<xs:annotation>
+			<xs:documentation>Yes, No</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Yes"/>
+			<xs:enumeration value="No"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="VersionType">
+		<xs:annotation>
+			<xs:documentation>Action Reason type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RequestDateTimeType">
+		<xs:annotation>
+			<xs:documentation>Action Request date and time type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:dateTime"/>
+	</xs:simpleType>
+	<xs:simpleType name="ActionResultCodeType">
+		<xs:annotation>
+			<xs:documentation>Action Result Code type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActionResultDescriptionType">
+		<xs:annotation>
+			<xs:documentation>Action Result Description type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="150"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="JobIDType">
+		<xs:annotation>
+			<xs:documentation>FIT4GREEN job ID type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

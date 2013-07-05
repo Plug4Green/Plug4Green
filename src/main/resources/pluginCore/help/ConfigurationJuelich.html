@@ -1,0 +1,196 @@
+<html>
+
+	<head>
+		<title>FIT4Green 3.0::Configuration at Juelich</title>
+	</head>
+	
+	<body style="font-family:sans-serif;">
+
+		<img src="../img/F4GLogo.jpg">
+		
+		<a name="top"></a>
+		
+		<h1>Communication module related to the supercomputing grid at Juelich</h1>
+		
+		<p>
+		
+		<h4><a href="#Q1">What is the general approach to use FIT4Green in a supercomputing grid?</a></h4>
+		
+		<h4><a href="#Q2">How to use the communication module with a Torque/PBS based cluster 
+		management tool?</a></h4>
+		
+		<h4><a href="#Q3">How to use the communication module with a different RMS than Torque?</a></h4>
+		
+		<h4><a href="#Q4">What are the communication channels between FIT4Green and the cluster?</a></h4>
+		
+		<h4><a href="#Q5">Is it possible to use FIT4Green Torque communication module without any root 
+		access?</a></h4>
+		
+		<h4><a href="#Q6">How to start the proxy application on the cluster?</a></h4>
+		
+		<h4><a href="#Q7">How to execute the Torque/PBS RMS actions?</a></h4>
+		
+		<h4><a href="#Q8">How to start the supercomputing communication module?</a></h4>
+		
+		<h4><a href="#Q9">What is needed when FIT4Green allocation request should be used in federated 
+		supercomputing environments for saving energy?</a></h4>
+		
+		<p>
+		<p>
+
+		<h2><a name="Q1"></a>What is the general approach to use FIT4Green in a supercomputing grid?</h2>
+		
+		<p>FIT4Green provides a generic communication module for enabling the communication between 
+		FIT4Green and the Resource Management System (RMS) which is used on a dedicated supercomputer.  
+		This communication module has to be adapted to the needs of the present RMS. There are different 
+		ways to adapt the communication module to the FIT4Green plug-in:
+		
+		<ul>
+			<li>Use the already implemented communication module for Torque/PBS based RMS 
+			<li>Modify the existent Torque/PBS communication module to the needs of a different RMS
+			<li>Implement a new communication module for a dedicated RMS
+		</ul>
+		
+		<p><a href="#top">top</a>
+		
+		<p>
+
+		<h2><a name="Q2"></a>How to use the communication module with a Torque/PBS based cluster 
+		management tool?</h2>
+		
+		<p>There is already a communication module provided in the FIT4Green software stack which is 
+		preconfigured to use the common used Torque/PBS resource manager. This communication module has 
+		been tested with the Torque versions &lt;= 2.5.9.
+		
+		<p>It is necessary to edit the properties file of that Torque communication module. The name of the 
+		properties file is predetermined by the name of the module. For example if the module name in the 
+		central <font face="Courier New">f4gconfig.properties</font> file is <i>COMDatacentreXYZ_ClusterA</i>, 
+		the name of the properties file must be <font face="Courier New">COMDatacentreXYZ_ClusterA.properties</font>. 
+		This file must be placed in the Tomcat installation folder of the FIT4Green instance:
+		
+		<p><font face="Courier New"><i>FIT4Green_TOMCAT_INSTALLATION</i>/common/classes/resources/COMDatacentreXYZ_ClusterA.properties</font>
+		
+		<p>The README file in the project folder of the supercomputing communication module provides the 
+		meaning of the particular properties. The most important properties are the definitions of the used 
+		actions to save energy or to start jobs in the cluster environment.
+		
+		<p><a href="#top">top</a>
+		
+		<p>
+		
+		<h2><a name="Q3"></a>How to use the communication module with a different RMS than Torque?</h2>
+
+		<P>The provided supercomputing communication module was designed to use the Torque RMS. However, the 
+		implementation reflects typical tasks which have to be performed in the same way by different RMS. 
+		So, the main class <font face="Courier New">org.f4g.com.pbs.ComPBS</font> can be likely used and 
+		modified only slightly. The classes which send requests to the Torque RMS and parse the output can be
+		found in package <font face="Courier New">org.f4g.com.pbs.common</font>. These classes have to be 
+		adapted to the requirements of the used RMS for	getting <i>Node</i> and <i>Job</i> information, 
+		sending actions to the system, and reading failure messages.
+		
+		<p><a href="#top">top</a>
+		
+		<p>
+
+		<h2><a name="Q4"></a>What are the communication channels between FIT4Green and the cluster?</h2>
+
+		<p>TThe simplest way is to place the FIT4Green server containing the supercomputing communication 
+		module directly on the login node of the cluster machine, so that updates and actions can be directly 
+		gathered and started on the cluster. In such a scenario FIT4Green must run as the root user, 
+		since RMS updates are gathered by requesting the PBS DIS interface.
+		
+		<p>It might be the case that administrators do not want to install FIT4Green on the cluster. For that 
+		purpose a so called <i>proxy</i> application is provided which can be installed on the login node of 
+		the	cluster. The communication module connects to the proxy by using secure Java Socket connections 
+		and the proxy executes updates and actions on behalf of the communication module. For enabling such a 
+		connection it is needed to:
+		
+		<ul>
+			<li>install the proxy on the cluster’s login node (see README file)
+			<li>specify an open port for the proxy Java Socket Server in the communication module properties 
+			file
+			<li>provide client and server keys for the secure connection (sample test keys are provided)
+		</ul>
+
+		<p><a href="#top">top</a>
+		
+		<p>
+		
+		<h2><a name="Q5"></a>Is it possible to use FIT4Green Torque communication module without any root 
+		access?</h2>
+
+		<p>Yes. The University of Mannheim implemented a solution where RMS updates can be requested without 
+		root access. Please check the README of the proxy project for that purpose.
+		
+		<p><a href="#top">top</a>
+		
+		<p>
+		
+		<h2><a name="Q6"></a>How to start the proxy application on the cluster?</h2>
+
+		<p>The proxy can simply be started by executing the <font face="Courier New">start_proxy.sh</font> 
+		script in the installation directory. After starting, the Socket server waits for client requests 
+		from the communication module.
+		
+		<p><a href="#top">top</a>
+		
+		<p>
+		
+		<h2><a name="Q7">How to execute the Torque/PBS RMS actions?</a></h2>
+
+		<p>It is necessary to provide some shell scripts on the cluster side which can be used by 
+		FIT4Green and the communication module to execute node, job, and energy saving based actions on the 
+		cluster. For that purpose some scripts are already provided which were specified for the test-bed 
+		environment	but can also be used as a basis for customized scripts. These scripts can be found in 
+		the <i>conf</i> folder of the FZJProxy project. The following scripts were used and can be adapted 
+		appropriately:
+		
+		<ul>
+			<li>sleep script for setting a worker node in an energy saving ACPI standby mode
+			<li>wake-up script for getting the worker node back to active mode
+			<li>an optional power script for reading the current measured power consumption of worker nodes
+		</ul>
+		
+		<p><a href="#top">top</a>
+		
+		<p>
+		
+		<h2><a name="Q8">How to start the supercomputing communication module?</a></h2>
+
+		<p>Before the communication module can be used ensure that the following configuration has been done:
+		
+		<ul>
+			<li>The communication module has been deployed as a jar file to the FIT4Green Tomcat’s 
+			<font face="Courier New">common/lib</font> folder
+			<li>The properties file of the communication module has been configured for the dedicated 
+			environment
+			<li>If needed, the proxy connection must be in place and configured
+			<li>The FIT4Green XML initial model instance of the used environment has been created
+			<li>Configure the plug-in by editing the <font face="Courier New">f4gconfig.properties</font> 
+			file. The only useful operation mode for the supercomputing environment is fully automatic
+			<li>Start the FIT4Green service
+		
+		</ul>
+		
+		<p><a href="#top">top</a>
+		
+		<p>
+		
+		<h2><a name="Q9">What is needed when FIT4Green allocation request should be used in federated 
+		supercomputing environments for saving energy?</a></h2>
+
+		<p>FIT4Green can be used coupled with the Grid middleware Unicore when jobs should be brokered 
+		energy efficiently in federated supercomputing environments. In such a scenario, users submit their 
+		jobs by using Unicore to a distributed cluster environment against the background that those jobs 
+		should be submitted to the most energy efficient machine. Such an installation needs some 
+		configuration work to allow Unicore to send job allocation requests to FIT4Green for getting back 
+		the best suitable cluster resource. Please refer to the README file in the supercomputing 
+		communication module project for a detailed description of such a configuration.
+		
+		<p><a href="#top">top</a>
+		
+		<p>
+
+	</body>
+
+</html> 

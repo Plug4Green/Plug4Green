@@ -1,0 +1,95 @@
+<html>
+
+<head>
+<title>FIT4Green XML Configuration Editor Test</title>
+<script LANGUAGE="javascript">
+<!--
+var appletStarted=false;
+
+function onAppletStarted(editor)
+{
+  appletStarted = true;
+}
+
+function loadXMLschema(xmlSchema, xmlSource, xmlElement)
+{
+  if (!appletStarted)
+    return;
+  document.FXApplet.setXMLSchema(xmlSchema);
+  document.FXApplet.setXMLSource(xmlSource);
+  document.FXApplet.setBaseURL(xmlSource);
+  document.FXApplet.setDocName(xmlSource);
+  document.FXApplet.setElement(xmlElement);
+  document.FXApplet.loadXMLDocument(null);
+  
+}
+
+
+function getXML()
+{
+  var xml = getXMLAsText();
+  document.myForm.xmlArea.value = xml;
+}
+
+function loadXML()
+{
+  var xml = document.myForm.xmlArea.value;
+  loadXMLAsText(xml);
+}
+
+
+function getXMLAsText()
+{
+  if (!appletStarted)
+    return "";
+  return document.FXApplet.getXMLDocumentAsText();
+}
+
+function loadXMLAsText(xml)
+{
+  if (!appletStarted)
+    return;
+  document.FXApplet.loadXMLDocument(xml);
+}
+
+
+//-->
+</script>
+</head>
+
+<body LEFTMARGIN="0" TOPMARGIN="0">
+<h2>FIT4Green XML Configuration Editor Test</h2>
+<form name="myForm">  
+<table border="0" width="100%">
+<tr>
+  <td>
+  <table border="0">
+    <tr><td valign="middle" align="center"><input type="button" value="New XML Model" onclick="loadXMLschema('f4g-model.xsd', '', 'FIT4Green')"></td></tr>
+  </table>      
+  <td>
+
+
+<td colspan="3" valign="middle" align="center"><textarea
+ name="xmlArea" rows="5" cols="80"></textarea>
+ 
+<td>            
+  <table border="0">       
+    <tr><td valign="middle" align="center"><input type="button" value="Get XML" onclick="getXML()"></td></tr>
+    <tr><td valign="middle" align="center"><input type="button" value="Load XML" onclick="loadXML()"></td></tr>                                
+  </table>
+  </td>
+</tr>
+</table>
+</form>
+
+<applet codebase="./" code="com.fg.fxapplet.FXApplet.class"
+ARCHIVE="xamplet.jar" name="FXApplet" width="100%"
+height="75%" hspace="0" vspace="0" align="middle" MAYSCRIPT>
+  <param name="ON_START" value="onAppletStarted">
+  <param name="XML_SCHEMA" value="f4g-model.xsd">
+  <param name="XML_DEST" value="Upload?file=aaa.xml">
+  <param name="ELEMENT" value="FIT4Green">  
+</applet>
+</p>
+</body>
+</html>

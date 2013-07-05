@@ -1,0 +1,70 @@
+
+div.timeline-frame {
+  border-color: gray;	
+}
+
+div.timeline-axis {
+  border-color: gray;	
+}
+
+.timelineActions {
+  margin-left: 82px;
+  margin-right: 200px;	
+}
+
+.green {
+  color:green;
+}
+
+.red{
+  color:red;	
+}
+
+.default{
+  color:black;	
+}
+.networkTopology{
+  margin-left: 82px;
+  margin-right: 200px;
+}
+
+button.gwt-Button[enabled], #wrapper button.gwt-Button {
+	display: block;
+	background-color:lightgreen;
+	/*background: transparent url(network.png) repeat-x;*/
+	float:right;
+    border: solid 2px #93C0E8;
+    outline: none;
+    margin-right: 10px;
+    vertical-align: baseline;
+    text-decoration: none;
+    cursor: pointer;
+    color: #1e7ec8;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    /*height: 35px;*/
+    font: normal 12px arial, helvetica, verdana, sans-serif;
+    white-space: nowrap;
+    padding: 0 5px;
+}
+button.gwt-Button[disabled],button.gwt-Button, #wrapper button.gwt-Button {
+	display: block;
+	background-color:gray;
+	float:right;
+    border: solid 2px gray;
+    outline: none;
+    margin-right: 10px;
+    vertical-align: baseline;
+    text-decoration: none;
+    cursor: pointer;
+    color: #1e7ec8;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    font: normal 12px arial, helvetica, verdana, sans-serif;
+    white-space: nowrap;
+    padding: 0 5px;
+}
+.popupFormat{
+	display: block;
+	padding: 2px;
+}

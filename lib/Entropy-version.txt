@@ -1,0 +1,3 @@
+Entropy-2.1.0-fh 3364
+modified:
+-renamed BoolVarNot -> BoolVarNot2 because of name clash

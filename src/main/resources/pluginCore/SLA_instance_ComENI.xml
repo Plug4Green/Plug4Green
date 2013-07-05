@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:FIT4GreenSLA
+	xmlns:ns1="http://www.fit4green.eu/schemes/SLA"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.fit4green.eu/schemes/SLA file:/home/cdupont/workspace/Schemas/src/main/schema/SLA.xsd"
+	date="2001-01-01" version="0.0">
+	<DataCentre location="1" site="single" style="traditional">
+		<TargetSys id="1">
+			<SLA>
+				<GeneralOverview>
+					<Textual>
+						<DescOfServiceProv>
+							DescOfServiceProv
+						</DescOfServiceProv>
+						<ContactDetailsOfSP>
+							ContactDetailsOfSP
+						</ContactDetailsOfSP>
+						<ContactDetailsOfCustomer>
+							ContactDetailsOfCustomer
+						</ContactDetailsOfCustomer>
+						<DurationOfSLA>1</DurationOfSLA>
+					</Textual>
+				</GeneralOverview>
+				<ServiceDescription>
+					<Metrics>
+						<Load>0.0</Load>
+						<Volume_Cap>1</Volume_Cap>
+						<Bandwidth>1</Bandwidth>
+						<Accuracy>1</Accuracy>
+					</Metrics>
+				</ServiceDescription>
+				<ReqSupService></ReqSupService>
+				<CoverageAvailability>
+					<Metrics>
+						<SchedUpTimes>
+							<From>2001-12-31T12:00:00</From>
+							<To>2001-12-31T12:00:00</To>
+						</SchedUpTimes>
+						<SchedDownTimes>
+							<From>2001-12-31T12:00:00</From>
+							<To>2001-12-31T12:00:00</To>
+						</SchedDownTimes>
+						<Availability>1</Availability>
+						<StandardRespTimes>1</StandardRespTimes>
+					</Metrics>
+				</CoverageAvailability>
+				<Latency>
+					<Metrics>
+						<RoundtripPackTimesOnBBInf>
+							1
+						</RoundtripPackTimesOnBBInf>
+					</Metrics>
+				</Latency>
+				<RolesResponsibilities></RolesResponsibilities>
+				<Maintenance>
+					<Metrics>
+						<DowntimeMaint>1</DowntimeMaint>
+						<DowntimeOutages>1</DowntimeOutages>
+					</Metrics>
+				</Maintenance>
+				<Penalties>
+					<Metrics>
+						<MaxNbOfTolerableCredits>
+							1
+						</MaxNbOfTolerableCredits>
+						<MaxSumOfEuro>1</MaxSumOfEuro>
+					</Metrics>
+				</Penalties>
+				<Pricing></Pricing>
+				<Reporting></Reporting>
+				<AssociatedPolicies>
+					<Textual>
+						<DescOfAP>DescOfAP</DescOfAP>
+					</Textual>
+				</AssociatedPolicies>
+				<HardwareNeeds>
+					<Metrics>
+						<VMTypes>
+							<type name="vmname"  cpu="2" hd="40" ram="2" cpuLoad="1"/>
+						</VMTypes>
+						<VMMargin>
+							<spareCPUs>3</spareCPUs>
+						</VMMargin>
+					</Metrics>
+				</HardwareNeeds>
+				<EnergyConstraints></EnergyConstraints>
+			</SLA>
+		</TargetSys>
+	</DataCentre>
+
+
+</ns1:FIT4GreenSLA>

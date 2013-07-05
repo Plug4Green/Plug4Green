@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<xs:schema xmlns="http://www.f4g.org/schema/Allocation" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:fault="http://www.f4g.org/schema/fault" 
+           targetNamespace="http://www.f4g.org/schema/Allocation" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+	
+	<xs:element name="AllocationRequest" type="AllocationRequestType"/>
+	
+	<xs:complexType name="AllocationRequestType">
+		<xs:sequence>
+			<xs:element name="Datetime" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Date and time when allocation request was sent</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="Request"  minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>FIT4Green Allocation Request</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="AllocationResponse" type="AllocationResponseType"/>
+	<xs:complexType name="AllocationResponseType">
+		<xs:sequence>
+			<xs:element name="Datetime" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Date and time when allocation response was sent</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="Response"  minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>FIT4Green Allocation Response</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="Request" type="RequestType"/>
+		
+	<xs:complexType name="RequestType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Allocation request for different computing styles</xs:documentation>
+		</xs:annotation>	
+	</xs:complexType>
+	
+	<xs:element name="CloudVmAllocation" type="CloudVmAllocationType" substitutionGroup="Request" />
+	
+	<xs:complexType name="CloudVmAllocationType">
+		<xs:annotation>
+			<xs:documentation>VM Allocation request for cloud computing style</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="RequestType">
+				<xs:sequence>
+					<xs:element name="imageId" type="xs:string" minOccurs="1" maxOccurs="1" />
+					<xs:element name="clusterId" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="vmType" type="xs:string" minOccurs="1" maxOccurs="1" />
+					<xs:element name="userId" type="xs:string" minOccurs="0" maxOccurs="1" />
+					<!-- All constraints that have a priority >= minPriority will be activated. 0 activates all constraints. Max is 10. -->
+					<xs:element name="minPriority" type="xs:int" minOccurs="0" maxOccurs="1" />
+				</xs:sequence>	
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="TraditionalVmAllocation" type="TraditionalVmAllocationType" substitutionGroup="Request" />
+	
+	<xs:complexType name="TraditionalVmAllocationType">
+		<xs:annotation>
+			<xs:documentation>VM Allocation request for traditional computing style</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="RequestType">
+				<xs:sequence>
+					<xs:element name="clusterId" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="numberOfCPUs" type="xs:int" minOccurs="0" maxOccurs="1" />
+					<xs:element name="CPUUsage" type="xs:double" minOccurs="0" maxOccurs="1" />
+					<xs:element name="StorageUsage" type="xs:double" minOccurs="0" maxOccurs="1" />
+					<xs:element name="DiskIORate" type="xs:double" minOccurs="0" maxOccurs="1" />
+					<xs:element name="MemoryUsage" type="xs:double" minOccurs="0" maxOccurs="1" />
+					<xs:element name="NetworkUsage" type="xs:double" minOccurs="0" maxOccurs="1" />
+					<xs:element name="minPriority" type="xs:int" minOccurs="0" maxOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType> 
+	
+	<xs:element name="HpcClusterAllocation" type="HpcClusterAllocationType" substitutionGroup="Request" />
+	
+	<xs:complexType name="HpcClusterAllocationType">
+		<xs:annotation>
+			<xs:documentation>Cluster Allocation request for HPC style</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="RequestType">
+				<xs:sequence>
+				 	<xs:element  name="numberOfNodes" type="xs:int" minOccurs="1" maxOccurs="1"/>
+	    				<xs:element  name="neededMemory" type="xs:long" minOccurs="1" maxOccurs="1"/>
+	    				<xs:element  name="neededCoresPerNode" type="xs:int" minOccurs="1" maxOccurs="1"/>
+	    				<xs:element  name="wallTime" type="xs:long" minOccurs="1" maxOccurs="1"/>
+	    				<xs:element  name="energyAware" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+	    				<xs:element  name="latestFinish" type="xs:long" minOccurs="1" maxOccurs="1"/>
+	    				<xs:element  name="suitableClusters" type="xs:string" minOccurs="1" maxOccurs="1"/>
+	    				<xs:element  name="benchmarkName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>	
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="Response" type="ResponseType"/>
+	
+	<xs:complexType name="ResponseType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Allocation response for different computing styles</xs:documentation>
+		</xs:annotation>	
+	</xs:complexType>
+	
+	<xs:element name="CloudVmAllocationResponse" type="CloudVmAllocationResponseType" substitutionGroup="Response" />
+	
+	<xs:complexType name="CloudVmAllocationResponseType">
+		<xs:annotation>
+			<xs:documentation>VM Allocation response for cloud computing style</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ResponseType">
+				<xs:sequence>
+					<xs:element name="imageId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="clusterId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="vmType" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="userId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="nodeId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="minPriority" type="xs:int" minOccurs="0" maxOccurs="1" />
+				</xs:sequence>	
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="TradinitionalVmAllocationResponse" type="TraditionalVmAllocationResponseType" substitutionGroup="Response" />
+	
+	<xs:complexType name="TraditionalVmAllocationResponseType">
+		<xs:annotation>
+			<xs:documentation>VM Allocation response for traditional computing style</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ResponseType">
+				<xs:sequence>
+					<xs:element name="imageId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="clusterId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="vmType" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="userId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="nodeId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="minPriority" type="xs:int" minOccurs="0" maxOccurs="1" />
+				</xs:sequence>	
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="HpcClusterAllocationResponse" type="HpcClusterAllocationResponseType" substitutionGroup="Response" />
+	
+	<xs:complexType name="HpcClusterAllocationResponseType">
+		<xs:annotation>
+			<xs:documentation>Cluster Allocation response for HPC style</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ResponseType">
+				<xs:sequence>
+					<xs:element name="clusterId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>	
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+</xs:schema>

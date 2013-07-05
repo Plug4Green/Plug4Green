@@ -1,0 +1,42 @@
+<html>
+	<head>
+		<title>FIT4Green 3.0::Network Configuration</title>
+	</head>
+	
+	<body style="font-family:sans-serif;">
+
+		<img src="../img/F4GLogo.jpg">
+
+		<h1>How do I configure the network of the host machine?</h1>
+		
+		<h2>VirtualBox networking recommendations</h2>
+		
+		<p>A typical use case for the FIT4Green live CD is to run it on a dedicated 
+		host having the same network access to and from the outer world on the VM as 
+		on the host machine. When using the default VirtualBox networking 
+		<b>Network Address Translation (NAT)</b>, the VM with the live CD will be 
+		invisible and unreachable from the outside world. So, you do not have access 
+		to the FIT4Green Tomcat server. Also ssh from the host to the VM is not 
+		available.</p>
+		
+		<p>To solve these issues, you can follow one of the methods below:</p>
+		
+		<ul>
+			<li>Use the VirtualBox network method <b>Bridged Adapter</b>. This allows 
+			to run a VM which will be assigned an IP address automatically from the 
+			DCHP server in your network; it will behave as a separate machine 
+			and you can access it from ssh, http, etc.. (provided that the 
+			configuration rules of your network allow it) in the same way you would 
+			do with any other physical machine connected to your network. 
+			For details see <a href="../help/BridgedAdapter.html">here</a>.</li>
+		
+			<li>Use the VirtualBox network method <b>Host-only Adapter</b>. In this case
+			you have to also enable some port forwarding rules, so that the VM can be 
+			connected from outside (e.g. the proxy software on the target systems can 
+			communicate with communication plug-ins in the Tomcat server).
+			For details see <a href="../help/HostOnlyAdapter.html">here</a>.</li> 
+		</ul>
+		
+	</body>
+
+</html> 
