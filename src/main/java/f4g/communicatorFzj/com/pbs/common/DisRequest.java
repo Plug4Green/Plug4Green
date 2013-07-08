@@ -12,7 +12,7 @@
 *   DIS encoding class
 * ============================= /Header ==============================
 */
-package org.f4g.com.pbs.common;
+package f4g.communicatorFzj.com.pbs.common;
 
 
 

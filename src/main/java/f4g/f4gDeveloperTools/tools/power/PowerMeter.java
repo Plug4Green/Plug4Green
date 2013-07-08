@@ -1,4 +1,4 @@
-package org.f4g.tools.power;
+package f4g.f4gDeveloperTools.tools.power;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,12 +15,12 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.f4g.com.util.PowerData;
-import org.f4g.core.IMain;
-import org.f4g.core.Main;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.ObjectFactory;
-import org.f4g.tools.modelspy.ModelSpy;
+import f4g.commons.com.util.PowerData;
+import f4g.commons.core.IMain;
+import f4g.pluginCore.core.Main;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.ObjectFactory;
+import f4g.f4gDeveloperTools.tools.modelspy.ModelSpy;
 
 /**
  * Servlet implementation class PowerMeter

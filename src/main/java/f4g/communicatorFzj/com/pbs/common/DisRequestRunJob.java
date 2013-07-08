@@ -12,7 +12,7 @@
 *   DIS encoded request to run a job
 * ============================= /Header ==============================
 */
-package org.f4g.com.pbs.common;
+package f4g.communicatorFzj.com.pbs.common;
 
 import org.apache.log4j.Logger;
 

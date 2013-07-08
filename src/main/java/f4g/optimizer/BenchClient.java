@@ -1,10 +1,10 @@
-package org.f4g.optimizer;
+package f4g.commons.optimizer;
 
 import entropy.jobsManager.Job;
 import entropy.jobsManager.JobHandler;
-import org.f4g.optimizer.CloudTraditional.SLAReader;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.test.ModelGenerator;
+import f4g.commons.optimizer.CloudTraditional.SLAReader;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.optimizer.ModelGenerator;
 
 import java.io.File;
 import java.io.FileOutputStream;

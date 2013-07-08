@@ -1,8 +1,8 @@
 
 
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
-import org.f4g.entropy.configuration.F4GNode;
+import f4g.optimizer.entropy.configuration.F4GNode;
 
 import choco.Choco;
 import choco.cp.solver.constraints.integer.bool.BooleanFactory;

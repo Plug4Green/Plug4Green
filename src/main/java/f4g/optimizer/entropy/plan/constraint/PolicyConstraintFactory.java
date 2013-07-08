@@ -10,7 +10,7 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 import java.util.List;
 
@@ -21,22 +21,22 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.log4j.Logger;
-import org.f4g.optimizer.ICostEstimator;
-import org.f4g.optimizer.CloudTraditional.SLAReader;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedPoliciesType.Policy;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedClustersType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.constraints.optimizerconstraints.FederationType;
-import org.f4g.schema.constraints.optimizerconstraints.LoadType;
-import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.VirtualMachineType;
+import f4g.commons.optimizer.ICostEstimator;
+import f4g.commons.optimizer.CloudTraditional.SLAReader;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.commons.power.IPowerCalculator;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType.Policy;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
+import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
+import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
 import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;

@@ -10,13 +10,13 @@
 *   this class is a tool to gather resources and make operations on them.
 * ============================= /Header ==============================
 */
-package org.f4g.optimizer.utils;
+package f4g.optimizer.utils;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
-import org.f4g.schema.metamodel.VirtualMachineType;
+import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
 
 /**
  * this class is a tool to gather resources and make operations on them.

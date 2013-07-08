@@ -12,8 +12,7 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package org.f4g.com;
-
+package f4g.communicatorEni.com;
 /**
  * constants for comunnicatorEni
  * 

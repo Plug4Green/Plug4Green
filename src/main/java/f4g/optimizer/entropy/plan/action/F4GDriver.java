@@ -1,5 +1,5 @@
 
-package org.f4g.entropy.plan.action;
+package f4g.optimizer.entropy.plan.action;
 
 import java.util.List;
 
@@ -10,10 +10,10 @@ import entropy.plan.action.Action;
 
 import javax.xml.bind.JAXBElement;
 
-import org.f4g.controller.IController;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.metamodel.FIT4GreenType;
+import f4g.commons.controller.IController;
+import f4g.schemas.java.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
 
 /**
  * Adding energetic considerations to NodeComparator

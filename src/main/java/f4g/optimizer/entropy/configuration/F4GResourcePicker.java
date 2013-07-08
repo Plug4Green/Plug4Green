@@ -1,5 +1,5 @@
  
-package org.f4g.entropy.configuration;
+package f4g.optimizer.entropy.configuration;
 import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSets;
 import entropy.configuration.Node;

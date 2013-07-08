@@ -1,4 +1,4 @@
-package org.f4g.entropy.configuration;
+package f4g.optimizer.entropy.configuration;
 
 import entropy.configuration.*;
 import gnu.trove.TIntArrayList;
@@ -8,8 +8,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.f4g.entropy.configuration.F4GNode;
-import org.f4g.entropy.configuration.F4GResourcePicker;
+import f4g.optimizer.entropy.configuration.F4GNode;
+import f4g.optimizer.entropy.configuration.F4GResourcePicker;
 
 /**
  * Adding energetic considerations to NodeComparator

@@ -12,7 +12,7 @@
 *   Implements the Controller component for the FIT4Green framework.
 * ============================= /Header ==============================
 */
-package org.f4g.controller;
+package f4g.manager.controller;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -27,15 +27,15 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.log4j.Logger;
-import org.f4g.com.ICom;
-import org.f4g.core.Configuration;
-import org.f4g.core.Constants;
-import org.f4g.core.IMain;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.web.IWebDataCollector;
-import org.f4g.web.WebDataCollector;
-import org.f4g.couchDB.ConvertToJSON;
-import org.f4g.couchDB.DataBase;
+import f4g.commons.com.ICom;
+import f4g.commons.core.Configuration;
+import f4g.commons.core.Constants;
+import f4g.commons.core.IMain;
+import f4g.schemas.java.actions.ActionRequestType;
+import f4g.commons.web.IWebDataCollector;
+import f4g.commons.web.WebDataCollector;
+import f4g.manager.couchDB.ConvertToJSON;
+import f4g.manager.couchDB.DataBase;
 
 /**
  * The purpose of the Controller is to:

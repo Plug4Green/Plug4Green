@@ -1,4 +1,4 @@
-package org.f4g.entropy.plan.search_heuristic;
+package f4g.optimizer.entropy.plan.search_heuristic;
 
 import choco.kernel.common.Constant;
 import choco.kernel.common.logging.ChocoLogging;
@@ -14,7 +14,7 @@ import entropy.plan.choco.actionModel.ActionModel;
 import entropy.plan.choco.actionModel.ActionModels;
 import entropy.plan.choco.actionModel.VirtualMachineActionModel;
 import entropy.plan.choco.actionModel.slice.DemandingSlice;
-import org.f4g.entropy.plan.F4GPlanner;
+import f4g.optimizer.entropy.plan.F4GPlanner;
 
 import java.util.BitSet;
 import java.util.Collections;

@@ -12,7 +12,7 @@
 *   Utility class for HTTP requests
 * ============================= /Header ==============================
 */
-package org.f4g.couchDB;
+package f4g.manager.couchDB;
 
 import java.io.BufferedReader;
 import java.io.IOException;

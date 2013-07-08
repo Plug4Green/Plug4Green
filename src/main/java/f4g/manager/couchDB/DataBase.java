@@ -12,12 +12,12 @@
 *   Utility class to manage databases on couchDB server
 * ============================= /Header ==============================
 */
-package org.f4g.couchDB;
+package f4g.manager.couchDB;
 
 import java.net.HttpURLConnection;
 
-import org.f4g.couchDB.HTTPRequest;
-import org.f4g.couchDB.Properties;
+import f4g.manager.couchDB.HTTPRequest;
+import f4g.manager.couchDB.Properties;
 
 /**
  * Utility class to manage databases on couchDB server

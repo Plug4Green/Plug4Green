@@ -10,21 +10,21 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 
 import org.apache.log4j.Logger;
-import org.f4g.optimizer.ICostEstimator;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType.VMType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.NetworkNodeType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.util.StaticPowerCalculation;
-import org.f4g.util.Util;
+import f4g.commons.optimizer.ICostEstimator;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.commons.power.IPowerCalculator;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType.VMType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.NetworkNodeType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.commons.util.StaticPowerCalculation;
+import f4g.commons.util.Util;
 
 import choco.kernel.solver.ContradictionException;
 import choco.kernel.solver.variables.integer.IntDomainVar;

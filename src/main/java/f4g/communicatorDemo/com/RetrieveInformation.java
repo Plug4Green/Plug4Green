@@ -12,7 +12,7 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package org.f4g.com;
+package f4g.communicatorDemo.com;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
@@ -31,8 +31,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.apache.log4j.Logger;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.util.Util;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.commons.util.Util;
 
 /**
  * Retrieve the information from the Datacenter

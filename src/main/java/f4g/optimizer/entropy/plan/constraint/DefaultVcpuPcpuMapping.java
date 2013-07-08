@@ -1,4 +1,4 @@
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 import choco.cp.solver.constraints.reified.FastImpliesEq;
 import choco.cp.solver.variables.integer.BoolVarNot;

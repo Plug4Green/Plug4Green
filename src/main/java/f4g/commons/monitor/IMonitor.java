@@ -1,14 +1,14 @@
-package org.f4g.monitor;
+package f4g.commons.monitor;
 
 import java.util.HashMap;
 
-import org.f4g.com.ICom;
-import org.f4g.com.util.ComOperationCollector;
-import org.f4g.com.util.PowerData;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.FrameworkStatusType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
+import f4g.commons.com.ICom;
+import f4g.commons.com.util.ComOperationCollector;
+import f4g.commons.com.util.PowerData;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.FrameworkStatusType;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.AllocationResponseType;
 
 /**
  * 

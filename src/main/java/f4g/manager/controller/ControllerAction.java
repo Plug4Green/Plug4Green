@@ -12,7 +12,7 @@
 *   Utility class for representing an action.
 * ============================= /Header ==============================
 */
-package org.f4g.controller;
+package f4g.manager.controller;
 
 import java.util.HashMap;
 

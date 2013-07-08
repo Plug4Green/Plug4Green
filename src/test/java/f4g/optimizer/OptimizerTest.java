@@ -10,28 +10,28 @@
 *   Optimizer mother class for tests
 * ============================= /Header ==============================
 */
-package org.f4g.test;
+package f4g.optimizer;
 
 
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.f4g.com.util.PowerData;
-import org.f4g.controller.IController;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
-import org.f4g.optimizer.ICostEstimator;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.actions.*;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.CloudVmAllocationType;
-import org.f4g.schema.allocation.ObjectFactory;
-import org.f4g.schema.allocation.TraditionalVmAllocationType;
-import org.f4g.schema.constraints.optimizerconstraints.*;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
-import org.f4g.schema.constraints.optimizerconstraints.SLAType.SLA;
-import org.f4g.schema.metamodel.*;
+import f4g.commons.com.util.PowerData;
+import f4g.commons.controller.IController;
+import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.commons.optimizer.ICostEstimator;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.commons.power.IPowerCalculator;
+import f4g.schemas.java.actions.*;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.CloudVmAllocationType;
+import f4g.schemas.java.ObjectFactory;
+import f4g.schemas.java.TraditionalVmAllocationType;
+import f4g.schemas.java.constraints.optimizerconstraints.*;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
+import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
+import f4g.schemas.java.constraints.optimizerconstraints.SLAType.SLA;
+import f4g.schemas.java.metamodel.*;
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;

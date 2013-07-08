@@ -1,14 +1,14 @@
 
 
-package org.f4g.entropy.plan.search_heuristic;
+package f4g.optimizer.entropy.plan.search_heuristic;
 
 
 import java.util.Comparator;
 import java.util.List;
 
-import org.f4g.optimizer.OptimizationObjective;
-import org.f4g.schema.metamodel.ServerStatusType;
-import org.f4g.schema.metamodel.ServerType;
+import f4g.commons.optimizer.OptimizationObjective;
+import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.schemas.java.metamodel.ServerType;
 
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.Configuration;

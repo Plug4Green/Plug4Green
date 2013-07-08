@@ -1,4 +1,4 @@
-package org.f4g.tools.upload;
+package f4g.f4gDeveloperTools.tools.upload;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
-import org.f4g.tools.modelspy.ModelSpy;
+import f4g.f4gDeveloperTools.tools.modelspy.ModelSpy;
  
  
 public class CommonsFileUploadServlet extends HttpServlet {

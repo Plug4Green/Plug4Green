@@ -12,7 +12,7 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package org.f4g.com;
+package f4g.communicatorEni.com;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,13 +25,13 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Logger;
-import org.f4g.com.util.ComOperation;
-import org.f4g.com.util.ComOperationCollector;
-import org.f4g.monitor.IMonitor;
-import org.f4g.schema.metamodel.FrameworkStatusType;
-import org.f4g.schema.metamodel.ServerStatusType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.VirtualMachineType;
+import f4g.commons.com.util.ComOperation;
+import f4g.commons.com.util.ComOperationCollector;
+import f4g.commons.monitor.IMonitor;
+import f4g.schemas.java.metamodel.FrameworkStatusType;
+import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
 
 import com.vmware.PerformanceInformation;
 import com.vmware.RetrieveHostInformation;

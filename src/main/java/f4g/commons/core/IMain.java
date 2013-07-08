@@ -1,11 +1,11 @@
-package org.f4g.core;
+package f4g.commons.core;
 
-import org.f4g.com.ICom;
-import org.f4g.controller.IController;
-import org.f4g.monitor.IMonitor;
-import org.f4g.optimizer.IOptimizer;
-import org.f4g.optimizer.OptimizationObjective;
-import org.f4g.power.IPowerCalculator;
+import f4g.commons.com.ICom;
+import f4g.commons.controller.IController;
+import f4g.commons.monitor.IMonitor;
+import f4g.commons.optimizer.IOptimizer;
+import f4g.commons.optimizer.OptimizationObjective;
+import f4g.commons.power.IPowerCalculator;
 
 /**
  * Interface representing the launcher class for the f4g framework.

@@ -12,7 +12,7 @@
 *   auxiliary function to parse memory notation (kb..) 
 * ============================= /Header ==============================
 */
-package org.f4g.com.pbs.common;
+package f4g.communicatorFzj.com.pbs.common;
 
 import org.apache.log4j.Logger;
 

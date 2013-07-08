@@ -12,7 +12,7 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package com.vmware;
+package f4g.communicatorEni.vmware;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -55,9 +55,9 @@ import com.vmware.vim25.Timedout;
 import com.vmware.vim25.ToolsUnavailable;
 
 
-import org.f4g.com.ComEniConstants; 
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
+import f4g.commons.com.ComEniConstants; 
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.actions.PowerOnActionType;
 
 
 

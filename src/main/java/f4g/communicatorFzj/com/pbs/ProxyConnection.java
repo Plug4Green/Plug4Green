@@ -12,7 +12,7 @@
 *   SSL secured connection from the F4G plug-in to the Proxy
 * ============================= /Header ==============================
 */
-package org.f4g.com.pbs;
+package f4g.communicatorFzj.com.pbs;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +25,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.log4j.Logger;
-import org.f4g.com.pbs.common.ProxyRequest;
-import org.f4g.com.pbs.common.ProxyResponse;
+import f4g.commons.com.pbs.common.ProxyRequest;
+import f4g.commons.com.pbs.common.ProxyResponse;
 
 /**
  * SSL secured connection from the F4G plug-in to the Proxy

@@ -12,7 +12,7 @@
 *   Entry point to the FIT4Green framework.
 * ============================= /Header ==============================
 */
-package org.f4g.core;
+package f4g.pluginCore.core;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,19 +22,19 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.f4g.com.ICom;
-import org.f4g.com.util.PowerData;
-import org.f4g.controller.Controller;
-import org.f4g.controller.IController;
-import org.f4g.core.Configuration;
-import org.f4g.core.IMain;
-import org.f4g.monitor.IMonitor;
-import org.f4g.monitor.Monitor;
-import org.f4g.optimizer.IOptimizer;
-import org.f4g.optimizer.OptimizationObjective;
-import org.f4g.optimizer.Optimizer;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.power.PowerCalculator;
+import f4g.commons.com.ICom;
+import f4g.commons.com.util.PowerData;
+import f4g.commons.controller.Controller;
+import f4g.commons.controller.IController;
+import f4g.commons.core.Configuration;
+import f4g.commons.core.IMain;
+import f4g.commons.monitor.IMonitor;
+import f4g.manager.monitor.Monitor;
+import f4g.commons.optimizer.IOptimizer;
+import f4g.commons.optimizer.OptimizationObjective;
+import f4g.commons.optimizer.Optimizer;
+import f4g.commons.power.IPowerCalculator;
+import f4g.commons.power.PowerCalculator;
 
 /**
  * Entry point to the FIT4Green framework

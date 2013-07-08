@@ -12,7 +12,7 @@
 *   Collects data to be retrieved by the web UI.
 * ============================= /Header ==============================
 */
-package org.f4g.web;
+package f4g.commons.web;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,7 +20,7 @@ import java.util.Date;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.log4j.Logger;
-import org.f4g.schema.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.AbstractBaseActionType;
 
 /**
  * Collects data to be retrieved by the web UI.

@@ -1,4 +1,4 @@
-package org.f4g.tools.simulation;
+package f4g.f4gDeveloperTools.tools.simulation;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,13 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.log4j.Logger;
-import org.f4g.core.IMain;
-import org.f4g.core.Main;
-import org.f4g.schema.metamodel.ServerStatusType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
+import f4g.commons.core.IMain;
+import f4g.pluginCore.core.Main;
+import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.actions.PowerOnActionType;
 
 /**
  * Servlet implementation class HandleServerAction

@@ -1,4 +1,4 @@
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 import choco.cp.solver.constraints.global.Occurrence;
 import choco.kernel.common.util.tools.ArrayUtils;

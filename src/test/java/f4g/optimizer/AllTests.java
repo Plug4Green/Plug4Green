@@ -10,7 +10,7 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package org.f4g.test;
+package f4g.optimizer;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

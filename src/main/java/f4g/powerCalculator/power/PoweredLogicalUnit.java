@@ -1,14 +1,14 @@
-package org.f4g.power;
+package f4g.powerCalculator.power;
 
 import java.util.Iterator;
 
 import org.apache.commons.jxpath.JXPathContext;
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.PSUType;
-import org.f4g.schema.metamodel.PowerType;
-import org.f4g.schema.metamodel.SANType;
-import org.f4g.schema.metamodel.HardDiskType;
-import org.f4g.schema.metamodel.LogicalUnitType;
+import f4g.schemas.java.metamodel.IoRateType;
+import f4g.schemas.java.metamodel.PSUType;
+import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.SANType;
+import f4g.schemas.java.metamodel.HardDiskType;
+import f4g.schemas.java.metamodel.LogicalUnitType;
 import org.apache.log4j.Logger;
 
 public class PoweredLogicalUnit extends LogicalUnitType implements PoweredComponent{

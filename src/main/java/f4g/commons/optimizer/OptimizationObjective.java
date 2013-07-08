@@ -1,4 +1,4 @@
-package org.f4g.optimizer;
+package f4g.commons.optimizer;
 
 
 /**

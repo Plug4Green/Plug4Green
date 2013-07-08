@@ -1,4 +1,4 @@
-package org.f4g.com.util;
+package f4g.commons.com.util;
 
 /**
  * Mock implementation representing the information on the power consumption

@@ -10,31 +10,31 @@
  *   Integration with the power calculator tests
  * ============================= /Header ==============================
  */
-package org.f4g.test;
+package f4g.optimizer;
 
 
 
 import org.apache.log4j.Logger;
-import org.f4g.cost_estimator.NetworkCost;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
-import org.f4g.optimizer.CloudTraditional.SLAReader;
-import org.f4g.optimizer.utils.OptimizerWorkload;
-import org.f4g.optimizer.utils.OptimizerWorkload.CreationImpossible;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.power.PowerCalculator;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.ActionRequestType.ActionList;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.allocation.*;
-import org.f4g.schema.allocation.ObjectFactory;
-import org.f4g.schema.constraints.optimizerconstraints.*;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
-import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
-import org.f4g.schema.metamodel.*;
+import f4g.optimizer.cost_estimator.NetworkCost;
+import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.commons.optimizer.CloudTraditional.SLAReader;
+import f4g.commons.optimizer.utils.OptimizerWorkload;
+import f4g.commons.optimizer.utils.OptimizerWorkload.CreationImpossible;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.commons.power.IPowerCalculator;
+import f4g.commons.power.PowerCalculator;
+import f4g.schemas.java.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.ActionRequestType.ActionList;
+import f4g.schemas.java.actions.MoveVMActionType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.*;
+import f4g.schemas.java.ObjectFactory;
+import f4g.schemas.java.constraints.optimizerconstraints.*;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
+import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
+import f4g.schemas.java.metamodel.*;
 
 
 import javax.xml.bind.JAXBElement;
@@ -43,8 +43,8 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.util.*;
-import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
-import org.f4g.schema.constraints.optimizerconstraints.UnitType;
+import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
+import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
 
 /**
  * Integration with the power calculator tests

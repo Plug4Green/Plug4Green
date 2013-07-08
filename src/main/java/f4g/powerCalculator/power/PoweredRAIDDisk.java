@@ -1,14 +1,14 @@
-package org.f4g.power;
+package f4g.powerCalculator.power;
 
 import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.log4j.Logger;
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.PowerType;
-import org.f4g.schema.metamodel.HardDiskType;
-import org.f4g.schema.metamodel.RAIDDiskType;
+import f4g.schemas.java.metamodel.IoRateType;
+import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.HardDiskType;
+import f4g.schemas.java.metamodel.RAIDDiskType;
 
 public class PoweredRAIDDisk extends RAIDDiskType implements PoweredComponent{
 		

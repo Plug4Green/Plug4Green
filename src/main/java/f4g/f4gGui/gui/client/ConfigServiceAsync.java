@@ -1,8 +1,8 @@
-package org.f4g.gui.client;
+package f4g.f4gGui.gui.client;
 
 import java.util.Vector;
 
-import org.f4g.gui.shared.ConfigurationData;
+import f4g.f4gGui.gui.shared.ConfigurationData;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
  

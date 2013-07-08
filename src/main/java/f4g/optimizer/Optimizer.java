@@ -11,23 +11,23 @@
 * ============================= /Header ==============================
 */
 
-package org.f4g.optimizer;
+package f4g.commons.optimizer;
 
 import java.util.Map;
 import org.apache.log4j.Logger;
-import org.f4g.schema.metamodel.*;
-import org.f4g.controller.IController;
-import org.f4g.core.IMain;
-import org.f4g.cost_estimator.NetworkCost;
-import org.f4g.optimizer.OptimizerEngine;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.optimizer.HPC.OptimizerEngineHPC;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.optimizer.OptimizationObjective;
+import f4g.schemas.java.metamodel.*;
+import f4g.commons.controller.IController;
+import f4g.commons.core.IMain;
+import f4g.optimizer.cost_estimator.NetworkCost;
+import f4g.commons.optimizer.OptimizerEngine;
+import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.commons.power.IPowerCalculator;
+import f4g.commons.optimizer.HPC.OptimizerEngineHPC;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.commons.optimizer.OptimizationObjective;
 
 import java.util.HashMap;
-import org.f4g.schema.allocation.*;
+import f4g.schemas.java.*;
 
 /**
  * implementation of the Optimizer

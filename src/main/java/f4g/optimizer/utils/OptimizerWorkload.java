@@ -12,20 +12,20 @@
 * ============================= /Header ==============================
 */
 
-package org.f4g.optimizer.utils;
+package f4g.optimizer.utils;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.f4g.schema.metamodel.CpuUsageType;
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.MemoryUsageType;
-import org.f4g.schema.metamodel.NetworkUsageType;
-import org.f4g.schema.metamodel.NrOfCpusType;
-import org.f4g.schema.metamodel.StorageUsageType;
-import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.schema.allocation.*;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.metamodel.CpuUsageType;
+import f4g.schemas.java.metamodel.IoRateType;
+import f4g.schemas.java.metamodel.MemoryUsageType;
+import f4g.schemas.java.metamodel.NetworkUsageType;
+import f4g.schemas.java.metamodel.NrOfCpusType;
+import f4g.schemas.java.metamodel.StorageUsageType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.*;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import org.jvnet.jaxb2_commons.lang.CopyStrategy;
 import org.jvnet.jaxb2_commons.lang.CopyTo;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;

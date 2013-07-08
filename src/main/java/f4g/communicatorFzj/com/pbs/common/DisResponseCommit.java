@@ -12,7 +12,7 @@
 *   Parse DIS encoded response of a commit request
 * ============================= /Header ==============================
 */
-package org.f4g.com.pbs.common;
+package f4g.communicatorFzj.com.pbs.common;
 
 import java.io.IOException;
 import java.io.InputStream;

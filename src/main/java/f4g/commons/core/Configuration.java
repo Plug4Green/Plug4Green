@@ -1,4 +1,4 @@
-package org.f4g.core;
+package f4g.commons.core;
 
 import java.io.IOException;
 import java.io.InputStream;

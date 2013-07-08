@@ -12,7 +12,7 @@
 * ============================= /Header ==============================
 */
 
-package org.f4g.optimizer.utils;
+package f4g.optimizer.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -33,16 +33,16 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.f4g.optimizer.utils.OptimizerRackServer;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
-import org.f4g.optimizer.utils.OptimizerServer.CreationImpossible;
-import org.f4g.optimizer.utils.OptimizerBladeServer;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.constraints.optimizerconstraints.FederationType;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
-import org.f4g.schema.metamodel.*;
-import org.f4g.util.Util;
+import f4g.commons.optimizer.utils.OptimizerRackServer;
+import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.commons.optimizer.utils.OptimizerServer.CreationImpossible;
+import f4g.commons.optimizer.utils.OptimizerBladeServer;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
+import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
+import f4g.schemas.java.metamodel.*;
+import f4g.commons.util.Util;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathNotFoundException;
 import org.apache.log4j.Logger;
@@ -57,7 +57,7 @@ import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.configuration.SimpleManagedElementSet;
 import entropy.configuration.VirtualMachine;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedClustersType;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType;
 
 public class Utils {
 	

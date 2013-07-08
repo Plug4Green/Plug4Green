@@ -12,7 +12,7 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package org.f4g.com;
+package f4g.communicatorEni.com;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,13 +28,13 @@ import javax.net.ssl.SSLServerSocketFactory;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.log4j.Logger;
-import org.f4g.com.TraditionalDataSend;
-import org.f4g.monitor.IMonitor;
-import org.f4g.schema.allocation.TraditionalVmAllocationResponseType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
-import org.f4g.schema.allocation.ObjectFactory;
-import org.f4g.schema.allocation.TraditionalVmAllocationType;
+import f4g.commons.com.TraditionalDataSend;
+import f4g.commons.monitor.IMonitor;
+import f4g.schemas.java.TraditionalVmAllocationResponseType;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.ObjectFactory;
+import f4g.schemas.java.TraditionalVmAllocationType;
 
 
 /**

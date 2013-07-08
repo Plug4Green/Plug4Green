@@ -11,10 +11,10 @@
 *   It traverse the F4G tree and displays each nodes.
 * ============================= /Header ==============================
 */
-package org.f4g.test;
+package f4g.optimizer;
 
 
-import org.f4g.schema.metamodel.*;
+import f4g.schemas.java.metamodel.*;
 
 
 public class PrintTraverser {

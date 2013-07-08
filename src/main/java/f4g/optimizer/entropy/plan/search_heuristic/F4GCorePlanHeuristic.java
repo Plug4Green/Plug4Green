@@ -1,8 +1,8 @@
 
 
-package org.f4g.entropy.plan.search_heuristic;
+package f4g.optimizer.entropy.plan.search_heuristic;
 
-import org.f4g.entropy.plan.F4GPlanner;
+import f4g.optimizer.entropy.plan.F4GPlanner;
 
 /**
  * An interface to specific the way the plan module will select the VMs to place and schedule

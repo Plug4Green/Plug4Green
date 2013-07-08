@@ -12,7 +12,7 @@
 *   Class for a empty DIS encoded response 
 * ============================= /Header ==============================
 */
-package org.f4g.com.pbs.common;
+package f4g.communicatorFzj.com.pbs.common;
 
 import java.io.InputStream;
 

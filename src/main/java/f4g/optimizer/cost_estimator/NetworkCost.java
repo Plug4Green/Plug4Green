@@ -4,7 +4,7 @@
  * Ricardo Lent
  */
 
-package org.f4g.cost_estimator;
+package f4g.optimizer.cost_estimator;
 import java.util.*;
 
 
@@ -14,20 +14,20 @@ import org.jscience.economics.money.*;
 import javax.measure.quantity.*;
 import static javax.measure.unit.SI.*;
 
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.NetworkNodeType;
-import org.f4g.schema.metamodel.NetworkPortType;
-import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.schema.metamodel.SiteType;
-import org.f4g.optimizer.ICostEstimator;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.power.PoweredNetworkNode;
-import org.f4g.optimizer.OptimizationObjective;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.optimizer.CloudTraditional.SLAReader;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.util.Util;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.NetworkNodeType;
+import f4g.schemas.java.metamodel.NetworkPortType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.SiteType;
+import f4g.commons.optimizer.ICostEstimator;
+import f4g.commons.power.IPowerCalculator;
+import f4g.commons.power.PoweredNetworkNode;
+import f4g.commons.optimizer.OptimizationObjective;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.commons.optimizer.CloudTraditional.SLAReader;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.commons.util.Util;
 
 /*
  Things to improve:

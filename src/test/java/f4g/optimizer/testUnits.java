@@ -10,7 +10,7 @@
 *   example for physic units usage
 * ============================= /Header ==============================
 */
-package org.f4g.test;
+package f4g.optimizer;
 
 import org.jscience.physics.amount.*;
 import org.jscience.economics.money.*;

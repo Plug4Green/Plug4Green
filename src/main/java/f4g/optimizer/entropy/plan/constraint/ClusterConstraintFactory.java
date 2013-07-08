@@ -10,20 +10,20 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.f4g.optimizer.CloudTraditional.SLAReader;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.CloudVmAllocationType;
-import org.f4g.schema.allocation.RequestType;
-import org.f4g.schema.allocation.TraditionalVmAllocationType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
-import org.f4g.schema.metamodel.FIT4GreenType;
+import f4g.commons.optimizer.CloudTraditional.SLAReader;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.CloudVmAllocationType;
+import f4g.schemas.java.RequestType;
+import f4g.schemas.java.TraditionalVmAllocationType;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
+import f4g.schemas.java.metamodel.FIT4GreenType;
 
 import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSet;

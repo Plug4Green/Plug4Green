@@ -1,6 +1,6 @@
 
 
-package org.f4g.entropy.plan.search_heuristic;
+package f4g.optimizer.entropy.plan.search_heuristic;
 
 import choco.cp.solver.search.integer.branching.AssignOrForbidIntVarVal;
 import choco.cp.solver.search.integer.branching.AssignVar;
@@ -16,7 +16,7 @@ import entropy.plan.choco.search.StayFirstSelector2;
 import entropy.plan.choco.search.VMGroupVarSelector;
 import gnu.trove.TLongIntHashMap;
 import org.apache.log4j.Logger;
-import org.f4g.entropy.plan.F4GPlanner;
+import f4g.optimizer.entropy.plan.F4GPlanner;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,5 +1,5 @@
 
-package org.f4g.entropy.plan.objective;
+package f4g.optimizer.entropy.plan.objective;
 
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.plan.choco.ReconfigurationProblem;

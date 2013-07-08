@@ -12,7 +12,7 @@
 * ============================= /Header ==============================
 */
 
-package org.f4g.optimizer.utils;
+package f4g.optimizer.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +20,13 @@ import java.util.NoSuchElementException;
 
 
 import org.apache.log4j.Logger;
-import org.f4g.com.util.PowerData;
-import org.f4g.optimizer.CloudTraditional.SLAReader;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.schema.metamodel.*;
-import org.f4g.util.Util;
+import f4g.commons.com.util.PowerData;
+import f4g.commons.optimizer.CloudTraditional.SLAReader;
+import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.commons.power.IPowerCalculator;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.metamodel.*;
+import f4g.commons.util.Util;
 import org.jvnet.jaxb2_commons.lang.CopyStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;

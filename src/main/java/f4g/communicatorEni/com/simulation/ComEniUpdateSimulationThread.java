@@ -1,12 +1,12 @@
-package org.f4g.com.simulation;
+package f4g.communicatorEni.com.simulation;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Logger;
-import org.f4g.com.ICom;
-import org.f4g.com.util.ComOperation;
-import org.f4g.com.util.ComOperationCollector;
-import org.f4g.monitor.IMonitor;
+import f4g.commons.com.ICom;
+import f4g.commons.com.util.ComOperation;
+import f4g.commons.com.util.ComOperationCollector;
+import f4g.commons.monitor.IMonitor;
 
 public class ComEniUpdateSimulationThread  extends ComUpdateSimulationThread {
 	static Logger log = Logger.getLogger(ComEniUpdateSimulationThread.class.getName()); // 

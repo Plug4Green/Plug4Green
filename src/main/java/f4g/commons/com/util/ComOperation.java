@@ -1,4 +1,4 @@
-package org.f4g.com.util;
+package f4g.commons.com.util;
 
 /**
  * Sample implementation of a Com operation 

@@ -10,7 +10,7 @@
  *   Reads and validate the Placement Constraint instance file.
  * ============================= /Header ==============================
  */
-package org.f4g.optimizer.CloudTraditional;
+package f4g.optimizer.CloudTraditional;
 
 import java.io.FileReader;
 import java.io.InputStream;
@@ -21,17 +21,17 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import org.apache.log4j.Logger;
-import org.f4g.schema.constraints.placement.Ban;
-import org.f4g.schema.constraints.placement.Capacity;
-import org.f4g.schema.constraints.placement.ConstraintType;
-import org.f4g.schema.constraints.placement.FIT4GreenConstraintType;
-import org.f4g.schema.constraints.placement.Fence;
-import org.f4g.schema.constraints.placement.Gather;
-import org.f4g.schema.constraints.placement.Lonely;
-import org.f4g.schema.constraints.placement.OneOf;
-import org.f4g.schema.constraints.placement.Root;
-import org.f4g.schema.constraints.placement.Split;
-import org.f4g.schema.constraints.placement.Spread;
+import f4g.schemas.java.constraints.placement.Ban;
+import f4g.schemas.java.constraints.placement.Capacity;
+import f4g.schemas.java.constraints.placement.ConstraintType;
+import f4g.schemas.java.constraints.placement.FIT4GreenConstraintType;
+import f4g.schemas.java.constraints.placement.Fence;
+import f4g.schemas.java.constraints.placement.Gather;
+import f4g.schemas.java.constraints.placement.Lonely;
+import f4g.schemas.java.constraints.placement.OneOf;
+import f4g.schemas.java.constraints.placement.Root;
+import f4g.schemas.java.constraints.placement.Split;
+import f4g.schemas.java.constraints.placement.Spread;
 
 /**
  * {To be completed; use html notation, if necessary}

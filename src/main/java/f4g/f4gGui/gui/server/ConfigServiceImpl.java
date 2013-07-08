@@ -1,4 +1,4 @@
-package org.f4g.gui.server;
+package f4g.f4gGui.gui.server;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -14,9 +14,9 @@ import java.util.Properties;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.f4g.core.Constants;
-import org.f4g.gui.client.ConfigService;
-import org.f4g.gui.shared.ConfigurationData;
+import f4g.commons.core.Constants;
+import f4g.f4gGui.gui.client.ConfigService;
+import f4g.f4gGui.gui.shared.ConfigurationData;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 

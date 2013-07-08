@@ -1,9 +1,9 @@
-package org.f4g.power;
-import org.f4g.power.PoweredComponent;
-import org.f4g.schema.metamodel.HardDiskType;
+package f4g.powerCalculator.power;
+import f4g.commons.power.PoweredComponent;
+import f4g.schemas.java.metamodel.HardDiskType;
 
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.PowerType;
+import f4g.schemas.java.metamodel.IoRateType;
+import f4g.schemas.java.metamodel.PowerType;
 import org.apache.log4j.Logger;
 
 public class PoweredHardDiskDrive extends HardDiskType implements PoweredComponent{	

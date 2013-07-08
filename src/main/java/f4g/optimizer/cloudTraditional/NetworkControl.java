@@ -8,25 +8,25 @@
 *   Determines which router/switches could be switched off
 * ============================= /Header ==============================
 */
-package org.f4g.optimizer.CloudTraditional;
+package f4g.optimizer.CloudTraditional;
 
-import org.f4g.schema.metamodel.FrameworkCapabilitiesType;
-import org.f4g.schema.metamodel.NetworkNodeType;
-import org.f4g.schema.metamodel.NetworkPortType;
-import org.f4g.schema.metamodel.NetworkNodeStatusType;
-import org.f4g.schema.actions.ObjectFactory;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
-import org.f4g.schema.actions.ActionRequestType.ActionList;
-import org.f4g.schema.actions.AbstractBaseActionType;
+import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
+import f4g.schemas.java.metamodel.NetworkNodeType;
+import f4g.schemas.java.metamodel.NetworkPortType;
+import f4g.schemas.java.metamodel.NetworkNodeStatusType;
+import f4g.schemas.java.actions.ObjectFactory;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.actions.PowerOnActionType;
+import f4g.schemas.java.actions.ActionRequestType.ActionList;
+import f4g.schemas.java.actions.AbstractBaseActionType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.ServerStatusType;
-import org.f4g.schema.metamodel.ServerType;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.schemas.java.metamodel.ServerType;
 import com.rits.cloning.Cloner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;

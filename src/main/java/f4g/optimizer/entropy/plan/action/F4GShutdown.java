@@ -1,13 +1,13 @@
 
-package org.f4g.entropy.plan.action;
+package f4g.optimizer.entropy.plan.action;
 
-import org.f4g.controller.IController;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.FrameworkCapabilitiesType;
-import org.f4g.schema.metamodel.ServerType;
+import f4g.commons.controller.IController;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.schemas.java.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
+import f4g.schemas.java.metamodel.ServerType;
 
 import entropy.plan.action.Shutdown;
 

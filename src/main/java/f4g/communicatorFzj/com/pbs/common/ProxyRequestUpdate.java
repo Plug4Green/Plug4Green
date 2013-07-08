@@ -12,7 +12,7 @@
  *   Response for an update request
  * ============================= /Header ==============================
  */
-package org.f4g.com.pbs.common;
+package f4g.communicatorFzj.com.pbs.common;
 
 import java.io.BufferedReader;
 import java.io.Closeable;

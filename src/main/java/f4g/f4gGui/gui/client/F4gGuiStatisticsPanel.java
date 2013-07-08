@@ -1,4 +1,4 @@
-package org.f4g.gui.client;
+package f4g.f4gGui.gui.client;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.f4g.gui.shared.ConfigurationData;
+import f4g.f4gGui.gui.shared.ConfigurationData;
 
 import com.chap.links.client.Graph;
 import com.chap.links.client.Graph.DateRange;

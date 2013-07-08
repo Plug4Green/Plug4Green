@@ -15,7 +15,7 @@
 * @see org.f4g.com.ICom
 * ============================= /Header ==============================
 */
-package org.f4g.com.unicore;
+package f4g.communicatorFzj.com.unicore;
 
 import gnu.cajo.invoke.Remote;
 import gnu.cajo.utils.ItemServer;
@@ -29,13 +29,13 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Logger;
-import org.f4g.com.ICom;
-import org.f4g.com.util.ComOperationCollector;
-import org.f4g.monitor.IMonitor;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
-import org.f4g.schema.allocation.HpcClusterAllocationResponseType;
-import org.f4g.schema.allocation.HpcClusterAllocationType;
+import f4g.commons.com.ICom;
+import f4g.commons.com.util.ComOperationCollector;
+import f4g.commons.monitor.IMonitor;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.HpcClusterAllocationResponseType;
+import f4g.schemas.java.HpcClusterAllocationType;
 
 /**
  * Implementation of the ICom interface for the Unicore F4G communication

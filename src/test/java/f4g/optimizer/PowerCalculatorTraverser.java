@@ -11,15 +11,15 @@
 *   It make a traversal an aggregate values at each levels.
 * ============================= /Header ==============================
 */
-package org.f4g.test;
+package f4g.optimizer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.f4g.com.util.PowerData;
+import f4g.commons.com.util.PowerData;
 
-import org.f4g.schema.metamodel.*;
+import f4g.schemas.java.metamodel.*;
 
 
 public class PowerCalculatorTraverser {

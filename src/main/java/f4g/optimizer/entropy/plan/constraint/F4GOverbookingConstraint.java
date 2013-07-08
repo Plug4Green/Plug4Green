@@ -10,13 +10,13 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
-import org.f4g.schema.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
 
 /**
  * {To be completed; use html notation, if necessary}

@@ -1,13 +1,13 @@
-package org.f4g.com.simulation;
+package f4g.commons.com.simulation;
 
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.f4g.com.ICom;
-import org.f4g.com.util.ComOperation;
-import org.f4g.com.util.ComOperationCollector;
-import org.f4g.monitor.IMonitor;
+import f4g.commons.com.ICom;
+import f4g.commons.com.util.ComOperation;
+import f4g.commons.com.util.ComOperationCollector;
+import f4g.commons.monitor.IMonitor;
 
 public abstract class GenericSimulationThread implements Runnable{
 

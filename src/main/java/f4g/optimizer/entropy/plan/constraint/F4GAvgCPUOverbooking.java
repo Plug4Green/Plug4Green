@@ -10,17 +10,17 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 import choco.cp.solver.constraints.reified.FastIFFEq;
 import choco.cp.solver.constraints.reified.ReifiedFactory;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.VirtualMachineType;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
 
 import java.util.ArrayList;
 import java.util.List;

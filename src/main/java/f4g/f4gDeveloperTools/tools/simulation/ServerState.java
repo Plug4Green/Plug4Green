@@ -1,4 +1,4 @@
-package org.f4g.tools.simulation;
+package f4g.f4gDeveloperTools.tools.simulation;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,16 +19,16 @@ import javax.xml.bind.JAXBException;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.f4g.com.util.PowerData;
-import org.f4g.core.IMain;
-import org.f4g.core.Main;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.FrameworkCapabilitiesType;
-import org.f4g.schema.metamodel.ObjectFactory;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.tools.power.PowerMeter;
+import f4g.commons.com.util.PowerData;
+import f4g.commons.core.IMain;
+import f4g.pluginCore.core.Main;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
+import f4g.schemas.java.metamodel.ObjectFactory;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.f4gDeveloperTools.tools.power.PowerMeter;
 
 /**
  * Servlet implementation class ServerState

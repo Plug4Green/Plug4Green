@@ -12,7 +12,7 @@
 *   Implements the Monitor component for the FIT4Green framework.
 * ============================= /Header ==============================
 */
-package org.f4g.monitor;
+package f4g.manager.monitor;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
@@ -44,24 +44,24 @@ import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathException;
 import org.apache.log4j.Logger;
 
-import org.f4g.com.ICom;
-import org.f4g.com.util.ComOperation;
-import org.f4g.com.util.ComOperationCollector;
-import org.f4g.com.util.PowerData;
-import org.f4g.core.Configuration;
-import org.f4g.core.Constants;
-import org.f4g.core.IMain;
-import org.f4g.couchDB.ConvertToJSON;
-import org.f4g.couchDB.DataBase;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.FrameworkCapabilitiesType;
-import org.f4g.schema.metamodel.FrameworkStatusType;
-import org.f4g.schema.metamodel.ObjectFactory;
-import org.f4g.schema.metamodel.SiteType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
-import org.f4g.util.Util;
-import org.f4g.util.JXPathCustomFactory;
+import f4g.commons.com.ICom;
+import f4g.commons.com.util.ComOperation;
+import f4g.commons.com.util.ComOperationCollector;
+import f4g.commons.com.util.PowerData;
+import f4g.commons.core.Configuration;
+import f4g.commons.core.Constants;
+import f4g.commons.core.IMain;
+import f4g.manager.couchDB.ConvertToJSON;
+import f4g.manager.couchDB.DataBase;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
+import f4g.schemas.java.metamodel.FrameworkStatusType;
+import f4g.schemas.java.metamodel.ObjectFactory;
+import f4g.schemas.java.metamodel.SiteType;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.AllocationResponseType;
+import f4g.commons.util.Util;
+import f4g.commons.util.JXPathCustomFactory;
 
 import com.rits.cloning.Cloner;
 

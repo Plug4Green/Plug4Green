@@ -1,32 +1,32 @@
-package org.f4g.test;
+package f4g.optimizer;
 
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.f4g.com.util.PowerData;
-import org.f4g.cost_estimator.NetworkCost;
-import org.f4g.optimizer.OptimizationObjective;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.CpuUsageType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.RackableServerType;
-import org.f4g.schema.metamodel.ServerStatusType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedPoliciesType;
-import org.f4g.schema.constraints.optimizerconstraints.FederationType;
-import org.f4g.schema.constraints.optimizerconstraints.LoadType;
-import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
-import org.f4g.schema.constraints.optimizerconstraints.UnitType;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
-import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.commons.com.util.PowerData;
+import f4g.optimizer.cost_estimator.NetworkCost;
+import f4g.commons.optimizer.OptimizationObjective;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.schemas.java.metamodel.CpuUsageType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.RackableServerType;
+import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.actions.MoveVMActionType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType;
+import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
+import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
+import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
+import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
+import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
+import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import org.junit.Test;
 
 

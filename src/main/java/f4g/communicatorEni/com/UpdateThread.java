@@ -12,15 +12,15 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package org.f4g.com;
+package f4g.communicatorEni.com;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
-import org.f4g.com.util.ComOperation;
-import org.f4g.com.util.ComOperationCollector;
+import f4g.commons.com.util.ComOperation;
+import f4g.commons.com.util.ComOperationCollector;
 
 import com.vmware.PerformanceInformation;
 import com.vmware.RetrieveHostInformation;

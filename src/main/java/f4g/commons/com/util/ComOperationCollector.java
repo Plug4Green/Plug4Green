@@ -1,4 +1,4 @@
-package org.f4g.com.util;
+package f4g.commons.com.util;
 
 import java.util.ArrayList;
 import java.util.Collection;

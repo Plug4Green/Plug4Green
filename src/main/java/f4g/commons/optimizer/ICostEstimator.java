@@ -1,13 +1,13 @@
-package org.f4g.optimizer;
+package f4g.commons.optimizer;
 
 
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Energy;
 
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.NetworkNodeType;
-import org.f4g.schema.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.NetworkNodeType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
 import org.jscience.physics.amount.*;
 import org.jscience.physics.model.*;
 import org.jscience.economics.money.*;

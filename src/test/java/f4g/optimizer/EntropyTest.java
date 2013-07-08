@@ -10,7 +10,7 @@
 *   Optimizer mother class for tests
 * ============================= /Header ==============================
 */
-package org.f4g.test;
+package f4g.optimizer;
 
 
 import java.util.ArrayList;

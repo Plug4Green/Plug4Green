@@ -10,26 +10,26 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package org.f4g.util;
+package f4g.commons.util;
 
 import org.apache.commons.jxpath.AbstractFactory;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.Pointer;
 import org.apache.log4j.Logger;
-import org.f4g.com.AbstractCom;
-import org.f4g.schema.metamodel.CPUType;
-import org.f4g.schema.metamodel.CoreLoadType;
-import org.f4g.schema.metamodel.CoreType;
-import org.f4g.schema.metamodel.CpuUsageType;
-import org.f4g.schema.metamodel.HardDiskType;
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.MainboardType;
-import org.f4g.schema.metamodel.MemoryUsageType;
-import org.f4g.schema.metamodel.NetworkUsageType;
-import org.f4g.schema.metamodel.PowerType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.StorageUsageType;
-import org.f4g.schema.metamodel.VirtualMachineType;
+import f4g.commons.com.AbstractCom;
+import f4g.schemas.java.metamodel.CPUType;
+import f4g.schemas.java.metamodel.CoreLoadType;
+import f4g.schemas.java.metamodel.CoreType;
+import f4g.schemas.java.metamodel.CpuUsageType;
+import f4g.schemas.java.metamodel.HardDiskType;
+import f4g.schemas.java.metamodel.IoRateType;
+import f4g.schemas.java.metamodel.MainboardType;
+import f4g.schemas.java.metamodel.MemoryUsageType;
+import f4g.schemas.java.metamodel.NetworkUsageType;
+import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.StorageUsageType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
 
 /**
  *

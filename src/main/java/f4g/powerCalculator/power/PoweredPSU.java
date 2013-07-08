@@ -1,6 +1,6 @@
-package org.f4g.power;
+package f4g.powerCalculator.power;
 
-import org.f4g.schema.metamodel.PSUType;
+import f4g.schemas.java.metamodel.PSUType;
 import org.apache.log4j.Logger;
 
 public class PoweredPSU extends PSUType implements PoweredComponent{

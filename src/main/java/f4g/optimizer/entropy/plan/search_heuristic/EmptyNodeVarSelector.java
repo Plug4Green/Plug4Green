@@ -1,6 +1,6 @@
 
 
-package org.f4g.entropy.plan.search_heuristic;
+package f4g.optimizer.entropy.plan.search_heuristic;
 
 
 import java.util.Collections;
@@ -16,8 +16,8 @@ import entropy.plan.choco.actionModel.ManageableNodeActionModel;
 
 import entropy.plan.choco.actionModel.NodeActionModel;
 import org.apache.log4j.Logger;
-import org.f4g.entropy.configuration.F4GNodeComparator;
-import org.f4g.entropy.configuration.F4GResourcePicker;
+import f4g.optimizer.entropy.configuration.F4GNodeComparator;
+import f4g.optimizer.entropy.configuration.F4GResourcePicker;
 
 /**
  * A Var selector that select the empty, energy inefficient nodes first

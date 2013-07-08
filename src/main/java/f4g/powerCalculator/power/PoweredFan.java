@@ -1,11 +1,11 @@
-package org.f4g.power;
+package f4g.powerCalculator.power;
 import org.apache.log4j.Logger;
 
-import org.f4g.power.PoweredComponent;
-import org.f4g.schema.metamodel.FanType;
-import org.f4g.schema.metamodel.RPMType;
-import org.f4g.schema.metamodel.PowerType;
-import org.f4g.schema.metamodel.DimensionType;
+import f4g.commons.power.PoweredComponent;
+import f4g.schemas.java.metamodel.FanType;
+import f4g.schemas.java.metamodel.RPMType;
+import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.DimensionType;
 
 
 // Repository Implementation

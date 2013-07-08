@@ -10,7 +10,7 @@
 *   Optimizer cloud allocation algorithm tests
 * ============================= /Header ==============================
 */
-package org.f4g.test;
+package f4g.optimizer;
 
 
 import java.util.ArrayList;
@@ -19,44 +19,44 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-import org.f4g.cost_estimator.NetworkCost;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
-import org.f4g.optimizer.OptimizationObjective;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.CpuUsageType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.MemoryUsageType;
-import org.f4g.schema.metamodel.NetworkUsageType;
-import org.f4g.schema.metamodel.NrOfCpusType;
-import org.f4g.schema.metamodel.RAMSizeType;
-import org.f4g.schema.metamodel.ServerStatusType;
-import org.f4g.schema.metamodel.StorageCapacityType;
-import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.schema.allocation.CloudVmAllocationResponseType;
-import org.f4g.schema.allocation.CloudVmAllocationType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedClustersType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedPoliciesType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedSLAsType;
-import org.f4g.schema.constraints.optimizerconstraints.CapacityType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.constraints.optimizerconstraints.ExpectedLoadType;
-import org.f4g.schema.constraints.optimizerconstraints.FederationType;
-import org.f4g.schema.constraints.optimizerconstraints.LoadType;
-import org.f4g.schema.constraints.optimizerconstraints.NodeControllerType;
-import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType;
-import org.f4g.schema.constraints.optimizerconstraints.SLAType;
-import org.f4g.schema.constraints.optimizerconstraints.SpareCPUs;
-import org.f4g.schema.constraints.optimizerconstraints.UnitType;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
-import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
-import org.f4g.schema.constraints.optimizerconstraints.SLAType.SLA;
+import f4g.optimizer.cost_estimator.NetworkCost;
+import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.commons.optimizer.OptimizationObjective;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.schemas.java.metamodel.CpuUsageType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.IoRateType;
+import f4g.schemas.java.metamodel.MemoryUsageType;
+import f4g.schemas.java.metamodel.NetworkUsageType;
+import f4g.schemas.java.metamodel.NrOfCpusType;
+import f4g.schemas.java.metamodel.RAMSizeType;
+import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.schemas.java.metamodel.StorageCapacityType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.CloudVmAllocationResponseType;
+import f4g.schemas.java.CloudVmAllocationType;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedSLAsType;
+import f4g.schemas.java.constraints.optimizerconstraints.CapacityType;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
+import f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
+import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.NodeControllerType;
+import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
+import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
+import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
+import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
+import f4g.schemas.java.constraints.optimizerconstraints.SLAType.SLA;
 
 
 /**

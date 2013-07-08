@@ -1,5 +1,5 @@
 
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSet;

@@ -1,4 +1,4 @@
-package org.f4g.launcher;
+package f4g.initServlet.launcher;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServlet;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.f4g.core.Configuration;
-import org.f4g.core.Constants;
-import org.f4g.core.IMain;
-import org.f4g.core.Main;
+import f4g.commons.core.Configuration;
+import f4g.commons.core.Constants;
+import f4g.commons.core.IMain;
+import f4g.pluginCore.core.Main;
 
 /**
  * Servlet implementation class InitServlet

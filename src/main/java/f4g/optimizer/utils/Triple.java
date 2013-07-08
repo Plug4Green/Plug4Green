@@ -10,7 +10,7 @@
 *   a simple triple utility.
 * ============================= /Header ==============================
 */
-package org.f4g.optimizer.utils;
+package f4g.optimizer.utils;
 
 /**
  * a simple pair utility.

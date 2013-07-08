@@ -1,4 +1,4 @@
-package org.f4g.gui.client;
+package f4g.f4gGui.gui.client;
 
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;

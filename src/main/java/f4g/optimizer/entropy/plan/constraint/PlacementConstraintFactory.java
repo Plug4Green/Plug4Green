@@ -10,24 +10,24 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.f4g.entropy.configuration.F4GConfigurationAdapter;
-import org.f4g.schema.constraints.optimizerconstraints.Ban;
-import org.f4g.schema.constraints.optimizerconstraints.Capacity;
-import org.f4g.schema.constraints.optimizerconstraints.Fence;
-import org.f4g.schema.constraints.optimizerconstraints.Gather;
-import org.f4g.schema.constraints.optimizerconstraints.Lonely;
-import org.f4g.schema.constraints.optimizerconstraints.Root;
-import org.f4g.schema.constraints.optimizerconstraints.Split;
-import org.f4g.schema.constraints.optimizerconstraints.Spread;
-import org.f4g.schema.constraints.optimizerconstraints.VMGroup;
-import org.f4g.schema.constraints.optimizerconstraints.ServerGroupType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.constraints.optimizerconstraints.ConstraintType.PlacementConstraint;
+import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
+import f4g.schemas.java.constraints.optimizerconstraints.Ban;
+import f4g.schemas.java.constraints.optimizerconstraints.Capacity;
+import f4g.schemas.java.constraints.optimizerconstraints.Fence;
+import f4g.schemas.java.constraints.optimizerconstraints.Gather;
+import f4g.schemas.java.constraints.optimizerconstraints.Lonely;
+import f4g.schemas.java.constraints.optimizerconstraints.Root;
+import f4g.schemas.java.constraints.optimizerconstraints.Split;
+import f4g.schemas.java.constraints.optimizerconstraints.Spread;
+import f4g.schemas.java.constraints.optimizerconstraints.VMGroup;
+import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint;
 import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;

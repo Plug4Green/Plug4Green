@@ -1,18 +1,18 @@
-package org.f4g.power;
+package f4g.powerCalculator.power;
 import java.util.*;
 
 import javax.measure.Measure;
 import javax.measure.quantity.Power;
 
-import org.f4g.power.PoweredComponent;
+import f4g.commons.power.PoweredComponent;
 
 import org.apache.log4j.Logger;
-import org.f4g.schema.metamodel.NetworkPortType;
-import org.f4g.schema.metamodel.NetworkNodeStatusType;
+import f4g.schemas.java.metamodel.NetworkPortType;
+import f4g.schemas.java.metamodel.NetworkNodeStatusType;
 import org.apache.log4j.Logger;
-import org.f4g.schema.metamodel.BoxNetworkType;
-import org.f4g.schema.metamodel.NetworkNodeType;
-import org.f4g.schema.metamodel.NetworkNodeStatusType;
+import f4g.schemas.java.metamodel.BoxNetworkType;
+import f4g.schemas.java.metamodel.NetworkNodeType;
+import f4g.schemas.java.metamodel.NetworkNodeStatusType;
 
 import org.jscience.physics.amount.*;
 import org.jscience.physics.model.*;

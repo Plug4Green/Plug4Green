@@ -12,7 +12,7 @@
 *   To test marshalling and conversion to JSON
 * ============================= /Header ==============================
 */
-package org.f4g.test;
+package f4g.manager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,19 +28,19 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import org.f4g.core.Configuration;
-import org.f4g.core.Constants;
-import org.f4g.couchDB.ConvertToJSON;
-import org.f4g.couchDB.DataBase;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
-import org.f4g.schema.metamodel.CUEType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.PUEType;
-import org.f4g.schema.metamodel.PowerType;
-import org.f4g.schema.metamodel.SiteType;
+import f4g.commons.core.Configuration;
+import f4g.commons.core.Constants;
+import f4g.manager.couchDB.ConvertToJSON;
+import f4g.manager.couchDB.DataBase;
+import f4g.schemas.java.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.actions.PowerOnActionType;
+import f4g.schemas.java.metamodel.CUEType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.PUEType;
+import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.SiteType;
 
 import com.rits.cloning.Cloner;
 

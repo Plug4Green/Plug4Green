@@ -1,6 +1,6 @@
 
 
-package org.f4g.entropy.plan.search_heuristic;
+package f4g.optimizer.entropy.plan.search_heuristic;
 
 
 import choco.kernel.solver.search.integer.AbstractIntVarSelector;
@@ -11,8 +11,8 @@ import entropy.plan.choco.ReconfigurationProblem;
 import java.util.Collections;
 import java.util.Comparator;
 import org.apache.log4j.Logger;
-import org.f4g.entropy.configuration.F4GResourcePicker;
-import org.f4g.entropy.configuration.F4GNodeComparator;
+import f4g.optimizer.entropy.configuration.F4GResourcePicker;
+import f4g.optimizer.entropy.configuration.F4GNodeComparator;
 
 
 /**

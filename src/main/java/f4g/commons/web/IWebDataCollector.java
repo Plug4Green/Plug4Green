@@ -12,14 +12,14 @@
 *   Interface for the web data collector.
 * ============================= /Header ==============================
 */
-package org.f4g.web;
+package f4g.commons.web;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import javax.xml.bind.JAXBElement;
 
-import org.f4g.schema.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.AbstractBaseActionType;
 
 /**
  * Interface for the web data collector.

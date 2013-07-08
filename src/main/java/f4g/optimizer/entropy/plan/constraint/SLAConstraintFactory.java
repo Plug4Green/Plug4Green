@@ -10,7 +10,7 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,17 +18,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.f4g.optimizer.OptimizerEngine;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.constraints.optimizerconstraints.EnergyConstraintsType;
-import org.f4g.schema.constraints.optimizerconstraints.HardwareConstraintsType;
-import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType;
-import org.f4g.schema.constraints.optimizerconstraints.SecurityConstraintsType;
-import org.f4g.schema.constraints.optimizerconstraints.ServerGroupType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedSLAsType.SLA;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType.Cluster;
-import org.f4g.schema.constraints.optimizerconstraints.ServerGroupType.ServerGroup;
-import org.f4g.schema.metamodel.FIT4GreenType;
+import f4g.commons.optimizer.OptimizerEngine;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
+import f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.SecurityConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedSLAsType.SLA;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
+import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType.ServerGroup;
+import f4g.schemas.java.metamodel.FIT4GreenType;
 
 import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSet;

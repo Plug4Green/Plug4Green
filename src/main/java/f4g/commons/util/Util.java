@@ -1,4 +1,4 @@
-package org.f4g.util;
+package f4g.commons.util;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 
@@ -9,7 +9,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 
 
 public class Util {

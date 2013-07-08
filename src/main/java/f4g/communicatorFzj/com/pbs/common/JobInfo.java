@@ -12,7 +12,7 @@
 *   Structure to hold Informations about a job
 * ============================= /Header ==============================
 */
-package org.f4g.com.pbs.common;
+package f4g.communicatorFzj.com.pbs.common;
 
 import java.io.Serializable;
 import java.util.HashSet;

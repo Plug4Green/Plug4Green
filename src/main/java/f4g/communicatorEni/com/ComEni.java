@@ -13,7 +13,7 @@
  * ============================= /Header ==============================
  */
 
-package org.f4g.com;
+package f4g.communicatorEni.com;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,19 +25,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.log4j.Logger;
-import org.f4g.com.simulation.ComEniUpdateSimulationThread;
-import org.f4g.com.util.ComOperation;
-import org.f4g.com.util.ComOperationCollector;
-import org.f4g.monitor.IMonitor;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.LiveMigrateVMActionType;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
-import org.f4g.schema.actions.StartJobActionType;
-import org.f4g.schema.actions.StandByActionType;
-import org.f4g.schema.metamodel.ServerStatusType;
-import org.f4g.com.ComEniConstants;
+import f4g.commons.com.simulation.ComEniUpdateSimulationThread;
+import f4g.commons.com.util.ComOperation;
+import f4g.commons.com.util.ComOperationCollector;
+import f4g.commons.monitor.IMonitor;
+import f4g.schemas.java.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.LiveMigrateVMActionType;
+import f4g.schemas.java.actions.MoveVMActionType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.actions.PowerOnActionType;
+import f4g.schemas.java.actions.StartJobActionType;
+import f4g.schemas.java.actions.StandByActionType;
+import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.commons.com.ComEniConstants;
 
 import com.vmware.MigrateRelocateVirtualMachine;
 import com.vmware.PowerOps;

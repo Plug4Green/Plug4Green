@@ -14,13 +14,13 @@
 * ============================= /Header ==============================
 */
 
-package org.f4g.test;
+package f4g.optimizer;
 
 import org.apache.log4j.Logger;
-import org.f4g.optimizer.utils.AggregatedUsage;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.*;
-import org.f4g.util.Util;
+import f4g.commons.optimizer.utils.AggregatedUsage;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.schemas.java.metamodel.*;
+import f4g.commons.util.Util;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 

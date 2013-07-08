@@ -12,57 +12,57 @@
 * ============================= /Header ==============================
 */
 
-package org.f4g.optimizer.HPC;
+package f4g.optimizer.HPC;
 
 
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.actions.ActionRequestType.ActionList;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
-import org.f4g.schema.actions.StandByActionType;
-import org.f4g.schema.actions.StartJobActionType;
+import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.actions.ActionRequestType.ActionList;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.actions.PowerOnActionType;
+import f4g.schemas.java.actions.StandByActionType;
+import f4g.schemas.java.actions.StartJobActionType;
 
-import org.f4g.schema.allocation.HpcClusterAllocationType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
-import org.f4g.schema.allocation.HpcClusterAllocationResponseType;
+import f4g.schemas.java.HpcClusterAllocationType;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.HpcClusterAllocationResponseType;
 
 import org.apache.commons.jxpath.JXPathContext;
-import org.f4g.optimizer.ICostEstimator;
-import org.f4g.optimizer.OptimizerEngine;
-import org.f4g.optimizer.HPC.OptimalJob;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.controller.IController;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.metamodel.ApplicationBenchmarkType;
-import org.f4g.schema.metamodel.CoreLoadType;
-import org.f4g.schema.metamodel.CpuUsageType;
-import org.f4g.schema.metamodel.DatacenterType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.FanType;
-import org.f4g.schema.metamodel.HardDiskType;
-import org.f4g.schema.metamodel.IDREFS;
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.JobPriorityType;
-import org.f4g.schema.metamodel.JobTimeType;
-import org.f4g.schema.metamodel.MainboardType;
-import org.f4g.schema.metamodel.MemoryUsageType;
-import org.f4g.schema.metamodel.NrOfCoresType;
-import org.f4g.schema.metamodel.NrOfNodesType;
-import org.f4g.schema.metamodel.PowerType;
-import org.f4g.schema.metamodel.QueueType;
-import org.f4g.schema.metamodel.RPMType;
-import org.f4g.schema.metamodel.SiteType;
-import org.f4g.schema.metamodel.JobStatusType;
-import org.f4g.schema.metamodel.JobType;
-import org.f4g.schema.metamodel.NodeStatusType;
-import org.f4g.schema.metamodel.RAMStickType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.RackableServerType;
-import org.f4g.schema.metamodel.FrameworkCapabilitiesType;
-import org.f4g.schema.metamodel.CPUType;
-import org.f4g.schema.metamodel.CoreType;
-import org.f4g.schema.actions.ObjectFactory;
+import f4g.commons.optimizer.ICostEstimator;
+import f4g.commons.optimizer.OptimizerEngine;
+import f4g.commons.optimizer.HPC.OptimalJob;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.commons.controller.IController;
+import f4g.commons.power.IPowerCalculator;
+import f4g.schemas.java.metamodel.ApplicationBenchmarkType;
+import f4g.schemas.java.metamodel.CoreLoadType;
+import f4g.schemas.java.metamodel.CpuUsageType;
+import f4g.schemas.java.metamodel.DatacenterType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.FanType;
+import f4g.schemas.java.metamodel.HardDiskType;
+import f4g.schemas.java.metamodel.IDREFS;
+import f4g.schemas.java.metamodel.IoRateType;
+import f4g.schemas.java.metamodel.JobPriorityType;
+import f4g.schemas.java.metamodel.JobTimeType;
+import f4g.schemas.java.metamodel.MainboardType;
+import f4g.schemas.java.metamodel.MemoryUsageType;
+import f4g.schemas.java.metamodel.NrOfCoresType;
+import f4g.schemas.java.metamodel.NrOfNodesType;
+import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.QueueType;
+import f4g.schemas.java.metamodel.RPMType;
+import f4g.schemas.java.metamodel.SiteType;
+import f4g.schemas.java.metamodel.JobStatusType;
+import f4g.schemas.java.metamodel.JobType;
+import f4g.schemas.java.metamodel.NodeStatusType;
+import f4g.schemas.java.metamodel.RAMStickType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.RackableServerType;
+import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
+import f4g.schemas.java.metamodel.CPUType;
+import f4g.schemas.java.metamodel.CoreType;
+import f4g.schemas.java.actions.ObjectFactory;
 
 
 import java.util.ArrayList;

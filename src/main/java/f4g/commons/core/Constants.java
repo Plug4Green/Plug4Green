@@ -12,7 +12,7 @@
 *   Contains all the constants global to the FIT4Green framework.
 * ============================= /Header ==============================
 */
-package org.f4g.core;
+package f4g.commons.core;
 
 /**
  * Contains all the constants global to the FIT4Green framework

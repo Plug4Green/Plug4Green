@@ -1,4 +1,4 @@
-package org.f4g.test;
+package f4g.optimizer;
 
 import junit.framework.TestCase;
 
@@ -6,39 +6,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.util.LoadCalculator;
-import org.f4g.cost_estimator.NetworkCost;
+import f4g.commons.power.IPowerCalculator;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.commons.util.LoadCalculator;
+import f4g.optimizer.cost_estimator.NetworkCost;
 import org.jscience.physics.amount.*;
 import org.jscience.economics.money.*;
 import javax.measure.quantity.*;
 import static javax.measure.unit.SI.*;
 
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.NetworkNodeType;
-import org.f4g.schema.metamodel.NetworkPortType;
-import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.schema.metamodel.SiteType;
-import org.f4g.optimizer.ICostEstimator;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.power.PoweredNetworkNode;
-import org.f4g.optimizer.OptimizationObjective;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.NetworkPortBufferSizeType;
-import org.f4g.schema.metamodel.BitErrorRateType;
-import org.f4g.schema.metamodel.PropagationDelayType;
-import org.f4g.schema.metamodel.NetworkNodeStatusType;
-import org.f4g.schema.metamodel.NetworkTrafficType;
-import org.f4g.schema.metamodel.LinkType;
-import org.f4g.schema.metamodel.FlowType;
-import org.f4g.schema.metamodel.PowerType;
-import org.f4g.schema.metamodel.MemoryUsageType;
-import org.f4g.schema.metamodel.StorageUsageType;
-import org.f4g.schema.metamodel.MainboardType;
-import org.f4g.schema.metamodel.NICType;
-import org.f4g.schema.metamodel.ServerStatusType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.NetworkNodeType;
+import f4g.schemas.java.metamodel.NetworkPortType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.SiteType;
+import f4g.commons.optimizer.ICostEstimator;
+import f4g.commons.power.IPowerCalculator;
+import f4g.commons.power.PoweredNetworkNode;
+import f4g.commons.optimizer.OptimizationObjective;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.schemas.java.metamodel.NetworkPortBufferSizeType;
+import f4g.schemas.java.metamodel.BitErrorRateType;
+import f4g.schemas.java.metamodel.PropagationDelayType;
+import f4g.schemas.java.metamodel.NetworkNodeStatusType;
+import f4g.schemas.java.metamodel.NetworkTrafficType;
+import f4g.schemas.java.metamodel.LinkType;
+import f4g.schemas.java.metamodel.FlowType;
+import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.MemoryUsageType;
+import f4g.schemas.java.metamodel.StorageUsageType;
+import f4g.schemas.java.metamodel.MainboardType;
+import f4g.schemas.java.metamodel.NICType;
+import f4g.schemas.java.metamodel.ServerStatusType;
 
 
 public class OptimizerNetworkTestBasic extends TestCase {

@@ -1,10 +1,10 @@
 
-package org.f4g.entropy.plan.action;
+package f4g.optimizer.entropy.plan.action;
 
 
-import org.f4g.controller.IController;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.metamodel.FIT4GreenType;
+import f4g.commons.controller.IController;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
 
 import entropy.execution.driver.DriverInstantiationException;
 import entropy.plan.action.*;

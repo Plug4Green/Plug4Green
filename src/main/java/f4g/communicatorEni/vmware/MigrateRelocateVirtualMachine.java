@@ -12,7 +12,7 @@
  *   Class used to migrate Virtual Machines
  * ============================= /Header ==============================
  */
-package com.vmware;
+package f4g.communicatorEni.vmware;
 
 
 
@@ -32,9 +32,9 @@ import com.vmware.vim.VirtualMachinePowerState;
 import com.vmware.vim.VirtualMachineRelocateSpec;
 import com.vmware.vim.VirtualMachineConfigInfo;
 
-import org.f4g.com.ComEniConstants; 
-import org.f4g.schema.actions.LiveMigrateVMActionType;
-import org.f4g.schema.actions.MoveVMActionType;
+import f4g.commons.com.ComEniConstants; 
+import f4g.schemas.java.actions.LiveMigrateVMActionType;
+import f4g.schemas.java.actions.MoveVMActionType;
 
 /**
  * Migrate or Relocate virtual machines

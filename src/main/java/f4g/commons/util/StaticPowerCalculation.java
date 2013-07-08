@@ -1,10 +1,10 @@
-package org.f4g.util;
+package f4g.commons.util;
 
 import org.apache.log4j.Logger;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.VirtualMachineType;
+import f4g.commons.power.IPowerCalculator;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
 
 
 

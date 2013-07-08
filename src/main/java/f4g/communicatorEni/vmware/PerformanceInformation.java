@@ -12,7 +12,7 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package com.vmware;
+package f4g.communicatorEni.vmware;
 
 /**
  * {To be completed; use html notation, if necessary}

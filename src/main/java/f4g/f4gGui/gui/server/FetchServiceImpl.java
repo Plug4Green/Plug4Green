@@ -1,4 +1,4 @@
-package org.f4g.gui.server;
+package f4g.f4gGui.gui.server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,7 +6,7 @@ import java.io.OutputStream;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import org.f4g.gui.client.FetchService;
+import f4g.f4gGui.gui.client.FetchService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**

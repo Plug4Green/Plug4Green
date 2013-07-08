@@ -1,11 +1,11 @@
-package org.f4g.com;
+package f4g.commons.com;
 
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
-import org.f4g.schema.actions.LiveMigrateVMActionType;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.StartJobActionType;
-import org.f4g.schema.actions.StandByActionType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.actions.PowerOnActionType;
+import f4g.schemas.java.actions.LiveMigrateVMActionType;
+import f4g.schemas.java.actions.MoveVMActionType;
+import f4g.schemas.java.actions.StartJobActionType;
+import f4g.schemas.java.actions.StandByActionType;
 
 /**
  * Interface representing all the possible operations allowed on a Com component

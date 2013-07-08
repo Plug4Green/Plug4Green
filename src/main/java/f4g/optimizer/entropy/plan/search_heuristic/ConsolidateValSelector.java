@@ -1,6 +1,6 @@
 
 
-package org.f4g.entropy.plan.search_heuristic;
+package f4g.optimizer.entropy.plan.search_heuristic;
 
 
 import java.util.ArrayList;
@@ -15,13 +15,13 @@ import choco.kernel.common.util.iterators.DisposableIntIterator;
 import entropy.configuration.*;
 
 import org.apache.log4j.Logger;
-import org.f4g.entropy.configuration.F4GNode;
-import org.f4g.optimizer.OptimizationObjective;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.ServerStatusType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.util.StaticPowerCalculation;
+import f4g.optimizer.entropy.configuration.F4GNode;
+import f4g.commons.optimizer.OptimizationObjective;
+import f4g.commons.power.IPowerCalculator;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.commons.util.StaticPowerCalculation;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;

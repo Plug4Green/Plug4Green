@@ -12,7 +12,7 @@
 *   The response for a update request
 * ============================= /Header ==============================
 */
-package org.f4g.com.pbs.common;
+package f4g.communicatorFzj.com.pbs.common;
 
 /**
  * The response for a update request

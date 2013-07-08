@@ -10,7 +10,7 @@
  *   Reads and validate the SLA instance file.
  * ============================= /Header ==============================
  */
-package org.f4g.optimizer.CloudTraditional;
+package f4g.optimizer.CloudTraditional;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
@@ -31,17 +31,17 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.apache.log4j.Logger;
-import org.f4g.schema.constraints.optimizerconstraints.ClusterType;
-import org.f4g.schema.constraints.optimizerconstraints.ConstraintType;
-import org.f4g.schema.constraints.optimizerconstraints.FIT4GreenOptimizerConstraint;
-import org.f4g.schema.constraints.optimizerconstraints.FederationType;
-import org.f4g.schema.constraints.optimizerconstraints.LoadType;
-import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.RepeatsType;
-import org.f4g.schema.constraints.optimizerconstraints.SLAType;
-import org.f4g.schema.constraints.optimizerconstraints.ServerGroupType;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
+import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType;
+import f4g.schemas.java.constraints.optimizerconstraints.FIT4GreenOptimizerConstraint;
+import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
+import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
+import f4g.schemas.java.constraints.optimizerconstraints.RepeatsType;
+import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
+import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 

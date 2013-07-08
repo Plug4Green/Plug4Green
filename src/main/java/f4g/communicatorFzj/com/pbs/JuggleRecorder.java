@@ -11,7 +11,7 @@
 * ============================= /Header ==============================
 */
 
-package org.f4g.com.pbs;
+package f4g.communicatorFzj.com.pbs;
 
 
 import java.io.FileWriter;
@@ -35,17 +35,17 @@ import javax.xml.validation.SchemaFactory;
 
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.log4j.Logger;
-import org.f4g.core.Configuration;
-import org.f4g.core.Constants;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.FrameworkCapabilitiesType;
-import org.f4g.schema.metamodel.ObjectFactory;
-import org.f4g.schema.metamodel.PSUType;
-import org.f4g.schema.metamodel.RackableServerType;
-import org.f4g.schema.metamodel.ServerType;
+import f4g.commons.core.Configuration;
+import f4g.commons.core.Constants;
+import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
+import f4g.schemas.java.metamodel.ObjectFactory;
+import f4g.schemas.java.metamodel.PSUType;
+import f4g.schemas.java.metamodel.RackableServerType;
+import f4g.schemas.java.metamodel.ServerType;
 import org.xml.sax.SAXException;
 
 

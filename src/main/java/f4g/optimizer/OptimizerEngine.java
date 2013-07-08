@@ -12,7 +12,7 @@
 * ============================= /Header ==============================
 */
 
-package org.f4g.optimizer;
+package f4g.commons.optimizer;
 
 
 import java.util.ArrayList;
@@ -24,25 +24,25 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.log4j.Logger;
-import org.f4g.controller.IController;
-import org.f4g.optimizer.ICostEstimator;
-import org.f4g.optimizer.OptimizationObjective;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.metamodel.DatacenterType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.PowerType;
-import org.f4g.schema.metamodel.ServerStatusType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.actions.LiveMigrateVMActionType;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
+import f4g.commons.controller.IController;
+import f4g.commons.optimizer.ICostEstimator;
+import f4g.commons.optimizer.OptimizationObjective;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.commons.power.IPowerCalculator;
+import f4g.schemas.java.metamodel.DatacenterType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.actions.LiveMigrateVMActionType;
+import f4g.schemas.java.actions.MoveVMActionType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.actions.PowerOnActionType;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.AllocationResponseType;
 
 
 import com.google.common.base.Predicate;

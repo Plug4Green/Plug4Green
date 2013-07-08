@@ -1,8 +1,8 @@
-package org.f4g.optimizer;
+package f4g.commons.optimizer;
 
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.AllocationResponseType;
 
 /**
  * Interface for the f4g Optimizer component

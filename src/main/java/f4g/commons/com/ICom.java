@@ -1,9 +1,9 @@
-package org.f4g.com;
+package f4g.commons.com;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.f4g.monitor.IMonitor;
+import f4g.commons.monitor.IMonitor;
 
 
 /**

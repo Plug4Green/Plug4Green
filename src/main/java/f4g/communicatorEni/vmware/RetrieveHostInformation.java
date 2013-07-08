@@ -12,7 +12,7 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package com.vmware;
+package f4g.communicatorEni.vmware;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -35,7 +35,7 @@ import org.apache.sshd.TeePipedOutputStream;
 import org.apache.sshd.client.channel.ChannelExec;
 import org.apache.sshd.client.future.AuthFuture;
 import org.apache.sshd.client.future.ConnectFuture;
-import org.f4g.com.ComEniConstants;
+import f4g.communicatorEni.com.ComEniConstants;
 
 
 //import com.vmware.apputils.AppUtil;

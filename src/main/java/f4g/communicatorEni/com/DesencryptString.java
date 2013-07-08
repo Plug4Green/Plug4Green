@@ -12,7 +12,7 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package org.f4g.com;
+package f4g.communicatorEni.com;
 
 /**
  * {To be completed; use html notation, if necessary}

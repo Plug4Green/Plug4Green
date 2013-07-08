@@ -12,23 +12,23 @@
 *   Communicates with the FIT4Green plug-in.
 * ============================= /Header ==============================
 */
-package org.f4g.gui.server;
+package f4g.f4gGui.gui.server;
 
 import org.apache.log4j.Logger;
-import org.f4g.core.IMain;
-import org.f4g.core.Main;
-import org.f4g.controller.IController;
-import org.f4g.monitor.IMonitor;
-import org.f4g.optimizer.OptimizationObjective;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.LiveMigrateVMActionType;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.actions.PowerOnActionType;
-import org.f4g.schema.actions.StartJobActionType;
-import org.f4g.schema.actions.StandByActionType;
-import org.f4g.web.IWebDataCollector;
-import org.f4g.web.WebDataCollector;
+import f4g.commons.core.IMain;
+import f4g.pluginCore.core.Main;
+import f4g.commons.controller.IController;
+import f4g.commons.monitor.IMonitor;
+import f4g.commons.optimizer.OptimizationObjective;
+import f4g.schemas.java.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.LiveMigrateVMActionType;
+import f4g.schemas.java.actions.MoveVMActionType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.actions.PowerOnActionType;
+import f4g.schemas.java.actions.StartJobActionType;
+import f4g.schemas.java.actions.StandByActionType;
+import f4g.commons.web.IWebDataCollector;
+import f4g.commons.web.WebDataCollector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,9 +37,9 @@ import java.util.Vector;
 
 import javax.xml.bind.JAXBElement;
 
-import org.f4g.gui.client.ActionService;
-import org.f4g.gui.shared.ActionData;
-import org.f4g.gui.shared.Status;
+import f4g.f4gGui.gui.client.ActionService;
+import f4g.f4gGui.gui.shared.ActionData;
+import f4g.f4gGui.gui.shared.Status;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 

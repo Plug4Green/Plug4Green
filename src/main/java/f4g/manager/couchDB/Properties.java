@@ -12,7 +12,7 @@
 *   Database properties
 * ============================= /Header ==============================
 */
-package org.f4g.couchDB;
+package f4g.manager.couchDB;
 
 import java.util.ArrayList;
 

@@ -6,7 +6,7 @@
 //
 
 
-package org.f4g.com;
+package f4g.communicatorEni.com;
 
 import java.io.Serializable;
 import java.util.ArrayList;

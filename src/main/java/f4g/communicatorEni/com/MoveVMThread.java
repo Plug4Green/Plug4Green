@@ -12,10 +12,10 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package org.f4g.com;
+package f4g.communicatorEni.com;
 
 import org.apache.log4j.Logger;
-import org.f4g.schema.actions.MoveVMActionType;
+import f4g.schemas.java.actions.MoveVMActionType;
 
 import com.vmware.MigrateRelocateVirtualMachine;
 

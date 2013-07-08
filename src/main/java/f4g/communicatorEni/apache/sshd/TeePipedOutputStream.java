@@ -12,7 +12,7 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package org.apache.sshd;
+package f4g.communicatorEni.apache.sshd;
 
 import java.io.IOException;
 import java.io.OutputStream;

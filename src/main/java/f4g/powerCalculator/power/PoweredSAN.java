@@ -1,16 +1,16 @@
-package org.f4g.power;
+package f4g.powerCalculator.power;
 
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.log4j.Logger;
-import org.f4g.schema.metamodel.FanType;
-import org.f4g.schema.metamodel.PSUType;
-import org.f4g.schema.metamodel.PowerType;
-import org.f4g.schema.metamodel.SANType;
-import org.f4g.schema.metamodel.RackType;
-import org.f4g.schema.metamodel.LogicalUnitType;
-import org.f4g.schema.metamodel.NICType;
-import org.f4g.schema.metamodel.WaterCoolerType;
-import org.f4g.schema.metamodel.NetworkNodeType;
+import f4g.schemas.java.metamodel.FanType;
+import f4g.schemas.java.metamodel.PSUType;
+import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.SANType;
+import f4g.schemas.java.metamodel.RackType;
+import f4g.schemas.java.metamodel.LogicalUnitType;
+import f4g.schemas.java.metamodel.NICType;
+import f4g.schemas.java.metamodel.WaterCoolerType;
+import f4g.schemas.java.metamodel.NetworkNodeType;
 
 import java.util.Iterator;
 

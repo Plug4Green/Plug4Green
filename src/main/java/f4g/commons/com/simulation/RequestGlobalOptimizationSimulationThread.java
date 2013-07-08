@@ -1,8 +1,8 @@
-package org.f4g.com.simulation;
+package f4g.commons.com.simulation;
 
 import org.apache.log4j.Logger;
-import org.f4g.com.ICom;
-import org.f4g.monitor.IMonitor;
+import f4g.commons.com.ICom;
+import f4g.commons.monitor.IMonitor;
 
 public class RequestGlobalOptimizationSimulationThread extends GenericSimulationThread{
 	static Logger log = Logger.getLogger(RequestGlobalOptimizationSimulationThread.class.getName()); // 

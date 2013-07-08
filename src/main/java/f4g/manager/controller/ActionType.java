@@ -12,7 +12,7 @@
 *   Contains action types constants.
 * ============================= /Header ==============================
 */
-package org.f4g.controller;
+package f4g.manager.controller;
 
 /**
  * Contains action types constants.

@@ -1,19 +1,19 @@
-package org.f4g.com.simulation;
+package f4g.commons.com.simulation;
 
 import java.util.Random;
 
 import javax.xml.bind.JAXBElement;
 
 import org.apache.log4j.Logger;
-import org.f4g.com.ICom;
-import org.f4g.monitor.IMonitor;
-import org.f4g.schema.allocation.CloudVmAllocationResponseType;
-import org.f4g.schema.allocation.ObjectFactory;
-import org.f4g.schema.allocation.CloudVmAllocationType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
-import org.f4g.schema.allocation.RequestType;
-import org.f4g.schema.allocation.ResponseType;
+import f4g.commons.com.ICom;
+import f4g.commons.monitor.IMonitor;
+import f4g.schemas.java.CloudVmAllocationResponseType;
+import f4g.schemas.java.ObjectFactory;
+import f4g.schemas.java.CloudVmAllocationType;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.RequestType;
+import f4g.schemas.java.ResponseType;
 
 public class AllocateResourceSimulationThread extends GenericSimulationThread{
 	static Logger log = Logger.getLogger(AllocateResourceSimulationThread.class.getName()); // 

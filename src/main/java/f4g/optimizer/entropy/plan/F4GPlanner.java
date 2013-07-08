@@ -1,5 +1,5 @@
 
-package org.f4g.entropy.plan;
+package f4g.optimizer.entropy.plan;
 
 import choco.kernel.common.Constant;
 import choco.kernel.solver.ContradictionException;
@@ -24,11 +24,11 @@ import entropy.plan.durationEvaluator.MockDurationEvaluator;
 import entropy.vjob.PlacementConstraint;
 import entropy.vjob.VJob;
 import org.apache.log4j.Logger;
-import org.f4g.entropy.plan.constraint.DefaultVcpuPcpuMapping;
-import org.f4g.entropy.plan.constraint.PackingBasedCardinalities;
-import org.f4g.entropy.plan.constraint.sliceScheduling.SlicesPlanner;
-import org.f4g.entropy.plan.objective.PowerObjective;
-import org.f4g.entropy.plan.search_heuristic.F4GPlacementHeuristic;
+import f4g.optimizer.entropy.plan.constraint.DefaultVcpuPcpuMapping;
+import f4g.optimizer.entropy.plan.constraint.PackingBasedCardinalities;
+import f4g.optimizer.entropy.plan.constraint.sliceScheduling.SlicesPlanner;
+import f4g.optimizer.entropy.plan.objective.PowerObjective;
+import f4g.optimizer.entropy.plan.search_heuristic.F4GPlacementHeuristic;
 
 import java.util.*;
 

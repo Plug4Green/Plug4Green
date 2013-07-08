@@ -1,4 +1,4 @@
-package org.f4g.gui.client;
+package f4g.f4gGui.gui.client;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;

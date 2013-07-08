@@ -12,7 +12,7 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package org.f4g.com.pbs.test;
+package f4g.communicatorFzj.com.pbs.test;
 
 import static org.junit.Assert.fail;
 
@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import org.f4g.com.pbs.common.DisRequest;
-import org.f4g.com.pbs.common.DisRequestRunJob;
-import org.f4g.com.pbs.common.PbsConnection;
+import f4g.commons.com.pbs.common.DisRequest;
+import f4g.commons.com.pbs.common.DisRequestRunJob;
+import f4g.commons.com.pbs.common.PbsConnection;
 import org.junit.Before;
 import org.junit.Test;
 

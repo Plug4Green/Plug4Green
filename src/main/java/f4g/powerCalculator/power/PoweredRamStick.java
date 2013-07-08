@@ -1,12 +1,12 @@
-package org.f4g.power;
-import org.f4g.power.PoweredComponent;
-import org.f4g.schema.metamodel.BufferTypeType;
-import org.f4g.schema.metamodel.FrequencyType;
-import org.f4g.schema.metamodel.RAMSizeType;
-import org.f4g.schema.metamodel.RAMTypeType;
-import org.f4g.schema.metamodel.RAMStickType;
-import org.f4g.schema.metamodel.VoltageType;
-import org.f4g.schema.metamodel.RAMTypeVendorType;
+package f4g.powerCalculator.power;
+import f4g.commons.power.PoweredComponent;
+import f4g.schemas.java.metamodel.BufferTypeType;
+import f4g.schemas.java.metamodel.FrequencyType;
+import f4g.schemas.java.metamodel.RAMSizeType;
+import f4g.schemas.java.metamodel.RAMTypeType;
+import f4g.schemas.java.metamodel.RAMStickType;
+import f4g.schemas.java.metamodel.VoltageType;
+import f4g.schemas.java.metamodel.RAMTypeVendorType;
 import org.apache.log4j.Logger;
 
 public class PoweredRamStick extends RAMStickType implements PoweredComponent{	

@@ -13,7 +13,7 @@
 *   latter to JSON string
 * ============================= /Header ==============================
 */
-package org.f4g.couchDB;
+package f4g.manager.couchDB;
 
 import java.io.StringWriter;
 import java.net.URL;
@@ -28,9 +28,9 @@ import javax.xml.validation.SchemaFactory;
 import net.sf.json.JSON;
 import net.sf.json.xml.XMLSerializer;
 
-import org.f4g.core.Constants;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.metamodel.FIT4GreenType;
+import f4g.commons.core.Constants;
+import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
 import org.xml.sax.SAXException;
 
 /**

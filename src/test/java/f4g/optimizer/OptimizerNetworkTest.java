@@ -1,4 +1,4 @@
-package org.f4g.test;
+package f4g.optimizer;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -6,34 +6,34 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.cost_estimator.NetworkCost;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.optimizer.cost_estimator.NetworkCost;
 
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.NetworkNodeType;
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.PowerType;
-import org.f4g.schema.metamodel.MemoryUsageType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.NetworkNodeType;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.MemoryUsageType;
 
-import org.f4g.schema.metamodel.CpuUsageType;
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.NetworkUsageType;
-import org.f4g.schema.metamodel.NrOfCpusType;
-import org.f4g.schema.metamodel.RAMSizeType;
-import org.f4g.schema.metamodel.StorageCapacityType;
-import org.f4g.schema.actions.AbstractBaseActionType;
-import org.f4g.schema.actions.MoveVMActionType;
-import org.f4g.schema.actions.PowerOffActionType;
-import org.f4g.schema.constraints.optimizerconstraints.BoundedPoliciesType;
-import org.f4g.schema.constraints.optimizerconstraints.CapacityType;
-import org.f4g.schema.constraints.optimizerconstraints.ExpectedLoadType;
-import org.f4g.schema.constraints.optimizerconstraints.FederationType;
-import org.f4g.schema.constraints.optimizerconstraints.LoadType;
-import org.f4g.schema.constraints.optimizerconstraints.PeriodType;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType;
-import org.f4g.schema.constraints.optimizerconstraints.PolicyType.Policy;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.schemas.java.metamodel.CpuUsageType;
+import f4g.schemas.java.metamodel.IoRateType;
+import f4g.schemas.java.metamodel.NetworkUsageType;
+import f4g.schemas.java.metamodel.NrOfCpusType;
+import f4g.schemas.java.metamodel.RAMSizeType;
+import f4g.schemas.java.metamodel.StorageCapacityType;
+import f4g.schemas.java.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.MoveVMActionType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType;
+import f4g.schemas.java.constraints.optimizerconstraints.CapacityType;
+import f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
+import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
+import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
+import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 
 
 public class OptimizerNetworkTest extends OptimizerTest {

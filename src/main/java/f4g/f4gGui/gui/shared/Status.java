@@ -1,4 +1,4 @@
-package org.f4g.gui.shared;
+package f4g.f4gGui.gui.shared;
 
 import java.io.Serializable;
 

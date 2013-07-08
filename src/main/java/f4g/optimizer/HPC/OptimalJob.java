@@ -12,7 +12,7 @@
 */
 
 
-package org.f4g.optimizer.HPC;
+package f4g.optimizer.HPC;
 
 import java.util.Vector;
 

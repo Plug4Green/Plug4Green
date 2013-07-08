@@ -1,4 +1,4 @@
-package org.f4g.test;
+package f4g.optimizer;
 
 import junit.framework.TestCase;
 
@@ -6,24 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.schema.metamodel.CPUType;
-import org.f4g.schema.metamodel.CoreType;
-import org.f4g.schema.metamodel.MainboardType;
-import org.f4g.schema.metamodel.PSUType;
-import org.f4g.schema.metamodel.RackableServerType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.TowerServerType;
-import org.f4g.schema.metamodel.CpuUsageType;
-import org.f4g.schema.metamodel.CoreLoadType;
-import org.f4g.schema.metamodel.PowerType;
-import org.f4g.schema.metamodel.PSULoadType;
-import org.f4g.schema.metamodel.MemoryUsageType;
-import org.f4g.schema.metamodel.VirtualMachineType;
-import org.f4g.schema.metamodel.NrOfCpusType;
+import f4g.commons.power.IPowerCalculator;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.metamodel.CPUType;
+import f4g.schemas.java.metamodel.CoreType;
+import f4g.schemas.java.metamodel.MainboardType;
+import f4g.schemas.java.metamodel.PSUType;
+import f4g.schemas.java.metamodel.RackableServerType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.TowerServerType;
+import f4g.schemas.java.metamodel.CpuUsageType;
+import f4g.schemas.java.metamodel.CoreLoadType;
+import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.PSULoadType;
+import f4g.schemas.java.metamodel.MemoryUsageType;
+import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.NrOfCpusType;
 
-import org.f4g.util.LoadCalculator;
+import f4g.commons.util.LoadCalculator;
 
 
 

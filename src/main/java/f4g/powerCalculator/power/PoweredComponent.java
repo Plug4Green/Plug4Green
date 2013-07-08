@@ -1,4 +1,4 @@
-package org.f4g.power;
+package f4g.powerCalculator.power;
 
 
 

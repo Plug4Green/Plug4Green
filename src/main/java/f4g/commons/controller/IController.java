@@ -1,6 +1,6 @@
-package org.f4g.controller;
+package f4g.commons.controller;
 
-import org.f4g.schema.actions.ActionRequestType;
+import f4g.schemas.java.actions.ActionRequestType;
 
 /**
  * Interface to be implemented by the Controller component.

@@ -11,28 +11,28 @@
 * ============================= /Header ==============================
 */
 
-package org.f4g.test;
+package f4g.optimizer;
 
 
 import java.util.Random;
 import org.apache.log4j.Logger;
 
 
-import org.f4g.schema.constraints.optimizerconstraints.CapacityType;
-import org.f4g.schema.constraints.optimizerconstraints.EnergyConstraintsType;
-import org.f4g.schema.constraints.optimizerconstraints.ExpectedLoadType;
-import org.f4g.schema.constraints.optimizerconstraints.FIT4GreenOptimizerConstraint;
-import org.f4g.schema.constraints.optimizerconstraints.HardwareConstraintsType;
-import org.f4g.schema.constraints.optimizerconstraints.QoSConstraintsType;
-import org.f4g.schema.constraints.optimizerconstraints.SLAType;
-import org.f4g.schema.constraints.optimizerconstraints.VMTypeType;
-import org.f4g.schema.metamodel.CpuUsageType;
-import org.f4g.schema.metamodel.IoRateType;
-import org.f4g.schema.metamodel.MemoryUsageType;
-import org.f4g.schema.metamodel.NetworkUsageType;
-import org.f4g.schema.metamodel.NrOfCpusType;
-import org.f4g.schema.metamodel.RAMSizeType;
-import org.f4g.schema.metamodel.StorageCapacityType;
+import f4g.schemas.java.constraints.optimizerconstraints.CapacityType;
+import f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.FIT4GreenOptimizerConstraint;
+import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.metamodel.CpuUsageType;
+import f4g.schemas.java.metamodel.IoRateType;
+import f4g.schemas.java.metamodel.MemoryUsageType;
+import f4g.schemas.java.metamodel.NetworkUsageType;
+import f4g.schemas.java.metamodel.NrOfCpusType;
+import f4g.schemas.java.metamodel.RAMSizeType;
+import f4g.schemas.java.metamodel.StorageCapacityType;
 
 
 public class SLAGenerator {

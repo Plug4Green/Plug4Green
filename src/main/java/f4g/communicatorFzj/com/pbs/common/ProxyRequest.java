@@ -13,7 +13,7 @@
 *   Also involves a RMC like structure for a function, which should be executed on the Proxy, when receiving one of these messages
 * ============================= /Header ==============================
 */
-package org.f4g.com.pbs.common;
+package f4g.communicatorFzj.com.pbs.common;
 
 import java.io.IOException;
 import java.io.Serializable;

@@ -12,7 +12,7 @@
 *   Structure for the information about a node
 * ============================= /Header ==============================
 */
-package org.f4g.com.pbs.common;
+package f4g.communicatorFzj.com.pbs.common;
 
 import java.io.Serializable;
 import java.util.HashMap;

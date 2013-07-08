@@ -12,7 +12,7 @@
 *   Collects configuration data for couchDB
 * ============================= /Header ==============================
 */
-package org.f4g.core;
+package f4g.commons.core;
 
 /**
  * Collects configuration data for couchDB

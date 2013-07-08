@@ -1,14 +1,14 @@
-package org.f4g.power;
+package f4g.powerCalculator.power;
 
-import org.f4g.power.PoweredComponent;
-import org.f4g.schema.metamodel.FrequencyType;
-import org.f4g.schema.metamodel.VoltageType;
-import org.f4g.schema.metamodel.CoreType;
-import org.f4g.schema.metamodel.CPUArchitectureType;
-import org.f4g.schema.metamodel.OperatingSystemTypeType;
-import org.f4g.schema.metamodel.CoreLoadType;
-import org.f4g.schema.metamodel.NrOfTransistorsType;
-import org.f4g.schema.metamodel.NrOfPstatesType;
+import f4g.commons.power.PoweredComponent;
+import f4g.schemas.java.metamodel.FrequencyType;
+import f4g.schemas.java.metamodel.VoltageType;
+import f4g.schemas.java.metamodel.CoreType;
+import f4g.schemas.java.metamodel.CPUArchitectureType;
+import f4g.schemas.java.metamodel.OperatingSystemTypeType;
+import f4g.schemas.java.metamodel.CoreLoadType;
+import f4g.schemas.java.metamodel.NrOfTransistorsType;
+import f4g.schemas.java.metamodel.NrOfPstatesType;
 import org.apache.log4j.Logger;
 
 // Repository implementation

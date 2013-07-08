@@ -12,7 +12,7 @@
 *   Wrapper class for collecting actions
 * ============================= /Header ==============================
 */
-package org.f4g.controller;
+package f4g.manager.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;

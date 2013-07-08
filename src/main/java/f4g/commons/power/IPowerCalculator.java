@@ -1,21 +1,21 @@
-package org.f4g.power;
+package f4g.commons.power;
 
-import org.f4g.com.util.PowerData;
-import org.f4g.schema.metamodel.CPUArchitectureType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.SiteType;
-import org.f4g.schema.metamodel.DatacenterType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.MainboardType;
-import org.f4g.schema.metamodel.OperatingSystemTypeType;
-import org.f4g.schema.metamodel.RAIDType;
-import org.f4g.schema.metamodel.HardDiskType;
-import org.f4g.schema.metamodel.SolidStateDiskType;
-import org.f4g.schema.metamodel.CPUType;
-import org.f4g.schema.metamodel.CoreType;
-import org.f4g.schema.metamodel.FanType;
-import org.f4g.schema.metamodel.RackType;
-import org.f4g.schema.metamodel.NASType;
+import f4g.commons.com.util.PowerData;
+import f4g.schemas.java.metamodel.CPUArchitectureType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.SiteType;
+import f4g.schemas.java.metamodel.DatacenterType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.MainboardType;
+import f4g.schemas.java.metamodel.OperatingSystemTypeType;
+import f4g.schemas.java.metamodel.RAIDType;
+import f4g.schemas.java.metamodel.HardDiskType;
+import f4g.schemas.java.metamodel.SolidStateDiskType;
+import f4g.schemas.java.metamodel.CPUType;
+import f4g.schemas.java.metamodel.CoreType;
+import f4g.schemas.java.metamodel.FanType;
+import f4g.schemas.java.metamodel.RackType;
+import f4g.schemas.java.metamodel.NASType;
 /**
  * Interface to be implemented by the Power Calculator component
  * 

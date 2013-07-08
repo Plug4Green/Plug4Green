@@ -10,16 +10,16 @@
  *   Interface to a server used by the optimizer
  * ============================= /Header ==============================
  */
-package org.f4g.optimizer.utils;
+package f4g.optimizer.utils;
 
 import java.util.List;
 
-import org.f4g.com.util.PowerData;
-import org.f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
-import org.f4g.optimizer.utils.OptimizerServer.CandidateState;
-import org.f4g.power.IPowerCalculator;
-import org.f4g.schema.metamodel.MainboardType;
-import org.f4g.schema.metamodel.ServerStatusType;
+import f4g.commons.com.util.PowerData;
+import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.commons.optimizer.utils.OptimizerServer.CandidateState;
+import f4g.commons.power.IPowerCalculator;
+import f4g.schemas.java.metamodel.MainboardType;
+import f4g.schemas.java.metamodel.ServerStatusType;
 import org.jvnet.jaxb2_commons.lang.CopyTo;
 
 /**

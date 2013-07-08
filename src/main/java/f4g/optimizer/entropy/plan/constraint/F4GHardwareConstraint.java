@@ -10,16 +10,16 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 import java.util.List;
 
-import org.f4g.optimizer.utils.Utils;
-import org.f4g.schema.metamodel.DatacenterType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.MainboardType;
-import org.f4g.schema.metamodel.ServerType;
-import org.f4g.schema.metamodel.SiteType;
+import f4g.commons.optimizer.utils.Utils;
+import f4g.schemas.java.metamodel.DatacenterType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.MainboardType;
+import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.SiteType;
 
 import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSet;

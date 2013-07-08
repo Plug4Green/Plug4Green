@@ -1,18 +1,18 @@
-package org.f4g.power;
+package f4g.powerCalculator.power;
 
 import java.util.HashMap;
 
 import java.util.Iterator;
 import java.util.Map;
 
-import org.f4g.power.PoweredComponent;
-import org.f4g.schema.metamodel.CPUArchitectureType;
-import org.f4g.schema.metamodel.CPUType;
-import org.f4g.schema.metamodel.CoreType;
-import org.f4g.schema.metamodel.CoreLoadType;
-import org.f4g.schema.metamodel.FrequencyType;
-import org.f4g.schema.metamodel.NrOfTransistorsType;
-import org.f4g.schema.metamodel.OperatingSystemTypeType;
+import f4g.commons.power.PoweredComponent;
+import f4g.schemas.java.metamodel.CPUArchitectureType;
+import f4g.schemas.java.metamodel.CPUType;
+import f4g.schemas.java.metamodel.CoreType;
+import f4g.schemas.java.metamodel.CoreLoadType;
+import f4g.schemas.java.metamodel.FrequencyType;
+import f4g.schemas.java.metamodel.NrOfTransistorsType;
+import f4g.schemas.java.metamodel.OperatingSystemTypeType;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.log4j.Logger;
 

@@ -10,14 +10,14 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package org.f4g.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import choco.cp.solver.variables.integer.BoolVarNot;
-import org.f4g.schema.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
 
 import choco.cp.solver.constraints.reified.FastIFFEq;
 import choco.cp.solver.constraints.reified.FastImpliesEq;

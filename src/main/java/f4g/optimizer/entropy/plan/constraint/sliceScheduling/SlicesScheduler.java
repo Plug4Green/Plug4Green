@@ -17,7 +17,7 @@
  * along with Entropy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.f4g.entropy.plan.constraint.sliceScheduling;
+package f4g.optimizer.entropy.plan.constraint.sliceScheduling;
 
 import choco.cp.solver.variables.integer.IntVarEvent;
 import choco.kernel.common.logging.ChocoLogging;

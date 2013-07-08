@@ -12,7 +12,7 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package org.f4g.com.unicore;
+package f4g.communicatorFzj.com.unicore;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

@@ -11,17 +11,17 @@
  * ============================= /Header ==============================
  */
 
-package org.f4g.optimizer.utils;
+package f4g.optimizer.utils;
 
 
 import org.apache.log4j.Logger;
-import org.f4g.core.Configuration;
-import org.f4g.core.Constants;
-import org.f4g.schema.actions.ActionRequestType;
-import org.f4g.schema.allocation.AllocationRequestType;
-import org.f4g.schema.allocation.AllocationResponseType;
-import org.f4g.schema.metamodel.FIT4GreenType;
-import org.f4g.schema.metamodel.ObjectFactory;
+import f4g.commons.core.Configuration;
+import f4g.commons.core.Constants;
+import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.AllocationRequestType;
+import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.ObjectFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
