@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+~ Copyright (c) 2013 CREATE-NET
+~
+~ This file is part of btrplace.
+~ This program is free software: you can redistribute it and/or modify
+~ it under the terms of the GNU General Public License as published by
+~ the Free Software Foundation, either version 3 of the License, or
+~ (at your option) any later version.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+  <!-- The Basics -->
+	<groupId>f4g</groupId>
+	<artifactId>FIT4Green</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+<!--<dependencies>
+	<dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.0</version>
+      <type>jar</type>
+      <scope>test</scope>
+    </dependency>
+	<dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.5</version>
+    </dependency>
+	<dependency>
+        <groupId>org.testng</groupId>€
+        <artifactId>testng</artifactId>
+        <version>6.8.5</version>
+        <type>jar</type>
+        <scope>test</scope>
+    </dependency>
+    </dependencies> -->
+	<modules>
+		<module>commons</module>
+		<module>communicatorDemo</module>
+		<module>communicatorEni</module>
+		<module>communicatorFzj</module>
+		<module>f4dDeveloperTools</module>
+		<module>f4gGui</module>
+		<module>initServlet</module>
+		<module>manager</module>
+		<module>optimizer</module>
+		<module>pluginCore</module>
+		<module>powerCalculator</module>
+		<module>schemas</module>
+	</modules>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+  <!-- Build Settings -->
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>2.4</version>
+			</extension>
+		</extensions>
+		<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>      <!--The Compiler Plugin is used to compile the sources of your project-->
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>       <!-- This plugin is used to release a project with Maven-->
+                <version>2.3.2</version>
+                <configuration>
+                    <tagNameFormat>@{project.groupId}-@{project.artifactId}-@{project.version}</tagNameFormat>
+                    <!-- release.sh will perform the pushes -->
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <doctitle>${project.groupId}-${project.artifactId} ${project.version} API</doctitle>
+                    <windowtitle>${project.groupId}-${project.artifactId} ${project.version} API</windowtitle>
+                    <bottom>Copyright © 2013 University of Nice-Sophia Antipolis. All Rights Reserved.</bottom>
+                    <!--<excludePackageNames>btrplace:examples</excludePackageNames>-->
+                    <!--<quiet />-->
+                </configuration>
+            </plugin>
+			<plugin>   
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>       <!-- runs the unit tests of an application -->
+                <version>2.14.1</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
+            </plugin>		
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>      <!--run integration tests while the Surefire Plugins is designed to run unit tests-->
+                <version>2.14.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includes>
+                        <include>**/*Integration.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+			
+		</plugins>
+	</build>
+	<reporting>...</reporting>
+
+  <!-- More Project Information -->
+	<name>FIT4Green</name>
+	<description>FIT4Green plug-in is an application that focuses on saving energy in Data Centres </description>
+	<url>https://github.com/fit4green/FIT4Green</url>
+	<inceptionYear>2013</inceptionYear>
+	<developers>
+		<name>Corentin Dupont</name>
+	</developers>
+	<contributors>
+		<name>Grégoire Porteu</name>
+	</contributors>
+
+	<!-- Environment Settings -->
+	<scm>
+		<connection>scm:svn:https://github.com/fit4green/FIT4Green</connection>
+		<developerConnection>scm:svn:https://github.com/fit4green/FIT4Green</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/fit4green/FIT4Green</url>
+	</scm>
+	<prerequisites>
+		<maven>3.0.5</maven>
+	</prerequisites>
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<layout>default</layout>
+			<url>http://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<name>Maven Plugin Repository</name>
+			<url>http://repo1.maven.org/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+</project>
