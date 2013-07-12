@@ -43,15 +43,12 @@
     </dependencies> -->
 	<modules>
 		<module>commons</module>
-		<module>communicatorDemo</module>
 		<module>communicatorEni</module>
 		<module>communicatorFzj</module>
 		<module>f4dDeveloperTools</module>
 		<module>f4gGui</module>
-		<module>initServlet</module>
 		<module>manager</module>
 		<module>optimizer</module>
-		<module>pluginCore</module>
 		<module>powerCalculator</module>
 		<module>schemas</module>
 	</modules>
@@ -166,6 +163,22 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+            <id>choco.repos</id>
+            <url>http://www.emn.fr/z-info/choco-repo/mvn/repository/</url>
+        </repository>
+        <repository>
+            <id>btrp-releases</id>
+            <url>http://btrp.inria.fr/repos/releases</url>
+        </repository>
+        <repository>
+            <id>btrp-snapshots</id>
+            <url>http://btrp.inria.fr/repos/snapshot-releases</url>
+        </repository>
+		<repository>
+            <id>xom</id>
+            <url>http://maven.repository.redhat.com/techpreview/eap6/6.0.0/maven-repository/xom/xom/1.2.7-redhat-1/</url>
+        </repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -180,5 +193,6 @@
 				<updatePolicy>never</updatePolicy>
 			</releases>
 		</pluginRepository>
+		
 	</pluginRepositories>
 </project>
