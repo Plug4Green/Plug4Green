@@ -23,6 +23,7 @@
 			<groupId>entropy</groupId>
 			<artifactId>entropy</artifactId>
 			<version>2.2-SNAPSHOT</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -34,46 +35,62 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>r07</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-client</artifactId>
 			<version>8.0.1</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-continuation</artifactId>
 			<version>8.0.1</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-http</artifactId>
 			<version>8.0.1</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-io</artifactId>
 			<version>8.0.1</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>8.0.1</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-util</artifactId>
 			<version>8.0.1</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>3.0.20100224</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>€
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.2</version>
+			<type>jar</type>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
             <groupId>gnu</groupId>
             <artifactId>trove</artifactId>
             <version>2.1.0</version>
+			<type>jar</type>
             <scope>compile</scope>
         </dependency>
 	</dependencies>
