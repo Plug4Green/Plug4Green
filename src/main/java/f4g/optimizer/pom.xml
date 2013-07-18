@@ -5,7 +5,7 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
+	<parent>
 		<groupId>f4g</groupId>
 		<artifactId>FIT4Green</artifactId>
 		<version>1.0</version>

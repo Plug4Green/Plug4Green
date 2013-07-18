@@ -61,7 +61,11 @@
 			<artifactId>wsdl4j</artifactId>
 			<version>1.6.3</version>
 			<type>jar</type>
-			</dependency>
-			
+		</dependency>
+		<dependency>
+			<groupId>org.jumpmind.symmetric</groupId>
+			<artifactId>symmetric</artifactId>
+			<version>1.4.0</version>
+      </dependency>	
     </dependencies>
 </project>

@@ -19,7 +19,7 @@
 	<groupId>f4g</groupId>
 	<artifactId>FIT4Green</artifactId>
 	<version>1.0</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -42,24 +42,28 @@
 			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>org.testng</groupId>€
+			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>6.0.1</version>
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
-		
-    </dependencies> -->
+		<dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+    </dependencies>
 	<modules>
-		<module>commons</module>
-		<module>communicatorEni</module>
-		<module>communicatorFzj</module>
-		<module>f4dDeveloperTools</module>
-		<module>f4gGui</module>
-		<module>manager</module>
-		<module>optimizer</module>
-		<module>powerCalculator</module>
-		<module>schemas</module>
+		<module>src\main\java\f4g\commons</module>
+		<module>src\main\java\f4g\communicatorEni</module>
+		<module>src\main\java\f4g\communicatorFzj</module>
+		<module>src\main\java\f4g\f4gDeveloperTools</module>
+		<module>src\main\java\f4g\f4gGui</module>
+		<module>src\main\java\f4g\manager</module>
+		<module>src\main\java\f4g\optimizer</module>
+		<module>src\main\java\f4g\schemas</module>
+		<module>teestt</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -135,10 +139,36 @@
                     </includes>
                 </configuration>
             </plugin>
-			
+			<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>xjc</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <packageName>java.src.dir</packageName> <!-- The name of your generated source package -->
+                </configuration>
+            </plugin>
 		</plugins>
+		<pluginManagement>
+            <plugins>
+                <!-- Need Java 5, which is the default since v2.3 of the maven-compiler-plugin. -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.5.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+            
 	</build>
-	<reporting>...</reporting>
+
 
   <!-- More Project Information -->
 	<name>FIT4Green</name>
@@ -146,10 +176,14 @@
 	<url>https://github.com/fit4green/FIT4Green</url>
 	<inceptionYear>2013</inceptionYear>
 	<developers>
-		<name>Corentin Dupont</name>
+		<developer>
+            <name>Corentin Dupont</name>
+        </developer>
 	</developers>
 	<contributors>
-		<name>Grégoire Porteu</name>
+		<contributor>
+			<name>Gregoire Porteu</name>
+		</contributor>
 	</contributors>
 
 	<!-- Environment Settings -->
