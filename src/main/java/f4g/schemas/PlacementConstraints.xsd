@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<xsd:schema 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:f4g="http://www.f4g.org/schema/MetaModel"
+	xmlns="http://www.f4g.org/schema/constraints/placement"
+	targetNamespace="http://www.f4g.org/schema/constraints/placement" 
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.f4g.org/schema/MetaModel"
+		schemaLocation="MetaModel.xsd" />
+
+	<xsd:complexType name="PlacementConstraint"/>
+
+	<!-- A constraint to enforce a set of virtual machines to avoid to be hosted 
+		on a group of nodes -->
+	<xsd:complexType name="Ban">
+		<xsd:complexContent>
+			<xsd:extension base="PlacementConstraint">
+				<xsd:sequence>
+					<xsd:element name="ServerName" type="xsd:string"
+						minOccurs="1" maxOccurs="unbounded" /> <!-- The set of nodes to exclude. -->
+					<xsd:element name="VMName" type="xsd:string" minOccurs="1"
+						maxOccurs="unbounded" /> <!-- The set of VMs involved in the constraint. -->
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- A constraint to restrict the number of virtual machines a set of nodes 
+		can host simultaneously. -->
+	<xsd:complexType name="Capacity">
+		<xsd:complexContent>
+			<xsd:extension base="PlacementConstraint">
+				<xsd:sequence>
+					<xsd:element name="MaxNbOfVMs" type="xsd:int"
+						minOccurs="1" maxOccurs="1" /> <!-- the max number of virtual machines -->
+					<xsd:element name="ServerName" type="xsd:string"
+						minOccurs="1" maxOccurs="unbounded" /> <!-- Set of node where this constraint is applicable -->
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- A constraint to enforce a set of virtual machines to be hosted on a 
+		single group of physical elements. -->
+	<xsd:complexType name="Fence">
+		<xsd:complexContent>
+			<xsd:extension base="PlacementConstraint">
+				<xsd:sequence>
+					<xsd:element name="ServerName" type="xsd:string"
+						minOccurs="1" maxOccurs="unbounded" /> <!-- The list of possible groups of nodes. -->
+					<xsd:element name="VMName" type="xsd:string" minOccurs="1"
+						maxOccurs="unbounded" /> <!-- The list of VMs involved in the constraint. -->
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- A constraint to assign a set of virtual machines to a single node. -->
+	<xsd:complexType name="Gather">
+		<xsd:complexContent>
+			<xsd:extension base="PlacementConstraint">
+				<xsd:sequence>
+					<xsd:element name="VMName" type="xsd:string" minOccurs="1"
+						maxOccurs="unbounded" /> <!-- The list of VMs involved in the constraint. -->
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- A placement constraint to ensure the given set of VMs will not be hosted 
+		on nodes that host other VMs -->
+	<xsd:complexType name="Lonely">
+		<xsd:complexContent>
+			<xsd:extension base="PlacementConstraint">
+				<xsd:sequence>
+					<xsd:element name="VMName" type="xsd:string" minOccurs="1"
+						maxOccurs="unbounded" /> <!-- The list of VMs that shouldn't be hosted on the same node -->
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- constraint that enforce all the virtual machines to be hosted on a 
+		single group of node among those given in parameters. -->
+	<xsd:complexType name="OneOf">
+		<xsd:complexContent>
+			<xsd:extension base="PlacementConstraint">
+				<xsd:sequence>
+					<xsd:element name="ServerGroup" type="ServerGroup"
+						minOccurs="1" maxOccurs="unbounded" /> <!-- The list of possible groups of nodes. -->
+					<xsd:element name="VMName" type="xsd:string" minOccurs="1"
+						maxOccurs="unbounded" /> <!-- The list of VMs involved in the constraint. -->
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- A constraint to force local operation. A running VM can not be migrated. 
+		Other VMs are ignored. -->
+	<xsd:complexType name="Root">
+		<xsd:complexContent>
+			<xsd:extension base="PlacementConstraint">
+				<xsd:sequence>
+					<xsd:element name="VMName" type="xsd:string" minOccurs="1"
+						maxOccurs="unbounded" /> <!-- The VMs to manipulate. -->
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- A constraint to enforce that two vmset can not share nodes. All the 
+		VMs of the first set can not be hosted on any node that host VMs of the second 
+		set. -->
+	<xsd:complexType name="Split">
+		<xsd:complexContent>
+			<xsd:extension base="PlacementConstraint">
+				<xsd:sequence>
+					<xsd:element name="VMGroup1" type="VMGroup" /> <!-- The first vmset. -->
+					<xsd:element name="VMGroup2" type="VMGroup" /> <!-- The second vmset. -->
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="VMGroup">
+		<xsd:sequence>
+			<xsd:element name="VMName" type="xsd:string" minOccurs="1"
+				maxOccurs="unbounded" /> <!-- The VMs to manipulate. -->
+		</xsd:sequence>
+	</xsd:complexType>
+	
+		<xsd:complexType name="ServerGroup">
+		<xsd:sequence>
+			<xsd:element name="ServerName" type="xsd:string" minOccurs="1"
+				maxOccurs="unbounded" /> <!-- The VMs to manipulate. -->
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- A constraint to ensure a set of VMs will be hosted on different nodes. -->
+	<xsd:complexType name="Spread">
+		<xsd:complexContent>
+			<xsd:extension base="PlacementConstraint">
+				<xsd:sequence>
+					<xsd:element name="VMName" type="xsd:string" minOccurs="1"
+						maxOccurs="unbounded" /> <!-- The VMs to manipulate. -->
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:element name="FIT4GreenConstraint" type="FIT4GreenConstraintType" />
+	
+	<xsd:attributeGroup name="DCAttr">
+		<xsd:attribute name="version" type="xsd:float" use="required" />
+		<xsd:attribute name="date" type="xsd:date" use="required" />
+	</xsd:attributeGroup>
+	
+	<xsd:attributeGroup name="TSAttr">
+		<xsd:attribute name="style" type="f4g:DCComputingStyleType" use="required" />
+	        	<xsd:attribute name="scenario" type="f4g:ScenarioType" use="required" />
+	        	<xsd:attribute name="location" type="f4g:LocationType" use="required" />
+	</xsd:attributeGroup>
+		
+	<xsd:complexType name="FIT4GreenConstraintType">
+		<xsd:sequence>
+			<xsd:element name="DataCentre" type="DCType" />
+		</xsd:sequence>
+		<xsd:attributeGroup ref="DCAttr" />
+	</xsd:complexType>
+
+	<xsd:complexType name="DCType">
+		<xsd:sequence>
+			<xsd:element name="TargetSys" type="TSType" />
+		</xsd:sequence>
+		<xsd:attributeGroup ref="TSAttr" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="TSType">
+		<xsd:sequence>
+			<xsd:element name="Constraint" type="ConstraintType" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="ConstraintType">
+		<xsd:sequence>		
+			<xsd:element name="Ban" type="Ban" minOccurs="0"
+						maxOccurs="unbounded" /> 			
+			<xsd:element name="Capacity" type="Capacity" minOccurs="0"
+						maxOccurs="unbounded" /> 
+			<xsd:element name="Fence" type="Fence" minOccurs="0"
+						maxOccurs="unbounded" /> 
+			<xsd:element name="Gather" type="Gather" minOccurs="0"
+						maxOccurs="unbounded" /> 
+			<xsd:element name="Lonely" type="Lonely" minOccurs="0"
+						maxOccurs="unbounded" /> 
+			<xsd:element name="OneOf" type="OneOf" minOccurs="0"
+						maxOccurs="unbounded" /> 
+			<xsd:element name="Root" type="Root" minOccurs="0"
+						maxOccurs="unbounded" /> 
+			<xsd:element name="Split" type="Split" minOccurs="0"
+						maxOccurs="unbounded" /> 
+			<xsd:element name="Spread" type="Spread" minOccurs="0"
+						maxOccurs="unbounded" />  
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

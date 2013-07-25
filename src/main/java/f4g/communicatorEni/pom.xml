@@ -8,12 +8,12 @@
         <groupId>f4g</groupId>
         <artifactId>FIT4Green</artifactId>
         <version>1.0</version>
+		<relativePath>../../../../../pom.xml</relativePath>
     </parent>
     <name>f4g-communicatorEni</name>
     <artifactId>f4g-communicatorEni</artifactId>
     <description>communicatorEni is design for a special kind of server</description>
-	
-	 <dependencies>
+	<dependencies>
         <dependency>
             <groupId>axis2</groupId>
             <artifactId>axis2</artifactId>
@@ -66,6 +66,6 @@
 			<groupId>org.jumpmind.symmetric</groupId>
 			<artifactId>symmetric</artifactId>
 			<version>1.4.0</version>
-      </dependency>	
+		</dependency>	
     </dependencies>
 </project>

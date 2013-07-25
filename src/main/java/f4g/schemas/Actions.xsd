@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<xs:schema xmlns="http://www.f4g.org/schema/Actions" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:f4g="http://www.f4g.org/schema/MetaModel"
+	xmlns:fault="http://www.f4g.org/schema/fault" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:version="2.0"
+	targetNamespace="http://www.f4g.org/schema/Actions" 
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+	
+	<xs:import namespace="http://www.f4g.org/schema/MetaModel" schemaLocation="MetaModel.xsd" />
+	
+	<xs:annotation>
+		<xs:appinfo>
+			<jaxb:globalBindings mapSimpleTypeDef="true" />
+		</xs:appinfo>
+	</xs:annotation>
+	
+	<xs:element name="ActionRequest" type="ActionRequestType"/>
+	
+	<xs:complexType name="ActionRequestType">
+		<xs:sequence>
+			<xs:element name="Datetime" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Date and time when action suggested</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!--set by the Controller-->
+			<xs:element name="IsAutomatic" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Is an automatic action? (True, False).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!--set by the Controller-->
+			<xs:element name="OperatorName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>FIT4Green operator name (for manual actions)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!--set by the Optimizer-->
+			<xs:element name="ComputedPowerBefore" type="f4g:PowerType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Computed power before optimization</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!--set by the Optimizer-->
+			<xs:element name="ComputedPowerAfter" type="f4g:PowerType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Computed power after optimization</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!--set by the Optimizer-->
+			<xs:element name="ActionList">
+				<xs:annotation>
+					<xs:documentation>List of actions</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="Action" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PowerOnActionType">
+		<xs:complexContent>
+			<xs:extension base="AbstractBaseActionType">
+				<xs:annotation>
+					<xs:documentation>Power On Action Type</xs:documentation>
+				</xs:annotation>
+				<xs:sequence>
+					<xs:element name="NodeName" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PowerOffActionType">
+		<xs:complexContent>
+			<xs:extension base="AbstractBaseActionType">
+				<xs:annotation>
+					<xs:documentation>Power Off Action Type</xs:documentation>
+				</xs:annotation>
+				<xs:sequence>
+					<xs:element name="NodeName" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="StandByActionType">
+		<xs:complexContent>
+			<xs:extension base="AbstractBaseActionType">
+				<xs:annotation>
+					<xs:documentation>Stand By Action Type</xs:documentation>
+				</xs:annotation>
+				<xs:sequence>
+					<xs:element name="NodeName" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="StartJobActionType">
+		<xs:annotation>
+			<xs:documentation>Start Job Action Type</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="AbstractBaseActionType">
+				<xs:sequence>
+					<xs:element name="JobID" type="xs:string"/>
+					<xs:element name="NodeName" type ="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MoveVMActionType">
+		<xs:annotation>
+			<xs:documentation>Move a Virtual Machine Action Type (cold migration, including inter-/intra- data centre)</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="AbstractBaseActionType">
+				<xs:sequence>
+					<xs:element name="VirtualMachine" type="xs:string"/>
+					<xs:element name="SourceNodeController" type="xs:string"/> 
+					<xs:element name="DestNodeController" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LiveMigrateVMActionType">
+		<xs:annotation>
+			<xs:documentation>Live Migrate a Virtual Machine Action Type (hot migration, including inter-/intra- data centre)</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="AbstractBaseActionType">
+				<xs:sequence>
+					<xs:element name="VirtualMachine" type="xs:string"/>
+					<xs:element name="SourceNodeController" type="xs:string"/> 
+					<xs:element name="DestNodeController" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractBaseActionType" abstract="true">
+		<xs:sequence>
+			<xs:element name="ID" type="xs:string"/>
+			<xs:element name="FrameworkName" type="xs:string"/>
+			<xs:element name="Forwarded" type="xs:boolean" minOccurs="0" />
+			<xs:element name="ForwardedAt" type="xs:dateTime" minOccurs="0" />			
+		</xs:sequence>
+	</xs:complexType>
+	<!--TODO: consider reducing the number of action types since it seems that some actions have the same action signature-->
+	<xs:element name="Action" type="AbstractBaseActionType"/>
+	<xs:element name="PowerOn" type="PowerOnActionType" substitutionGroup="Action"/>
+	<xs:element name="PowerOff" type="PowerOffActionType" substitutionGroup="Action"/>
+	<xs:element name="StandBy" type="StandByActionType" substitutionGroup="Action"/>
+	<xs:element name="StartJob" type="StartJobActionType" substitutionGroup="Action"/>
+	<xs:element name="MoveVM" type="MoveVMActionType" substitutionGroup="Action"/>
+	<xs:element name="LiveMigrateVM" type="LiveMigrateVMActionType" substitutionGroup="Action"/>
+	
+</xs:schema>

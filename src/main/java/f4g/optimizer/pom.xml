@@ -9,6 +9,7 @@
 		<groupId>f4g</groupId>
 		<artifactId>FIT4Green</artifactId>
 		<version>1.0</version>
+		<relativePath>../../../../../pom.xml</relativePath>
 	</parent>
 		<artifactId>f4g-optimizer</artifactId>
 		<name>f4g-optimizer</name>
@@ -80,7 +81,7 @@
 			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>€
+			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.5.2</version>
 			<type>jar</type>
@@ -94,11 +95,4 @@
             <scope>compile</scope>
         </dependency>
 	</dependencies>
-	
-	<repositories>
-		<repository>
-			<id>entropy.repos</id>
-			<url>http://www.emn.fr/z-info/entropy/repository</url>
-		</repository>
-	</repositories>
 </project>

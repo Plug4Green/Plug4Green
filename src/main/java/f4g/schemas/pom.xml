@@ -8,12 +8,13 @@
 		<groupId>f4g</groupId>
 		<artifactId>FIT4Green</artifactId>
 		<version>1.0</version>
+		<relativePath>../../../../../pom.xml</relativePath>
 	</parent>
 		<artifactId>f4g-schemas</artifactId>
 		<name>f4g-schemas</name>
 	<dependencies>
 		<dependency>
-			<groupId>org.jvnet.annox/groupId>
+			<groupId>org.jvnet.annox</groupId>
 			<artifactId>annox</artifactId>
 			<version>0.5.0</version>
 			<type>jar</type>
