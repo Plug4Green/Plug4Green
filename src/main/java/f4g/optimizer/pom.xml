@@ -11,21 +11,33 @@
 		<version>1.0</version>
 		<relativePath>../../../../../pom.xml</relativePath>
 	</parent>
-		<artifactId>f4g-optimizer</artifactId>
-		<name>f4g-optimizer</name>
+		<artifactId>optimizer</artifactId>
+		<name>optimizer</name>
 	<dependencies>
-		<dependency>
+		<!--dependency>
 			<groupId>choco</groupId>
 			<artifactId>choco-solver</artifactId>
-			<version>2.2-SNAPSHOT</version>
+			<version>2.1.5-SNAPSHOT</version>
 			<type>jar</type>
-		</dependency>
+		</dependency-->
 		<dependency>
+            <groupId>choco</groupId>
+            <artifactId>choco-kernel</artifactId>
+            <version>2.1.5</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>choco</groupId>
+            <artifactId>choco-cp</artifactId>
+            <version>2.1.5</version>
+            <type>jar</type>
+        </dependency>
+		<!--dependency>
 			<groupId>entropy</groupId>
 			<artifactId>entropy</artifactId>
-			<version>2.2-SNAPSHOT</version>
+			<version>2.1.1-fh-SNAPSHOT</version>
 			<type>jar</type>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -41,37 +53,37 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-client</artifactId>
-			<version>8.0.1</version>
+			<version>8.0.1.v20110908</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-continuation</artifactId>
-			<version>8.0.1</version>
+			<version>8.0.1.v20110908</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-http</artifactId>
-			<version>8.0.1</version>
+			<version>8.0.1.v20110908</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-io</artifactId>
-			<version>8.0.1</version>
+			<version>8.0.1.v20110908</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>8.0.1</version>
+			<version>8.0.1.v20110908</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-util</artifactId>
-			<version>8.0.1</version>
+			<version>8.0.1.v20110908</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
@@ -95,4 +107,22 @@
             <scope>compile</scope>
         </dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+            <id>btrp-releases</id>
+            <url>http://btrp.inria.fr/repos/releases</url>
+        </repository>
+        <repository>
+            <id>btrp-snapshots</id>
+            <url>http://btrp.inria.fr/repos/snapshot-releases</url>
+        </repository>
+		<repository>
+            <id>choco.repos</id>
+            <url>http://www.emn.fr/z-info/choco-repo/mvn/repository/</url>
+        </repository>
+		<repository>
+			<id>entropy.repos</id>
+			<url>http://www.emn.fr/z-info/entropy/repository</url>
+		</repository>
+	</repositories>
 </project>

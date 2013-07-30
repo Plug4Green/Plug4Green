@@ -11,8 +11,8 @@
 		<version>1.0</version>
 		<relativePath>../../../../../pom.xml</relativePath>
 	</parent>
-		<artifactId>f4g-manager</artifactId>
-		<name>f4g-manager</name>
+		<artifactId>manager</artifactId>
+		<name>manager</name>
 	
 	<dependencies>
 		<dependency>
@@ -45,12 +45,11 @@
 			<version>1.0</version>
 			<type>jar</type>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>net.sf.json-lib</groupId>
 			<artifactId>json-lib</artifactId>
 			<version>2.4</version>
-			<type>jar</type>
-		</dependency>
+		</dependency-->
 		
 	</dependencies>
 	

@@ -10,8 +10,8 @@
         <version>1.0</version>
 		<relativePath>../../../../../pom.xml</relativePath>
     </parent>
-    <name>f4g-communicatorEni</name>
-    <artifactId>f4g-communicatorEni</artifactId>
+    <name>communicatorEni</name>
+    <artifactId>communicatorEni</artifactId>
     <description>communicatorEni is design for a special kind of server</description>
 	<dependencies>
         <dependency>

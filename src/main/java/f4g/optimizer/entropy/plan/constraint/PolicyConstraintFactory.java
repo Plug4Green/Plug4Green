@@ -22,8 +22,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.log4j.Logger;
 import f4g.commons.optimizer.ICostEstimator;
-import f4g.commons.optimizer.CloudTraditional.SLAReader;
-import f4g.commons.optimizer.utils.Utils;
+import f4g.optimizer.CloudTraditional.SLAReader;
+import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType.Policy;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType;
