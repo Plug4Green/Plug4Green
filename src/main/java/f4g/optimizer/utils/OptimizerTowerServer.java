@@ -25,9 +25,9 @@ import f4g.schemas.java.metamodel.*;
 import org.jvnet.jaxb2_commons.lang.CopyStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import f4g.commons.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
-import f4g.commons.optimizer.utils.OptimizerServer.CandidateState;
-import f4g.commons.optimizer.utils.OptimizerServer.CreationImpossible;
+import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.optimizer.utils.OptimizerServer.CandidateState;
+import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
 
 /** 
  *  This class is the internal representation of a server tower used by the optimizer.

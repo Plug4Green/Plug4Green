@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import f4g.commons.optimizer.cloudTraditional.SLAReader;
+import f4g.cloudTraditional.SLAReader;
 import f4g.schemas.java.AllocationRequestType;
 import f4g.schemas.java.CloudVmAllocationType;
 import f4g.schemas.java.RequestType;
