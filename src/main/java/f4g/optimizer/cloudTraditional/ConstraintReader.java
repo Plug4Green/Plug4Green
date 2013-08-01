@@ -10,7 +10,7 @@
  *   Reads and validate the Placement Constraint instance file.
  * ============================= /Header ==============================
  */
-package f4g.optimizer.CloudTraditional;
+package f4g.optimizer.cloudTraditional;
 
 import java.io.FileReader;
 import java.io.InputStream;

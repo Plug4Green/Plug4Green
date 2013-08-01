@@ -8,7 +8,7 @@
 *   Determines which router/switches could be switched off
 * ============================= /Header ==============================
 */
-package f4g.optimizer.CloudTraditional;
+package f4g.optimizer.cloudTraditional;
 
 import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
 import f4g.schemas.java.metamodel.NetworkNodeType;
