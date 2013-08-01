@@ -11,7 +11,7 @@
 * ============================= /Header ==============================
 */
 
-package f4g.commons.optimizer;
+package f4g.optimizer;
 
 import java.util.Map;
 import org.apache.log4j.Logger;

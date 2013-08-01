@@ -1,4 +1,4 @@
-package f4g.commons.optimizer;
+package f4g.optimizer;
 
 import choco.kernel.common.logging.ChocoLogging;
 import choco.kernel.common.logging.Verbosity;

@@ -1,4 +1,4 @@
-package f4g.commons.optimizer;
+package f4g.optimizer;
 
 import entropy.jobsManager.Job;
 import entropy.jobsManager.JobHandler;
