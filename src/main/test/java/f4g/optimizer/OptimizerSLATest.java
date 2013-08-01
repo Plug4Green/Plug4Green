@@ -17,7 +17,7 @@ import f4g.optimizer.entropy.plan.constraint.DefaultVcpuPcpuMapping;
 import f4g.optimizer.entropy.plan.constraint.F4GCPUOverbookingConstraint2;
 import f4g.optimizer.entropy.plan.constraint.SpareCPUs2;
 import f4g.optimizer.entropy.plan.constraint.VcpuPcpuMapping;
-import f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;

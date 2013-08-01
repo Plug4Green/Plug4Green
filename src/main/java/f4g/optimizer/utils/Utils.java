@@ -34,7 +34,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import f4g.commons.optimizer.utils.OptimizerRackServer;
-import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.commons.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.commons.optimizer.utils.OptimizerServer.CreationImpossible;
 import f4g.commons.optimizer.utils.OptimizerBladeServer;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;

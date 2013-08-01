@@ -20,7 +20,7 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 
 import f4g.optimizer.cost_estimator.NetworkCost;
-import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.commons.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.commons.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.CpuUsageType;

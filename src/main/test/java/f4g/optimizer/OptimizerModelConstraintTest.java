@@ -50,7 +50,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.optimizer.Benchmark;
 import f4g.optimizer.IntegrationTest;
-import f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 
 
 /**

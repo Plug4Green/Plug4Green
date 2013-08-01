@@ -15,7 +15,7 @@ package f4g.optimizer.utils;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
 
 /**

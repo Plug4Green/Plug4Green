@@ -28,7 +28,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 
 import f4g.commons.optimizer.utils.OptimizerServer.CandidateState;
 import f4g.commons.optimizer.utils.OptimizerServer.CreationImpossible;
-import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.commons.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 
 /** 
  *  This class is the internal representation of a server blade used by the optimizer.

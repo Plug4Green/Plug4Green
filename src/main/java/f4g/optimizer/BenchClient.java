@@ -2,7 +2,7 @@ package f4g.optimizer;
 
 import entropy.jobsManager.Job;
 import entropy.jobsManager.JobHandler;
-import f4g.optimizer.CloudTraditional.SLAReader;
+import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.optimizer.utils.Utils;
 import f4g.optimizer.ModelGenerator;
 

@@ -33,7 +33,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
 import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
-import f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 
 
 public class OptimizerNetworkTest extends OptimizerTest {

@@ -26,7 +26,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
 import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
-import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.commons.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 import org.junit.Test;
 
 

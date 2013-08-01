@@ -19,7 +19,7 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cost_estimator.NetworkCost;
-import f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 import f4g.optimizer.Optimizer.CloudTradCS;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.FIT4GreenType;

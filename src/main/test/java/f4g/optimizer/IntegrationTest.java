@@ -16,9 +16,9 @@ package f4g.optimizer;
 
 import org.apache.log4j.Logger;
 import f4g.optimizer.cost_estimator.NetworkCost;
-import f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
-import f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
-import f4g.optimizer.CloudTraditional.SLAReader;
+import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.optimizer.utils.OptimizerWorkload;
 import f4g.optimizer.utils.OptimizerWorkload.CreationImpossible;
 import f4g.optimizer.utils.Utils;

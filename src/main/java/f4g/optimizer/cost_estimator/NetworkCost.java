@@ -25,7 +25,7 @@ import f4g.commons.power.IPowerCalculator;
 import f4g.commons.power.PoweredNetworkNode;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
-import f4g.optimizer.CloudTraditional.SLAReader;
+import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.commons.util.Util;
 

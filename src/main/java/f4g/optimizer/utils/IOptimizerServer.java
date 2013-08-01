@@ -15,7 +15,7 @@ package f4g.optimizer.utils;
 import java.util.List;
 
 import f4g.commons.com.util.PowerData;
-import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.commons.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.commons.optimizer.utils.OptimizerServer.CandidateState;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.metamodel.MainboardType;
