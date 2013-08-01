@@ -19,12 +19,12 @@ import f4g.schemas.java.metamodel.*;
 import f4g.commons.controller.IController;
 import f4g.commons.core.IMain;
 import f4g.optimizer.cost_estimator.NetworkCost;
-import f4g.commons.optimizer.OptimizerEngine;
-import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.OptimizerEngine;
+import f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import f4g.commons.power.IPowerCalculator;
-import f4g.commons.optimizer.HPC.OptimizerEngineHPC;
+import f4g.optimizer.HPC.OptimizerEngineHPC;
 import f4g.commons.optimizer.utils.Utils;
-import f4g.commons.optimizer.OptimizationObjective;
+import f4g.optimizer.OptimizationObjective;
 
 import java.util.HashMap;
 import f4g.schemas.java.*;
