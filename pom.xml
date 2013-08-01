@@ -351,16 +351,6 @@
 		</dependency>
     </dependencies>
 	
-	<!--modules>
-		<module>src\main\java\f4g\commons</module>
-		<module>src\main\java\f4g\communicatorEni</module>
-		<module>src\main\java\f4g\communicatorFzj</module>
-		<module>src\main\java\f4g\f4gDeveloperTools</module>
-		<module>src\main\java\f4g\f4gGui</module>
-		<module>src\main\java\f4g\manager</module>
-		<module>src\main\java\f4g\optimizer</module>
-		<module>src\main\java\f4g\schemas</module>
-	</modules-->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
