@@ -12,7 +12,7 @@
  * ============================= /Header ==============================
  */
 
-package f4g.optimizer.CloudTraditional;
+package f4g.optimizer.cloudTraditional;
 
 import java.util.ArrayList;
 import java.util.Collections;
