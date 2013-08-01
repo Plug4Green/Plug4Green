@@ -38,12 +38,12 @@ import f4g.optimizer.entropy.plan.constraint.PolicyConstraintFactory;
 import f4g.optimizer.entropy.plan.constraint.SLAConstraintFactory;
 import f4g.optimizer.entropy.plan.objective.PowerObjective;
 import f4g.commons.optimizer.ICostEstimator;
-import f4g.commons.optimizer.utils.IOptimizerServer;
-import f4g.commons.optimizer.OptimizerEngine;
-import f4g.commons.optimizer.CloudTraditional.SLAReader;
-import f4g.commons.optimizer.Optimizer.CloudTradCS;
-import f4g.commons.optimizer.utils.Utils;
-import f4g.commons.optimizer.CloudTraditional.NetworkControl;
+import f4g.optimizer.utils.IOptimizerServer;
+import f4g.optimizer.OptimizerEngine;
+import f4g.optimizer.CloudTraditional.SLAReader;
+import f4g.Optimizer.CloudTradCS;
+import f4g.optimizer.utils.Utils;
+import f4g.optimizer.CloudTraditional.NetworkControl;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.metamodel.*;
 import f4g.schemas.java.actions.AbstractBaseActionType;
@@ -64,7 +64,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType.Cluster;
 import f4g.commons.util.Util;
-import f4g.commons.optimizer.utils.OptimizerWorkload;
+import f4g.optimizer.utils.OptimizerWorkload;
 
 
 import entropy.configuration.Configuration;

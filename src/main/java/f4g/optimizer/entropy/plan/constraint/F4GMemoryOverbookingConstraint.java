@@ -20,7 +20,7 @@ import java.util.List;
 
 import choco.cp.solver.variables.integer.BoolVarNot;
 import choco.cp.solver.variables.integer.BooleanVarImpl;
-import f4g.commons.optimizer.utils.Utils;
+import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.metamodel.FIT4GreenType;

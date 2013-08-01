@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import f4g.commons.optimizer.utils.Utils;
+import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.DatacenterType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;

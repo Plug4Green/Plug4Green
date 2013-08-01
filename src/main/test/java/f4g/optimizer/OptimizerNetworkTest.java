@@ -12,7 +12,7 @@ import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.NetworkNodeType;
-import f4g.commons.optimizer.utils.Utils;
+import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.PowerType;
 import f4g.schemas.java.metamodel.MemoryUsageType;
 
@@ -33,7 +33,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
 import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
-import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 
 
 public class OptimizerNetworkTest extends OptimizerTest {

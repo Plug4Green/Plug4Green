@@ -15,7 +15,7 @@ package f4g.optimizer.entropy.plan.constraint;
 
 import org.apache.log4j.Logger;
 import f4g.commons.optimizer.ICostEstimator;
-import f4g.commons.optimizer.utils.Utils;
+import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType.VMType;

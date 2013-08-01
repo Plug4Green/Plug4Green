@@ -168,3 +168,10 @@ local.build.properties
 *.iws
 MetaModel.xsd
 Schemas/src/main/java/**
+
+#################
+## FIT4Green
+#################
+
+*/schemas/java/*
+.class

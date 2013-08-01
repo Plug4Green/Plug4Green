@@ -23,8 +23,8 @@ import f4g.optimizer.OptimizerEngine;
 import f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 import f4g.commons.power.IPowerCalculator;
 import f4g.optimizer.HPC.OptimizerEngineHPC;
-import f4g.commons.optimizer.utils.Utils;
-import f4g.optimizer.OptimizationObjective;
+import f4g.optimizer.utils.Utils;
+import f4g.commons.optimizer.OptimizationObjective;
 
 import java.util.HashMap;
 import f4g.schemas.java.*;

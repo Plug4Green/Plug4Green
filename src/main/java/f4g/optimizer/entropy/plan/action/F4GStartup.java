@@ -2,7 +2,7 @@
 package f4g.optimizer.entropy.plan.action;
 
 import f4g.commons.controller.IController;
-import f4g.commons.optimizer.utils.Utils;
+import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.actions.AbstractBaseActionType;
 import f4g.schemas.java.actions.PowerOnActionType;
 import f4g.schemas.java.metamodel.FIT4GreenType;

@@ -11,7 +11,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeFactory;
 
 import f4g.optimizer.cost_estimator.NetworkCost;
-import f4g.commons.optimizer.utils.Utils;
+import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.CoreType;
 import f4g.schemas.java.metamodel.CpuUsageType;
 import f4g.schemas.java.metamodel.DatacenterType;
@@ -50,7 +50,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.optimizer.Benchmark;
 import f4g.optimizer.IntegrationTest;
-import f4g.commons.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.CloudTraditional.OptimizerEngineCloudTraditional;
 
 
 /**

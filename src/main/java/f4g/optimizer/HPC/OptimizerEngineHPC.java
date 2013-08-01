@@ -29,9 +29,9 @@ import f4g.schemas.java.HpcClusterAllocationResponseType;
 
 import org.apache.commons.jxpath.JXPathContext;
 import f4g.commons.optimizer.ICostEstimator;
-import f4g.commons.optimizer.OptimizerEngine;
-import f4g.commons.optimizer.HPC.OptimalJob;
-import f4g.commons.optimizer.utils.Utils;
+import f4g.optimizer.OptimizerEngine;
+import f4g.optimizer.HPC.OptimalJob;
+import f4g.optimizer.utils.Utils;
 import f4g.commons.controller.IController;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.metamodel.ApplicationBenchmarkType;

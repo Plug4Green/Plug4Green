@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import org.apache.log4j.Logger;
 import f4g.commons.optimizer.OptimizationObjective;
-import f4g.commons.optimizer.utils.Utils;
+import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.CloudVmAllocationType;
 import f4g.schemas.java.RequestType;
