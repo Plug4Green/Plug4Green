@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import f4g.commons.optimizer.OptimizerEngine;
+import f4g.optimizer.OptimizerEngine;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType;
 import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType;
