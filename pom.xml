@@ -31,6 +31,35 @@
 			<artifactId>maven-jaxb2-plugin</artifactId>
 			<version>0.7.5</version>
 		</dependency-->
+		<!--dependency>
+			<groupId>entropy</groupId>
+			<artifactId>entropy</artifactId>
+			<version>2.2.0-SNAPSHOT</version>
+		</dependency-->
+		<dependency>
+			<groupId>choco</groupId>
+			<artifactId>choco-solver</artifactId>
+			<version>2.1.5</version>
+		</dependency>
+		<dependency>
+            <groupId>choco</groupId>
+            <artifactId>choco-kernel</artifactId>
+            <version>2.1.5</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>choco</groupId>
+            <artifactId>choco-cp</artifactId>
+            <version>2.1.5</version>
+            <type>jar</type>
+        </dependency>
+		<!--dependency>
+			<groupId>entropy</groupId>
+			<artifactId>entropy</artifactId>
+			<version>2.1.1-fh-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/entropy-2.1.1-fh-SNAPSHOT.jar</systemPath>
+		</dependency-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -51,10 +80,16 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-xjc</artifactId>
 			<version>2.2.7</version>
+			<type>jar</type>
+		</dependency-->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
 			<type>jar</type>
 		</dependency>
     </dependencies>
@@ -66,6 +101,7 @@
 		<module>src\main\java\f4g\f4gGui</module>
 		<module>src\main\java\f4g\manager</module>
 		<module>src\main\java\f4g\optimizer</module>
+		<module>src\main\java\f4g\schemas</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -183,7 +219,7 @@
 	<prerequisites>
 		<maven>3.0.5</maven>
 	</prerequisites>
-	<!--repositories>
+	<repositories>
 		<repository>
 			<id>central</id>
 			<name>Maven Repository Switchboard</name>
@@ -213,7 +249,7 @@
 			<id>entropy.repos</id>
 			<url>http://www.emn.fr/z-info/entropy/repository</url>
 		</repository>
-	</repositories-->
+	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>central</id>
