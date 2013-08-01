@@ -2,11 +2,11 @@
 
 <xsd:schema 
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-	xmlns:f4g="java/MetaModel"
-	xmlns="java/constraints/placement"
-	targetNamespace="java/constraints/placement" 
+	xmlns:f4g="f4g/schemas/java/MetaModel"
+	xmlns="f4g/schemas/java/constraints/placement"
+	targetNamespace="f4g/schemas/java/constraints/placement" 
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<xsd:import namespace="java/MetaModel"
+	<xsd:import namespace="f4g/schemas/java/MetaModel"
 		schemaLocation="MetaModel.xsd" />
 
 	<xsd:complexType name="PlacementConstraint"/>

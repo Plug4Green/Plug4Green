@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<xs:schema xmlns="java/Allocation" 
+<xs:schema xmlns="f4g/schemas/java/Allocation" 
            xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns:fault="http://www.f4g.org/schema/fault" 
-           targetNamespace="java/Allocation" 
+           targetNamespace="f4g/schemas/java/Allocation" 
            elementFormDefault="qualified" 
            attributeFormDefault="unqualified">
 	

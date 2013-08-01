@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
-<xsd:schema xmlns:lpn="java/LoadPatterns" 
+<xsd:schema xmlns:lpn="f4g/schemas/java/LoadPatterns" 
            xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-           xmlns:f4g="java/MetaModel"
-           targetNamespace="java/LoadPatterns">
+           xmlns:f4g="f4g/schemas/java/MetaModel"
+           targetNamespace="f4g/schemas/java/LoadPatterns">
            
-	<xsd:import namespace="java/MetaModel" schemaLocation="MetaModel.xsd"/>
+	<xsd:import namespace="f4g/schemas/java/MetaModel" schemaLocation="MetaModel.xsd"/>
 	
 	<!--Attribute groups and simple types used within this schema-->
 	<xsd:attributeGroup name="DCAttributes">

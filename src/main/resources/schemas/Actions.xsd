@@ -2,7 +2,7 @@
 
 <xs:schema xmlns="java/Actions" 
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-	xmlns:f4g="java/MetaModel"
+	xmlns:f4g="f4g/schemas/java/MetaModel"
 	xmlns:fault="http://www.f4g.org/schema/fault" 
 	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 	jaxb:version="2.0"
@@ -10,7 +10,7 @@
 	elementFormDefault="qualified" 
 	attributeFormDefault="unqualified">
 	
-	<xs:import namespace="java/MetaModel" schemaLocation="MetaModel.xsd" />
+	<xs:import namespace="f4g/schemas/java/MetaModel" schemaLocation="MetaModel.xsd" />
 	
 	<xs:annotation>
 		<xs:appinfo>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
-<xs:schema xmlns="java/CommonTypes" 
+<xs:schema xmlns="f4g/schemas/java/CommonTypes" 
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"  
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-	xmlns:f4g="java/MetaModel"
-	targetNamespace="java/CommonTypes" 
+	xmlns:f4g="f4g/schemas/java/MetaModel"
+	targetNamespace="f4g/schemas/java/CommonTypes" 
 	elementFormDefault="qualified" 
 	attributeFormDefault="unqualified">
 	
-	<xsd:import namespace="java/MetaModel"
+	<xsd:import namespace="f4g/schemas/java/MetaModel"
 		schemaLocation="MetaModel.xsd" />
 		
 	<xs:simpleType name="NodeType_1.0">

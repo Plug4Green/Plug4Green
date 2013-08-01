@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns:opticon="java/constraints/OptimizerConstraints"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:f4g="java/MetaModel"
-	xmlns:types="java/CommonTypes"
-	targetNamespace="java/constraints/OptimizerConstraints"
+<xsd:schema xmlns:opticon="f4g/schemas/java/constraints/OptimizerConstraints"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:f4g="f4g/schemas/java/MetaModel"
+	xmlns:types="f4g/schemas/java/CommonTypes"
+	targetNamespace="f4g/schemas/java/constraints/OptimizerConstraints"
 	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="1.0">
-	<xsd:import namespace="java/MetaModel"
+	<xsd:import namespace="f4g/schemas/java/MetaModel"
 		schemaLocation="MetaModel.xsd" />
 	<!-- schemaLocation="../MetaModel/MetaModel-1.1.0.xsd" /> -->
-	<xsd:import namespace="java/CommonTypes" 
+	<xsd:import namespace="f4g/schemas/java/CommonTypes" 
 		schemaLocation="CommonTypes.xsd" />
 	<!-- schemaLocation="../Auxiliary/CommonTypes-1.0.xsd" /> -->
 
