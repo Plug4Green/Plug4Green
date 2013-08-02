@@ -32,7 +32,7 @@ import f4g.commons.monitor.IMonitor;
 import f4g.manager.monitor.Monitor;
 import f4g.commons.optimizer.IOptimizer;
 import f4g.commons.optimizer.OptimizationObjective;
-import f4g.commons.optimizer.Optimizer;
+import f4g.optimizer.Optimizer;
 import f4g.commons.power.IPowerCalculator;
 import f4g.commons.power.PowerCalculator;
 
