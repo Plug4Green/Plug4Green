@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
-<xs:schema xmlns="java/Actions" 
+<xs:schema xmlns="f4g/schemas/java/Actions" 
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	xmlns:f4g="f4g/schemas/java/MetaModel"
 	xmlns:fault="http://www.f4g.org/schema/fault" 
 	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 	jaxb:version="2.0"
-	targetNamespace="java/Actions" 
+	targetNamespace="f4g/schemas/java/Actions" 
 	elementFormDefault="qualified" 
 	attributeFormDefault="unqualified">
 	
