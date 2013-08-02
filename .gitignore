@@ -42,7 +42,6 @@ Desktop.ini
 #################
 ## FIT4Green
 #################
-
-**/schemas/java/**
+src/main/java/f4g/schemas/
 *.class
 
