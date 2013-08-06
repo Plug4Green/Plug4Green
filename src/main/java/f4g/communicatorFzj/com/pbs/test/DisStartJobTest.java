@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import f4g.commons.com.pbs.common.DisRequest;
-import f4g.commons.com.pbs.common.DisRequestRunJob;
-import f4g.commons.com.pbs.common.PbsConnection;
+import f4g.communicatorFzj.com.pbs.common.DisRequest;
+import f4g.communicatorFzj.com.pbs.common.DisRequestRunJob;
+import f4g.communicatorFzj.com.pbs.common.PbsConnection;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,7 +51,7 @@ public class DisStartJobTest {
 	}
 
 	/**
-	 * Test method for {@link org.f4g.com.fzj.pbs.common.ProxyRequestStartJob#execute()}.
+	 * Test method for {@link f4gcom.fzj.pbs.common.ProxyRequestStartJob#execute()}.
 	 */
 	@Test
 	public void testExecute() {

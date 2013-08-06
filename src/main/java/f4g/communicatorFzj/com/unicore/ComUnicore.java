@@ -12,13 +12,13 @@
 *   Implementation of the ICom interface for the HPC scenario at the FZJ
 * 
 * @author Daniel Brinkers
-* @see org.f4g.com.ICom
+* @see f4gcom.ICom
 * ============================= /Header ==============================
 */
 package f4g.communicatorFzj.com.unicore;
 
-import gnu.cajo.invoke.Remote;
-import gnu.cajo.utils.ItemServer;
+//import gnu.cajo.invoke.Remote;
+//import gnu.cajo.utils.ItemServer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,15 +32,15 @@ import org.apache.log4j.Logger;
 import f4g.commons.com.ICom;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
-import f4g.schemas.java.AllocationRequestType;
-import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.AllocationResponseType;
 import f4g.schemas.java.HpcClusterAllocationResponseType;
 import f4g.schemas.java.HpcClusterAllocationType;
 
 /**
  * Implementation of the ICom interface for the Unicore F4G communication
  * 
- * @see org.f4g.com.ICom
+ * @see f4gcom.ICom
  * 
  * @author Andre Giesler
  */
@@ -86,7 +86,7 @@ public class ComUnicore implements ICom   {
 		hpcRequest.setBenchmarkName(benchmark_id);
 		log.info("HPC Alloc Request: Using benchmarks for " + benchmark_id);
 
-		org.f4g.schema.allocation.ObjectFactory allocationFactory = new org.f4g.schema.allocation.ObjectFactory();              
+		f4g.schemas.java.allocation.ObjectFactory allocationFactory = new f4g.schemas.java.allocation.ObjectFactory();              
 
 		request.setRequest((allocationFactory.createHpcClusterAllocation(hpcRequest)));
 
@@ -100,7 +100,7 @@ public class ComUnicore implements ICom   {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.f4g.com.ICom#dispose()
+	 * @see f4gcom.ICom#dispose()
 	 */
 	@Override
 	public boolean dispose() {

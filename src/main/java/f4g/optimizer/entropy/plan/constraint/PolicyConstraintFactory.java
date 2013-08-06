@@ -175,7 +175,7 @@ public class PolicyConstraintFactory {
 		log.debug("delayTimeBetweenMove from method parameter: " + delayTimeBetweenMove);
 		ManagedElementSet<Node> nodes = Utils.getNodesFromCluster(c, src);
 
-		List<ServerType> allServers = org.f4g.optimizer.utils.Utils
+		List<ServerType> allServers = f4g.optimizer.utils.Utils
 				.getAllServers(model);
 
 		Utils.getVMs(allServers.get(0));
@@ -212,7 +212,7 @@ public class PolicyConstraintFactory {
 						if (st.getFrameworkID().equals(node.getName())) {
 							ManagedElementSet<VirtualMachine> vm = src
 									.getRunnings(node);
-							List<VirtualMachineType> vmModel = org.f4g.optimizer.utils.Utils
+							List<VirtualMachineType> vmModel = f4g.optimizer.utils.Utils
 									.getVMs(st);
 							for (VirtualMachineType vmt : vmModel) {
 								// lastMigration is greater than

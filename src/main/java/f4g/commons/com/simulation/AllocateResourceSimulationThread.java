@@ -7,13 +7,13 @@ import javax.xml.bind.JAXBElement;
 import org.apache.log4j.Logger;
 import f4g.commons.com.ICom;
 import f4g.commons.monitor.IMonitor;
-import f4g.schemas.java.CloudVmAllocationResponseType;
-import f4g.schemas.java.ObjectFactory;
-import f4g.schemas.java.CloudVmAllocationType;
-import f4g.schemas.java.AllocationRequestType;
-import f4g.schemas.java.AllocationResponseType;
-import f4g.schemas.java.RequestType;
-import f4g.schemas.java.ResponseType;
+import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
+import f4g.schemas.java.allocation.ObjectFactory;
+import f4g.schemas.java.allocation.CloudVmAllocationType;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.AllocationResponseType;
+import f4g.schemas.java.allocation.RequestType;
+import f4g.schemas.java.allocation.ResponseType;
 
 public class AllocateResourceSimulationThread extends GenericSimulationThread{
 	static Logger log = Logger.getLogger(AllocateResourceSimulationThread.class.getName()); // 

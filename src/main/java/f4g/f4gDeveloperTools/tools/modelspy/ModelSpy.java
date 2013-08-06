@@ -63,7 +63,7 @@ public class ModelSpy extends HttpServlet {
 			//Cloner cloner=new Cloner();
 			//FIT4GreenType modelClone = cloner.deepClone(model);
 			log.debug("In servlet init... CLONED model is " + model);
-			JAXBContext jc = JAXBContext.newInstance("org.f4g.schema.metamodel");
+			JAXBContext jc = JAXBContext.newInstance("f4g.schemas.java.metamodel");
 			
 			ObjectFactory factory=new ObjectFactory(); 
 			;

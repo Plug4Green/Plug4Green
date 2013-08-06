@@ -20,8 +20,8 @@ public class Util {
 	public static JAXBContext getJaxbContext() {
 		if (jc == null) {
 			try {
-				// Creates a JAXB context for the org.f4g.schema package
-				jc = JAXBContext.newInstance("org.f4g.schema.metamodel");
+				// Creates a JAXB context for the f4gschema package
+				jc = JAXBContext.newInstance("f4g.schemas.java.metamodel");
 			} catch (JAXBException e) {
 				e.printStackTrace();
 			}

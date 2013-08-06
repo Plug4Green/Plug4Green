@@ -58,8 +58,8 @@ import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
 import f4g.schemas.java.metamodel.FrameworkStatusType;
 import f4g.schemas.java.metamodel.ObjectFactory;
 import f4g.schemas.java.metamodel.SiteType;
-import f4g.schemas.java.AllocationRequestType;
-import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.AllocationResponseType;
 import f4g.commons.util.Util;
 import f4g.commons.util.JXPathCustomFactory;
 
@@ -194,7 +194,7 @@ public class Monitor implements IMonitor {
 			// *********************************
 
 			// unmarshal an XML document into a tree of Java content
-			// objects composed of classes from the "org.f4g.schema" package.
+			// objects composed of classes from the "f4gschema" package.
 			poElement = (JAXBElement<?>) u.unmarshal(isModel);
 			
 			model = (FIT4GreenType) poElement.getValue();
@@ -431,7 +431,7 @@ public class Monitor implements IMonitor {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.f4g.monitor.IMonitor#dispose()
+	 * @see f4gmonitor.IMonitor#dispose()
 	 */
 	@Override
 	public boolean dispose() {

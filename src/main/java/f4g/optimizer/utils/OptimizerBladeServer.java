@@ -26,9 +26,9 @@ import org.jvnet.jaxb2_commons.lang.CopyStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 
-import f4g.utils.OptimizerServer.CandidateState;
-import f4g.utils.OptimizerServer.CreationImpossible;
-import f4g.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.optimizer.utils.OptimizerServer.CandidateState;
+import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
+import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 
 /** 
  *  This class is the internal representation of a server blade used by the optimizer.

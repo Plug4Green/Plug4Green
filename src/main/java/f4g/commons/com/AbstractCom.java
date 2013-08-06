@@ -127,7 +127,7 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.f4g.com.ICom#dispose()
+	 * @see f4gcom.ICom#dispose()
 	 */
 	@Override
 	public boolean dispose() {

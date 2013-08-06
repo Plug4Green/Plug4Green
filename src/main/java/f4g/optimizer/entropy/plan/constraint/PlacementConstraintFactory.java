@@ -66,9 +66,9 @@ public class PlacementConstraintFactory {
 	 */
 
 	private void createBan(
-			org.f4g.schema.constraints.optimizerconstraints.ConstraintType.PlacementConstraint cp,
+			f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint cp,
 			ManagedElementSet<Node> nodes) {
-		List<org.f4g.schema.constraints.optimizerconstraints.Ban> b = cp
+		List<f4g.schemas.java.constraints.optimizerconstraints.Ban> b = cp
 				.getBan();
 		for (Ban ban : b) {
 			List<String> vmNames = ban.getVMName();
@@ -163,9 +163,9 @@ public class PlacementConstraintFactory {
 	public VJob createPCConstraints() {
 
 		try {
-			List<org.f4g.schema.constraints.optimizerconstraints.ServerGroupType.ServerGroup> servergroups = sg
+			List<f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType.ServerGroup> servergroups = sg
 					.getServerGroup();
-			for (org.f4g.schema.constraints.optimizerconstraints.ServerGroupType.ServerGroup serverG : servergroups) {
+			for (f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType.ServerGroup serverG : servergroups) {
 				// get all nodes in a sg
 				ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
 				for (String nodeName : serverG.getNodeController()
@@ -193,7 +193,7 @@ public class PlacementConstraintFactory {
 				}
 
 				// get all bounded SLAs and add constraints to vjob
-				for (org.f4g.schema.constraints.optimizerconstraints.BoundedPlacementConstraintType.PlacementConstraint s : serverG
+				for (f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraintType.PlacementConstraint s : serverG
 						.getBoundedPlacementConstraints()
 						.getPlacementConstraint()) {
 					if (vms.size() > 0 && nodes.size() > 0)
@@ -206,7 +206,7 @@ public class PlacementConstraintFactory {
 	}
 
 	private VJob addConstraintsForPC(
-			org.f4g.schema.constraints.optimizerconstraints.ConstraintType.PlacementConstraint cp,
+			f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint cp,
 			ManagedElementSet<Node> nodes) {
 
 		if (cp != null) {

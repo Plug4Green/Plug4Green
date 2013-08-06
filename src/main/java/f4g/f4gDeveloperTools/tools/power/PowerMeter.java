@@ -62,7 +62,7 @@ public class PowerMeter extends HttpServlet {
 			
 			log.debug("Computed power is " + w.getActualConsumption());
 			
-			JAXBContext jc = JAXBContext.newInstance("org.f4g.schema.metamodel");
+			JAXBContext jc = JAXBContext.newInstance("f4g.schemas.java.metamodel");
 			
 			ObjectFactory factory=new ObjectFactory(); 
 			;

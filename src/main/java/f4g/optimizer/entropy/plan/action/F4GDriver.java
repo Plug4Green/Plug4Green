@@ -56,7 +56,7 @@ public abstract class F4GDriver extends Driver {
 		
 		AbstractBaseActionType action = getActionToExecute();
 		
-		JAXBElement<AbstractBaseActionType> JAXBAction = (new org.f4g.schema.actions.ObjectFactory()).createAction(action);
+		JAXBElement<AbstractBaseActionType> JAXBAction = (new f4g.schemas.java.actions.ObjectFactory()).createAction(action);
 			    	
 		actionList.getAction().add(JAXBAction);
 		

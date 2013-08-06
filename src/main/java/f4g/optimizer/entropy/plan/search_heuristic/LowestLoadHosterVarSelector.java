@@ -91,8 +91,8 @@ public class LowestLoadHosterVarSelector extends AbstractIntVarSelector {
 			return null;
 		}
 		
-		//Comparator<VirtualMachine> cmpRemSpace = new org.f4g.entropy.plan.search_heuristic.Utils.VMCompareRemainingSpaceOnOrigin(pb.getSourceConfiguration(), vms, nodes, hosters);
-        Comparator<VirtualMachine> cmpRemSpace = new org.f4g.entropy.plan.search_heuristic.Utils.VMCompareRemainingSpaceOnOriginFast(pb, pb.getSourceConfiguration(), vms, nodes, hosters);
+		//Comparator<VirtualMachine> cmpRemSpace = new f4gentropy.plan.search_heuristic.Utils.VMCompareRemainingSpaceOnOrigin(pb.getSourceConfiguration(), vms, nodes, hosters);
+        Comparator<VirtualMachine> cmpRemSpace = new f4gentropy.plan.search_heuristic.Utils.VMCompareRemainingSpaceOnOriginFast(pb, pb.getSourceConfiguration(), vms, nodes, hosters);
 		VirtualMachine vm = Collections.max(moveable, cmpRemSpace);
 		//log.debug("VM selected: " + vm.getName());
 		return hosters[vms.indexOf(vm)];   */

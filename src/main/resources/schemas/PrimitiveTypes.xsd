@@ -3,7 +3,7 @@
 	<annotation>
 		<appinfo>
 			<jaxb:schemaBindings>
-				<jaxb:package name="f4g/schemas/java" />
+				<jaxb:package name="f4g.schemas.java" />
 			</jaxb:schemaBindings>
 		</appinfo>
 	</annotation>

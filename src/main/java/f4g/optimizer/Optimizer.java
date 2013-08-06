@@ -146,7 +146,7 @@ public class Optimizer implements IOptimizer{
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.f4g.optimizer.IOptimizer#dispose()
+	 * @see f4g.optimizer.IOptimizer#dispose()
 	 */
 	@Override
 	public boolean dispose() {

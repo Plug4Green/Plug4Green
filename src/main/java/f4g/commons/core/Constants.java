@@ -44,11 +44,11 @@ public class Constants {
 	public static final String MAX_SIZE = "maxSize";
 	
 	public static final String METAMODEL_FILE_NAME            = "MetaModel.xsd";
-	public static final String METAMODEL_PACKAGE_NAME          = "org.f4g.schema.metamodel";
+	public static final String METAMODEL_PACKAGE_NAME          = "f4g.schemas.java.metamodel";
 	public static final String ACTIONS_FILE_NAME               = "Actions.xsd";
-	public static final String ACTIONS_PACKAGE_NAME     	   = "org.f4g.schema.actions";
+	public static final String ACTIONS_PACKAGE_NAME     	   = "f4g.schemas.java.actions";
 	public static final String ALLOCATION_FILE_NAME            = "AllocationService.xsd";
-	public static final String ALLOCATION_PACKAGE_NAME         = "org.f4g.schema.allocation";
+	public static final String ALLOCATION_PACKAGE_NAME         = "f4g.schemas.java.allocation";
 	
 	//XPATH EXPRESSIONS
 	public static final String FRAMEWORK_ID_X_PATH_EXPR = "//frameworkID";

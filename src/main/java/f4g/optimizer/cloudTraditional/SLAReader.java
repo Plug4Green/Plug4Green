@@ -204,7 +204,7 @@ public class SLAReader {
         try {
             // create an Unmarshaller
             Unmarshaller u = JAXBContext.newInstance(
-                    "org.f4g.schema.constraints.optimizerconstraints")
+                    "f4g.schemas.java.constraints.optimizerconstraints")
                     .createUnmarshaller();
 
             // ****** VALIDATION ******
@@ -240,7 +240,7 @@ public class SLAReader {
             // *********************************
 
             // unmarshal an XML document into a tree of Java content
-            // objects composed of classes from the "org.f4g.schema" package.
+            // objects composed of classes from the "f4gschema" package.
             return (FIT4GreenOptimizerConstraint) u.unmarshal(in);
         } catch (JAXBException je) {
             log.error(je);

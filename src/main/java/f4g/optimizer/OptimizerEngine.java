@@ -41,8 +41,8 @@ import f4g.schemas.java.actions.LiveMigrateVMActionType;
 import f4g.schemas.java.actions.MoveVMActionType;
 import f4g.schemas.java.actions.PowerOffActionType;
 import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.AllocationRequestType;
-import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.AllocationResponseType;
 
 
 import com.google.common.base.Predicate;
@@ -263,7 +263,7 @@ public abstract class OptimizerEngine implements Runnable  {
 		ActionRequestType.ActionList actionList = new ActionRequestType.ActionList();
 		actionList.getAction();
 		
-		org.f4g.schema.actions.ObjectFactory actionFactory = new org.f4g.schema.actions.ObjectFactory();
+		f4g.schemas.java.actions.ObjectFactory actionFactory = new f4g.schemas.java.actions.ObjectFactory();
 		
 		
 		for (PowerOffActionType off : offs)

@@ -41,7 +41,7 @@ import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.utils.IOptimizerServer;
 import f4g.optimizer.OptimizerEngine;
 import f4g.optimizer.cloudTraditional.SLAReader;
-import f4g.Optimizer.CloudTradCS;
+import f4g.optimizer.CloudTradCS;
 import f4g.optimizer.utils.Utils;
 import f4g.optimizer.cloudTraditional.NetworkControl;
 import f4g.commons.power.IPowerCalculator;
@@ -54,7 +54,7 @@ import f4g.schemas.java.actions.PowerOffActionType;
 import f4g.schemas.java.actions.PowerOnActionType;
 import f4g.schemas.java.actions.ActionRequestType.ActionList;
 import f4g.schemas.java.*;
-import f4g.schemas.java.ObjectFactory;
+import f4g.schemas.java.allocation.ObjectFactory;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
@@ -88,7 +88,7 @@ import entropy.vjob.VJob;
  * This class contains the algorithm for Cloud computing.
  * 
  * @author cdupont
- * @uml.dependency supplier="org.f4g.optimizer.SLAReader"
+ * @uml.dependency supplier="f4g.optimizer.SLAReader"
  */
 
 public class OptimizerEngineCloudTraditional extends OptimizerEngine {
@@ -208,7 +208,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		computingStyle = cs;
 
 		try {
-			String currentSlaClusterPathName = org.f4g.core.Configuration
+			String currentSlaClusterPathName = f4g.core.Configuration
 					.get(Constants.SLA_CLUSTER_FILE_PATH);
 			log.trace("SLA pathname:" + currentSlaClusterPathName);
 			SLAReader slaReader = new SLAReader(currentSlaClusterPathName);
@@ -472,7 +472,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		
 		// create JAXB actions
 		for (AbstractBaseActionType action : actions) {
-			actionList.getAction().add((new org.f4g.schema.actions.ObjectFactory()).createAction(action));
+			actionList.getAction().add((new f4g.schemas.java.actions.ObjectFactory()).createAction(action));
 		}
 		
 		// compute the new datacenter with only moves

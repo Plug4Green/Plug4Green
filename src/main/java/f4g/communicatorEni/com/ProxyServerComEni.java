@@ -30,11 +30,11 @@ import javax.xml.bind.JAXBElement;
 import org.apache.log4j.Logger;
 import f4g.commons.com.TraditionalDataSend;
 import f4g.commons.monitor.IMonitor;
-import f4g.schemas.java.TraditionalVmAllocationResponseType;
-import f4g.schemas.java.AllocationRequestType;
-import f4g.schemas.java.AllocationResponseType;
-import f4g.schemas.java.ObjectFactory;
-import f4g.schemas.java.TraditionalVmAllocationType;
+import f4g.schemas.java.allocation.TraditionalVmAllocationResponseType;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.AllocationResponseType;
+import f4g.schemas.java.allocation.ObjectFactory;
+import f4g.schemas.java.allocation.TraditionalVmAllocationType;
 
 
 /**

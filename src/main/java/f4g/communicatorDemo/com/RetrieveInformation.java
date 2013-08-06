@@ -175,7 +175,7 @@ public class RetrieveInformation {
 			// *********************************
 
 			// unmarshal an XML document into a tree of Java content
-			// objects composed of classes from the "org.f4g.schema" package.
+			// objects composed of classes from the "f4gschema" package.
 			poElement = (JAXBElement<?>) u.unmarshal(isModel);
 			
 			datacenterExample_ = (FIT4GreenType) poElement.getValue();

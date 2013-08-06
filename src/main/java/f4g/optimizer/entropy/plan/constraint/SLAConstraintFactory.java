@@ -162,7 +162,7 @@ public class SLAConstraintFactory {
 	}
 
 	private void addConstraintsForSLA(
-			org.f4g.schema.constraints.optimizerconstraints.SLAType.SLA sla,
+			f4g.schemas.java.constraints.optimizerconstraints.SLAType.SLA sla,
 			ManagedElementSet<VirtualMachine> vms, ManagedElementSet<Node> nodes) {
 
 		if (sla.getQoSConstraints() != null) {

@@ -25,8 +25,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.log4j.Logger;
-import f4g.commons.com.pbs.common.ProxyRequest;
-import f4g.commons.com.pbs.common.ProxyResponse;
+import f4g.communicatorFzj.com.pbs.common.ProxyRequest;
+import f4g.communicatorFzj.com.pbs.common.ProxyResponse;
 
 /**
  * SSL secured connection from the F4G plug-in to the Proxy

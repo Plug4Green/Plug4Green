@@ -38,8 +38,8 @@ import org.apache.log4j.Logger;
 import f4g.commons.core.Configuration;
 import f4g.commons.core.Constants;
 import f4g.schemas.java.actions.ActionRequestType;
-import f4g.schemas.java.AllocationRequestType;
-import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.AllocationResponseType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
 import f4g.schemas.java.metamodel.ObjectFactory;
@@ -418,7 +418,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 			
 			log.debug("recording Action Request...");
 			
-			JAXBElement<ActionRequestType> fit4GreenActionRequest = (new org.f4g.schema.actions.ObjectFactory()).createActionRequest(actions);
+			JAXBElement<ActionRequestType> fit4GreenActionRequest = (new f4g.schemas.java.actions.ObjectFactory()).createActionRequest(actions);
 			
 			saveToXML(fit4GreenActionRequest, 
 					  getFileName("F4G Action Request"), 
@@ -434,7 +434,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 			log.debug("recording Allocation Response...");
 			
 			JAXBElement<AllocationResponseType> fit4GreenAllocationResponse = 
-				(new org.f4g.schema.allocation.ObjectFactory()).createAllocationResponse(response);
+				(new f4g.schemas.java.allocation.ObjectFactory()).createAllocationResponse(response);
 
 			
 			saveToXML(fit4GreenAllocationResponse, 
@@ -452,7 +452,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 			log.debug("recording Allocation Request...");
 			
 			JAXBElement<AllocationRequestType> fit4GreenAllocationRequest = 
-				(new org.f4g.schema.allocation.ObjectFactory()).createAllocationRequest(request);
+				(new f4g.schemas.java.allocation.ObjectFactory()).createAllocationRequest(request);
 
 			
 			saveToXML(fit4GreenAllocationRequest, 

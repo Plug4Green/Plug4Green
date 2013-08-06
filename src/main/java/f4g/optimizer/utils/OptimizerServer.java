@@ -195,7 +195,7 @@ public class OptimizerServer {
 
 
 	/* (non-Javadoc)
-	 * @see org.f4g.optimizer.IOptimizerServer#getNbCores()
+	 * @see f4g.optimizer.IOptimizerServer#getNbCores()
 	 */
 	public int getNbCores(ServerType toServer) {
 		int nr_cores = 0;
@@ -207,7 +207,7 @@ public class OptimizerServer {
 
 
 	/* (non-Javadoc)
-	 * @see org.f4g.optimizer.IOptimizerServer#getNbCPU()
+	 * @see f4g.optimizer.IOptimizerServer#getNbCPU()
 	 */
 	public int getNbCPU(ServerType toServer) {
 		int nr_cpu = 0;
@@ -217,7 +217,7 @@ public class OptimizerServer {
 	}	
 	
 	/* (non-Javadoc)
-	 * @see org.f4g.optimizer.IOptimizerServer#getMemory()
+	 * @see f4g.optimizer.IOptimizerServer#getMemory()
 	 */
 	public long getMemory(ServerType toServer) {
 		int memory=0;
@@ -228,7 +228,7 @@ public class OptimizerServer {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.f4g.optimizer.IOptimizerServer#getStorage()
+	 * @see f4g.optimizer.IOptimizerServer#getStorage()
 	 */
 	public double getStorage(ServerType server) {
 		double storage = 0;
@@ -290,7 +290,7 @@ public class OptimizerServer {
 	
 
 	/* (non-Javadoc)
-	 * @see org.f4g.optimizer.IOptimizerServer#getLoadRate(org.f4g.optimizer.AggregatedUsage, java.lang.Boolean)
+	 * @see f4g.optimizer.IOptimizerServer#getLoadRate(f4g.optimizer.AggregatedUsage, java.lang.Boolean)
 	 */
 	public double getLoadRate(AggregatedUsage reference, AlgoType algoType)
 	{

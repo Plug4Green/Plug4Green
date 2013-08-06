@@ -71,7 +71,7 @@ public class ConvertToJSON {
 			marshaller.setSchema(schema);
 			marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 			marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			org.f4g.schema.actions.ObjectFactory obj = new org.f4g.schema.actions.ObjectFactory();
+			f4g.schemas.java.actions.ObjectFactory obj = new f4g.schemas.java.actions.ObjectFactory();
 			marshaller.marshal(obj.createActionRequest(actions), s);
 			
 //			fos.close();
@@ -127,7 +127,7 @@ public class ConvertToJSON {
 			marshaller.setSchema(schema);
 			marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 			marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			org.f4g.schema.metamodel.ObjectFactory obj = new org.f4g.schema.metamodel.ObjectFactory();
+			f4g.schemas.java.metamodel.ObjectFactory obj = new f4g.schemas.java.metamodel.ObjectFactory();
 			marshaller.marshal(obj.createFIT4Green(model), s);
 			
 //			fos.close();

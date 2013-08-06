@@ -71,7 +71,7 @@ public class ConstraintReader {
 
 		try {
 			JAXBContext context = JAXBContext
-					.newInstance("org.f4g.schema.constraints.placement");
+					.newInstance("f4g.schemas.java.constraints.placement");
 			Unmarshaller um = context.createUnmarshaller();
 			@SuppressWarnings("unchecked")
 			JAXBElement<FIT4GreenConstraintType> s = (JAXBElement<FIT4GreenConstraintType>) um

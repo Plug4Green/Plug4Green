@@ -22,10 +22,10 @@ import f4g.schemas.java.actions.PowerOnActionType;
 import f4g.schemas.java.actions.StandByActionType;
 import f4g.schemas.java.actions.StartJobActionType;
 
-import f4g.schemas.java.HpcClusterAllocationType;
-import f4g.schemas.java.AllocationRequestType;
-import f4g.schemas.java.AllocationResponseType;
-import f4g.schemas.java.HpcClusterAllocationResponseType;
+import f4g.schemas.java.allocation.HpcClusterAllocationType;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.AllocationResponseType;
+import f4g.schemas.java.allocation.HpcClusterAllocationResponseType;
 
 import org.apache.commons.jxpath.JXPathContext;
 import f4g.commons.optimizer.ICostEstimator;
@@ -648,7 +648,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		hpcRequest.setSuitableClusters("FzjComJuggle FzjComJufit ComVTTDune");
 		hpcRequest.setBenchmarkName("Linpack");
 		
-		org.f4g.schema.allocation.ObjectFactory allocationFactory = new org.f4g.schema.allocation.ObjectFactory();		
+		f4g.schemas.java.allocation.ObjectFactory allocationFactory = new f4g.schemas.java.allocation.ObjectFactory();		
 		request.setRequest((allocationFactory.createHpcClusterAllocation(hpcRequest)));
 		
 		AllocationResponseType response = allocateResource(request, getModelCopy());
@@ -922,7 +922,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		HpcClusterAllocationResponseType hpcResponse = new HpcClusterAllocationResponseType();	
 		hpcResponse.setClusterId(clusterID);
 		
-		org.f4g.schema.allocation.ObjectFactory allocationFactory = new org.f4g.schema.allocation.ObjectFactory();
+		f4g.schemas.java.allocation.ObjectFactory allocationFactory = new f4g.schemas.java.allocation.ObjectFactory();
 		
 		AllocationResponseType response  = new AllocationResponseType();
 		response.setResponse((allocationFactory.createHpcClusterAllocationResponse(hpcResponse)));

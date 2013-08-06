@@ -328,14 +328,14 @@ public class Benchmark {
         }
 
         /* (non-Javadoc)
-           * @see org.f4g.controller.IController#setActionsApproved(boolean)
+           * @see f4gcontroller.IController#setActionsApproved(boolean)
            */
         @Override
         public void setActionsApproved(boolean actionsApproved) {
         }
 
         /* (non-Javadoc)
-           * @see org.f4g.controller.IController#setActionsApproved(boolean)
+           * @see f4gcontroller.IController#setActionsApproved(boolean)
            */
         @Override
         public void setApprovalSent(boolean actionsApproved) {

@@ -1,5 +1,5 @@
 /**
- * org.f4g.cost_estimator/NetworkCost.java
+ * f4gcost_estimator/NetworkCost.java
  *
  * Ricardo Lent
  */

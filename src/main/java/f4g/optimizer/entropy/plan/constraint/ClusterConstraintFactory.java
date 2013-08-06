@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import f4g.cloudTraditional.SLAReader;
-import f4g.schemas.java.AllocationRequestType;
-import f4g.schemas.java.CloudVmAllocationType;
-import f4g.schemas.java.RequestType;
-import f4g.schemas.java.TraditionalVmAllocationType;
+import f4g.optimizer.cloudTraditional.SLAReader;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.CloudVmAllocationType;
+import f4g.schemas.java.allocation.RequestType;
+import f4g.schemas.java.allocation.TraditionalVmAllocationType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.metamodel.FIT4GreenType;

@@ -78,7 +78,7 @@ public class ProxyRequestUpdate extends ProxyRequest {
 
 	/**
 	 * Issue the request to the RM 
-	 * @see org.f4g.com.fzj.pbs.common.ProxyRequest#execute()
+	 * @see f4gcom.fzj.pbs.common.ProxyRequest#execute()
 	 */
 	@Override
 	public ProxyResponse execute() throws IOException {

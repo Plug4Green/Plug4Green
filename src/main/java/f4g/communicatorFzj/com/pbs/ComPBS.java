@@ -12,7 +12,7 @@
  *   Implementation of the ICom interface for the HPC scenario at the FZJ
  * 
  * @author Daniel Brinkers
- * @see org.f4g.com.ICom
+ * @see f4gcom.ICom
  * ============================= /Header ==============================
  */
 package f4g.communicatorFzj.com.pbs;
@@ -44,21 +44,21 @@ import javax.xml.datatype.DatatypeFactory;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.log4j.Logger;
 import f4g.commons.com.ICom;
-import f4g.commons.com.pbs.common.JobInfo;
-import f4g.commons.com.pbs.common.JobInfo.State;
-import f4g.commons.com.pbs.common.NodeInfo;
-import f4g.commons.com.pbs.common.ProxyRequestAlterJob;
-import f4g.commons.com.pbs.common.ProxyRequestNodeToStandby;
-import f4g.commons.com.pbs.common.ProxyRequestNodeWakeUp;
-import f4g.commons.com.pbs.common.ProxyRequestRunJob;
-import f4g.commons.com.pbs.common.ProxyRequestSimpleNodeCmd;
-import f4g.commons.com.pbs.common.ProxyRequestUpdate;
-import f4g.commons.com.pbs.common.ProxyResponseAlterJob;
-import f4g.commons.com.pbs.common.ProxyResponseNodeToStandby;
-import f4g.commons.com.pbs.common.ProxyResponseNodeWakeUp;
-import f4g.commons.com.pbs.common.ProxyResponseSimpleNodeCmd;
-import f4g.commons.com.pbs.common.ProxyResponseStartJob;
-import f4g.commons.com.pbs.common.ProxyResponseUpdate;
+import f4g.communicatorFzj.com.pbs.common.JobInfo;
+import f4g.communicatorFzj.com.pbs.common.JobInfo.State;
+import f4g.communicatorFzj.com.pbs.common.NodeInfo;
+import f4g.communicatorFzj.com.pbs.common.ProxyRequestAlterJob;
+import f4g.communicatorFzj.com.pbs.common.ProxyRequestNodeToStandby;
+import f4g.communicatorFzj.com.pbs.common.ProxyRequestNodeWakeUp;
+import f4g.communicatorFzj.com.pbs.common.ProxyRequestRunJob;
+import f4g.communicatorFzj.com.pbs.common.ProxyRequestSimpleNodeCmd;
+import f4g.communicatorFzj.com.pbs.common.ProxyRequestUpdate;
+import f4g.communicatorFzj.com.pbs.common.ProxyResponseAlterJob;
+import f4g.communicatorFzj.com.pbs.common.ProxyResponseNodeToStandby;
+import f4g.communicatorFzj.com.pbs.common.ProxyResponseNodeWakeUp;
+import f4g.communicatorFzj.com.pbs.common.ProxyResponseSimpleNodeCmd;
+import f4g.communicatorFzj.com.pbs.common.ProxyResponseStartJob;
+import f4g.communicatorFzj.com.pbs.common.ProxyResponseUpdate;
 import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
@@ -96,7 +96,7 @@ import f4g.schemas.java.metamodel.VoltageType;
  * Implementation of the ICom interface for the Torque /PBS adaption scenario at 
  * FZJ FIT4Green supercomputing testbed
  * 
- * @see org.f4g.com.ICom
+ * @see f4gcom.ICom
  * 
  * @author Daniel Brinkers, Andre Giesler
  */
@@ -2152,7 +2152,7 @@ public class ComPBS implements ICom, Runnable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.f4g.com.ICom#dispose()
+	 * @see f4gcom.ICom#dispose()
 	 */
 	@Override
 	public boolean dispose() {

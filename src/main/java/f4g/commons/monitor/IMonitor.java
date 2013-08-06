@@ -7,8 +7,8 @@ import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.com.util.PowerData;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.FrameworkStatusType;
-import f4g.schemas.java.AllocationRequestType;
-import f4g.schemas.java.AllocationResponseType;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.AllocationResponseType;
 
 /**
  * 

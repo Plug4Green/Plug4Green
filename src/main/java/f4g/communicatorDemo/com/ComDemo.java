@@ -624,7 +624,7 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.f4g.com.IComOperationSet#powerOn(org.f4g.schema.actions.PowerOnActionType)
+	 * @see f4gcom.IComOperationSet#powerOn(f4g.schemas.java.actions.PowerOnActionType)
 	 */	
 	@Override
 	public boolean powerOn(PowerOnActionType action) {
@@ -634,7 +634,7 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.f4g.com.IComOperationSet#powerOff(org.f4g.schema.actions.PowerOffActionType)
+	 * @see f4gcom.IComOperationSet#powerOff(f4g.schemas.java.actions.PowerOffActionType)
 	 */
 	@Override
 	public boolean powerOff(PowerOffActionType action) {
@@ -644,7 +644,7 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.f4g.com.IComOperationSet#liveMigrate(org.f4g.schema.actions.LiveMigrateVMActionType)
+	 * @see f4gcom.IComOperationSet#liveMigrate(f4g.schemas.java.actions.LiveMigrateVMActionType)
 	 */
 	@Override
 	public boolean liveMigrate(LiveMigrateVMActionType action) {
@@ -654,7 +654,7 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.f4g.com.IComOperationSet#moveVm(org.f4g.schema.actions.MoveVMActionType)
+	 * @see f4gcom.IComOperationSet#moveVm(f4g.schemas.java.actions.MoveVMActionType)
 	 */
 	@Override
 	public boolean moveVm(MoveVMActionType action) {
@@ -664,7 +664,7 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.f4g.com.IComOperationSet#startJob(org.f4g.schema.actions.StartJobActionType)
+	 * @see f4gcom.IComOperationSet#startJob(f4g.schemas.java.actions.StartJobActionType)
 	 */
 	@Override
 	public boolean startJob(StartJobActionType action) {
@@ -673,7 +673,7 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.f4g.com.IComOperationSet#standBy(org.f4g.schema.actions.StandByActionType)
+	 * @see f4gcom.IComOperationSet#standBy(f4g.schemas.java.actions.StandByActionType)
 	 */
 	@Override
 	public boolean standBy(StandByActionType action) {

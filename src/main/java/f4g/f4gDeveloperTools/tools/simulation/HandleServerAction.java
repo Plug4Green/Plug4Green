@@ -43,7 +43,7 @@ public class HandleServerAction extends HttpServlet {
 		String action = request.getParameter("serverAction");
 
 		ActionRequestType.ActionList actionList = new ActionRequestType.ActionList();
-		org.f4g.schema.actions.ObjectFactory actionFactory = new org.f4g.schema.actions.ObjectFactory();
+		f4g.schemas.java.actions.ObjectFactory actionFactory = new f4g.schemas.java.actions.ObjectFactory();
 	    		
 		log.debug("Action is: " + action);
 		log.debug("frameworkId is: " + frameworkId);

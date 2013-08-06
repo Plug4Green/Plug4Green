@@ -2361,7 +2361,7 @@ public class PowerCalculator implements IPowerCalculator {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.f4g.power.IPowerCalculator#dispose()
+	 * @see f4gpower.IPowerCalculator#dispose()
 	 */
 	@Override
 	public boolean dispose() {
