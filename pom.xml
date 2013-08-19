@@ -462,8 +462,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>      <!--The Compiler Plugin is used to compile the sources of your project-->
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
             <plugin>
