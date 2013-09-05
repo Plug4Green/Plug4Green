@@ -17,7 +17,7 @@ import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.optimizer.Optimizer.CloudTradCS;
 import f4g.optimizer.utils.Recorder;
 import f4g.optimizer.utils.Utils;
-import f4g.commons.power.PowerCalculator;
+import f4g.powerCalculator.power.PowerCalculator;
 import f4g.schemas.java.actions.*;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.metamodel.FIT4GreenType;

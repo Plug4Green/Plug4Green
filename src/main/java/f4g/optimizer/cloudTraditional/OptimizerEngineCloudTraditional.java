@@ -42,7 +42,6 @@ import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.utils.IOptimizerServer;
 import f4g.optimizer.OptimizerEngine;
 import f4g.optimizer.cloudTraditional.SLAReader;
-import f4g.optimizer.CloudTradCS;
 import f4g.optimizer.utils.Utils;
 import f4g.optimizer.cloudTraditional.NetworkControl;
 import f4g.commons.power.IPowerCalculator;
@@ -59,6 +58,8 @@ import f4g.schemas.java.allocation.AllocationRequestType;
 import f4g.schemas.java.allocation.AllocationResponseType;
 import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
 import f4g.schemas.java.allocation.CloudVmAllocationType;
+import f4g.schemas.java.allocation.TraditionalVmAllocationResponseType;
+import f4g.schemas.java.allocation.TraditionalVmAllocationType;
 import f4g.schemas.java.allocation.ObjectFactory;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType;
@@ -71,7 +72,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType.Clu
 import f4g.commons.util.Util;
 import f4g.communicatorFzj.com.pbs.common.DisRequest.RequestType;
 import f4g.optimizer.utils.OptimizerWorkload;
-
+import f4g.optimizer.Optimizer.CloudTradCS;
 
 import entropy.configuration.Configuration;
 import entropy.configuration.DefaultManagedElementSet;

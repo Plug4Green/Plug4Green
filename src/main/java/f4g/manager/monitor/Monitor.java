@@ -45,7 +45,7 @@ import org.apache.commons.jxpath.JXPathException;
 import org.apache.log4j.Logger;
 
 import f4g.commons.com.ICom;
-import f4g.commons.monitor.Imonitor;
+import f4g.commons.monitor.IMonitor;
 import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.com.util.PowerData;
