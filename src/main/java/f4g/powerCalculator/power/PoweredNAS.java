@@ -23,7 +23,7 @@ import f4g.schemas.java.metamodel.HardDiskType;
 import f4g.schemas.java.metamodel.SolidStateDiskType;
 import f4g.schemas.java.metamodel.RAIDDiskType;
 import f4g.commons.com.util.PowerData;
-import f4g.commons.power.PoweredFan;
+import f4g.powerCalculator.power.PoweredFan;
 
 import java.util.Iterator;
 import java.util.List;

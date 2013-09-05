@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import f4g.commons.power.PoweredComponent;
+import f4g.powerCalculator.power.PoweredComponent;
 import f4g.schemas.java.metamodel.CPUArchitectureType;
 import f4g.schemas.java.metamodel.CPUType;
 import f4g.schemas.java.metamodel.CoreType;

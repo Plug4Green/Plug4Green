@@ -24,6 +24,7 @@ import f4g.schemas.java.metamodel.NetworkUsageType;
 import f4g.schemas.java.metamodel.NrOfCpusType;
 import f4g.schemas.java.metamodel.StorageUsageType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.allocation.*;
 import f4g.schemas.java.*;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import org.jvnet.jaxb2_commons.lang.CopyStrategy;

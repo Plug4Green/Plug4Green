@@ -26,7 +26,7 @@ import javax.xml.bind.JAXBElement;
 
 import org.apache.log4j.Logger;
 
-import f4g.commons.com.simulation.ComEniUpdateSimulationThread;
+import f4g.communicatorEni.com.simulation.ComEniUpdateSimulationThread;
 import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
@@ -39,11 +39,11 @@ import f4g.schemas.java.actions.StartJobActionType;
 import f4g.schemas.java.actions.StandByActionType;
 import f4g.schemas.java.metamodel.ServerStatusType;
 import f4g.commons.com.AbstractCom;
-import f4g.commons.com.ComEniConstants;
+import f4g.communicatorEni.com.ComEniConstants;
 
-import com.vmware.MigrateRelocateVirtualMachine;
-import com.vmware.PowerOps;
-import com.vmware.RetrieveHostInformation;
+import f4g.communicatorEni.vmware.MigrateRelocateVirtualMachine;
+import f4g.communicatorEni.vmware.PowerOps;
+import f4g.communicatorEni.vmware.RetrieveHostInformation;
 
 
 public class ComEni extends AbstractCom implements Runnable {

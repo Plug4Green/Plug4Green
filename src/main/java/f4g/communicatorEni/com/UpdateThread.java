@@ -22,8 +22,8 @@ import org.apache.log4j.Logger;
 import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
 
-import com.vmware.PerformanceInformation;
-import com.vmware.RetrieveHostInformation;
+import f4g.communicatorEni.vmware.PerformanceInformation;
+import f4g.communicatorEni.vmware.RetrieveHostInformation;
 
 /**
  * {To be completed; use html notation, if necessary}

@@ -17,7 +17,7 @@ package f4g.communicatorEni.com;
 import org.apache.log4j.Logger;
 import f4g.schemas.java.actions.MoveVMActionType;
 
-import com.vmware.MigrateRelocateVirtualMachine;
+import f4g.communicatorEni.vmware.MigrateRelocateVirtualMachine;
 
 /**
  * {To be completed; use html notation, if necessary}

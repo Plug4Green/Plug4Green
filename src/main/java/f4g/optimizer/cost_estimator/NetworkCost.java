@@ -22,7 +22,7 @@ import f4g.schemas.java.metamodel.VirtualMachineType;
 import f4g.schemas.java.metamodel.SiteType;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.power.IPowerCalculator;
-import f4g.commons.power.PoweredNetworkNode;
+import f4g.powerCalculator.power.PoweredNetworkNode;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
 import f4g.optimizer.cloudTraditional.SLAReader;

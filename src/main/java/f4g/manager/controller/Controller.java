@@ -28,6 +28,7 @@ import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.log4j.Logger;
 import f4g.commons.com.ICom;
+import f4g.commons.controller.IController;
 import f4g.commons.core.Configuration;
 import f4g.commons.core.Constants;
 import f4g.commons.core.IMain;

@@ -28,8 +28,9 @@ import javax.net.ssl.SSLServerSocketFactory;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.log4j.Logger;
-import f4g.commons.com.TraditionalDataSend;
+import f4g.communicatorEni.com.TraditionalDataSend;
 import f4g.commons.monitor.IMonitor;
+import f4g.commons.com.Icom;
 import f4g.schemas.java.allocation.TraditionalVmAllocationResponseType;
 import f4g.schemas.java.allocation.AllocationRequestType;
 import f4g.schemas.java.allocation.AllocationResponseType;

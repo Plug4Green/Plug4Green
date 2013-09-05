@@ -1,7 +1,7 @@
 package f4g.powerCalculator.power;
 import org.apache.log4j.Logger;
 
-import f4g.commons.power.PoweredComponent;
+import f4g.powerCalculator.power.PoweredComponent;
 import f4g.schemas.java.metamodel.FanType;
 import f4g.schemas.java.metamodel.RPMType;
 import f4g.schemas.java.metamodel.PowerType;

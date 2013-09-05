@@ -1,5 +1,5 @@
 package f4g.powerCalculator.power;
-import f4g.commons.power.PoweredComponent;
+import f4g.powerCalculator.power.PoweredComponent;
 import f4g.schemas.java.metamodel.HardDiskType;
 
 import f4g.schemas.java.metamodel.IoRateType;

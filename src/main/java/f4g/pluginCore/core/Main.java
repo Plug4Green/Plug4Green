@@ -25,7 +25,7 @@ import org.apache.log4j.PropertyConfigurator;
 
 import f4g.commons.com.ICom;
 import f4g.commons.com.util.PowerData;
-import f4g.commons.controller.Controller;
+import f4g.manager.controller.Controller;
 import f4g.commons.controller.IController;
 import f4g.commons.core.Configuration;
 import f4g.commons.core.DatabaseConfiguration;
@@ -36,7 +36,7 @@ import f4g.commons.optimizer.IOptimizer;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.Optimizer;
 import f4g.commons.power.IPowerCalculator;
-import f4g.commons.power.PowerCalculator;
+import f4g.powerCalculator.power.PowerCalculator;
 
 /**
  * Entry point to the FIT4Green framework

@@ -4,7 +4,7 @@ import java.util.*;
 import javax.measure.Measure;
 import javax.measure.quantity.Power;
 
-import f4g.commons.power.PoweredComponent;
+import f4g.powerCalculator.power.PoweredComponent;
 
 import org.apache.log4j.Logger;
 import f4g.schemas.java.metamodel.NetworkPortType;

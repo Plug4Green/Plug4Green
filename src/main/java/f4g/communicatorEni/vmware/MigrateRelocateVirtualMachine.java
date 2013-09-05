@@ -32,7 +32,7 @@ import com.vmware.vim.VirtualMachinePowerState;
 import com.vmware.vim.VirtualMachineRelocateSpec;
 import com.vmware.vim.VirtualMachineConfigInfo;
 
-import f4g.commons.com.ComEniConstants; 
+import f4g.communicatorEni.com.ComEniConstants; 
 import f4g.schemas.java.actions.LiveMigrateVMActionType;
 import f4g.schemas.java.actions.MoveVMActionType;
 

@@ -34,8 +34,8 @@ import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
 import f4g.schemas.java.allocation.AllocationRequestType;
 import f4g.schemas.java.allocation.AllocationResponseType;
-import f4g.schemas.java.HpcClusterAllocationResponseType;
-import f4g.schemas.java.HpcClusterAllocationType;
+import f4g.schemas.java.allocation.HpcClusterAllocationResponseType;
+import f4g.schemas.java.allocation.HpcClusterAllocationType;
 
 /**
  * Implementation of the ICom interface for the Unicore F4G communication

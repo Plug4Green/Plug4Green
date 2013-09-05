@@ -33,8 +33,9 @@ import f4g.schemas.java.metamodel.ServerStatusType;
 import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
 
-import com.vmware.PerformanceInformation;
-import com.vmware.RetrieveHostInformation;
+
+import f4g.communicatorEni.vmware.PerformanceInformation;
+import f4g.communicatorEni.vmware.RetrieveHostInformation;
 
 /**
  * {To be completed; use html notation, if necessary}

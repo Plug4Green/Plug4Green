@@ -1,6 +1,6 @@
 package f4g.powerCalculator.power;
 
-import f4g.commons.power.PoweredComponent;
+import f4g.powerCalculator.power.PoweredComponent;
 import f4g.schemas.java.metamodel.FrequencyType;
 import f4g.schemas.java.metamodel.VoltageType;
 import f4g.schemas.java.metamodel.CoreType;
