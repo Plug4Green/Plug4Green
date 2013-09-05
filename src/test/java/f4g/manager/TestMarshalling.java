@@ -86,7 +86,7 @@ public class TestMarshalling {
 		ActionRequestType actionRequest = new ActionRequestType();
 		ActionRequestType.ActionList actionList = new ActionRequestType.ActionList();
 		
-		org.f4g.schema.actions.ObjectFactory actionFactory = new org.f4g.schema.actions.ObjectFactory();
+		f4g.schemas.java.actions.ObjectFactory actionFactory = new f4g.schemas.java.actions.ObjectFactory();
 		
 		actionList.getAction().add(actionFactory.createPowerOff(off));
 		actionList.getAction().add(actionFactory.createPowerOff(off1));

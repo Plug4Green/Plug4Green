@@ -16,6 +16,7 @@ package f4g.optimizer;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import f4g.schemas.java.metamodel.*;
+import f4g.schemas.java.allocation.*;
 import f4g.commons.controller.IController;
 import f4g.commons.core.IMain;
 import f4g.optimizer.cost_estimator.NetworkCost;
@@ -25,7 +26,8 @@ import f4g.commons.power.IPowerCalculator;
 import f4g.optimizer.HPC.OptimizerEngineHPC;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.optimizer.OptimizationObjective;
-
+import f4g.commons.optimizer.*;
+import f4g.commons.power.*;
 import java.util.HashMap;
 import f4g.schemas.java.*;
 

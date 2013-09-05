@@ -31,7 +31,7 @@ import f4g.schemas.java.allocation.CloudVmAllocationType;
 import f4g.schemas.java.allocation.AllocationRequestType;
 import f4g.schemas.java.allocation.AllocationResponseType;
 import f4g.schemas.java.allocation.ObjectFactory;
-import f4g.schemas.java.TraditionalVmAllocationResponseType;
+import f4g.schemas.java.allocation.TraditionalVmAllocationResponseType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
 import f4g.schemas.java.constraints.optimizerconstraints.NodeControllerType;

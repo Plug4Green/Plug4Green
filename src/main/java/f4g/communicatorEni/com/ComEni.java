@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.log4j.Logger;
+
 import f4g.commons.com.simulation.ComEniUpdateSimulationThread;
 import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
@@ -37,6 +38,7 @@ import f4g.schemas.java.actions.PowerOnActionType;
 import f4g.schemas.java.actions.StartJobActionType;
 import f4g.schemas.java.actions.StandByActionType;
 import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.commons.com.AbstractCom;
 import f4g.commons.com.ComEniConstants;
 
 import com.vmware.MigrateRelocateVirtualMachine;

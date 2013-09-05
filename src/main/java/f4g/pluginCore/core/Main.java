@@ -22,11 +22,13 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
 import f4g.commons.com.ICom;
 import f4g.commons.com.util.PowerData;
 import f4g.commons.controller.Controller;
 import f4g.commons.controller.IController;
 import f4g.commons.core.Configuration;
+import f4g.commons.core.DatabaseConfiguration;
 import f4g.commons.core.IMain;
 import f4g.commons.monitor.IMonitor;
 import f4g.manager.monitor.Monitor;

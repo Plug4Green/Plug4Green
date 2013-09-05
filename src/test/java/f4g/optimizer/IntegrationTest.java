@@ -15,6 +15,7 @@ package f4g.optimizer;
 
 
 import org.apache.log4j.Logger;
+
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
@@ -29,6 +30,10 @@ import f4g.schemas.java.actions.ActionRequestType.ActionList;
 import f4g.schemas.java.actions.MoveVMActionType;
 import f4g.schemas.java.actions.PowerOffActionType;
 import f4g.schemas.java.*;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.AllocationResponseType;
+import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
+import f4g.schemas.java.allocation.CloudVmAllocationType;
 import f4g.schemas.java.allocation.ObjectFactory;
 import f4g.schemas.java.constraints.optimizerconstraints.*;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
@@ -36,13 +41,14 @@ import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
 import f4g.schemas.java.metamodel.*;
 
-
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+
 import java.io.File;
 import java.util.*;
+
 import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
 import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
 

@@ -26,6 +26,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.log4j.Logger;
+
 import f4g.commons.controller.IController;
 import f4g.commons.core.Constants;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
@@ -54,6 +55,10 @@ import f4g.schemas.java.actions.PowerOffActionType;
 import f4g.schemas.java.actions.PowerOnActionType;
 import f4g.schemas.java.actions.ActionRequestType.ActionList;
 import f4g.schemas.java.*;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.AllocationResponseType;
+import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
+import f4g.schemas.java.allocation.CloudVmAllocationType;
 import f4g.schemas.java.allocation.ObjectFactory;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType;
@@ -64,6 +69,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType.Cluster;
 import f4g.commons.util.Util;
+import f4g.communicatorFzj.com.pbs.common.DisRequest.RequestType;
 import f4g.optimizer.utils.OptimizerWorkload;
 
 
@@ -73,9 +79,7 @@ import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.configuration.SimpleManagedElementSet;
 import entropy.configuration.VirtualMachine;
-
 import entropy.execution.driver.DriverInstantiationException;
-
 import entropy.plan.Plan;
 import entropy.plan.PlanException;
 import entropy.plan.TimedReconfigurationPlan;
@@ -208,7 +212,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		computingStyle = cs;
 
 		try {
-			String currentSlaClusterPathName = f4g.core.Configuration
+			String currentSlaClusterPathName = f4g.commons.core.Configuration
 					.get(Constants.SLA_CLUSTER_FILE_PATH);
 			log.trace("SLA pathname:" + currentSlaClusterPathName);
 			SLAReader slaReader = new SLAReader(currentSlaClusterPathName);

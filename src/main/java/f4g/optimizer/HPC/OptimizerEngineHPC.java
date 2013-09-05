@@ -41,7 +41,7 @@ import f4g.schemas.java.metamodel.DatacenterType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.FanType;
 import f4g.schemas.java.metamodel.HardDiskType;
-import f4g.schemas.java.metamodel.IDREFS;
+import f4g.schemas.java.IDREFS;
 import f4g.schemas.java.metamodel.IoRateType;
 import f4g.schemas.java.metamodel.JobPriorityType;
 import f4g.schemas.java.metamodel.JobTimeType;

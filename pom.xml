@@ -24,7 +24,7 @@ Copyright 2012 FIT4Green project.
 	<groupId>f4g</groupId>
 	<artifactId>FIT4Green</artifactId>
 	<version>1.0</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>choco</groupId>
@@ -418,6 +418,7 @@ Copyright 2012 FIT4Green project.
 	</distributionManagement>
     <!-- Build Settings -->
 	<build>
+	
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
@@ -442,7 +443,7 @@ Copyright 2012 FIT4Green project.
                         </goals>
 						<configuration>
 							<schemaDirectory>${basedir}/src/main/resources/schemas</schemaDirectory>			<!-- The directory for XML Schema files (XSDs) -->
-							<!--<outputDirectory>${basedir}/src/main/java</outputDirectory>	-->			<!-- The working directory where the generated Java source files are created-->
+							<outputDirectory>src/main/java</outputDirectory>			<!-- The working directory where the generated Java source files are created-->
 						</configuration>
                     </execution>
                 </executions>

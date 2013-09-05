@@ -3,7 +3,9 @@ package f4g.communicatorEni.com.simulation;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Logger;
+
 import f4g.commons.com.ICom;
+import f4g.commons.com.simulation.ComUpdateSimulationThread;
 import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
