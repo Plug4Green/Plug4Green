@@ -455,6 +455,11 @@ Copyright 2012 FIT4Green project.
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                    <excludes>
+                       <exclude>f4g/f4gGui/**</exclude>
+                       <exclude>f4g/communicatorEni/**</exclude>
+                       <exclude>f4g/communicatorFzj/**</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
