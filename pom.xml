@@ -185,6 +185,18 @@ Copyright 2012 FIT4Green project.
 			<type>jar</type>
 		</dependency>
 		<dependency>
+			<groupId>org.jvnet.jaxb2_commons</groupId>
+			<artifactId>jaxb2-value-constructor</artifactId>
+			<version>3.0</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.massfords</groupId>
+			<artifactId>jaxb-visitor</artifactId>
+			<version>1.13</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
 			<groupId>org.jscience</groupId>
 			<artifactId>jscience</artifactId>
 			<version>4.3.1</version>
@@ -428,26 +440,51 @@ Copyright 2012 FIT4Green project.
 		</extensions>
 		<plugins>
 			<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>1.5</version>
-				<configuration>
-					<clearOutputDir>false</clearOutputDir>
-				</configuration>
-                <executions>
-                    <execution>
-						<phase>generate-sources</phase>
-                        <id>xjc</id>
-                        <goals>
-                            <goal>xjc</goal>
-                        </goals>
-						<configuration>
-							<schemaDirectory>${basedir}/src/main/resources/schemas</schemaDirectory>			<!-- The directory for XML Schema files (XSDs) -->
-							<outputDirectory>src/main/java</outputDirectory>			<!-- The working directory where the generated Java source files are created-->
-						</configuration>
-                    </execution>
-                </executions>
-            </plugin>
+              <groupId>org.jvnet.jaxb2.maven2</groupId>
+              <artifactId>maven-jaxb2-plugin</artifactId>
+              <version>0.8.2</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>generate</goal>
+                      </goals>
+                  </execution>
+              </executions>
+              <configuration>
+                  <strict>false</strict>
+                  <extension>true</extension>
+
+                  <schemaDirectory>
+                      ${basedir}/src/main/resources/schemas
+                  </schemaDirectory>
+                   <outputDirectory>${basedir}/src/main/java</outputDirectory>                  
+
+                  <args>
+                     <arg>-Xvisitor</arg>
+                    <arg>-Xvisitor-package:com.massfords.humantask</arg>
+                    <arg>-Xvalue-constructor</arg>
+                    <arg>-Xcopyable</arg>
+                  </args>
+
+                  <plugins>
+                      <plugin>
+                         <groupId>com.massfords</groupId>
+                         <artifactId>jaxb-visitor</artifactId>
+                         <version>1.13</version>
+                      </plugin>
+                      <plugin>
+                         <groupId>org.jvnet.jaxb2_commons</groupId>
+                        <artifactId>jaxb2-value-constructor</artifactId>
+                        <version>3.0</version>
+                      </plugin>
+                      <plugin>
+                                <groupId>org.jvnet.jaxb2_commons</groupId>
+                                <artifactId>jaxb2-basics</artifactId>
+                                <version>0.5.3</version>
+                            </plugin>
+                  </plugins>
+              </configuration>
+          </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>      <!--The Compiler Plugin is used to compile the sources of your project-->
