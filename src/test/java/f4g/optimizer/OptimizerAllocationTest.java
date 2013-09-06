@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
 import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
@@ -305,8 +307,8 @@ public class OptimizerAllocationTest extends OptimizerTest {
 				
 		ArrayList<String> clusterId = new ArrayList<String>();
 		clusterId.add("c1");
-		CloudVmAllocationType cloudAlloc = new CloudVmAllocationType("i1", clusterId, "m1.small", "u1", 0); 
-		
+		CloudVmAllocationType cloudAlloc = new CloudVmAllocationType(null, "i1", clusterId, "m1.small", "u1", 0); 
+		//public CloudVmAllocationType(final QName jaxbElementName, final String imageId, final List<String> clusterId, final String vmType, final String userId, final Integer minPriority)
 		//Simulates a CloudVmAllocationType operation
 		JAXBElement<CloudVmAllocationType>  operationType = (new ObjectFactory()).createCloudVmAllocation(cloudAlloc);
 		AllocationRequestType allocationRequest = new AllocationRequestType();

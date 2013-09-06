@@ -28,6 +28,7 @@ import f4g.commons.com.util.PowerData;
 import f4g.manager.controller.Controller;
 import f4g.commons.controller.IController;
 import f4g.commons.core.Configuration;
+import f4g.commons.core.Constants;
 import f4g.commons.core.DatabaseConfiguration;
 import f4g.commons.core.IMain;
 import f4g.commons.monitor.IMonitor;

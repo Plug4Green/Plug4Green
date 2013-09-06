@@ -17,8 +17,119 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import com.massfords.humantask.DepthFirstTraverserImpl;
+import com.massfords.humantask.TraversingVisitor;
+import com.massfords.humantask.TraversingVisitorProgressMonitor;
+import com.massfords.humantask.Visitable;
+import com.massfords.humantask.Visitor;
+
 import f4g.commons.com.util.PowerData;
 
+import f4g.schemas.java.ENTITIES;
+import f4g.schemas.java.ENTITY;
+import f4g.schemas.java.IDREFS;
+import f4g.schemas.java.Language;
+import f4g.schemas.java.NCName;
+import f4g.schemas.java.NMTOKEN;
+import f4g.schemas.java.NMTOKENS;
+import f4g.schemas.java.Name;
+import f4g.schemas.java.NegativeInteger;
+import f4g.schemas.java.NonNegativeInteger;
+import f4g.schemas.java.NonPositiveInteger;
+import f4g.schemas.java.PositiveInteger;
+import f4g.schemas.java.UnsignedLong;
+import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.actions.ActionRequestType.ActionList;
+import f4g.schemas.java.actions.LiveMigrateVMActionType;
+import f4g.schemas.java.actions.MoveVMActionType;
+import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.actions.PowerOnActionType;
+import f4g.schemas.java.actions.StandByActionType;
+import f4g.schemas.java.actions.StartJobActionType;
+import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.AllocationResponseType;
+import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
+import f4g.schemas.java.allocation.CloudVmAllocationType;
+import f4g.schemas.java.allocation.HpcClusterAllocationResponseType;
+import f4g.schemas.java.allocation.HpcClusterAllocationType;
+import f4g.schemas.java.allocation.TraditionalVmAllocationResponseType;
+import f4g.schemas.java.allocation.TraditionalVmAllocationType;
+import f4g.schemas.java.commontypes.ActionResultCodeType;
+import f4g.schemas.java.commontypes.ActionResultDescriptionType;
+import f4g.schemas.java.commontypes.JobIDType;
+import f4g.schemas.java.commontypes.MinutesType;
+import f4g.schemas.java.commontypes.NodeType10;
+import f4g.schemas.java.commontypes.OperatorType;
+import f4g.schemas.java.commontypes.ProcessorFrequencyType;
+import f4g.schemas.java.commontypes.ReasonType;
+import f4g.schemas.java.commontypes.RequestDateTimeType;
+import f4g.schemas.java.commontypes.SecondsType;
+import f4g.schemas.java.commontypes.TimeperiodType;
+import f4g.schemas.java.commontypes.VersionType;
+import f4g.schemas.java.commontypes.VirtualMachineDumpType;
+import f4g.schemas.java.commontypes.VirtualMachineIDType;
+import f4g.schemas.java.constraints.optimizerconstraints.Ban;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType.Cluster;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraintType;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraintType.PlacementConstraint;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType.Policy;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedSLAsType;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedSLAsType.SLA;
+import f4g.schemas.java.constraints.optimizerconstraints.Capacity;
+import f4g.schemas.java.constraints.optimizerconstraints.CapacityType;
+import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
+import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType;
+import f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType.MaxPowerServer;
+import f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.FIT4GreenOptimizerConstraint;
+import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
+import f4g.schemas.java.constraints.optimizerconstraints.Fence;
+import f4g.schemas.java.constraints.optimizerconstraints.Gather;
+import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.CompPowerGHz;
+import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.GPUFreqGHz;
+import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.HDDCapacity;
+import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.MemorySpaceGB;
+import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.NbOfCores;
+import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.NbOfGPUCores;
+import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.RAIDLevel;
+import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.Lonely;
+import f4g.schemas.java.constraints.optimizerconstraints.NodeControllerType;
+import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.Bandwidth;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxServerAvgVCPUperCore;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxServerAvgVRAMperPhyRAM;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxServerCPULoad;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVMperServer;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVRAMperPhyRAM;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
+import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualLoadPerCore;
+import f4g.schemas.java.constraints.optimizerconstraints.Root;
+import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
+import f4g.schemas.java.constraints.optimizerconstraints.SecurityConstraintsType;
+import f4g.schemas.java.constraints.optimizerconstraints.SecurityConstraintsType.DedicatedServer;
+import f4g.schemas.java.constraints.optimizerconstraints.SecurityConstraintsType.SecureAccessPossibility;
+import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
+import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType.ServerGroup;
+import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
+import f4g.schemas.java.constraints.optimizerconstraints.SpareNodes;
+import f4g.schemas.java.constraints.optimizerconstraints.Split;
+import f4g.schemas.java.constraints.optimizerconstraints.Spread;
+import f4g.schemas.java.constraints.optimizerconstraints.VMGroup;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType.VMType;
+import f4g.schemas.java.constraints.placement.DCType;
+import f4g.schemas.java.constraints.placement.FIT4GreenConstraintType;
+import f4g.schemas.java.constraints.placement.OneOf;
+import f4g.schemas.java.constraints.placement.TSType;
+import f4g.schemas.java.loadpatterns.LoadPatternType;
+import f4g.schemas.java.loadpatterns.LoadPatternsType;
 import f4g.schemas.java.metamodel.*;
 
 
@@ -1053,122 +1164,6 @@ public class PowerCalculatorTraverser {
 		}
 
 
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.ENTITIES)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.ENTITIES aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.ENTITY)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.ENTITY aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.IDREFS)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.IDREFS aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Language)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.Language aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NCName)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.NCName aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NMTOKEN)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.NMTOKEN aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NMTOKENS)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.NMTOKENS aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Name)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.Name aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NegativeInteger)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.NegativeInteger aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NonNegativeInteger)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.NonNegativeInteger aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NonPositiveInteger)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.NonPositiveInteger aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PositiveInteger)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.PositiveInteger aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.UnsignedLong)
-		 */
-		@Override
-		public void visit(org.f4g.schema.metamodel.UnsignedLong aBean) {
-			setPower(0.0);
-			
-		}
 
 		/* (non-Javadoc)
 		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.OPType)
@@ -1274,6 +1269,1139 @@ public class PowerCalculatorTraverser {
 		@Override
 		public void visit(RAIDDiskType aBean) {
 			setPower(0.0);			
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.ENTITIES)
+		 */
+		@Override
+		public void visit(ENTITIES aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.ENTITY)
+		 */
+		@Override
+		public void visit(ENTITY aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.IDREFS)
+		 */
+		@Override
+		public void visit(IDREFS aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.Language)
+		 */
+		@Override
+		public void visit(Language aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.NCName)
+		 */
+		@Override
+		public void visit(NCName aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.NMTOKEN)
+		 */
+		@Override
+		public void visit(NMTOKEN aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.NMTOKENS)
+		 */
+		@Override
+		public void visit(NMTOKENS aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.Name)
+		 */
+		@Override
+		public void visit(Name aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.NegativeInteger)
+		 */
+		@Override
+		public void visit(NegativeInteger aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.NonNegativeInteger)
+		 */
+		@Override
+		public void visit(NonNegativeInteger aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.NonPositiveInteger)
+		 */
+		@Override
+		public void visit(NonPositiveInteger aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.PositiveInteger)
+		 */
+		@Override
+		public void visit(PositiveInteger aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.UnsignedLong)
+		 */
+		@Override
+		public void visit(UnsignedLong aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.ActionRequestType)
+		 */
+		@Override
+		public void visit(ActionRequestType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.ActionRequestType.ActionList)
+		 */
+		@Override
+		public void visit(ActionList aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.LiveMigrateVMActionType)
+		 */
+		@Override
+		public void visit(LiveMigrateVMActionType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.MoveVMActionType)
+		 */
+		@Override
+		public void visit(MoveVMActionType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.PowerOffActionType)
+		 */
+		@Override
+		public void visit(PowerOffActionType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.PowerOnActionType)
+		 */
+		@Override
+		public void visit(PowerOnActionType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.StandByActionType)
+		 */
+		@Override
+		public void visit(StandByActionType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.StartJobActionType)
+		 */
+		@Override
+		public void visit(StartJobActionType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.AllocationRequestType)
+		 */
+		@Override
+		public void visit(AllocationRequestType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.AllocationResponseType)
+		 */
+		@Override
+		public void visit(AllocationResponseType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.CloudVmAllocationResponseType)
+		 */
+		@Override
+		public void visit(CloudVmAllocationResponseType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.CloudVmAllocationType)
+		 */
+		@Override
+		public void visit(CloudVmAllocationType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.HpcClusterAllocationResponseType)
+		 */
+		@Override
+		public void visit(HpcClusterAllocationResponseType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.HpcClusterAllocationType)
+		 */
+		@Override
+		public void visit(HpcClusterAllocationType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.TraditionalVmAllocationResponseType)
+		 */
+		@Override
+		public void visit(TraditionalVmAllocationResponseType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.TraditionalVmAllocationType)
+		 */
+		@Override
+		public void visit(TraditionalVmAllocationType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.ActionResultCodeType)
+		 */
+		@Override
+		public void visit(ActionResultCodeType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.ActionResultDescriptionType)
+		 */
+		@Override
+		public void visit(ActionResultDescriptionType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.JobIDType)
+		 */
+		@Override
+		public void visit(JobIDType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.MinutesType)
+		 */
+		@Override
+		public void visit(MinutesType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.NodeType10)
+		 */
+		@Override
+		public void visit(NodeType10 aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.OperatorType)
+		 */
+		@Override
+		public void visit(OperatorType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.ProcessorFrequencyType)
+		 */
+		@Override
+		public void visit(ProcessorFrequencyType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.ReasonType)
+		 */
+		@Override
+		public void visit(ReasonType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.RequestDateTimeType)
+		 */
+		@Override
+		public void visit(RequestDateTimeType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.SecondsType)
+		 */
+		@Override
+		public void visit(SecondsType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.TimeperiodType)
+		 */
+		@Override
+		public void visit(TimeperiodType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.VersionType)
+		 */
+		@Override
+		public void visit(VersionType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.VirtualMachineDumpType)
+		 */
+		@Override
+		public void visit(VirtualMachineDumpType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.VirtualMachineIDType)
+		 */
+		@Override
+		public void visit(VirtualMachineIDType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Ban)
+		 */
+		@Override
+		public void visit(Ban aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType)
+		 */
+		@Override
+		public void visit(BoundedClustersType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType.Cluster)
+		 */
+		@Override
+		public void visit(Cluster aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster)
+		 */
+		@Override
+		public void visit(
+				f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraintType)
+		 */
+		@Override
+		public void visit(BoundedPlacementConstraintType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraintType.PlacementConstraint)
+		 */
+		@Override
+		public void visit(PlacementConstraint aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType)
+		 */
+		@Override
+		public void visit(BoundedPoliciesType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType.Policy)
+		 */
+		@Override
+		public void visit(Policy aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy)
+		 */
+		@Override
+		public void visit(
+				f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedSLAsType)
+		 */
+		@Override
+		public void visit(BoundedSLAsType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedSLAsType.SLA)
+		 */
+		@Override
+		public void visit(SLA aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.SLAType.SLA)
+		 */
+		@Override
+		public void visit(
+				f4g.schemas.java.constraints.optimizerconstraints.SLAType.SLA aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Capacity)
+		 */
+		@Override
+		public void visit(Capacity aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.CapacityType)
+		 */
+		@Override
+		public void visit(CapacityType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.ClusterType)
+		 */
+		@Override
+		public void visit(ClusterType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.ConstraintType)
+		 */
+		@Override
+		public void visit(ConstraintType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint)
+		 */
+		@Override
+		public void visit(
+				f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType)
+		 */
+		@Override
+		public void visit(EnergyConstraintsType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType.MaxPowerServer)
+		 */
+		@Override
+		public void visit(MaxPowerServer aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoadType)
+		 */
+		@Override
+		public void visit(ExpectedLoadType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.FIT4GreenOptimizerConstraint)
+		 */
+		@Override
+		public void visit(FIT4GreenOptimizerConstraint aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.FederationType)
+		 */
+		@Override
+		public void visit(FederationType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Fence)
+		 */
+		@Override
+		public void visit(Fence aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Gather)
+		 */
+		@Override
+		public void visit(Gather aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType)
+		 */
+		@Override
+		public void visit(HardwareConstraintsType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.CompPowerGHz)
+		 */
+		@Override
+		public void visit(CompPowerGHz aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.GPUFreqGHz)
+		 */
+		@Override
+		public void visit(GPUFreqGHz aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.HDDCapacity)
+		 */
+		@Override
+		public void visit(HDDCapacity aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.MemorySpaceGB)
+		 */
+		@Override
+		public void visit(MemorySpaceGB aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.NbOfCores)
+		 */
+		@Override
+		public void visit(NbOfCores aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.NbOfGPUCores)
+		 */
+		@Override
+		public void visit(NbOfGPUCores aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.RAIDLevel)
+		 */
+		@Override
+		public void visit(RAIDLevel aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.LoadType)
+		 */
+		@Override
+		public void visit(LoadType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Lonely)
+		 */
+		@Override
+		public void visit(Lonely aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.NodeControllerType)
+		 */
+		@Override
+		public void visit(NodeControllerType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.PeriodType)
+		 */
+		@Override
+		public void visit(PeriodType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.PlacementConstraint)
+		 */
+		@Override
+		public void visit(
+				f4g.schemas.java.constraints.optimizerconstraints.PlacementConstraint aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.PolicyType)
+		 */
+		@Override
+		public void visit(PolicyType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType)
+		 */
+		@Override
+		public void visit(QoSConstraintsType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.Bandwidth)
+		 */
+		@Override
+		public void visit(Bandwidth aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxServerAvgVCPUperCore)
+		 */
+		@Override
+		public void visit(MaxServerAvgVCPUperCore aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxServerAvgVRAMperPhyRAM)
+		 */
+		@Override
+		public void visit(MaxServerAvgVRAMperPhyRAM aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxServerCPULoad)
+		 */
+		@Override
+		public void visit(MaxServerCPULoad aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVMperServer)
+		 */
+		@Override
+		public void visit(MaxVMperServer aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVRAMperPhyRAM)
+		 */
+		@Override
+		public void visit(MaxVRAMperPhyRAM aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore)
+		 */
+		@Override
+		public void visit(MaxVirtualCPUPerCore aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualLoadPerCore)
+		 */
+		@Override
+		public void visit(MaxVirtualLoadPerCore aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Root)
+		 */
+		@Override
+		public void visit(Root aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.SLAType)
+		 */
+		@Override
+		public void visit(SLAType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.SecurityConstraintsType)
+		 */
+		@Override
+		public void visit(SecurityConstraintsType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.SecurityConstraintsType.DedicatedServer)
+		 */
+		@Override
+		public void visit(DedicatedServer aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.SecurityConstraintsType.SecureAccessPossibility)
+		 */
+		@Override
+		public void visit(SecureAccessPossibility aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType)
+		 */
+		@Override
+		public void visit(ServerGroupType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType.ServerGroup)
+		 */
+		@Override
+		public void visit(ServerGroup aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs)
+		 */
+		@Override
+		public void visit(SpareCPUs aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.SpareNodes)
+		 */
+		@Override
+		public void visit(SpareNodes aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Split)
+		 */
+		@Override
+		public void visit(Split aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Spread)
+		 */
+		@Override
+		public void visit(Spread aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.VMGroup)
+		 */
+		@Override
+		public void visit(VMGroup aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.VMTypeType)
+		 */
+		@Override
+		public void visit(VMTypeType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.VMTypeType.VMType)
+		 */
+		@Override
+		public void visit(VMType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.Ban)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.constraints.placement.Ban aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.Capacity)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.constraints.placement.Capacity aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.ConstraintType)
+		 */
+		@Override
+		public void visit(
+				f4g.schemas.java.constraints.placement.ConstraintType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.DCType)
+		 */
+		@Override
+		public void visit(DCType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.FIT4GreenConstraintType)
+		 */
+		@Override
+		public void visit(FIT4GreenConstraintType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.Fence)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.constraints.placement.Fence aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.Gather)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.constraints.placement.Gather aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.Lonely)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.constraints.placement.Lonely aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.OneOf)
+		 */
+		@Override
+		public void visit(OneOf aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.PlacementConstraint)
+		 */
+		@Override
+		public void visit(
+				f4g.schemas.java.constraints.placement.PlacementConstraint aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.Root)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.constraints.placement.Root aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.ServerGroup)
+		 */
+		@Override
+		public void visit(
+				f4g.schemas.java.constraints.placement.ServerGroup aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.Split)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.constraints.placement.Split aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.Spread)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.constraints.placement.Spread aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.TSType)
+		 */
+		@Override
+		public void visit(TSType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.VMGroup)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.constraints.placement.VMGroup aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.DCType)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.loadpatterns.DCType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.LoadPatternType)
+		 */
+		@Override
+		public void visit(LoadPatternType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.LoadPatternsType)
+		 */
+		@Override
+		public void visit(LoadPatternsType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.LoadType)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.loadpatterns.LoadType aBean) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.PeriodType)
+		 */
+		@Override
+		public void visit(f4g.schemas.java.loadpatterns.PeriodType aBean) {
+			// TODO Auto-generated method stub
 			
 		}
 		

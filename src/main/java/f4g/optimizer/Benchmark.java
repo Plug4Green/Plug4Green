@@ -9,6 +9,7 @@ import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import org.apache.log4j.Logger;
 import f4g.commons.controller.IController;
+import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.constraint.sliceScheduling.LocalScheduler;

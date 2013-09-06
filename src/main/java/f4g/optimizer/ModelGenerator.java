@@ -907,7 +907,7 @@ public class ModelGenerator {
     {
         // 1. Create a link to connect the nodes
         
-        LinkType link = new LinkType(defaultPropagationDelay, defaultBitErrorRate);
+        LinkType link = new LinkType(defaultPropagationDelay, defaultBitErrorRate, null);
         
         // 2. Create a network port for node 0 
         
@@ -957,7 +957,7 @@ public class ModelGenerator {
 
         // 1. Create a link to connect the nodes
         
-        LinkType link = new LinkType(defaultPropagationDelay, defaultBitErrorRate);
+        LinkType link = new LinkType(defaultPropagationDelay, defaultBitErrorRate, null);
         
         // 2. Create a network port for server 
         

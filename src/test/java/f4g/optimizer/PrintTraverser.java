@@ -14,6 +14,13 @@
 package f4g.optimizer;
 
 
+import com.massfords.humantask.BaseVisitor;
+import com.massfords.humantask.DepthFirstTraverserImpl;
+import com.massfords.humantask.TraversingVisitor;
+import com.massfords.humantask.TraversingVisitorProgressMonitor;
+import com.massfords.humantask.Visitable;
+import com.massfords.humantask.Visitor;
+
 import f4g.schemas.java.metamodel.*;
 
 

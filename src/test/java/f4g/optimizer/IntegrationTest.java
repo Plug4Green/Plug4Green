@@ -24,7 +24,7 @@ import f4g.optimizer.utils.OptimizerWorkload;
 import f4g.optimizer.utils.OptimizerWorkload.CreationImpossible;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
-import f4g.commons.power.PowerCalculator;
+import f4g.powerCalculator.power.PowerCalculator;
 import f4g.schemas.java.actions.AbstractBaseActionType;
 import f4g.schemas.java.actions.ActionRequestType.ActionList;
 import f4g.schemas.java.actions.MoveVMActionType;
@@ -186,7 +186,7 @@ public class IntegrationTest extends OptimizerTest {
 
         ArrayList<String> clusterId = new ArrayList<String>();
         clusterId.add("c1");
-        CloudVmAllocationType cloudAlloc = new CloudVmAllocationType("i1", clusterId, "small", "u1", 0);
+        CloudVmAllocationType cloudAlloc = new CloudVmAllocationType(null, "i1", clusterId, "small", "u1", 0);
 
         //Simulates a CloudVmAllocationType operation
         JAXBElement<CloudVmAllocationType> operationType = (new ObjectFactory()).createCloudVmAllocation(cloudAlloc);

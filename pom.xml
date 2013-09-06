@@ -442,7 +442,7 @@ Copyright 2012 FIT4Green project.
 			<plugin>
               <groupId>org.jvnet.jaxb2.maven2</groupId>
               <artifactId>maven-jaxb2-plugin</artifactId>
-              <version>0.8.2</version>
+              <version>0.8.3</version>
               <executions>
                   <execution>
                       <goals>
@@ -480,7 +480,7 @@ Copyright 2012 FIT4Green project.
                       <plugin>
                                 <groupId>org.jvnet.jaxb2_commons</groupId>
                                 <artifactId>jaxb2-basics</artifactId>
-                                <version>0.5.3</version>
+                                <version>0.6.4</version>
                             </plugin>
                   </plugins>
               </configuration>
