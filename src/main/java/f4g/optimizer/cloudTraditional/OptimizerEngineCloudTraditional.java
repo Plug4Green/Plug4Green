@@ -55,6 +55,7 @@ import f4g.schemas.java.actions.PowerOnActionType;
 import f4g.schemas.java.actions.ActionRequestType.ActionList;
 import f4g.schemas.java.*;
 import f4g.schemas.java.allocation.AllocationRequestType;
+import f4g.schemas.java.allocation.RequestType;
 import f4g.schemas.java.allocation.AllocationResponseType;
 import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
 import f4g.schemas.java.allocation.CloudVmAllocationType;
@@ -70,7 +71,6 @@ import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType.Cluster;
 import f4g.commons.util.Util;
-import f4g.communicatorFzj.com.pbs.common.DisRequest.RequestType;
 import f4g.optimizer.utils.OptimizerWorkload;
 import f4g.optimizer.Optimizer.CloudTradCS;
 

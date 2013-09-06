@@ -8,12 +8,13 @@ import org.apache.log4j.Logger;
 import f4g.optimizer.entropy.configuration.F4GNode;
 import f4g.optimizer.entropy.configuration.F4GNodeComparator;
 import f4g.optimizer.entropy.configuration.F4GResourcePicker;
-
+ 
 import choco.kernel.memory.IStateInt;
 import choco.kernel.solver.ContradictionException;
 import choco.kernel.solver.branch.AbstractLargeIntBranchingStrategy;
 import choco.kernel.solver.search.IntBranchingDecision;
 import choco.kernel.solver.variables.integer.IntDomainVar;
+import choco.cp.solver.variables.integer.BooleanVarImpl;
 import entropy.configuration.Configuration;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
@@ -80,7 +81,7 @@ public class SimpleVMPacking extends AbstractLargeIntBranchingStrategy {
 	                return hosters[indexVM];
 	            }
 	        }
-			sourceServer.increment();
+			sourceServer.add(1);
 			log.debug("sourceServer incremented: " + sourceServer.get());
 		}
 		log.debug("Packing finished");
@@ -101,7 +102,7 @@ public class SimpleVMPacking extends AbstractLargeIntBranchingStrategy {
         			return indexDest;
     			}
     		}
-			targetServer.decrement();
+			targetServer.add(-1); //TODO check if equivalent to decrement
 			log.debug("targetServer decrement: " + targetServer.get());
 		}
 

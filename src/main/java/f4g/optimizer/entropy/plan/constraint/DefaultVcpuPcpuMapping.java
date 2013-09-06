@@ -4,6 +4,7 @@ import choco.cp.solver.constraints.reified.FastImpliesEq;
 import choco.cp.solver.variables.integer.BoolVarNot;
 import choco.kernel.solver.constraints.SConstraint;
 import choco.kernel.solver.variables.integer.IntDomainVar;
+import choco.cp.solver.variables.integer.BooleanVarImpl;
 import entropy.configuration.*;
 import entropy.plan.Plan;
 import entropy.plan.choco.ReconfigurationProblem;
@@ -79,7 +80,7 @@ public class DefaultVcpuPcpuMapping implements VcpuPcpuMapping {
                 } else { //Manageable state
                     vcpuCount[i] = rp.createBoundIntVar("vCPUCapa(" + n.getName() + ")", 0, maxCapacity);
                     ManageableNodeActionModel action = (ManageableNodeActionModel) rp.getAssociatedAction(n);
-                    IntDomainVar isOffline = new BoolVarNot(rp, "offline(" + n.getName() + ")", action.getState());
+                    IntDomainVar isOffline = new BoolVarNot(rp, "offline(" + n.getName() + ")", (BooleanVarImpl)action.getState());
                     rp.post(new FastImpliesEq(isOffline, vcpuCount[i], 0));
                 }
 

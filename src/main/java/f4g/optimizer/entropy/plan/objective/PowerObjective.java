@@ -4,6 +4,7 @@ import choco.Choco;
 import choco.cp.solver.constraints.reified.FastIFFEq;
 import choco.cp.solver.constraints.reified.ReifiedFactory;
 import choco.cp.solver.variables.integer.BoolVarNot;
+import choco.cp.solver.variables.integer.BooleanVarImpl;
 import choco.kernel.solver.constraints.SConstraint;
 import choco.kernel.solver.constraints.integer.IntExp;
 import choco.kernel.solver.variables.integer.IntDomainVar;
@@ -315,7 +316,7 @@ public class PowerObjective extends Objective {
                 	m.post(new FastIFFEq(action.getState(), EOnOffServer[i], EnergyOn)); 
                 	//m.post(m.eq(EOnOffServer[i], mult(EnergyOn, action.getState()))); 
                 } else if (action instanceof ShutdownableNodeActionModel) {
-                	IntDomainVar isOffline = new BoolVarNot(m, "offline(" + n.getName() + ")", action.getState());
+                	IntDomainVar isOffline = new BoolVarNot(m, "offline(" + n.getName() + ")", (BooleanVarImpl)action.getState());
                 	m.post(new FastIFFEq(isOffline, EOnOffServer[i], EnergyOff));
                 	//m.post(m.eq(EOnOffServer[i], mult(EnergyOff, isOffline))); 
                 }

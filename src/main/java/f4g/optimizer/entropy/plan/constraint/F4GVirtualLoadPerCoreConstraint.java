@@ -23,6 +23,7 @@ import choco.cp.solver.constraints.reified.FastIFFEq;
 import choco.cp.solver.constraints.reified.FastImpliesEq;
 import choco.cp.solver.variables.integer.BoolVarNot;
 import choco.kernel.solver.variables.integer.IntDomainVar;
+import choco.cp.solver.variables.integer.BooleanVarImpl;
 import entropy.configuration.*;
 import entropy.plan.choco.ReconfigurationProblem;
 import entropy.plan.choco.actionModel.ActionModels;
@@ -175,7 +176,7 @@ public class F4GVirtualLoadPerCoreConstraint extends F4GConstraint {
 				ManageableNodeActionModel action = (ManageableNodeActionModel) core
 						.getAssociatedAction(n);
 				IntDomainVar isOffline = new BoolVarNot(core, "offline("
-						+ n.getName() + ")", action.getState());
+						+ n.getName() + ")", (BooleanVarImpl)action.getState());
 				core.post(new FastImpliesEq(isOffline, capacities[i], 0));
 			}
 		}
