@@ -41,7 +41,7 @@ public class PowerMeter extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("config/log4j.properties");
+		InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("f4gDeveloperTools/log4j.properties");
 		Properties log4jProperties = new Properties();
 		try {
 			log4jProperties.load(isLog4j);

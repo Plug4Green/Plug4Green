@@ -120,7 +120,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	    
 	    try
 	    {
-	    	InputStream is = this.getClass().getClassLoader().getResourceAsStream("config/OptimizerEngineHPC.properties");
+	    	InputStream is = this.getClass().getClassLoader().getResourceAsStream("optimizer/OptimizerEngineHPC.properties");
 	    	prop.load(is);
 	    	scheduling = Integer.parseInt(prop.getProperty("scheduling").trim());
 	    	threshold = Integer.parseInt(prop.getProperty("threshold").trim());
@@ -2444,7 +2444,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		Properties prop = new Properties();
 	    try
 	    {
-	    	InputStream is = this.getClass().getClassLoader().getResourceAsStream("config/OptimizerEngineHPC.properties");
+	    	InputStream is = this.getClass().getClassLoader().getResourceAsStream("optimizer/OptimizerEngineHPC.properties");
 	    	prop.load(is);
 	    	fanRPMpercentage = Double.parseDouble(prop.getProperty("fanRPMpercentage").trim());
 	    	hddReadRatepercentage = Double.parseDouble(prop.getProperty("hddReadRatepercentage").trim());
@@ -2560,7 +2560,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		Properties prop = new Properties();
 	    try
 	    {
-	    	InputStream is = this.getClass().getClassLoader().getResourceAsStream("config/OptimizerEngineHPC.properties");
+	    	InputStream is = this.getClass().getClassLoader().getResourceAsStream("optimizer/OptimizerEngineHPC.properties");
 	    	prop.load(is);
 	    	fanRPMpercentage = Double.parseDouble(prop.getProperty("fanRPMpercentage").trim());
 	    	hddReadRatepercentage = Double.parseDouble(prop.getProperty("hddReadRatepercentage").trim());

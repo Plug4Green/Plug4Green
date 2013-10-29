@@ -8,7 +8,7 @@
 * 
 * short description:
 *   Generate a random Model and eventuallysaves it to file.
-*   You can run the local main, with argument "config/f4gconfig.properties". A new file f4gmodel_instance_populated.xml
+*   You can run the local main, with argument "optimizer/f4gconfig.properties". A new file f4gmodel_instance_populated.xml
 *   will be created in resources directory.
 *   This file can then be used for test purpose.   
 * ============================= /Header ==============================
@@ -250,7 +250,7 @@ public class ModelGenerator {
 		
 		ModelGenerator test = new ModelGenerator();	
 		if(args.length == 0){
-			System.out.println("Please provide the path of config file as an argument (usually config/f4gconfig.properties).");
+			System.out.println("Please provide the path of config file as an argument (usually optimizer/f4gconfig.properties).");
 			System.exit(1);
 		}
 		

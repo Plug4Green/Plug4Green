@@ -111,7 +111,7 @@ public class Main implements IMain {
 				if(System.getProperty("log4j.configuration") != null){
 					PropertyConfigurator.configure(System.getProperty("log4j.configuration"));				
 				} else {
-					InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("config/log4j.properties");
+					InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("pluginCore/log4j.properties");
 					log4jProperties.load(isLog4j);
 					PropertyConfigurator.configure(log4jProperties);				
 				}
@@ -283,7 +283,7 @@ public class Main implements IMain {
 	public static void main(String[] args) {
 		
 		if(args.length == 0){
-			System.out.println("Please provide the path of config file as an argument (usually config/f4gconfig.properties).");
+			System.out.println("Please provide the path of config file as an argument (usually pluginCore/f4gconfig.properties).");
 			System.exit(1);
 		}
 		

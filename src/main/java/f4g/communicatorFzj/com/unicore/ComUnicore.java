@@ -152,7 +152,7 @@ public class ComUnicore implements ICom   {
 	    	
 	    }
 	    catch (IOException ioe){
-	    	log.debug("Couldn't read properties from relative path 'config/ComFzj.properties'.");
+	    	log.debug("Couldn't read properties from relative path 'communicatorFzj/ComFzj.properties'.");
 	    }
 	    catch (Exception e)
 	    {

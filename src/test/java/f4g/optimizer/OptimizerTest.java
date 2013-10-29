@@ -291,7 +291,7 @@ public class OptimizerTest extends TestCase {
 		if(System.getProperty("log4j.configuration") != null){
 			PropertyConfigurator.configure(System.getProperty("log4j.configuration"));				
 		} else {
-			InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("config/log4j.properties");
+			InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("optimizer/log4j.properties");
 			log4jProperties.load(isLog4j);
 			PropertyConfigurator.configure(log4jProperties);
 			System.out.println("logger f4g:" + log4jProperties.getProperty("log4j.logger.org.f4g"));

@@ -52,7 +52,7 @@ public class RetrieveInformation {
 	public boolean init(){
 		try {
 			configurationDemo_ = new Properties();
-			InputStream configInputStream = this.getClass().getClassLoader().getResourceAsStream("config/ComDemo.properties");
+			InputStream configInputStream = this.getClass().getClassLoader().getResourceAsStream("communicatorDemo/ComDemo.properties");
 			configurationDemo_.load(configInputStream);
 			exampleDataCenter_ = configurationDemo_.getProperty("exampleModel");
 			

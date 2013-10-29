@@ -39,7 +39,7 @@ public class BenchClient {
 
         SLAReader sla = null;
         ModelGenerator modelGenerator = new ModelGenerator();
-        modelGenerator.schema_location = "config/MetaModel.xsd";
+        modelGenerator.schema_location = "schemas/MetaModel.xsd";
         while (j != null) {
             File model = storeResource(client, j.get(BenchServer.MODEL_KEY), root);
             if (sla == null) {
@@ -58,7 +58,7 @@ public class BenchClient {
 
     }
     public static void main(String [] args) {
-        Utils.initLogger("config/log4j-benchmark.properties");
+        Utils.initLogger("optimizer/log4j-benchmark.properties");
         if (args.length == 0) {
             usage(1);
         }

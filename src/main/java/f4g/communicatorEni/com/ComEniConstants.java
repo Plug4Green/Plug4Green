@@ -66,7 +66,7 @@ public class ComEniConstants {
 	public static final String BOOT_HOST = "boothost";
 	public static final String STATE = "state";
 	public static final String IS_SIMULATED = "isSimulated";
-	public static final String CONFIGURATION_ENI = "config/comEni.properties";
+	public static final String CONFIGURATION_ENI = "CommunicatorEni/comEni.properties";
 	public static final String INTERVAL = "interval";
 	public static final String KEYSTORE = "keystore";
 	public static final String KEYSTORE_PASSWORD = "keystorePass";

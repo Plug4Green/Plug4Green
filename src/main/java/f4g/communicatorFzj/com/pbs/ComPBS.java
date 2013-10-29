@@ -116,7 +116,7 @@ public class ComPBS implements ICom, Runnable {
 
 	static boolean block_update = false;
 
-	public static final String COM_PROPERTIES_DIR = "config/";
+	public static final String COM_PROPERTIES_DIR = "communicatorFzj/";
 	public static final String COM_PROPERTIES_SUFFIX = ".properties";
 	String CLIENT_KEYSTORE_PATH;
 	String CLIENT_KEYSTORE_PASS;
@@ -1981,7 +1981,7 @@ public class ComPBS implements ICom, Runnable {
 
 		}
 		catch (IOException ioe){
-			log.error("Couldn't read properties from relative path 'config/ComFzj.properties'.");
+			log.error("Couldn't read properties from relative path 'communicatorFzj/ComFzj.properties'.");
 			return false;
 		}
 		catch (Exception e)

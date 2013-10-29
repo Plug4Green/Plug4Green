@@ -33,7 +33,7 @@ public class InitServlet extends HttpServlet {
 	 * @see Servlet#init(ServletConfig)
 	 */
 	public void init(ServletConfig config) throws ServletException {
-		InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("config/log4j.properties");
+		InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("initServlet/log4j.properties");
 		Properties log4jProperties = new Properties();
 		try {
 			log4jProperties.load(isLog4j);

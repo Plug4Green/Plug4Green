@@ -51,7 +51,7 @@ public class ServerState extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 			try {
-				InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("config/log4j.properties");
+				InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("f4gDeveloperTools/log4j.properties");
 				Properties log4jProperties = new Properties();
 				log4jProperties.load(isLog4j);
 				PropertyConfigurator.configure(log4jProperties);

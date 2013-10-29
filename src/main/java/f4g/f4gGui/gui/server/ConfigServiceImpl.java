@@ -32,8 +32,8 @@ public class ConfigServiceImpl extends RemoteServiceServlet
 	// FIXME currently file path is based on source files...
 	// *.properties files is not the one found within tomcat server
 	// creates problem when deploying while not using ISO image!!!
-	private static final String CONFIG_FILE = "config/f4ggui.properties";
-	private static final String PROPERTIES_FILE = "config/f4gconfig.properties";
+	private static final String CONFIG_FILE = "f4gGui/f4ggui.properties";
+	private static final String PROPERTIES_FILE = "f4gGui/f4gconfig.properties";
 	
 	Map<String, String> directories = new HashMap<String, String>();
 	ConfigurationData conf = new ConfigurationData();
