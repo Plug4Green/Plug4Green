@@ -18,7 +18,7 @@ Copyright 2012 FIT4Green project.
   <modelVersion>4.0.0</modelVersion>
   <!-- The Basics -->
   <groupId>f4g</groupId>
-  <artifactId>FIT4Green</artifactId>
+  <artifactId>Plug4Green</artifactId>
   <version>1.0</version>
   <packaging>jar</packaging>
   <dependencies>
