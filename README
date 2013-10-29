@@ -1,44 +1,28 @@
 ﻿FIT4GREEN PLUG-IN
 
-WARNING: version under developement. Please use branch "antbuild" for the stable version.
-
-Description:
-
 FIT4Green plug-in is an application that focuses on saving energy in Data Centres optimizing the ICT resources 
 and is meant to be used by Data Centres operators.
 This README explains the requisites and configuration to compile FIT4Green plug-in source code.
 
------------------------------------------------------------------------------------------------------------------------
-To do
 
-steps remaining:
--finish the compilation with $ mvn compiler:compile
-
--put the Web application sources in src/main/webapp
-
--run tests (mvn test)
-
--configure tomcat (The PLUGIN: http://mojo.codehaus.org/tomcat-maven-plugin/usage.html)
-	and F4Gui ,GWT (http://gwt-maven.googlecode.com/svn/docs/maven-googlewebtoolkit2-plugin/setup.html)
-
--deploy with tomcat (the deployement: http://mojo.codehaus.org/tomcat-maven-plugin/deployment.html)
-
-
------------------------------------------------------------------------------------------------------------------------
-
-Preliminary configuration:
+Installation
+============
 
 The following components/tools needs to be install before starting to develop on the F4G projects:
 *	The Java environment, jdk 1.7
 *	The Tomcat server 
 *	apache-maven
 
-After having install them.
-Move to the source directory then execute the following command to make the jar:
-	mvn install
+In a console, type:
+$ mvn install
 
-//////
-Now the JAR is created in the root and all tests done.
+alternatively:
+
+$ mvn install -DskipTests
+
+
+Deploy
+======
 
 Tomcat:
 The jar resulting from the build of F4G project will be deployed on the Tomcat server and will be accessed and 
@@ -62,7 +46,6 @@ The only element in the “build.properties” file that is dependent on the loc
 This entry is used by the ant target "deploy" to put the generated jars in the "${TOMCAT_HOME}/common/lib" of the Tomcat server.
 Rename "local.build.properties.template" to "local.build.properties" and configure this property in the "local.build.properties" 
 file in the “Commons” project.
-//////
 
 Usage:
 If Configured FIT4Green to start automatically then simply start your Tomcat and FIT4Green plug-in will start automatically.
@@ -70,8 +53,17 @@ Open the web application F4gGui with: http://localhost:8080/F4gGui click the sta
 Use this web application to manage the FIT4Green plug-in.
 
 
+To do
+=====
 
------------------------------------------------------------------------------------------------------------------------
+steps remaining:
+-put the Web application sources in src/main/webapp
+
+-configure tomcat (The PLUGIN: http://mojo.codehaus.org/tomcat-maven-plugin/usage.html)
+	and F4Gui ,GWT (http://gwt-maven.googlecode.com/svn/docs/maven-googlewebtoolkit2-plugin/setup.html)
+
+-deploy with tomcat (the deployement: http://mojo.codehaus.org/tomcat-maven-plugin/deployment.html)
+
 
 Copyright 2012 FIT4Green project.
 
