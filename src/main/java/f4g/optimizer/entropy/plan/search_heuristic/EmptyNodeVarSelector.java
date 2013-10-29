@@ -76,15 +76,15 @@ public class EmptyNodeVarSelector extends AbstractIntVarSelector {
 	    	//future online and future offline should have their state set already
 	        if(!pb.getFutureOnlines().contains(n) && !pb.getFutureOfflines().contains(n)) {
 	        	ManageableNodeActionModel action = (ManageableNodeActionModel) pb.getAssociatedAction(n);
-	        	log.debug("Node " + n.getName());
-	        	log.debug("state instancied " + action.getState().isInstantiated());
+	        	//log.debug("Node " + n.getName());
+	        	//log.debug("state instancied " + action.getState().isInstantiated());
 	        	//Select the empty nodes first
 	        	if(!action.getState().isInstantiated() && pb.getUsedMem(n).isInstantiatedTo(0)) {
-	        		log.debug("select node " + n.getName() + " for switch off");
+	        		//log.debug("select node " + n.getName() + " for switch off");
 	        		return action.getState();
 	        	}
                 if (pb.getUsedMem(n).isInstantiatedTo(0) && !action.start().isInstantiated()) {
-                	log.debug("select node " + n.getName() + " for start");
+                	//log.debug("select node " + n.getName() + " for start");
                     return action.start();
                 }
             }
