@@ -203,14 +203,12 @@ public class SLAReader {
         // JAXBElement<FIT4GreenOptimizerConstraint> poElement = null;
         try {
             // create an Unmarshaller
-            Unmarshaller u = JAXBContext.newInstance(
-                    "f4g.schemas.java.constraints.optimizerconstraints")
+            Unmarshaller u = JAXBContext.newInstance("f4g.schemas.java.constraints.optimizerconstraints")
                     .createUnmarshaller();
 
             // ****** VALIDATION ******
             // TODO: remove hard path
-            URL url = this.getClass().getClassLoader()
-                    .getResource("schema/SlaClusterConstraints.xsd");
+            URL url = this.getClass().getClassLoader().getResource("schemas/SlaClusterConstraints.xsd");
 
             log.debug("Schema: " + url);
 
@@ -218,6 +216,7 @@ public class SLAReader {
             try {
                 Schema schema = sf.newSchema(url);
                 u.setSchema(schema);
+
                 u.setEventHandler(new ValidationEventHandler() {
                     // allow unmarshalling to continue even if there are errors
                     public boolean handleEvent(ValidationEvent ve) {

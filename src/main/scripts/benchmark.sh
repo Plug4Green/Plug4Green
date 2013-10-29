@@ -10,4 +10,4 @@ JARS=`ls $MY/lib/*.jar`
 for JAR in $JARS; do
  CLASSPATH=$JAR:$CLASSPATH
 done
-java $JAVA_OPTS -cp $CLASSPATH org.f4g.optimizer.Benchmark $*
+java $JAVA_OPTS -cp $CLASSPATH f4g.optimizer.Benchmark $*

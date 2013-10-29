@@ -553,6 +553,26 @@ Copyright 2012 FIT4Green project.
           </includes>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>f4g.optimizer.Benchmark</mainClass>
+          <arguments> 
+            <argument>-gen</argument> <argument>3</argument> <argument>3</argument>
+            <argument>-sla</argument> <argument>/home/kau/FIT4Green/src/main/resources/optimizer/sla_void.xml</argument>
+            <argument>-o</argument> <argument>output</argument>
+          </arguments>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <!-- More Project Information -->
@@ -567,7 +587,7 @@ Copyright 2012 FIT4Green project.
       <roles>
         <role>developer</role>
       </roles>
-      <timezone>ITaly/Trento</timezone>
+      <timezone>Italy/Trento</timezone>
     </developer>
   </developers>
   <contributors>
