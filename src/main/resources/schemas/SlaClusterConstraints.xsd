@@ -448,6 +448,9 @@
 						<!-- Minimum amount of minutes between each VM move -->
 						<xsd:element name="DelayBetweenMove" type="xsd:int"
 							minOccurs="0" maxOccurs="1" />
+						<!-- Minimum amount of minutes between each server On/Off -->
+						<xsd:element name="DelayBetweenOnOff" type="xsd:int"
+							minOccurs="0" maxOccurs="1" />
 						<!-- A VM will be moved if: Psaved by move * VMMigrationPaybacktime > Energy spent for the move-->
 						<xsd:element name="VMMigrationPaybacktime" type="xsd:int"
 							minOccurs="0" maxOccurs="1" />

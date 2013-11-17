@@ -74,8 +74,8 @@ public class PolicyConstraintFactory {
 	 */
 	public PolicyConstraintFactory(ClusterType myClusters, Configuration src,
 			FIT4GreenType model, FederationType federation, 
-    		VMTypeType myVMs, IPowerCalculator myPowerCalculator, ICostEstimator myCostEstimator) {
-		
+			VMTypeType myVMs, IPowerCalculator myPowerCalculator, ICostEstimator myCostEstimator) {
+
 		v = new DefaultVJob("PolicyVJob");
 		this.src = src;
 		this.model = model;
@@ -85,13 +85,14 @@ public class PolicyConstraintFactory {
 		SLAvms = myVMs;
 		powerCalculator = myPowerCalculator;	
 		costEstimator = myCostEstimator;
-		
+
 	}
 
 	public VJob createPolicyConstraints() {
 
 		if (federation != null) {
 			int delayTimeBetweenMove = 0;
+			int delayTimeBetweenOnOff = 0;
 			Integer myPaybackTime = null;
 			List<PeriodType> periodVMThreshold = null;
 			for (Policy pol : federation.getBoundedPolicies().getPolicy()) {
@@ -99,6 +100,10 @@ public class PolicyConstraintFactory {
 				if (myPol.getDelayBetweenMove() != null
 						&& myPol.getDelayBetweenMove() > delayTimeBetweenMove) {
 					delayTimeBetweenMove = myPol.getDelayBetweenMove();
+				}
+				if (myPol.getDelayBetweenOnOff() != null
+						&& myPol.getDelayBetweenOnOff() > delayTimeBetweenOnOff) {
+					delayTimeBetweenOnOff = myPol.getDelayBetweenOnOff();
 				}
 				if (myPol.getVMMigrationPaybacktime() != null) {
 					myPaybackTime = pol.getIdref()
@@ -114,16 +119,14 @@ public class PolicyConstraintFactory {
 						//if the federation contains no servers, we include them all (conservative measure for testing)
 						addPeriodVMThreshold(src.getAllNodes(),	periodVMThreshold, 1);
 					}
-
 				}
-
 			}
 			if (federation.getBoundedCluster() != null) {
 				for (BoundedClustersType.Cluster bc : federation
 						.getBoundedCluster().getCluster()) {
 					Cluster c = bc.getIdref();
-					addDelayBetweenMoveConstraint(c, delayTimeBetweenMove,
-							true);
+					addDelayBetweenMoveConstraint(c,  delayTimeBetweenMove, true);
+					addDelayBetweenOnOffConstraint(c, delayTimeBetweenOnOff, true);
 					if (myPaybackTime != null) {
 						addVMPaybackTimeConstraint(c, myPaybackTime);
 					}
@@ -131,23 +134,24 @@ public class PolicyConstraintFactory {
 				}
 			}
 		}
-		
+
 		if(clusters != null) {
 			List<Cluster> clusterList = clusters.getCluster();
 			for (Cluster c : clusterList) {
 				addDelayBetweenMoveConstraint(c, 0, false);
+				addDelayBetweenOnOffConstraint(c, 0, false);
 				if(c.getBoundedPolicies() != null && c.getBoundedPolicies().getPolicy().size() != 0) {
 					PolicyType.Policy firstPol = c.getBoundedPolicies().getPolicy().get(0).getIdref();
 					if(firstPol.getVMMigrationPaybacktime() != null) {
 						addVMPaybackTimeConstraint(c, firstPol.getVMMigrationPaybacktime());
 					}							
 				}
-				
+
 				if (c.getBoundedPolicies() != null) {
 					for (Policy pol : c.getBoundedPolicies().getPolicy()) {
 						PolicyType.Policy myPol = pol.getIdref();
 						if (myPol.getPeriodVMThreshold() != null) {
-							
+
 							float overbooking = 1;
 							if(c.getBoundedSLAs() != null && (c.getBoundedSLAs().getSLA().size() > 0) && 
 									c.getBoundedSLAs().getSLA().get(0).getIdref().getQoSConstraints() != null &&
@@ -162,23 +166,18 @@ public class PolicyConstraintFactory {
 				}	
 			}
 		}
-		
+
 
 
 		return v;
 	}
 
-	private void addDelayBetweenMoveConstraint(Cluster c, int delayTimeBetweenMove,
-		boolean isFederation) {
+	private void addDelayBetweenMoveConstraint(Cluster c, int delayTimeBetweenMove, boolean isFederation) {
 
 		log.debug("Adding DelayBetweenMoveConstraint constraint...");
 		log.debug("delayTimeBetweenMove from method parameter: " + delayTimeBetweenMove);
 		ManagedElementSet<Node> nodes = Utils.getNodesFromCluster(c, src);
-
-		List<ServerType> allServers = f4g.optimizer.utils.Utils
-				.getAllServers(model);
-
-		Utils.getVMs(allServers.get(0));
+		List<ServerType> allServers = Utils.getAllServers(model);
 
 		// get all VMs for these nodes
 		ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
@@ -186,8 +185,7 @@ public class PolicyConstraintFactory {
 		if (!isFederation && c.getBoundedPolicies() != null) {
 			for (Policy pol : c.getBoundedPolicies().getPolicy()) {
 				if (pol.getIdref().getDelayBetweenMove() != null && pol.getIdref().getDelayBetweenMove() > delayTimeBetweenMove) {
-					delayTimeBetweenMove = pol.getIdref()
-							.getDelayBetweenMove();
+					delayTimeBetweenMove = pol.getIdref().getDelayBetweenMove();
 					log.debug("delayTimeBetweenMove from policy: " + delayTimeBetweenMove);
 				}
 			}
@@ -203,11 +201,11 @@ public class PolicyConstraintFactory {
 				factory = DatatypeFactory.newInstance();
 				Duration duration = factory.newDuration(false, 0, 0, 0, 0,
 						delayTimeBetweenMove, 0); // negative Duration
-			
+
 				earliestLastTimeMove.add(duration);
 				log.debug("earliestLastTimeMove plus delayBetweenMove: " + earliestLastTimeMove);
 				for (Node node : nodes) {
-					
+
 					for (ServerType st : allServers) {
 						if (st.getFrameworkID().equals(node.getName())) {
 							ManagedElementSet<VirtualMachine> vm = src
@@ -223,16 +221,17 @@ public class PolicyConstraintFactory {
 								log.debug("*** vmt lastMigrationTimestamp: " + vmt.getLastMigrationTimestamp());
 								if (vmt.getLastMigrationTimestamp() != null
 										&& vmt
-												.getLastMigrationTimestamp()
-												.compare(
-														earliestLastTimeMove) == DatatypeConstants.GREATER) {
+										.getLastMigrationTimestamp()
+										.compare(
+												earliestLastTimeMove) == DatatypeConstants.GREATER) {
 									log.debug("*** comparison is TRUE");
-					vms.add(vm.get(vmt.getFrameworkID()));
+									vms.add(vm.get(vmt.getFrameworkID()));
 								}
 							}
 						}
 					}					
 				}
+
 				if (vms.size() != 0) {
 					log.debug("Adding F4GDelayBetweenMove constraint");
 					v.addConstraint(new F4GDelayBetweenMove(vms));
@@ -240,15 +239,79 @@ public class PolicyConstraintFactory {
 			} catch (DatatypeConfigurationException e1) {
 				log.error("Exception", e1);
 			}
-			
+
 		} else {
 			log.debug("No model datetime is set");
 		}
 	}
 
 	
+	private void addDelayBetweenOnOffConstraint(Cluster c, int delayTimeBetweenOnOff, boolean isFederation) {
+
+		log.debug("Adding addDelayBetweenOnOffConstraint constraint...");
+		log.debug("delayTimeBetweenOnOff from method parameter: " + delayTimeBetweenOnOff);
+		ManagedElementSet<Node> nodes = Utils.getNodesFromCluster(c, src);
+		List<ServerType> allServers = Utils.getAllServers(model);
+
+		// node to apply the constraint to
+		ManagedElementSet<Node> ns = new SimpleManagedElementSet<Node>();
+
+		if (!isFederation && c.getBoundedPolicies() != null) {
+			for (Policy pol : c.getBoundedPolicies().getPolicy()) {
+				if (pol.getIdref().getDelayBetweenOnOff() != null && pol.getIdref().getDelayBetweenOnOff() > delayTimeBetweenOnOff) {
+					delayTimeBetweenOnOff = pol.getIdref().getDelayBetweenOnOff();
+					log.debug("delayTimeBetweenOnOff from policy: " + delayTimeBetweenOnOff);
+				}
+			}
+		}
+		if(delayTimeBetweenOnOff <= 0)
+			return;
+
+		if (model.getDatetime() != null) {
+			XMLGregorianCalendar earliestLastTimeOnOff = model.getDatetime();
+			log.debug("earliestLastTimeOnOff: " + earliestLastTimeOnOff);
+			DatatypeFactory factory;
+			try {
+				factory = DatatypeFactory.newInstance();
+				Duration duration = factory.newDuration(false, 0, 0, 0, 0,
+						delayTimeBetweenOnOff, 0); // negative Duration
+
+				earliestLastTimeOnOff.add(duration);
+				log.debug("earliestLastTimeOnOff plus delayBetweenOnOff: " + earliestLastTimeOnOff);
+				for (Node node : nodes) {
+					
+					for (ServerType st : allServers) {
+						if (st.getFrameworkID().equals(node.getName())) {
+							
+
+							if (st.getLastOnOffTimestamp() != null
+									&& st
+									.getLastOnOffTimestamp()
+									.compare(
+											earliestLastTimeOnOff) == DatatypeConstants.GREATER) {
+								log.debug("*** comparison is TRUE");
+								ns.add(node);
+							}
+							
+						}
+					}					
+				}
+
+				if (ns.size() != 0) {
+					log.debug("Adding F4GDelayBetweenOnOff constraint");
+					v.addConstraint(new F4GServerNoStateChange(ns));
+				}
+			} catch (DatatypeConfigurationException e1) {
+				log.error("Exception", e1);
+			}
+
+		} else {
+			log.debug("No model datetime is set");
+		}
+	}
+
 	private void addVMPaybackTimeConstraint(Cluster c, int myPaybackTime) {
-		
+
 		ManagedElementSet<Node> nodes = Utils.getNodesFromCluster(c, src);
 		ManagedElementSet<VirtualMachine> vms = Utils.getVMsFromNodes(nodes, src);
 
@@ -258,42 +321,42 @@ public class PolicyConstraintFactory {
 	}
 
 	private void addPeriodVMThreshold(ManagedElementSet<Node> nodes, List<PeriodType> periods, float overbooking) {
-		
+
 		if(model.getDatetime() != null) {
 			LoadType load = SLAReader.getVMSlotsThreshold(model.getDatetime().toGregorianCalendar().getTime(), periods);					
 			if(nodes.size() !=0 && load != null) {
 				if(load.getSpareCPUs() != null && load.getSpareCPUs().getValue() > 0 ) {
-					
+
 					int nbCores = 0;
 					switch (load.getSpareCPUs().getUnitType()) {
-						case ABSOLUTE: nbCores = load.getSpareCPUs().getValue(); break;
-						case RELATIVE: nbCores = load.getSpareCPUs().getValue() * src.getAllNodes().size() / 100; break;
+					case ABSOLUTE: nbCores = load.getSpareCPUs().getValue(); break;
+					case RELATIVE: nbCores = load.getSpareCPUs().getValue() * src.getAllNodes().size() / 100; break;
 					}
 
 					v.addConstraint(new SpareCPUs(nodes, nbCores, overbooking));
 				}
-				
+
 
 				if(load.getSpareNodes() != null && load.getSpareNodes().getValue() > 0 ) {
-					
+
 					int nbCores = 0;
 					switch (load.getSpareNodes().getUnitType()) {
-						case ABSOLUTE: nbCores = load.getSpareNodes().getValue(); break;
-						case RELATIVE: nbCores = load.getSpareNodes().getValue() * src.getAllNodes().size() / 100; break;
+					case ABSOLUTE: nbCores = load.getSpareNodes().getValue(); break;
+					case RELATIVE: nbCores = load.getSpareNodes().getValue() * src.getAllNodes().size() / 100; break;
 					}
 
 					v.addConstraint(new SpareNodes(nodes, nbCores));
 				}
 			}
-				
-				
-			
-			   	
+
+
+
+
 		} else {
 			log.warn("the model doesn't specify the current time: cannot use the on/off policy");
 		}	
 
 	}
 
-		
+
 }

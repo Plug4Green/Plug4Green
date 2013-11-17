@@ -541,6 +541,8 @@
 			<xsd:element ref="f4g:NativeHypervisor" minOccurs="1"
 				maxOccurs="1" />
 		</xsd:choice>
+		<xsd:element name="lastOnOffTimestamp" type="xsd:dateTime"
+				minOccurs="0" maxOccurs="1" />
 	</xsd:sequence>
 	<xsd:attribute name="frameworkRef" type="xsd:IDREF" use="required" />
 	</xsd:complexType>
