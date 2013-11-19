@@ -7,7 +7,7 @@ Plug4Green is a software focusing on saving energy in Data Centres optimizing th
 Install
 ------------
 
-The following components/tools needs to be install before starting to develop on the F4G projects:
+The following components/tools needs to be install before starting using Plug4Green:
 * The Java environment, jdk 1.7
 * The Tomcat server 
 * apache-maven
