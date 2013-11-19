@@ -15,7 +15,7 @@ import entropy.plan.choco.actionModel.ManageableNodeActionModel;
  *
  * @author ts
  */
-public class F4GDelayBetweenOnOff extends F4GConstraint {
+public class F4GServerNoStateChange extends F4GConstraint {
 
 	/**
      * The Nodes to manipulate.
@@ -26,7 +26,7 @@ public class F4GDelayBetweenOnOff extends F4GConstraint {
      * Make a new constraint.
      *
     */
-    public F4GDelayBetweenOnOff(ManagedElementSet<Node> nodes) {
+    public F4GServerNoStateChange(ManagedElementSet<Node> nodes) {
         this.nodes = nodes;
     }
 
