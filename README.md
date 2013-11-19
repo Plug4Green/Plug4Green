@@ -1,12 +1,10 @@
 ﻿Plug4Green
 ==========
 
-
-Plug4Green is an application that focuses on saving energy in Data Centres optimizing the ICT resources and is meant to be used by Data Centres operators.
-This README explains the requisites and configuration to compile FIT4Green plug-in source code.
+Plug4Green is a software focusing on saving energy in Data Centres optimizing the ICT resources and is meant to be used by Data Centres operators.
 
 
-Installation
+Install
 ------------
 
 The following components/tools needs to be install before starting to develop on the F4G projects:
@@ -18,7 +16,7 @@ In a console, type:
 
     mvn install
 
-alternativeli, to skip the tests type:
+To skip the tests, you can type:
 
     mvn install -DskipTests
 
