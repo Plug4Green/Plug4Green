@@ -356,6 +356,32 @@ public class OptimizerSLATest extends OptimizerTest {
 		assertEquals(0, getPowerOffs().size());
 
 	}
+	
+	
+	public void testDelayBetweenOnOffGlobal() {
+		modelGenerator.setNB_SERVERS(2);
+		modelGenerator.setNB_VIRTUAL_MACHINES(0);
+
+		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+
+		try {			
+			DatatypeFactory factory = DatatypeFactory.newInstance();
+			XMLGregorianCalendar LastTimeOnOff = factory.newXMLGregorianCalendar((GregorianCalendar) GregorianCalendar.getInstance(TimeZone.getTimeZone("GMT")));
+			LastTimeOnOff.add(factory.newDuration(false, 0, 0, 0, 0, 4, 0)); // 4 Minutes negative Duration
+			List<ServerType> ns = Utils.getAllServers(model);
+			for (ServerType n : ns){
+				n.setLastOnOffTimestamp(LastTimeOnOff);
+			}	
+
+		} catch (DatatypeConfigurationException e) {
+			e.printStackTrace();
+		}
+		optimizer.getPolicies().getPolicy().get(0).setDelayBetweenOnOff(5);
+		optimizer.runGlobalOptimization(model);
+
+		assertEquals(0, getPowerOffs().size());
+
+	}
 
     /**
      * Unit tests to check F4GCPUOverbooking2.
