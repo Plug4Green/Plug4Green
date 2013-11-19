@@ -6,8 +6,8 @@ Plug4Green is an application that focuses on saving energy in Data Centres optim
 This README explains the requisites and configuration to compile FIT4Green plug-in source code.
 
 
-** Installation **
-
+Installation
+------------
 
 The following components/tools needs to be install before starting to develop on the F4G projects:
 * The Java environment, jdk 1.7
@@ -15,14 +15,16 @@ The following components/tools needs to be install before starting to develop on
 * apache-maven
 
 In a console, type:
+
     mvn install
 
-alternativelyi, to skip the tests:
+alternativeli, to skip the tests type:
 
     mvn install -DskipTests
 
 
-** Deploy **
+Deploy
+------
 
 
 Tomcat:
@@ -54,7 +56,8 @@ Open the web application F4gGui with: http://localhost:8080/F4gGui click the sta
 Use this web application to manage the FIT4Green plug-in.
 
 
-** To do **
+To do
+-----
 
 
 steps remaining:
@@ -64,6 +67,7 @@ steps remaining:
 	and F4Gui ,GWT (http://gwt-maven.googlecode.com/svn/docs/maven-googlewebtoolkit2-plugin/setup.html)
 
 -deploy with tomcat (the deployement: http://mojo.codehaus.org/tomcat-maven-plugin/deployment.html)
+
 
 
 Copyright 2012 FIT4Green project.
