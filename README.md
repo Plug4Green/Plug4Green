@@ -2,10 +2,10 @@
 ==========
 
 Plug4Green is a software focusing on saving energy in Data Centres optimizing the ICT resources and is meant to be used by Data Centres operators.
-
+It has been developped by the EU FP7 project [FIT4Green](http://www.fit4green.eu) and [DC4Cities](http://www.dc4cities.eu)
 
 Install
-------------
+-------
 
 The following components/tools needs to be install before starting using Plug4Green:
 * The Java environment, jdk 1.7
