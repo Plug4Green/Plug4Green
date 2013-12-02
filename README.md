@@ -1,8 +1,8 @@
 ﻿Plug4Green
 ==========
 
-Plug4Green is a software focusing on saving energy in Data Centres optimizing the ICT resources and is meant to be used by Data Centres operators.
-It has been developped by the EU FP7 project [FIT4Green](http://www.fit4green.eu) and [DC4Cities](http://www.dc4cities.eu)
+Plug4Green is a software focusing on saving energy in data centres optimizing the ICT resources and is meant to be used by data centres operators.
+It has been developped within the EU FP7 projects [FIT4Green](http://www.fit4green.eu) and [DC4Cities](http://www.dc4cities.eu).
 
 Install
 -------
