@@ -6,6 +6,7 @@ import btrplace.model.VM;
 import btrplace.solver.choco.ReconfigurationProblem;
 import btrplace.solver.choco.actionModel.NodeActionModel;
 import f4g.commons.optimizer.OptimizationObjective;
+import f4g.optimizer.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +33,12 @@ public class PowerObjective2 implements btrplace.solver.choco.constraint.CObject
     int EnergyOn = 1; //KJoule, sample value
     int EnergyOff = 1; //KJoule, sample value
     int EnergyMove = 1; //KJoule, sample value
-	
+    
+    class SwitchOnOffs {
+       BoolVar[] switchOns;
+       BoolVar[] switchOffs;
+    }
+    
     /**
      * Make a new constraint.
      *
@@ -65,19 +71,7 @@ public class PowerObjective2 implements btrplace.solver.choco.constraint.CObject
         m.setObjective(true, reconfEnergy);
         return true;
     }
-    
-    public BoolVar[] getStates(ReconfigurationProblem m) {
-		
-		BoolVar[] states = new BoolVar[m.getNodes().length];
-
-		int i = 0;
-		for (NodeActionModel action : m.getNodeActions()) {     
-		   states[i] = action.getState();
-		   i++;
-		}
-		return states;
-	}
-	
+  	
     public IntVar getPIdle(ReconfigurationProblem m) {
 
     	Solver solver = m.getSolver();
@@ -103,28 +97,16 @@ public class PowerObjective2 implements btrplace.solver.choco.constraint.CObject
         IntConstraintFactory.scalar(m.getNbRunningVMs(), powerperVMs, PowerperVMsTotal);
         
         return PowerperVMsTotal; 
-        
     }
-    
 
     public IntVar getEMove(ReconfigurationProblem m) {
               
     	Solver solver = m.getSolver();
     	int[] EMoveperVMs = new int[m.getVMs().length];
         Arrays.fill(EMoveperVMs, EnergyMove); 
-        BoolVar moves[] = new BoolVar[m.getVMs().length];
-
-        int i = 0;
-        for (VM vm : m.getVMs()) {        	
-          	//A boolean variable to indicate whether the node is used or not
-            moves[i] = VariableFactory.bool("moves(" + vm.id() + ")", solver);
-            IntVar hoster = m.getVMAction(vm).getDSlice().getHoster();
-            moves[i] = IntConstraintFactory.arithm(hoster, "=", m.getCurrentVMLocation(i)).reif();
-            i++;
-        }
-    	
+        
     	IntVar EMove = VariableFactory.bounded("EMove", 0, Integer.MAX_VALUE / 100, solver);
-    	IntConstraintFactory.scalar(moves, EMoveperVMs, EMove);
+    	IntConstraintFactory.scalar(getMoves(m), EMoveperVMs, EMove);
         return EMove;               
     }
     
@@ -137,8 +119,20 @@ public class PowerObjective2 implements btrplace.solver.choco.constraint.CObject
         int[] EOff = new int[m.getNodes().length];
         Arrays.fill(EOff, EnergyOn); 
     	
+        Pair<BoolVar[], BoolVar[]> switchs = getSwitchOnOffs(m);
         
-        BoolVar[] switchOns  = new BoolVar[m.getNodes().length];
+		IntVar EOnTot = VariableFactory.bounded("EOnTot", 0, Integer.MAX_VALUE / 100, solver);
+    	IntConstraintFactory.scalar(switchs.getFirst(), EOn, EOnTot);
+    	IntVar EOffTot = VariableFactory.bounded("EOffTot", 0, Integer.MAX_VALUE / 100, solver);
+    	IntConstraintFactory.scalar(switchs.getSecond(), EOff, EOffTot);
+        
+        return IntConstraintFactory.arithm(EOnTot, "+", EOffTot).reif();
+    }
+    
+    
+    public Pair<BoolVar[], BoolVar[]> getSwitchOnOffs(ReconfigurationProblem m) {
+    	
+    	BoolVar[] switchOns  = new BoolVar[m.getNodes().length];
         BoolVar[] switchOffs = new BoolVar[m.getNodes().length];
         
         int i = 0;
@@ -152,16 +146,35 @@ public class PowerObjective2 implements btrplace.solver.choco.constraint.CObject
 			}
 		   i++;
 		}
-		
-		IntVar EOnTot = VariableFactory.bounded("EOnTot", 0, Integer.MAX_VALUE / 100, solver);
-    	IntConstraintFactory.scalar(switchOns, EOn, EOnTot);
-    	IntVar EOffTot = VariableFactory.bounded("EOffTot", 0, Integer.MAX_VALUE / 100, solver);
-    	IntConstraintFactory.scalar(switchOffs, EOn, EOffTot);
-        
-        return IntConstraintFactory.arithm(EOnTot, "+", EOffTot).reif();
+		return new Pair(switchOns, switchOffs); 
+    	
     }
     
+    public BoolVar[] getStates(ReconfigurationProblem m) {
 
+		BoolVar[] states = new BoolVar[m.getNodes().length];
+    	int i = 0;
+		for (NodeActionModel action : m.getNodeActions()) {     
+		   states[i] = action.getState();
+		   i++;
+		}
+		return states;
+	}
+    
+    public BoolVar[] getMoves(ReconfigurationProblem m) {
+    	Solver solver = m.getSolver();
+    	BoolVar moves[] = new BoolVar[m.getVMs().length];
+        int i = 0;
+        for (VM vm : m.getVMs()) {        	
+          	//A boolean variable to indicate whether the node is used or not
+            moves[i] = VariableFactory.bool("moves(" + vm.id() + ")", solver);
+            IntVar hoster = m.getVMAction(vm).getDSlice().getHoster();
+            moves[i] = IntConstraintFactory.arithm(hoster, "=", m.getCurrentVMLocation(i)).reif();
+            i++;
+        }
+        return moves;
+	}   
+    
     //Computes the power of the network
 //    public IntVar getPNetwork(ReconfigurationProblem m) {
 //    	
