@@ -1,8 +1,9 @@
 
 package f4g.optimizer.entropy.plan.objective;
 
+import btrplace.solver.choco.ReconfigurationProblem;
 import choco.kernel.solver.variables.integer.IntDomainVar;
-import entropy.plan.choco.ReconfigurationProblem;
+
 
 /**
  * abstract class that creates a new optimisation objective

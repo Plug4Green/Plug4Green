@@ -22,7 +22,7 @@ import solver.variables.IntVar;
 import solver.variables.VariableFactory;
 import solver.Solver;
 
-public class PowerObjective2 implements btrplace.solver.choco.constraint.CObjective {
+public class CPowerObjective implements btrplace.solver.choco.constraint.CObjective {
   
 	PowerView powers;
 	
@@ -44,7 +44,7 @@ public class PowerObjective2 implements btrplace.solver.choco.constraint.CObject
      *
      * @param vms A non-empty set of virtual machines
      */
-    public PowerObjective2(PowerView powers, OptimizationObjective optiObjective) {
+    public CPowerObjective(PowerView powers, OptimizationObjective optiObjective) {
     	
     	this.powers = powers;    	
     	this.optiObjective = optiObjective;
