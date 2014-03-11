@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.apache.log4j.Logger;
+
+import btrplace.model.Model;
+import btrplace.model.Node;
+import btrplace.model.VM;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
@@ -20,12 +24,6 @@ import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
 import f4g.commons.util.StaticPowerCalculation;
 import f4g.commons.util.Util;
-import entropy.configuration.Configuration;
-import entropy.configuration.Node;
-import entropy.configuration.SimpleConfiguration;
-import entropy.configuration.SimpleVirtualMachine;
-import entropy.configuration.VirtualMachine;
-import entropy.monitoring.ConfigurationAdapter;
 
 
 /**
@@ -33,7 +31,7 @@ import entropy.monitoring.ConfigurationAdapter;
  *
  * @author Corentin Dupont
  */
-public class F4GConfigurationAdapter extends ConfigurationAdapter
+public class F4GConfigurationAdapter
 {
 	FIT4GreenType currentFit4Green;
 	VMTypeType currentVMType;
@@ -69,28 +67,25 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 	/* 
 	 * extracts the configuration for the metamodel
 	 */
-	@Override
-	public Configuration extractConfiguration() {
-		
-		Configuration config = new SimpleConfiguration();
-		
+	public void putConfiguration(Model mo) {
+				
 		for(ServerType server : Utils.getAllServers(currentFit4Green)) {
-			Node node = getNode(server);
 			
+			Node node = mo.newNode();
 			
 			if(server.getStatus() == ServerStatusType.ON ||
 			   server.getStatus() == ServerStatusType.POWERING_ON) { //POWERING_ON nodes are seen as ON by entropy as they will be soon on. This avoids ping-pong effect on the state.
-				config.addOnline(node);
+				
+				mo.getMapping().addOnlineNode(node);
 			
 				for(VirtualMachineType VM : Utils.getVMs(server)) {
-					VirtualMachine vm = getVM(node, VM);	
-					config.setRunOn(vm, node);
+					VM vm = mo.newVM();	
+					mo.getMapping().addRunningVM(vm, node);
 				}	
 			} else { //OFF, POWERING_OFF
-				config.addOffline(node);
+				mo.getMapping().addOfflineNode(node);
 			}
 		}
-		return config;
 	}
 	
 	public void insertVMtoAllocate(Configuration config, RequestType request) {
@@ -99,7 +94,7 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 	}
 	
 	
-	private VirtualMachine getVM(Node node, VirtualMachineType VM) {
+	private VM getVM(Node node, VirtualMachineType VM) {
 		
 		//VM type should be set OR some measurements should be present
 		if(VM.getCloudVmType() == null &&
@@ -149,7 +144,7 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		return vm;
 	}
 	
-	public VirtualMachine getVM(RequestType request) {
+	public VM getVM(RequestType request) {
 		if(request instanceof CloudVmAllocationType) {
 			return getVM((CloudVmAllocationType)request);	
 		} else {
@@ -157,7 +152,7 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		}
 	}
 	
-	public VirtualMachine getVM(CloudVmAllocationType request) {
+	public VM getVM(CloudVmAllocationType request) {
 		
 		VMTypeType.VMType SLA_VM;
 		
@@ -183,7 +178,7 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		return vm;
 	}
 	
-	public VirtualMachine getVM(TraditionalVmAllocationType request) {
+	public VM getVM(TraditionalVmAllocationType request) {
 		
 		int nbCPUs;
 		if(request.getNumberOfCPUs() != null) nbCPUs = request.getNumberOfCPUs();
@@ -205,7 +200,7 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		log.debug("nbCPUs " + nbCPUs);
 		log.debug("consumption " + consumption + " %");
 		log.debug("memory " + memory + " MB");
-		VirtualMachine vm = new SimpleVirtualMachine("new VM", nbCPUs, consumption, memory); //CDU TODO check reference ID                                       
+		VM vm = new VM("new VM", nbCPUs, consumption, memory);                                        
 		return vm;
 	}
 
@@ -229,7 +224,7 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
 		log.debug("powerIdle " + powerIdle + " W");
 		log.debug("powerPerVM " + powerPerVM + " W");
 		
-		Node node = new F4GNode(server.getFrameworkID(), nbCPUs, cpuCapacity, memoryTotal, powerIdle, powerPerVM);
+		Node node = new Node(server.getFrameworkID(), nbCPUs, cpuCapacity, memoryTotal, powerIdle, powerPerVM);
 		return node;
 	}
 	
@@ -267,5 +262,6 @@ public class F4GConfigurationAdapter extends ConfigurationAdapter
     		return Utils.getServerSite(server, currentFit4Green).getCUE().getValue();
     	}
 	}
+
 	
 }

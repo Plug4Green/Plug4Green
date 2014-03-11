@@ -14,9 +14,20 @@ package f4g.optimizer.entropy.plan.constraint;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+
+import btrplace.model.Mapping;
+import btrplace.model.constraint.Ban;
+import btrplace.model.constraint.Fence;
+import btrplace.model.constraint.Offline;
+import btrplace.model.constraint.Online;
+import btrplace.model.constraint.Root;
+import btrplace.model.constraint.SatConstraint;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.DatacenterType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
@@ -25,18 +36,8 @@ import f4g.schemas.java.metamodel.ServerStatusType;
 import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
 
-import entropy.configuration.Configuration;
-import entropy.configuration.ManagedElementSet;
-import entropy.configuration.Node;
-import entropy.configuration.SimpleManagedElementSet;
-import entropy.configuration.VirtualMachine;
-import entropy.vjob.Ban;
-import entropy.vjob.DefaultVJob;
-import entropy.vjob.Fence;
-import entropy.vjob.Offline;
-import entropy.vjob.Online;
-import entropy.vjob.Root;
-import entropy.vjob.VJob;
+import btrplace.model.Node;
+import btrplace.model.VM;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -47,7 +48,7 @@ import entropy.vjob.VJob;
 public class ModelConstraintFactory {
 
 	public Logger log;  
-	private Configuration src;
+	private Mapping src;
 	private FIT4GreenType model;
 
 	
@@ -55,35 +56,30 @@ public class ModelConstraintFactory {
 	 * Constructor needing an instance of the SLAReader and an entropy
 	 * configuration element.
 	 */
-	public ModelConstraintFactory(Configuration mySrc,
-			FIT4GreenType myModel) {
+	public ModelConstraintFactory(Mapping src, FIT4GreenType model) {
 		log = Logger.getLogger(this.getClass().getName()); 
-		src = mySrc;
-		model = myModel;
+		this.src = src;
+		this.model = model;
 	}
 
-	public List<VJob> getModelConstraints() {
-		List<VJob> vs = new ArrayList<VJob>();
-		VJob myVJob = getNodeTypeConstraints();
-		if(myVJob.getConstraints().size() != 0)
-			vs.add(myVJob);
+	public List<SatConstraint> getModelConstraints() {
 		
-		VJob myVJob2 = getFrameworkCapabilitiesConstraints();
-		if(myVJob2.getConstraints().size() != 0)
-			vs.add(myVJob2);
-		
+		List<SatConstraint> vs = new ArrayList<SatConstraint>();
+		vs.addAll(getNodeTypeConstraints());
+		vs.addAll(getFrameworkCapabilitiesConstraints());
+	
 		return vs;
 		
 	}
 	
-	public VJob getNodeTypeConstraints() {
-		VJob v = new DefaultVJob("modelVJob");
+	public List<SatConstraint> getNodeTypeConstraints() {
+		List<SatConstraint> v = new LinkedList<SatConstraint>();
 		
-		ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
-		vms.addAll(src.getAllVirtualMachines());
-		ManagedElementSet<Node> onlines = new SimpleManagedElementSet<Node>();
-		ManagedElementSet<Node> offlines = new SimpleManagedElementSet<Node>();
-		ManagedElementSet<Node> empties = new SimpleManagedElementSet<Node>();
+		Set<VM> vms = new HashSet<VM>();
+		vms.addAll(src.getAllVMs());
+		Set<Node> onlines = new HashSet<Node>();
+		Set<Node> offlines = new HashSet<Node>();
+		Set<Node> empties = new HashSet<Node>();
 		
 		for(ServerType s : Utils.getAllServers(model)) {
 	
@@ -91,13 +87,13 @@ public class ModelConstraintFactory {
 			if(n!=null)	 {
 				switch(s.getName()) {          
 			    case CLOUD_CONTROLLER          : {
-			    	log.debug("Cloud controller " + n.getName());
+			    	log.debug("Cloud controller " + n.id());
 			    	onlines.add(n); 
 			    	empties.add(n);
 			    	break;
 			    }
 			    case CLOUD_CLUSTER_CONTROLLER  : {
-			    	log.debug("Cloud cluster controller " + n.getName());
+			    	log.debug("Cloud cluster controller " + n.id());
 			    	onlines.add(n);
 			    	empties.add(n);
 			    	break;
@@ -119,38 +115,38 @@ public class ModelConstraintFactory {
 			}
 		}
 		if(onlines.size() != 0) {
-			v.addConstraint(new Online(onlines));	
+			v.addAll(new Online.newOnlines(onlines));	
 		}
 		
 		if(offlines.size() != 0) {
-			v.addConstraint(new Offline(offlines));	
+			v.addAll(new Offline.newOfflines(offlines));	
 		}
 		
 		if(empties.size() != 0 && vms.size() != 0) {
-			v.addConstraint(new Ban(vms, empties));	
+			v.addAll(new newBans(vms, empties));	
 		}
 		
 		return v;
 	}
 
-	public VJob getFrameworkCapabilitiesConstraints() {
-		VJob v = new DefaultVJob("modelVJob");
+	public List<SatConstraint> getFrameworkCapabilitiesConstraints() {
+		List<SatConstraint> v = new LinkedList<SatConstraint>();
 		int i = 0;
 		List<DatacenterType> dcs = Utils.getAllDatacenters(model);
 		for(DatacenterType dc : dcs) {
 			i++;
 			
 			//Get all VMs of the DC
-			ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
+			Set<VM> vms = new HashSet<VM>();
 			for(VirtualMachineType vm : Utils.getAllVMs(dc)) {
-				VirtualMachine myVM = src.getAllVirtualMachines().get(vm.getFrameworkID());
+				VM myVM = src.getAllVirtualMachines().get(vm.getFrameworkID());
 				if(myVM != null) {
 					vms.add(myVM);
 				}				
 			}
 						
 			//get all nodes of the DC
-			ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
+			Set<Node> nodes = new HashSet<Node>();
 			for(ServerType s : Utils.getAllServers(dc)) {
 				Node n = src.getAllNodes().get(s.getFrameworkID());
 				if(n!=null){
@@ -178,7 +174,7 @@ public class ModelConstraintFactory {
 									+ " are NOT allowed to move to another DC");
 							if (dcs.size() >= 2) {
 								if (vms.size() > 0 && nodes.size() > 0) {
-									v.addConstraint(new Fence(vms, nodes));
+									v.addAll(Fence.newFences(vms, nodes));
 								}
 							}
 
@@ -186,7 +182,7 @@ public class ModelConstraintFactory {
 
 					} else {
 						log.debug("VMs are NOT allowed to move in DC #" + i);
-						v.addConstraint(new Root(vms));
+						v.addAll(Root.newRoot(vms));
 					}
 				}
 				
@@ -195,7 +191,7 @@ public class ModelConstraintFactory {
 
 					if(!fc.getNode().isPowerOff()) {
 						
-						ManagedElementSet<Node> onNodes = new SimpleManagedElementSet<Node>();
+						Set<Node> onNodes = new HashSet<Node>();
 						for(Node n : nodes) {
 							if(src.isOnline(n)) {
 								onNodes.add(n);
@@ -203,12 +199,12 @@ public class ModelConstraintFactory {
 						}	
 						//keep ON nodes ON
 						if(onNodes.size() != 0) {
-							v.addConstraint(new Online(onNodes));							
+							v.addAll(Online.newOnlines(onNodes));							
 						}
 						
 					}
 					if(!fc.getNode().isPowerOn()) {
-						ManagedElementSet<Node> offNodes = new SimpleManagedElementSet<Node>();
+						Set<Node> offNodes = new HashSet<Node>();
 						for(Node n : nodes) {
 							if(src.isOffline(n)) {
 								offNodes.add(n);
@@ -216,7 +212,7 @@ public class ModelConstraintFactory {
 						}	
 						//keep OFF nodes OFF
 						if(offNodes.size() != 0) {
-							v.addConstraint(new Offline(offNodes));
+							v.addAll(Offline.newOfflines(offNodes));
 						}
 					}
 					

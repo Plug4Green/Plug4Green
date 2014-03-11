@@ -1,6 +1,7 @@
 
 package f4g.optimizer.entropy.plan.action;
 
+import btrplace.plan.event.BootNode;
 import f4g.commons.controller.IController;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.actions.AbstractBaseActionType;
@@ -18,7 +19,7 @@ public class F4GStartup extends F4GDriver {
 	/**
 	 * The action to execute.
 	 */
-	private Startup action;
+	private BootNode action;
 
 	
 	/**
@@ -28,7 +29,7 @@ public class F4GStartup extends F4GDriver {
      * @throws entropy.PropertiesHelperException if an error occurred while configuring the driver
      *
 	 */
-	public F4GStartup(Startup a, IController myController, FIT4GreenType myModel) {
+	public F4GStartup(BootNode a, IController myController, FIT4GreenType myModel) {
 		super(a, myController, myModel);
 		action = a;
 	}

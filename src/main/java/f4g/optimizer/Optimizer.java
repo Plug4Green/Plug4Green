@@ -27,9 +27,8 @@ import f4g.optimizer.HPC.OptimizerEngineHPC;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.commons.optimizer.*;
-import f4g.commons.power.*;
 import java.util.HashMap;
-import f4g.schemas.java.*;
+
 
 /**
  * implementation of the Optimizer

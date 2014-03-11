@@ -2,6 +2,7 @@
 package f4g.optimizer.entropy.plan.action;
 
 
+import btrplace.plan.event.MigrateVM;
 import f4g.commons.controller.IController;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.actions.AbstractBaseActionType;
@@ -12,7 +13,6 @@ import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
 
-import entropy.plan.action.Migration;
 
 
 public class F4GMigration extends F4GDriver {
@@ -21,7 +21,7 @@ public class F4GMigration extends F4GDriver {
 	/**
 	 * The action to execute.
 	 */
-	private Migration action;
+	private MigrateVM action;
 
 	/**
 	 * Create and configure the driver to execute a migration action.
@@ -30,7 +30,7 @@ public class F4GMigration extends F4GDriver {
      * @throws entropy.PropertiesHelperException if an error occurred while configuring the driver
      *
 	 */
-	public F4GMigration(Migration a, IController myController, FIT4GreenType myModel) {
+	public F4GMigration(MigrateVM a, IController myController, FIT4GreenType myModel) {
 		super(a, myController, myModel);
 		action = a;
 		

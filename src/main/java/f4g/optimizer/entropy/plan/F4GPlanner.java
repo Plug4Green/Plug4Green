@@ -30,6 +30,9 @@ import f4g.optimizer.entropy.plan.constraint.sliceScheduling.SlicesPlanner;
 import f4g.optimizer.entropy.plan.objective.PowerObjective;
 import f4g.optimizer.entropy.plan.search_heuristic.F4GPlacementHeuristic;
 
+import btrplace.solver.choco.DefaultReconfigurationProblem;
+import btrplace.solver.choco.ReconfigurationProblem;
+
 import java.util.*;
 
 /**

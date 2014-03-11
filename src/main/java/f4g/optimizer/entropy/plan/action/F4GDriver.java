@@ -3,12 +3,9 @@ package f4g.optimizer.entropy.plan.action;
 
 import java.util.List;
 
-import entropy.PropertiesHelperException;
-import entropy.execution.driver.Driver;
-import entropy.execution.driver.DriverException;
-import entropy.plan.action.Action;
-
 import javax.xml.bind.JAXBElement;
+
+import btrplace.plan.event.Action;
 
 import f4g.commons.controller.IController;
 import f4g.schemas.java.actions.AbstractBaseActionType;
@@ -49,7 +46,7 @@ public abstract class F4GDriver extends Driver {
 	
 	
 	@Override
-	public void execute() throws DriverException {
+	public void execute(){
 				
 		ActionRequestType actionRequest = new ActionRequestType();
 		ActionRequestType.ActionList actionList = new ActionRequestType.ActionList();

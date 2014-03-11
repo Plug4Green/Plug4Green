@@ -1,6 +1,7 @@
 
 package f4g.optimizer.entropy.plan.action;
 
+import btrplace.plan.event.ShutdownNode;
 import f4g.commons.controller.IController;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.actions.AbstractBaseActionType;
@@ -9,16 +10,13 @@ import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
 import f4g.schemas.java.metamodel.ServerType;
 
-import entropy.plan.action.Shutdown;
-
-
 public class F4GShutdown extends F4GDriver {
 
 
 	/**
 	 * The action to execute.
 	 */
-	private Shutdown action;
+	private ShutdownNode action;
 	/**
 	 * Create and configure the driver to execute a migration action.
 	 * @param a the action to execute
@@ -26,7 +24,7 @@ public class F4GShutdown extends F4GDriver {
      * @throws entropy.PropertiesHelperException if an error occurred while configuring the driver
      *
 	 */
-	public F4GShutdown(Shutdown a, IController myController, FIT4GreenType myModel) {
+	public F4GShutdown(ShutdownNode a, IController myController, FIT4GreenType myModel) {
 		super(a, myController, myModel);
 		action = a;
 	}

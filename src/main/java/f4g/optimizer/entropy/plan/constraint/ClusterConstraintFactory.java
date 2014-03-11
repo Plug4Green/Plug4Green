@@ -13,9 +13,16 @@
 package f4g.optimizer.entropy.plan.constraint;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+
+import btrplace.model.Mapping;
+import btrplace.model.VM;
+import btrplace.model.constraint.SatConstraint;
 import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.schemas.java.allocation.AllocationRequestType;
 import f4g.schemas.java.allocation.CloudVmAllocationType;
@@ -25,15 +32,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 
-import entropy.configuration.Configuration;
-import entropy.configuration.ManagedElementSet;
-import entropy.configuration.Node;
-import entropy.configuration.SimpleManagedElementSet;
-import entropy.configuration.VirtualMachine;
-import entropy.vjob.DefaultVJob;
-import entropy.vjob.Fence;
-import entropy.vjob.VJob;
-
+import btrplace.model.Node;
 /**
  * A Class containing everything relevant to cluster constraints
  * 
@@ -43,7 +42,7 @@ import entropy.vjob.VJob;
 public class ClusterConstraintFactory {
 	public Logger log;
 	
-	private Configuration src;
+	private Mapping src;
 
 	/**
 	 * Cluster definition
@@ -54,7 +53,7 @@ public class ClusterConstraintFactory {
 	 * Constructor needing an instance of the SLAReader and an entropy
 	 * configuration element.
 	 */
-	public ClusterConstraintFactory(ClusterType myClusters, Configuration src) {
+	public ClusterConstraintFactory(ClusterType myClusters, Mapping src) {
 		clusters = myClusters;
 		this.src = src;
 		log = Logger.getLogger(ClusterConstraintFactory.class.getName());
@@ -72,14 +71,14 @@ public class ClusterConstraintFactory {
 	 * 
 	 * @author TS
 	 */
-	public VJob createClusterConstraints() {
+	public List<SatConstraint> createClusterConstraints() {
 
-		DefaultVJob v = new DefaultVJob("slaVJob");
+		List<SatConstraint> v = new LinkedList<SatConstraint>();
 		try {
 			List<Cluster> clusterList = clusters.getCluster();
 			for (Cluster c : clusterList) {
 				// get all nodes in a cluster
-				ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
+				Set<Node> nodes = new HashSet<Node>();
 				for (String nodeName : c.getNodeController().getNodeName()) {
 					Node n = src.getAllNodes().get(nodeName);
 					if(n!=null) {
@@ -89,12 +88,12 @@ public class ClusterConstraintFactory {
 				}
 
 				// get all VMs for these nodes
-				ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
+				Set<VM> vms = new HashSet<VM>();
 				for (Node node : nodes) {
-					vms.addAll(src.getRunnings(node));
+					vms.addAll(src.getRunningVMs(node));
 				}
 				if (vms.size() > 0 && nodes.size() > 0) {
-					v.addConstraint(new Fence(vms, nodes));
+					v.add(new Fence(vms, nodes));
 				}	
 			}
 		} catch (Exception e) {
@@ -113,9 +112,9 @@ public class ClusterConstraintFactory {
 	 * 
 	 * @author TS
 	 */
-	public ManagedElementSet<Node> getAllNodesforACluster(String clusterName) {
+	public Set<Node> getAllNodesforACluster(String clusterName) {
 
-		ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
+		Set<Node> nodes = new HashSet<Node>();
 		try {
 			List<Cluster> clusterList = clusters.getCluster();
 			for (Cluster c : clusterList) {
@@ -150,8 +149,10 @@ public class ClusterConstraintFactory {
 	 * 
 	 * @author TS
 	 */
-	public VJob restrictPlacementToClusters(RequestType request, VirtualMachine vm) {
+	public List<SatConstraint> restrictPlacementToClusters(RequestType request, VM vm) {
 
+		List<SatConstraint> v = new LinkedList<SatConstraint>();
+		
 		List<String> clusterList = new ArrayList<String>();
 		if(request instanceof CloudVmAllocationType) {
 			clusterList = ((CloudVmAllocationType)request).getClusterId();	
@@ -159,19 +160,18 @@ public class ClusterConstraintFactory {
 			clusterList = ((TraditionalVmAllocationType)request).getClusterId();	
 		}
 		
-		DefaultVJob v = new DefaultVJob("slaVJob");
 		try {
 
-			ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
+			Set<VM> vms = new HashSet<VM>();
 			vms.add(vm);
-			ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
+			Set<btrplace.model.Node> nodes = new HashSet<Node>();
 			for(String clusterName : clusterList) {
 				for (Node node : getAllNodesforACluster(clusterName)) {
 					nodes.add(src.getAllNodes().get(node.getName()));
 				}
 			}		
 			if (vms.size() > 0 && nodes.size() > 0) {
-				v.addConstraint(new Fence(vms, nodes));
+				v.add(new Fence(vms, nodes));
 			}
 			if (nodes.size() == 0) {
 				log.warn("Allocation on a cluster with no servers or all servers overloaded!");

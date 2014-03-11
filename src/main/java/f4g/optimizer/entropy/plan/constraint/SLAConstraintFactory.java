@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+
+import btrplace.model.constraint.Lonely;
+import btrplace.model.constraint.SatConstraint;
 import f4g.optimizer.OptimizerEngine;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType;
@@ -30,15 +33,9 @@ import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType.ServerGroup;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 
-import entropy.configuration.Configuration;
-import entropy.configuration.ManagedElementSet;
-import entropy.configuration.Node;
-import entropy.configuration.SimpleManagedElementSet;
-import entropy.configuration.VirtualMachine;
-import entropy.vjob.DefaultVJob;
-import entropy.vjob.Lonely;
-import entropy.vjob.VJob;
-
+import btrplace.model.Mapping;
+import btrplace.model.Node;
+import btrplace.model.VM;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -48,8 +45,8 @@ import entropy.vjob.VJob;
  */
 public class SLAConstraintFactory {
 
-	private VJob v;
-	private Configuration src;
+	List<SatConstraint> v;
+	private Mapping src;
 	private FIT4GreenType model;
 	public Logger log;
 	int minPriority;
@@ -65,9 +62,10 @@ public class SLAConstraintFactory {
 	 * Constructor needing an instance of the SLAReader and an entropy
 	 * configuration element.
 	 */
-	public SLAConstraintFactory(ClusterType myClusters, Configuration src,
+	public SLAConstraintFactory(ClusterType myClusters, Mapping src,
 			FIT4GreenType model, int minPriority, ServerGroupType sg) {
-		v = new DefaultVJob("slaVJob");
+		
+        v = new LinkedList<SatConstraint>();
 		this.src = src;
 		this.model = model;
 		this.minPriority = minPriority;
@@ -78,13 +76,13 @@ public class SLAConstraintFactory {
 		
 	}
 
-	public VJob createSLAConstraints() {
+	public List<SatConstraint> createSLAConstraints() {
 
 		try {
 			List<Cluster> clusterList = clusters.getCluster();
 			for (Cluster c : clusterList) {
 				// get all nodes in a cluster
-				ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
+				Set<Node> nodes = new HashSet<Node>();
 				for (String nodeName : c.getNodeController().getNodeName()) {
 					try {
 						Node n = src.getAllNodes().get(nodeName);
@@ -96,10 +94,10 @@ public class SLAConstraintFactory {
 				}
 
 				// get all VMs for these nodes
-				ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
+				Set<VM> vms = new HashSet<VM>();
 				for (Node node : nodes) {
 					try {
-						ManagedElementSet<VirtualMachine> vm = src.getRunnings(node);
+						Set<VM> vm = src.getRunnings(node);
 						vms.addAll(vm);
 					} catch (Exception e) {
 					}
@@ -126,7 +124,7 @@ public class SLAConstraintFactory {
 				List<ServerGroup> serverGroupList = sg.getServerGroup();
 				for (ServerGroup s : serverGroupList) {
 					// get all nodes in a cluster
-					ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
+					Set<Node> nodes = new HashSet<Node>();
 					for (String nodeName : s.getNodeController().getNodeName()) {
 						try {
 							Node n = src.getAllNodes().get(nodeName);
@@ -139,11 +137,10 @@ public class SLAConstraintFactory {
 					}
 
 					// get all VMs for these nodes
-					ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
+					Set<VM> vms = new HashSet<VM>();
 					for (Node node : nodes) {
 						try {
-							ManagedElementSet<VirtualMachine> vm = src
-									.getRunnings(node);
+							Set<VM> vm = src.getRunningVMs(node);
 							vms.addAll(vm);
 						} catch (Exception e) {
 						}
@@ -163,7 +160,7 @@ public class SLAConstraintFactory {
 
 	private void addConstraintsForSLA(
 			f4g.schemas.java.constraints.optimizerconstraints.SLAType.SLA sla,
-			ManagedElementSet<VirtualMachine> vms, ManagedElementSet<Node> nodes) {
+			Set<VM> vms, HashSet<Node> nodes) {
 
 		if (sla.getQoSConstraints() != null) {
 			addQoS(sla.getQoSConstraints(), nodes, vms);
@@ -180,15 +177,13 @@ public class SLAConstraintFactory {
 
 	}
 
-	private void addQoS(QoSConstraintsType type, ManagedElementSet<Node> nodes,
-			ManagedElementSet<VirtualMachine> vms) {
+	private void addQoS(QoSConstraintsType type, Set<Node> nodes, Set<VM> vms) {
 
 		try {
 			// Bandwidth Constraint
 			if (type.getBandwidth() != null) {
 				if (type.getBandwidth().getPriority() >= minPriority) {
-					v.addConstraint(new F4GHardwareConstraint(5, type
-							.getBandwidth().getValue(), nodes, vms, model));
+					v.add(new F4GHardwareConstraint(5, type.getBandwidth().getValue(), nodes, vms, model));
 				}
 			}
 		} catch (Exception e) {
@@ -200,8 +195,7 @@ public class SLAConstraintFactory {
 			if (type.getMaxVirtualCPUPerCore() != null) {
 				if (type.getMaxVirtualCPUPerCore().getPriority() >= minPriority) {
 					if (vms.size() != 0) {
-						v.addConstraint(new F4GCPUOverbookingConstraint(nodes,
-								(double) type.getMaxVirtualCPUPerCore().getValue()));
+						v.add(new F4GCPUOverbookingConstraint(nodes, (double) type.getMaxVirtualCPUPerCore().getValue()));
 					}
 				}
 			}
@@ -213,9 +207,7 @@ public class SLAConstraintFactory {
 			// Max Virtual CPU Load per core
 			if (type.getMaxVirtualLoadPerCore() != null && type.getMaxVirtualLoadPerCore().getValue() != 0) {
 				if (type.getMaxVirtualLoadPerCore().getPriority() >= minPriority) {
-					v.addConstraint(new F4GVirtualLoadPerCoreConstraint(nodes,
-							model, (double) type.getMaxVirtualLoadPerCore()
-									.getValue(), vms));
+					v.add(new F4GVirtualLoadPerCoreConstraint(nodes, model, (double) type.getMaxVirtualLoadPerCore().getValue(), vms));
 				}
 			}
 		} catch (Exception e) {
@@ -226,8 +218,7 @@ public class SLAConstraintFactory {
 			// Max Server CPU Load			
 			if (type.getMaxServerCPULoad() != null && type.getMaxServerCPULoad().getValue() != 0) {
 				if (type.getMaxServerCPULoad().getPriority() >= minPriority) {
-					v.addConstraint(new F4GCPUConstraint(nodes, (double) type
-							.getMaxServerCPULoad().getValue()));
+					v.add(new F4GCPUConstraint(nodes, (double) type.getMaxServerCPULoad().getValue()));
 				}
 			}
 		} catch (Exception e) {
@@ -238,9 +229,7 @@ public class SLAConstraintFactory {
 			// Memory Overbooking on Server Level
 			if (type.getMaxVRAMperPhyRAM() != null && type.getMaxVRAMperPhyRAM().getValue() != 0) {
 				if (type.getMaxVRAMperPhyRAM().getPriority() >= minPriority) {
-					v.addConstraint(new F4GMemoryOverbookingConstraint(nodes,
-							model, (double) type.getMaxVRAMperPhyRAM()
-									.getValue(), clusters));
+					v.add(new F4GMemoryOverbookingConstraint(nodes,	model, (double) type.getMaxVRAMperPhyRAM().getValue(), clusters));
 				}
 			}
 		} catch (Exception e) {
@@ -252,9 +241,7 @@ public class SLAConstraintFactory {
 			// CPU Overbooking on Cluster Level
 			if (type.getMaxServerAvgVCPUperCore() != null && type.getMaxServerAvgVCPUperCore().getValue() != 0) {
 				if (type.getMaxServerAvgVCPUperCore().getPriority() >= minPriority) {
-						v.addConstraint(new F4GAvgCPUOverbooking(nodes,
-						(double) type.getMaxServerAvgVCPUperCore()
-									.getValue(), model));						
+						v.add(new F4GAvgCPUOverbooking(nodes, (double) type.getMaxServerAvgVCPUperCore().getValue(), model));						
 					
 				}
 			}
@@ -265,9 +252,7 @@ public class SLAConstraintFactory {
 			// Memory Overbooking on Cluster Level
 			if (type.getMaxServerAvgVRAMperPhyRAM() != null && type.getMaxServerAvgVRAMperPhyRAM().getValue() != 0) {
 				if (type.getMaxServerAvgVRAMperPhyRAM().getPriority() >= minPriority) {
-					v.addConstraint(new F4GAvgMemoryOverbooking(nodes,
-						(double) type.getMaxServerAvgVRAMperPhyRAM()
-									.getValue(), model));
+					v.add(new F4GAvgMemoryOverbooking(nodes, (double) type.getMaxServerAvgVRAMperPhyRAM().getValue(), model));
 				}
 			}
 		} catch (Exception e) {
@@ -278,8 +263,7 @@ public class SLAConstraintFactory {
 			// Max VMs per Server
 			if (type.getMaxVMperServer() != null && type.getMaxVMperServer().getValue() != 0) {
 				if (type.getMaxVMperServer().getPriority() >= minPriority) {
-					v.addConstraint(new F4GCapacity(nodes, type
-							.getMaxVMperServer().getValue()));
+					v.add(new F4GCapacity(nodes, type.getMaxVMperServer().getValue()));
 				}
 			}
 		} catch (Exception e) {
@@ -289,14 +273,14 @@ public class SLAConstraintFactory {
 	}
 
 	private void addSecurity(SecurityConstraintsType type,
-			ManagedElementSet<VirtualMachine> vms, ManagedElementSet<Node> nodes) {
+			Set<VM> vms, Set<Node> nodes) {
 
 		try {
 			// Dedicated server
 			if (type.getDedicatedServer() != null && type.getDedicatedServer().isValue()) {
 				if (type.getDedicatedServer().getPriority() >= minPriority) {
 					Lonely lonely = new Lonely(vms);
-					v.addConstraint(lonely);
+					v.add(lonely);
 				}
 			}
 		} catch (Exception e) {
@@ -307,9 +291,9 @@ public class SLAConstraintFactory {
 			// secure access (boolean)
 			if (type.getSecureAccessPossibility() != null && type.getSecureAccessPossibility().isValue()) {
 				if (type.getSecureAccessPossibility().getPriority() >= minPriority) {
-					List<ManagedElementSet<Node>> group = new LinkedList<ManagedElementSet<Node>>();
+					List<Set<Node>> group = new LinkedList<Set<Node>>();
 					group.add(nodes);
-					Set<ManagedElementSet<Node>> s = new HashSet<ManagedElementSet<Node>>(group);
+					Set<Set<Node>> s = new HashSet<Set<Node>>(group);
 					
 					//TODO reactivate
 					//OneOf oneOf = new OneOf(s, vms);
@@ -322,13 +306,12 @@ public class SLAConstraintFactory {
 	}
 
 	private void addHardware(HardwareConstraintsType type,
-			ManagedElementSet<VirtualMachine> vms, ManagedElementSet<Node> nodes) {
+			Set<VM> vms, Set<Node> nodes) {
 		try {
 			// CPU Frequency of the node
 			if (type.getCompPowerGHz() != null && type.getCompPowerGHz().getValue() != 0) {
 				if (type.getCompPowerGHz().getPriority() >= minPriority) {
-					v.addConstraint(new F4GHardwareConstraint(1, type
-							.getCompPowerGHz().getValue(), nodes, vms, model));
+					v.add(new F4GHardwareConstraint(1, type.getCompPowerGHz().getValue(), nodes, vms, model));
 				}
 			}
 		} catch (Exception e) {
@@ -340,9 +323,8 @@ public class SLAConstraintFactory {
 			F4GHardwareConstraint GPU;
 			if (type.getGPUFreqGHz() != null && type.getGPUFreqGHz().getValue() != 0) {
 				if (type.getGPUFreqGHz().getPriority() >= minPriority) {
-					GPU = new F4GHardwareConstraint(2, type.getGPUFreqGHz()
-							.getValue(), nodes, vms, model);
-					v.addConstraint(GPU);
+					GPU = new F4GHardwareConstraint(2, type.getGPUFreqGHz().getValue(), nodes, vms, model);
+					v.add(GPU);
 				}
 			}
 		} catch (Exception e) {
@@ -353,8 +335,7 @@ public class SLAConstraintFactory {
 			// Harddisk capacity of the node
 			if (type.getHDDCapacity() != null && type.getHDDCapacity().getValue() != 0) {
 				if (type.getHDDCapacity().getPriority() >= minPriority) {
-					v.addConstraint(new F4GHDDConstraint(nodes, model,
-							(int) type.getHDDCapacity().getValue()));
+					v.add(new F4GHDDConstraint(nodes, model, (int) type.getHDDCapacity().getValue()));
 				}
 			}
 		} catch (Exception e) {
@@ -365,8 +346,7 @@ public class SLAConstraintFactory {
 			// RAM space for vms guaranteed
 			if (type.getMemorySpaceGB() != null && type.getMemorySpaceGB().getValue() != 0) {
 				if (type.getMemorySpaceGB().getPriority() >= minPriority) {
-					v.addConstraint(new F4GMemoryConstraint(nodes, model,
-							(int) type.getMemorySpaceGB().getValue()));
+					v.add(new F4GMemoryConstraint(nodes, model,	(int) type.getMemorySpaceGB().getValue()));
 				}
 			}
 		} catch (Exception e) {
@@ -377,8 +357,7 @@ public class SLAConstraintFactory {
 			// number of cores of a node
 			if (type.getNbOfCores() != null && type.getNbOfCores().getValue() != 0) {
 				if (type.getNbOfCores().getPriority() >= minPriority) {
-					v.addConstraint(new F4GHardwareConstraint(4, type
-							.getNbOfCores().getValue(), nodes, vms, model));
+					v.add(new F4GHardwareConstraint(4, type.getNbOfCores().getValue(), nodes, vms, model));
 				}
 			}
 		} catch (Exception e) {
@@ -389,8 +368,7 @@ public class SLAConstraintFactory {
 			// Raid level
 			if (type.getGPUFreqGHz() != null && type.getGPUFreqGHz().getValue() != 0) {
 				if (type.getGPUFreqGHz().getPriority() >= minPriority) {
-					v.addConstraint(new F4GHardwareConstraint(3, type
-							.getRAIDLevel(), nodes, vms, model));
+					v.add(new F4GHardwareConstraint(3, type.getRAIDLevel(), nodes, vms, model));
 				}
 			}
 		} catch (Exception e) {
@@ -398,12 +376,11 @@ public class SLAConstraintFactory {
 		}
 	}
 
-	private void addEnergy(EnergyConstraintsType energyConstraints,
-			ManagedElementSet<VirtualMachine> vms, ManagedElementSet<Node> nodes) {
+	private void addEnergy(EnergyConstraintsType energyConstraints,	Set<VM> vms, Set<Node> nodes) {
 
-				if (energyConstraints.getMaxPowerServer().getPriority() >= minPriority) {
-					v.addConstraint(new MaxServerPower(nodes, energyConstraints.getMaxPowerServer().getValue()));
-				}
-			}
+		if (energyConstraints.getMaxPowerServer().getPriority() >= minPriority) {
+			v.add(new MaxServerPower(nodes, energyConstraints.getMaxPowerServer().getValue()));
+		}
+	}
 		
 }

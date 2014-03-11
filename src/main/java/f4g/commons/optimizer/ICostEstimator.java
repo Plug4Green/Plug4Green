@@ -5,11 +5,9 @@ import javax.measure.quantity.Duration;
 import javax.measure.quantity.Energy;
 
 import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.NetworkNodeType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
 import org.jscience.physics.amount.*;
-import org.jscience.physics.model.*;
 import org.jscience.economics.money.*;
 
 

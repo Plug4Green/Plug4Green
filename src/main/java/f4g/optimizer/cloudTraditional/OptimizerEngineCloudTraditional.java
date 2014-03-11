@@ -27,6 +27,14 @@ import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.log4j.Logger;
 
+import btrplace.model.DefaultModel;
+import btrplace.model.Mapping;
+import btrplace.model.Model;
+import btrplace.model.Node;
+import btrplace.model.VM;
+import btrplace.model.constraint.Running;
+import btrplace.model.constraint.SatConstraint;
+
 import f4g.commons.controller.IController;
 import f4g.commons.core.Constants;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
@@ -37,7 +45,9 @@ import f4g.optimizer.entropy.plan.constraint.ModelConstraintFactory;
 import f4g.optimizer.entropy.plan.constraint.PlacementConstraintFactory;
 import f4g.optimizer.entropy.plan.constraint.PolicyConstraintFactory;
 import f4g.optimizer.entropy.plan.constraint.SLAConstraintFactory;
-import f4g.optimizer.entropy.plan.objective.PowerObjective;
+import f4g.optimizer.entropy.plan.objective.CPowerObjective;
+import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
+import f4g.optimizer.entropy.plan.objective.PowerView;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.utils.IOptimizerServer;
 import f4g.optimizer.OptimizerEngine;
@@ -74,20 +84,17 @@ import f4g.commons.util.Util;
 import f4g.optimizer.utils.OptimizerWorkload;
 import f4g.optimizer.Optimizer.CloudTradCS;
 
-import entropy.configuration.Configuration;
-import entropy.configuration.DefaultManagedElementSet;
-import entropy.configuration.ManagedElementSet;
-import entropy.configuration.Node;
-import entropy.configuration.SimpleManagedElementSet;
-import entropy.configuration.VirtualMachine;
-import entropy.execution.driver.DriverInstantiationException;
-import entropy.plan.Plan;
-import entropy.plan.PlanException;
-import entropy.plan.TimedReconfigurationPlan;
-import entropy.plan.action.Action;
-import entropy.plan.action.Run;
-import entropy.vjob.PlacementConstraint;
-import entropy.vjob.VJob;
+import btrplace.plan.DefaultReconfigurationPlan;
+import btrplace.plan.DependencyBasedPlanApplier;
+import btrplace.plan.ReconfigurationPlan;
+import btrplace.plan.TimeBasedPlanApplier;
+import btrplace.plan.event.Action;
+import btrplace.solver.SolverException;
+import btrplace.solver.choco.ChocoReconfigurationAlgorithm;
+import btrplace.solver.choco.DefaultChocoReconfigurationAlgorithm;
+import btrplace.solver.choco.DefaultReconfigurationProblemBuilder;
+import btrplace.solver.choco.ReconfigurationProblem;
+import btrplace.solver.choco.constraint.minMTTR.CMinMTTR;
 
 /**
  * This class contains the algorithm for Cloud computing.
@@ -302,12 +309,17 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		}
 		showAllocation(allocationRequest);
 		
-		RequestType request = (RequestType) allocationRequest.getRequest()
-				.getValue();
-		Configuration src = null;
-		
+		Model mo = new DefaultModel();
 		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(model, vmTypes, powerCalculator, optiObjective);
-		VirtualMachine VMtoAllocate = confAdapter.getVM(request);
+		confAdapter.putConfiguration(mo);
+		
+		PowerView pv = new PowerView("PowerView", 10, 1);
+		mo.attach(pv);
+
+		
+		RequestType request = (RequestType) allocationRequest.getRequest().getValue();
+		
+		VM VMtoAllocate = confAdapter.getVM(request);
 
 		if (VMtoAllocate == null) {
 			log.warn("Allocation request is not correct");
@@ -315,96 +327,34 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		}
 
 		showVMs(vmTypes);
-		src = confAdapter.extractConfiguration();
-
-		// create the destination waiting list (identical to present one)
-		ManagedElementSet<VirtualMachine> futureWaitings = src.getWaitings().clone();
-
-		// Add our new VM to the source waiting list
-		src.addWaiting(VMtoAllocate); 
-
-		// our allocated VM is put in the future runnings
-		ManagedElementSet<VirtualMachine> futureRunnings = src.getRunnings().clone();
-		futureRunnings.add(VMtoAllocate);
-
-		if (src.getAllNodes().size() == 0)
-			log.warn("No Nodes");
-
-		PowerObjective objective = new PowerObjective(model, vmTypes,
-				powerCalculator, optiObjective);
-
-		F4GPlanner plan = new F4GPlanner(objective);
-
-		// create temporary constraints for checking
-		List<VJob> queue = getConstraints(model, request, src, VMtoAllocate);
-
-		// Look for the misplaced VMs
-		SimpleManagedElementSet<VirtualMachine> misplacedVMs = new SimpleManagedElementSet<VirtualMachine>();
-		for (VJob v : queue) {
-			for (PlacementConstraint c : v.getConstraints()) {
-				if (!c.isSatisfied(src)) {
-					Plan.logger.debug("Constraint " + c.toString()
-							+ " is not satisfied");
-					misplacedVMs.addAll(c.getMisPlaced(src));
-				}
-			}
-		}
-		// Suppress corresponding nodes and VMs from configuration (no move is
-		// allowed for allocation)
-		for (VirtualMachine vm : misplacedVMs) {
-			Node node = src.getLocation(vm);
-			if (node != null) {
-				ManagedElementSet<VirtualMachine> rVMs = new SimpleManagedElementSet<VirtualMachine>();
-				rVMs.addAll(src.getRunnings(node));
-				for (VirtualMachine rVM : rVMs) {
-					Plan.logger.debug("Suppressing VM " + rVM.getName());
-					src.remove(rVM);
-					futureRunnings.remove(rVM);
-				}
-				Plan.logger.debug("Suppressing node " + node.getName());
-				src.remove(node);
-				src.getAllNodes().remove(node); //TODO remove this when Entropy is corrected
-			}
-		}
+		
+		mo.getMapping().addReadyVM(VMtoAllocate);
+	
+		List<SatConstraint> cstrs = new ArrayList<>();
+		cstrs.add(new Running(VMtoAllocate));
 
 		// create definitive constraints
-		List<VJob> queue2 = getConstraints(model, request, src, VMtoAllocate);
-		
-		TimedReconfigurationPlan p;
+		cstrs.addAll(getConstraints(model, request, mo.getMapping(), VMtoAllocate));
+		 		
+		ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
+        
+        try {
+            ReconfigurationPlan plan = cra.solve(mo, cstrs, new PowerObjective());
+            System.out.println("Time-based plan:");
+            System.out.println(new TimeBasedPlanApplier().toString(plan));
+            System.out.println("\nDependency based plan:");
+            System.out.println(new DependencyBasedPlanApplier().toString(plan));
 
-		try {
-			// setting repair mode: VMs that are OK (should be the case for all)
-			// will not be moved.
-			plan.setRepairMode(true);
-            plan.doOptimize(optimize);
-			// launch CP engine
-			p = plan.compute(src, futureRunnings, futureWaitings,
-					src.getSleepings(),
-					new DefaultManagedElementSet<VirtualMachine>(),
-					src.getOnlines(), src.getOfflines(), 
-					queue2);
-
-			for (Action action : p.getActions()) {
-				log.debug("action: " + action.getClass().getName());
-			}
-
-			if (!(p.getActions().toArray()[0] instanceof Run)) {
-				log.fatal("action in allocation is not a Run");
-				System.exit(-1);
-			}
-			final Node dest = ((Run) p.getActions().toArray()[0]).getHost();
-
-			// create the response
-			return createAllocationResponseFromServer(dest, allocationRequest
-					.getRequest().getValue());
-
-		} catch (PlanException e1) {
-			// TODO supprimer cette exception pour une allocation impossible
-			// e1.printStackTrace();
-			log.debug(e1.getMessage(), e1);
-			log.debug("Allocation impossible, returning empty allocation");
+            Node dest = plan.getResult().getMapping().getVMLocation(VMtoAllocate);
+        
+           // create the response
+  			return createAllocationResponseFromServer(dest, allocationRequest.getRequest().getValue());
+        
+        } catch (SolverException ex) {
+            System.err.println(ex.getMessage());
+            log.debug("Allocation impossible, returning empty allocation");
 			return new AllocationResponseType();
-		}
+        }
 
 	}
 
@@ -418,43 +368,42 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 * @return true if successful, false otherwise
 	 */
 	@Override
-	public void runGlobalOptimization(FIT4GreenType model) {
+	public void runGlobalOptimization(FIT4GreenType F4Gmodel) {
 		log.debug("Performing Global Optimization");
 
-		Configuration src = (new F4GConfigurationAdapter(model, vmTypes, powerCalculator, optiObjective)).extractConfiguration();
-
-		if (src.getAllNodes().size() == 0) {
+		Model model = new DefaultModel();
+		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(F4Gmodel, vmTypes, powerCalculator, optiObjective);
+		confAdapter.putConfiguration(model);
+		
+		if (model.getMapping().getAllNodes().size() == 0) {
 			log.warn("No Nodes");
 		} else {
 			List<AbstractBaseActionType> actions = new ArrayList<AbstractBaseActionType>();
 
-			if (src.getAllVirtualMachines().size() == 0) {
+			if (model.getMapping().getAllVMs().size() == 0) {
 				log.debug("No VMs");
 			}
 			
 			// create the constraints
-			List<VJob> queue = getConstraints(model, src);
+			List<SatConstraint> cstrs = getConstraints(F4Gmodel, model.getMapping());
 			
-			try {					
-				actions = computeActions(model, src, queue);
-			} catch (PlanException e) {
-				if(e instanceof PlanException) {
-					log.warn("Cannot compute the plan, trying degraded mode...");
-					try {
-						Configuration degSrc = getDegradedConfiguration(src, queue);
-						log.debug("degraded conf: " + degSrc);
-						List<VJob> queue2 = getConstraints(model, degSrc);
-						actions = computeActions(model, degSrc, queue2);
-					} catch (PlanException e1) {
-						log.error("No solution", e1);
-						e1.printStackTrace();
-					}
-				} else {
-					log.debug("Exception:", e);
-				}				
-			}			
-		
-		
+			ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
+			
+			Mapping resultMapping;
+			 try {
+		            ReconfigurationPlan plan = cra.solve(model, cstrs, new PowerObjective());
+		            System.out.println("Time-based plan:");
+		            System.out.println(new TimeBasedPlanApplier().toString(plan));
+		            System.out.println("\nDependency based plan:");
+		            System.out.println(new DependencyBasedPlanApplier().toString(plan));
+
+		            resultMapping = plan.getResult().getMapping();
+		             
+		        } catch (SolverException ex) {
+		            System.err.println(ex.getMessage());
+
+		        }
+			 
 		ActionList actionList = new ActionList();
 		// initialise actions in case of empty list
 		actionList.getAction();
@@ -481,43 +430,44 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		}
 		
 		// compute the new datacenter with only moves
-		FIT4GreenType newFederationWithMoves = performMoves(moves, model);
+		FIT4GreenType newFederationWithMoves = performMoves(moves, F4Gmodel);
 		FIT4GreenType newFederation = performOnOffs(powerOns, powerOffs, newFederationWithMoves);
 
 		// -------------------
 		// ON/OFF actions on network equipment
-		ActionList myNetworkActionList = NetworkControl.getOnOffActions(
-				newFederation, model);
+		ActionList myNetworkActionList = NetworkControl.getOnOffActions(newFederation, F4Gmodel);
 		actionList.getAction().addAll(myNetworkActionList.getAction());
 		newFederation = NetworkControl.performOnOffs(newFederation,
 				myNetworkActionList);
 		// -------------------
 
-		ActionRequestType actionRequest = getActionRequest(actionList,
-				model, newFederation);
+		ActionRequestType actionRequest = getActionRequest(actionList, F4Gmodel, newFederation);
 		controller.executeActionList(actionRequest);
 		}
 	}
 			
 
-	private List<VJob> getConstraints(FIT4GreenType model, Configuration src) {
-		List<VJob> queue = new LinkedList<VJob>();
+	private List<SatConstraint> getConstraints(FIT4GreenType model, Mapping src) {
+		List<SatConstraint> queue = new LinkedList<SatConstraint>();
+		
 		if (clusters != null) {
-			queue.add(new SLAConstraintFactory(clusters, src, model, -1, serverGroups).createSLAConstraints());
-			queue.add(new ClusterConstraintFactory(clusters, src).createClusterConstraints());
-			if (ct != null) {
-				queue.add(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
-			}
+			queue.addAll(new SLAConstraintFactory(clusters, src, model, -1, serverGroups).createSLAConstraints());
+			queue.addAll(new ClusterConstraintFactory(clusters, src).createClusterConstraints());
+//			if (ct != null) {
+//				queue.add(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
+//			}
 		}
-		queue.add(new PolicyConstraintFactory(clusters, src, model, federation, vmTypes, powerCalculator, costEstimator).createPolicyConstraints());
+		queue.addAll(new PolicyConstraintFactory(clusters, src, model, federation, vmTypes, powerCalculator, costEstimator).createPolicyConstraints());
 		queue.addAll(new ModelConstraintFactory(src, model).getModelConstraints());
 		return queue;
 	}
 	
-	private List<VJob> getConstraints(FIT4GreenType model, RequestType request,
-			Configuration src, VirtualMachine VMtoAllocate) {
+	private List<SatConstraint> getConstraints(FIT4GreenType model, RequestType request, Mapping src, VM VMtoAllocate) {
+		
+		
 		int minPriority = 1;
-		List<VJob> queue = new LinkedList<VJob>(); 
+		List<SatConstraint> queue = new LinkedList<SatConstraint>(); 
+		
 		if (computingStyle == CloudTradCS.CLOUD) {
 			if (((CloudVmAllocationType) request).getMinPriority() != null)
 				minPriority = ((CloudVmAllocationType) request).getMinPriority();
@@ -527,13 +477,13 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		}
 		
 		if (clusters != null) {
-			queue.add(new SLAConstraintFactory(clusters, src, model, minPriority, serverGroups).createSLAConstraints());
+			queue.addAll(new SLAConstraintFactory(clusters, src, model, minPriority, serverGroups).createSLAConstraints());
 			ClusterConstraintFactory clusterConstraintFactory = new ClusterConstraintFactory(clusters, src);
-			queue.add(clusterConstraintFactory.createClusterConstraints());
-			if (ct != null) {
-				queue.add(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
-			}
-			queue.add(clusterConstraintFactory.restrictPlacementToClusters(request, VMtoAllocate));
+			queue.addAll(clusterConstraintFactory.createClusterConstraints());
+//			if (ct != null) {
+//				queue.addAll(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
+//			}
+			queue.addAll(clusterConstraintFactory.restrictPlacementToClusters(request, VMtoAllocate));
 		}
 		
 		queue.addAll(new ModelConstraintFactory(src, model).getModelConstraints());
@@ -541,77 +491,69 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	}
 	
 
-	private List<AbstractBaseActionType> computeActions(FIT4GreenType model, Configuration src, List<VJob> queue) throws PlanException {
+	private List<AbstractBaseActionType> computeActions(FIT4GreenType F4GModel, Model model, List<SatConstraint> cstrs) {
 		
 		List<AbstractBaseActionType> actions = new ArrayList<AbstractBaseActionType>();
 		
-		PowerObjective objective = new PowerObjective(model,
-				vmTypes, powerCalculator, optiObjective);
+        ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
+        
+        try {
+            ReconfigurationPlan plan = cra.solve(model, cstrs, new PowerObjective());
+            System.out.println("Time-based plan:");
+            System.out.println(new TimeBasedPlanApplier().toString(plan));
+            System.out.println("\nDependency based plan:");
+            System.out.println(new DependencyBasedPlanApplier().toString(plan));
+        
+            F4GDriverFactory f4GDriverFactory = new F4GDriverFactory(controller, F4GModel);
+            
+            for (Action action : plan.getActions()) {
+    			log.debug("action: " + action.getClass().getName());
 
-		F4GPlanner plan = new F4GPlanner(objective);
-		plan.setRepairMode(false);
-		
-		//compute the plan with the CP engine
-        plan.setTimeLimit(searchTimeLimit);
-        plan.doOptimize(optimize);
-		TimedReconfigurationPlan p = plan.compute(src,
-				src.getRunnings(), src.getWaitings(),
-				src.getSleepings(),
-				new DefaultManagedElementSet<VirtualMachine>(),
-				new DefaultManagedElementSet<Node>(), 
-				new DefaultManagedElementSet<Node>(), queue);
-
-		
-		F4GDriverFactory f4GDriverFactory = new F4GDriverFactory(controller, model);
-
-		for (Action action : p.getActions()) {
-			log.debug("action: " + action.getClass().getName());
-
-			try {
-				AbstractBaseActionType f4gAction = f4GDriverFactory
-						.transform(action).getActionToExecute();
-				actions.add(f4gAction);
-				
-			} catch (DriverInstantiationException e) {
-				log.error("Exception: " , e);
-			}
-		}
+    			AbstractBaseActionType f4gAction = f4GDriverFactory.transform(action).getActionToExecute();
+    			if(f4gAction != null){
+    				actions.add(f4gAction);	
+    			}    			 
+    		}
+            
+        } catch (SolverException ex) {
+            System.err.println(ex.getMessage());            
+        }
 		
 		return actions;
 	}
 
 	/**
 	 * suppress from the configuration all VMs and nodes associated to non satisfied constraints
-	 * 
+	 * TODO: reactivate
 	 */
-	private Configuration getDegradedConfiguration(Configuration src, List<VJob> queue) {
-		
-		Configuration deg = src.clone();
-		for(VJob q : queue) {
-			for(PlacementConstraint c : q.getConstraints()) {
-				if(!c.isSatisfied(src)) {
-					log.debug("broken constraint: " + c.getClass().getName());
-					for(VirtualMachine vm : c.getAllVirtualMachines()) {
-						log.debug("removing VM " + vm.getName());
-						deg.remove(vm);
-					}
-					for(Node n : c.getNodes()) {
-						for(VirtualMachine vm : src.getRunnings(n)) {
-							log.debug("removing VM " + vm.getName());
-							deg.remove(vm); //TODO remove this when Entropy is corrected
-						}
-						boolean ret = deg.remove(n);
-						if(ret) {
-							deg.getAllNodes().remove(n);
-							log.debug("removing node " + n.getName());
-						}
-						
-					}
-				}
-			}
-		}
-		return deg;
-	}
+//	private Configuration getDegradedConfiguration(Configuration src, List<VJob> queue) {
+//		
+//		Configuration deg = src.clone();
+//		for(VJob q : queue) {
+//			for(PlacementConstraint c : q.getConstraints()) {
+//				if(!c.isSatisfied(src)) {
+//					log.debug("broken constraint: " + c.getClass().getName());
+//					for(VirtualMachine vm : c.getAllVirtualMachines()) {
+//						log.debug("removing VM " + vm.getName());
+//						deg.remove(vm);
+//					}
+//					for(Node n : c.getNodes()) {
+//						for(VirtualMachine vm : src.getRunnings(n)) {
+//							log.debug("removing VM " + vm.getName());
+//							deg.remove(vm); //TODO remove this when Entropy is corrected
+//						}
+//						boolean ret = deg.remove(n);
+//						if(ret) {
+//							deg.getAllNodes().remove(n);
+//							log.debug("removing node " + n.getName());
+//						}
+//						
+//					}
+//				}
+//			}
+//		}
+//		return deg;
+//	}
 
 	private List<IOptimizerServer> getServersInCluster(final ArrayList<IOptimizerServer> optimizerServers, ClusterType.Cluster cluster) {
 		List<IOptimizerServer> serversInCluster = new ArrayList<IOptimizerServer>();
@@ -648,7 +590,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 						.createTradinitionalVmAllocationResponse(tradVmAllocationResponse));
 			}
 
-			log.debug("Allocated on: " + node.getName());
+			log.debug("Allocated on: " + node.id());
 
 			try {
 				GregorianCalendar gcal = (GregorianCalendar) GregorianCalendar
@@ -725,10 +667,10 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		CloudVmAllocationType CloudOperation = (CloudVmAllocationType) request;
 
 		// setting the response
-		cloudVmAllocationResponse.setNodeId(node.getName());
+		cloudVmAllocationResponse.setNodeId(String.valueOf(node.id()));
 
 		cloudVmAllocationResponse.setClusterId(Utils.getClusterId(
-				node.getName(), clusters));
+				String.valueOf(node.id()), clusters));
 		cloudVmAllocationResponse.setImageId(CloudOperation.getImageId());
 		cloudVmAllocationResponse.setUserId(CloudOperation.getUserId());
 		cloudVmAllocationResponse.setVmType(CloudOperation.getVmType());
@@ -740,10 +682,9 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		TraditionalVmAllocationResponseType traditionalVmAllocationResponse = new TraditionalVmAllocationResponseType();
 
 		// setting the response
-		traditionalVmAllocationResponse.setNodeId(node.getName());
+		traditionalVmAllocationResponse.setNodeId(String.valueOf(node.id())); //TODO check association 
 
-		traditionalVmAllocationResponse.setClusterId(Utils.getClusterId(
-				node.getName(), clusters));
+		traditionalVmAllocationResponse.setClusterId(Utils.getClusterId(String.valueOf(node.id()), clusters));  //TODO check association 
 		traditionalVmAllocationResponse.setImageId("");
 		traditionalVmAllocationResponse.setUserId("");
 		traditionalVmAllocationResponse.setVmType("");

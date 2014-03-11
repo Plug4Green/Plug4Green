@@ -12,9 +12,14 @@
  */
 package f4g.optimizer.entropy.plan.constraint;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+
+import btrplace.model.Mapping;
+import btrplace.model.constraint.SatConstraint;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.schemas.java.constraints.optimizerconstraints.Ban;
 import f4g.schemas.java.constraints.optimizerconstraints.Capacity;
@@ -28,15 +33,9 @@ import f4g.schemas.java.constraints.optimizerconstraints.VMGroup;
 import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint;
-import entropy.configuration.Configuration;
-import entropy.configuration.ManagedElementSet;
-import entropy.configuration.Node;
-import entropy.configuration.SimpleManagedElementSet;
-import entropy.configuration.VirtualMachine;
-import entropy.vjob.DefaultVJob;
-import entropy.vjob.LazySplit;
-import entropy.vjob.VJob;
 
+import btrplace.model.Node;
+import btrplace.model.VM;
 /**
  * Class containing all methods and parameters needed to add placement
  * constraints read from the input file to the optimizer
@@ -45,14 +44,14 @@ import entropy.vjob.VJob;
  */
 public class PlacementConstraintFactory {
 
-	private VJob v;
-	private Configuration src;
+	private List<SatConstraint> v;
+	private Mapping src;
 	private ServerGroupType sg;
 
-	public PlacementConstraintFactory(Configuration src, FIT4GreenType model,
+	public PlacementConstraintFactory(Mapping src, FIT4GreenType model,
 			ServerGroupType serverGroup) {
 		Logger.getLogger(this.getClass().getName());
-		v = new DefaultVJob("slaVJob");
+		v = new LinkedList<SatConstraint>();
 		this.src = src;
 		this.sg = serverGroup;
 	}
@@ -65,29 +64,26 @@ public class PlacementConstraintFactory {
 	 *            The ConstraintReader previously created.
 	 */
 
-	private void createBan(
-			f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint cp,
-			ManagedElementSet<Node> nodes) {
+	private void createBan(PlacementConstraint cp,	Set<Node> nodes) {
 		List<f4g.schemas.java.constraints.optimizerconstraints.Ban> b = cp
 				.getBan();
 		for (Ban ban : b) {
 			List<String> vmNames = ban.getVMName();
-			entropy.vjob.Ban constraint = new entropy.vjob.Ban(getVMs(vmNames),
-					nodes);
-			v.addConstraint(constraint);
+			Ban constraint = new Ban(getVMs(vmNames), nodes);
+			v.add(constraint);
 		}
 	}
 
-	private void createCapacity(PlacementConstraint cp, ManagedElementSet<Node> nodes) {
+	private void createCapacity(PlacementConstraint cp, Set<Node> nodes) {
 		List<Capacity> c = cp.getCapacity();
 		for (Capacity cap : c) {
 			int size = cap.getMaxNbOfVMs();
 			F4GCapacity constraint = new F4GCapacity(nodes, size);
-			v.addConstraint(constraint);
+			v.add(constraint);
 		}
 	}
 
-	private void createFence(PlacementConstraint cp, ManagedElementSet<Node> nodes) {
+	private void createFence(PlacementConstraint cp, Set<Node> nodes) {
 		List<Fence> f = cp.getFence();
 		for (Fence fence : f) {
 			List<String> vmNames = fence.getVMName();
@@ -167,7 +163,7 @@ public class PlacementConstraintFactory {
 					.getServerGroup();
 			for (f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType.ServerGroup serverG : servergroups) {
 				// get all nodes in a sg
-				ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
+				Set<Node> nodes = new HashSet<Node>();
 				for (String nodeName : serverG.getNodeController()
 						.getNodeName()) {
 					try {
@@ -181,11 +177,10 @@ public class PlacementConstraintFactory {
 				}
 
 				// get all VMs for these nodes
-				ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
+				Set<VM> vms = new HashSet<VM>();
 				for (Node node : nodes) {
 					try {
-						ManagedElementSet<VirtualMachine> vm = src
-								.getRunnings(node);
+						Set<VM> vm = src.getRunnings(node);
 						vms.addAll(vm);
 					} catch (Exception e) {
 					}
@@ -205,9 +200,7 @@ public class PlacementConstraintFactory {
 		return v;
 	}
 
-	private VJob addConstraintsForPC(
-			f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint cp,
-			ManagedElementSet<Node> nodes) {
+	private List<SatConstraint> addConstraintsForPC( PlacementConstraint cp, Set<Node> nodes) {
 
 		if (cp != null) {
 			createBan(cp, nodes);

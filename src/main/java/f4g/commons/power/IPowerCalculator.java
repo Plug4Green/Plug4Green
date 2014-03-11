@@ -1,7 +1,6 @@
 package f4g.commons.power;
 
 import f4g.commons.com.util.PowerData;
-import f4g.schemas.java.metamodel.CPUArchitectureType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.SiteType;
 import f4g.schemas.java.metamodel.DatacenterType;

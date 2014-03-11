@@ -16,12 +16,10 @@ import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.constraint.Ban;
 import btrplace.model.constraint.Constraint;
-import btrplace.model.view.ShareableResource;
 import btrplace.solver.choco.ReconfigurationProblem;
 import btrplace.solver.choco.constraint.ChocoConstraint;
 import btrplace.solver.choco.constraint.ChocoConstraintBuilder;
 import btrplace.solver.choco.extensions.FastIFFEq;
-import btrplace.solver.choco.view.CShareableResource;
 
 import f4g.optimizer.entropy.plan.constraint.api.SpareNodes;
 
@@ -43,20 +41,18 @@ public class CSpareNodes implements ChocoConstraint {
   	
     	Solver solver = rp.getSolver();
         Collection<Node> nodes = constraint.getInvolvedNodes();	
-        CShareableResource CPULevels = (CShareableResource) rp.getView(ShareableResource.VIEW_ID_BASE + "cpu");
         
         BoolVar[] free = new BoolVar[nodes.size()];
         for (Node node : constraint.getInvolvedNodes()) {
         	BoolVar state = rp.getNodeAction(node).getState();
-    	    IntVar CPULevel = CPULevels.getPhysicalUsage(node.id());
-    	    
+        	IntVar NbVms = rp.getNbRunningVMs()[node.id()];
+    	        	    
     	    free[node.id()] = VariableFactory.bool(StringUtils.randomName(), solver);
 
     	    //if the server is off (state = false), then it is not free
     	    solver.post(new FastIFFEq(VariableFactory.not(state), free[node.id()], 0));
-    	    //if the server has CPU activity, then it is not free
-    	    solver.post(new FastIFFEq(IntConstraintFactory.arithm(CPULevel, "/=", 0).reif(), free[node.id()], 0));
-    	    	    
+    	    //if the server hosts VMs, then it is not free
+    	    solver.post(new FastIFFEq(IntConstraintFactory.arithm(NbVms, "/=", 0).reif(), free[node.id()], 0));
         }
         
         IntVar freeNumber = VariableFactory.bounded("freeNumber", 0, nodes.size(), solver);

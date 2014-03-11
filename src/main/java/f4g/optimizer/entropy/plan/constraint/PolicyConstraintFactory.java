@@ -12,7 +12,10 @@
  */
 package f4g.optimizer.entropy.plan.constraint;
 
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -21,6 +24,9 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.log4j.Logger;
+
+import btrplace.model.Mapping;
+import btrplace.model.constraint.SatConstraint;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.optimizer.utils.Utils;
@@ -37,15 +43,9 @@ import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
-import entropy.configuration.Configuration;
-import entropy.configuration.ManagedElementSet;
-import entropy.configuration.Node;
-import entropy.configuration.SimpleManagedElementSet;
-import entropy.configuration.VirtualMachine;
-import entropy.vjob.DefaultVJob;
-import entropy.vjob.VJob;
 
-
+import btrplace.model.Node;
+import btrplace.model.VM;
 /**
  * {To be completed; use html notation, if necessary}
  * 
@@ -54,8 +54,8 @@ import entropy.vjob.VJob;
  */
 public class PolicyConstraintFactory {
 
-	private VJob v;
-	private Configuration src;
+	private List<SatConstraint> v;
+	private Mapping src;
 	private FIT4GreenType model;
 	public Logger log;
 	private FederationType federation;
@@ -72,11 +72,11 @@ public class PolicyConstraintFactory {
 	 * Constructor needing an instance of the SLAReader and an entropy
 	 * configuration element.
 	 */
-	public PolicyConstraintFactory(ClusterType myClusters, Configuration src,
+	public PolicyConstraintFactory(ClusterType myClusters, Mapping src,
 			FIT4GreenType model, FederationType federation, 
 			VMTypeType myVMs, IPowerCalculator myPowerCalculator, ICostEstimator myCostEstimator) {
 
-		v = new DefaultVJob("PolicyVJob");
+		v = new LinkedList<SatConstraint>();
 		this.src = src;
 		this.model = model;
 		clusters = myClusters;
@@ -88,7 +88,7 @@ public class PolicyConstraintFactory {
 
 	}
 
-	public VJob createPolicyConstraints() {
+	public List<SatConstraint> createPolicyConstraints() {
 
 		if (federation != null) {
 			int delayTimeBetweenMove = 0;
@@ -112,7 +112,7 @@ public class PolicyConstraintFactory {
 				}
 				if (myPol.getPeriodVMThreshold() != null) {
 					periodVMThreshold = pol.getIdref().getPeriodVMThreshold();
-					ManagedElementSet<Node> nodes = Utils.getNodesFromFederation(federation, src);
+					Set<Node> nodes = Utils.getNodesFromFederation(federation, src);
 					if (nodes.size() != 0) {
 						addPeriodVMThreshold(nodes, periodVMThreshold, 1);
 					} else {
@@ -159,7 +159,7 @@ public class PolicyConstraintFactory {
 								overbooking = c.getBoundedSLAs().getSLA().get(0).getIdref().getQoSConstraints().getMaxVirtualCPUPerCore().getValue();
 							}
 							List<PeriodType> periodVMThreshold = pol.getIdref().getPeriodVMThreshold();
-							ManagedElementSet<Node> nodes = Utils.getNodesFromCluster(c, src);
+							Set<Node> nodes = Utils.getNodesFromCluster(c, src);
 							addPeriodVMThreshold(nodes, periodVMThreshold, overbooking);
 						}
 					}
@@ -176,11 +176,11 @@ public class PolicyConstraintFactory {
 
 		log.debug("Adding DelayBetweenMoveConstraint constraint...");
 		log.debug("delayTimeBetweenMove from method parameter: " + delayTimeBetweenMove);
-		ManagedElementSet<Node> nodes = Utils.getNodesFromCluster(c, src);
+		Set<Node> nodes = Utils.getNodesFromCluster(c, src);
 		List<ServerType> allServers = Utils.getAllServers(model);
 
 		// get all VMs for these nodes
-		ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
+		Set<VM> vms = new HashSet<VM>();
 
 		if (!isFederation && c.getBoundedPolicies() != null) {
 			for (Policy pol : c.getBoundedPolicies().getPolicy()) {
@@ -208,8 +208,7 @@ public class PolicyConstraintFactory {
 
 					for (ServerType st : allServers) {
 						if (st.getFrameworkID().equals(node.getName())) {
-							ManagedElementSet<VirtualMachine> vm = src
-									.getRunnings(node);
+							Set<VM> vm = src.getRunnings(node);
 							List<VirtualMachineType> vmModel = f4g.optimizer.utils.Utils
 									.getVMs(st);
 							for (VirtualMachineType vmt : vmModel) {
@@ -234,7 +233,7 @@ public class PolicyConstraintFactory {
 
 				if (vms.size() != 0) {
 					log.debug("Adding F4GDelayBetweenMove constraint");
-					v.addConstraint(new F4GDelayBetweenMove(vms));
+					v.add(new F4GDelayBetweenMove(vms));
 				}
 			} catch (DatatypeConfigurationException e1) {
 				log.error("Exception", e1);
@@ -250,11 +249,11 @@ public class PolicyConstraintFactory {
 
 		log.debug("Adding addDelayBetweenOnOffConstraint constraint...");
 		log.debug("delayTimeBetweenOnOff from method parameter: " + delayTimeBetweenOnOff);
-		ManagedElementSet<Node> nodes = Utils.getNodesFromCluster(c, src);
+		Set<Node> nodes = Utils.getNodesFromCluster(c, src);
 		List<ServerType> allServers = Utils.getAllServers(model);
 
 		// node to apply the constraint to
-		ManagedElementSet<Node> ns = new SimpleManagedElementSet<Node>();
+		Set<Node> ns = new HashSet<Node>();
 
 		if (!isFederation && c.getBoundedPolicies() != null) {
 			for (Policy pol : c.getBoundedPolicies().getPolicy()) {
@@ -299,7 +298,7 @@ public class PolicyConstraintFactory {
 
 				if (ns.size() != 0) {
 					log.debug("Adding F4GDelayBetweenOnOff constraint");
-					v.addConstraint(new F4GServerNoStateChange(ns));
+					v.add(new F4GServerNoStateChange(ns));
 				}
 			} catch (DatatypeConfigurationException e1) {
 				log.error("Exception", e1);
@@ -312,15 +311,15 @@ public class PolicyConstraintFactory {
 
 	private void addVMPaybackTimeConstraint(Cluster c, int myPaybackTime) {
 
-		ManagedElementSet<Node> nodes = Utils.getNodesFromCluster(c, src);
-		ManagedElementSet<VirtualMachine> vms = Utils.getVMsFromNodes(nodes, src);
+		Set<Node> nodes = Utils.getNodesFromCluster(c, src);
+		Set<VM> vms = Utils.getVMsFromNodes(nodes, src);
 
 		if(myPaybackTime > 0) {
-			v.addConstraint(new F4GVMPaybackTimeConstraint(vms, myPaybackTime, model, SLAvms, powerCalculator, costEstimator ));
+			v.add(new F4GVMPaybackTimeConstraint(vms, myPaybackTime, model, SLAvms, powerCalculator, costEstimator ));
 		}			
 	}
 
-	private void addPeriodVMThreshold(ManagedElementSet<Node> nodes, List<PeriodType> periods, float overbooking) {
+	private void addPeriodVMThreshold(Set<Node> nodes, List<PeriodType> periods, float overbooking) {
 
 		if(model.getDatetime() != null) {
 			LoadType load = SLAReader.getVMSlotsThreshold(model.getDatetime().toGregorianCalendar().getTime(), periods);					
@@ -333,7 +332,7 @@ public class PolicyConstraintFactory {
 					case RELATIVE: nbCores = load.getSpareCPUs().getValue() * src.getAllNodes().size() / 100; break;
 					}
 
-					v.addConstraint(new SpareCPUs(nodes, nbCores, overbooking));
+					v.add(new SpareCPUs(nodes, nbCores, overbooking));
 				}
 
 

@@ -1,25 +1,24 @@
 
 package f4g.optimizer.entropy.plan.constraint;
 
+import btrplace.model.Model;
+import btrplace.model.Node;
+import btrplace.model.VM;
+import btrplace.model.constraint.SatConstraint;
+import btrplace.solver.SolverException;
+import btrplace.solver.choco.ReconfigurationProblem;
+import btrplace.solver.choco.constraint.ChocoConstraint;
 import choco.Choco;
 import choco.cp.solver.constraints.integer.Absolute;
 import choco.cp.solver.constraints.integer.MaxXYZ;
 import choco.cp.solver.constraints.integer.MinXYZ;
-import choco.cp.solver.constraints.reified.FastImpliesEq;
 import choco.cp.solver.variables.integer.*;
 import choco.kernel.solver.variables.integer.IntDomainVar;
-import entropy.configuration.*;
-import entropy.plan.choco.Chocos;
-import entropy.plan.choco.ReconfigurationProblem;
-import entropy.plan.choco.actionModel.ManageableNodeActionModel;
-import entropy.plan.choco.constraint.pack.FastBinPacking;
-import entropy.vjob.PlacementConstraint;
-import entropy.vjob.builder.protobuf.PBVJob;
-import entropy.vjob.builder.xml.XmlVJobSerializer;
-
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static choco.cp.solver.CPSolver.minus;
 import static choco.cp.solver.CPSolver.sum;
@@ -28,16 +27,16 @@ import static choco.cp.solver.CPSolver.sum;
  * 
  *
  */
-public class SpareCPUs implements PlacementConstraint {
+public class SpareCPUs extends SatConstraint {
 
-    private ManagedElementSet<Node> nodes;
+    private Set<Node> nodes;
 
     //the global spare CPU in number of CPUs
     public int minSpareCPU;
     int maximum_capacity = 1000;
     float overbooking = 1;
 
-    private static final ManagedElementSet<VirtualMachine> empty = new SimpleManagedElementSet<VirtualMachine>();
+    private static final Set<VM> empty = new HashSet<VM>();
 
     /**
      * Make a new constraint.
@@ -45,11 +44,11 @@ public class SpareCPUs implements PlacementConstraint {
      * @param nodes the nodes to put offline if they don't host any running VM.
      * @param myOverbooking 
      */
-    public SpareCPUs(ManagedElementSet<Node> nodes, int myMinSpareCPU, float myOverbooking) {
-        this.nodes = nodes;
+    public SpareCPUs(Set<Node> nodes, int myMinSpareCPU, float myOverbooking) {
+    	 super(Collections.<VM>emptySet(), nodes, false);
+    	this.nodes = nodes;
         minSpareCPU = myMinSpareCPU;
         overbooking = myOverbooking;
-        
     }
     
 
@@ -229,4 +228,19 @@ public class SpareCPUs implements PlacementConstraint {
     public int hashCode() {
         return "noIdleOnline".hashCode() * 31 + nodes.hashCode();
     }
+
+
+	@Override
+	public Set<VM> getMisPlacedVMs(Model arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public boolean inject(btrplace.solver.choco.ReconfigurationProblem arg0)
+			throws SolverException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
