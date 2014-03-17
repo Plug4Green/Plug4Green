@@ -35,7 +35,7 @@ public class PowerView implements ModelView {
      */
     public static final String VIEW_ID_BASE = "PowerView.";
 
-    class Powers { 
+    public static class Powers { 
     	public Integer PIdle; 
     	public Integer PperVM; }
     
@@ -88,6 +88,10 @@ public class PowerView implements ModelView {
         return PIdleNoValue;
     }
 
+    public void setPowers(Node n, Powers p) {
+        powersNode.put(n, p);
+    }
+    
     /**
      * Get the node power per VM.
      *

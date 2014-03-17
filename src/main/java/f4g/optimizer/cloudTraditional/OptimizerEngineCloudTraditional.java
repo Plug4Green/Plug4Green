@@ -37,6 +37,7 @@ import btrplace.model.constraint.SatConstraint;
 
 import f4g.commons.controller.IController;
 import f4g.commons.core.Constants;
+import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.F4GPlanner;
 import f4g.optimizer.entropy.plan.action.F4GDriverFactory;
@@ -316,6 +317,9 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		PowerView pv = new PowerView("PowerView", 10, 1);
 		mo.attach(pv);
 
+		NamingService ns = new NamingService("Names");
+		
+		mo.attach(ns);
 		
 		RequestType request = (RequestType) allocationRequest.getRequest().getValue();
 		
