@@ -327,16 +327,21 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		cra.getConstraintMapper().register(new CPowerObjective.Builder());
         try {
             ReconfigurationPlan plan = cra.solve(mo, cstrs, new PowerObjective());
-            System.out.println("Time-based plan:");
-            System.out.println(new TimeBasedPlanApplier().toString(plan));
-            System.out.println("\nDependency based plan:");
-            System.out.println(new DependencyBasedPlanApplier().toString(plan));
+            
+            if(plan != null) {
+            	System.out.println("Time-based plan:");
+                System.out.println(new TimeBasedPlanApplier().toString(plan));
+                System.out.println("\nDependency based plan:");
+                System.out.println(new DependencyBasedPlanApplier().toString(plan));
 
-            Node dest = plan.getResult().getMapping().getVMLocation(VMtoAllocate);
-        
-           // create the response
-  			return createAllocationResponseFromServer(dest, allocationRequest.getRequest().getValue());
-        
+                Node dest = plan.getResult().getMapping().getVMLocation(VMtoAllocate);
+            
+                // create the response
+      			return createAllocationResponseFromServer(dest, allocationRequest.getRequest().getValue());
+            } else {
+            	return new AllocationResponseType();
+            }
+                    
         } catch (SolverException ex) {
             System.err.println(ex.getMessage());
             log.debug("Allocation impossible, returning empty allocation");
