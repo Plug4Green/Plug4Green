@@ -33,7 +33,7 @@ public class PowerView implements ModelView {
      * The base of the view identifier. Once instantiated, it is completed
      * by the resource identifier.
      */
-    public static final String VIEW_ID_BASE = "PowerView.";
+    public static final String VIEW_ID_BASE = "PowerView";
 
     public static class Powers { 
     	public Integer PIdle; 
