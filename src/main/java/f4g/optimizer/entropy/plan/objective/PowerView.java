@@ -33,19 +33,13 @@ public class PowerView implements ModelView {
      * The base of the view identifier. Once instantiated, it is completed
      * by the resource identifier.
      */
-    public static final String VIEW_ID_BASE = "PowerView";
-
-    public static class Powers { 
-    	public Integer PIdle; 
-    	public Integer PperVM; }
+    public static final String VIEW_ID_BASE = "PowerView.";
     
-    private Map<Node, Powers> powersNode;
+    private Map<Node, Integer> powers;
 
-    private int PIdleNoValue;
-    private int PperVMNoValue;
-
+    private int powerNoValue;
+    
     private String viewId;
-
     private String rcId;
 
     public static final int DEFAULT_NO_VALUE = 0;
@@ -57,7 +51,7 @@ public class PowerView implements ModelView {
      * @param r the resource identifier
      */
     public PowerView(String r) {
-        this(r, DEFAULT_NO_VALUE, DEFAULT_NO_VALUE);
+        this(r, DEFAULT_NO_VALUE);
     }
 
     /**
@@ -67,12 +61,11 @@ public class PowerView implements ModelView {
      * @param defCapacity    the nodes default capacity
      * @param defConsumption the VM default consumption
      */
-    public PowerView(String id, int defPIdle, int defPperVM) {
-    	powersNode = new HashMap<>();
+    public PowerView(String id, Integer defPower) {
+    	powers = new HashMap<>();
         this.rcId = id;
         this.viewId = VIEW_ID_BASE + rcId;
-        this.PIdleNoValue = defPIdle;
-        this.PperVMNoValue = defPperVM;
+        this.powerNoValue = defPower;
     }
    
     /**
@@ -81,29 +74,15 @@ public class PowerView implements ModelView {
      * @param n the node
      * @return its capacity if it was defined otherwise the default value.
      */
-    public int getPowerIdle(Node n) {
-        if (powersNode.containsKey(n)) {
-            return powersNode.get(n).PIdle;
+    public int getPower(Node n) {
+        if (powers.containsKey(n)) {
+            return powers.get(n);
         }
-        return PIdleNoValue;
+        return powerNoValue;
     }
 
-    public void setPowers(Node n, Powers p) {
-        powersNode.put(n, p);
-    }
-    
-    /**
-     * Get the node power per VM.
-     *
-     * @param n the node
-     * @return its capacity if it was defined otherwise the default value.
-     */
-    public int getPowerperVM(Node n) {
-        if (powersNode.containsKey(n)) {
-            return powersNode.get(n).PperVM;
-        }
-        return PperVMNoValue;
-
+    public void setPowers(Node n, Integer p) {
+    	powers.put(n, p);
     }
     
     /**
@@ -112,7 +91,7 @@ public class PowerView implements ModelView {
      * @return a set that may be empty
      */
     public Set<Node> getDefinedNodes() {
-        return powersNode.keySet();
+        return powers.keySet();
     }
 
     /**
@@ -121,27 +100,14 @@ public class PowerView implements ModelView {
      * @param ids the node identifiers
      * @return the capacity of each node. The order is maintained
      */
-    public List<Integer> getPowerIdles(List<Node> ids) {
+    public List<Integer> getPowers(List<Node> ids) {
         List<Integer> res = new ArrayList<>(ids.size());
         for (Node n : ids) {
-            res.add(getPowerIdle(n));
+            res.add(getPower(n));
         }
         return res;
     }
     
-    /**
-     * Get the capacity for a list of nodes.
-     *
-     * @param ids the node identifiers
-     * @return the capacity of each node. The order is maintained
-     */
-    public List<Integer> getPowerperVMs(List<Node> ids) {
-        List<Integer> res = new ArrayList<>(ids.size());
-        for (Node n : ids) {
-            res.add(getPowerperVM(n));
-        }
-        return res;
-    }
     /**
      * Get the view identifier.
      *
@@ -172,17 +138,10 @@ public class PowerView implements ModelView {
      *
      * @return the value.
      */
-    public int getDefaultPowerIdle() {
-        return PIdleNoValue;
+    public int getDefaultPower() {
+        return powerNoValue;
     }
-    /**
-     * Get the default node capacity.
-     *
-     * @return the value.
-     */
-    public int getDefaultPowerPerVM() {
-        return PperVMNoValue;
-    }
+    
     
     @Override
     public boolean equals(Object o) {
@@ -195,36 +154,30 @@ public class PowerView implements ModelView {
 
         PowerView that = (PowerView) o;
 
-        if (!that.getDefinedNodes().equals(powersNode.keySet())){
+        if (!that.getDefinedNodes().equals(powers.keySet())){
             return false;
         }
 
-        for (Node k : powersNode.keySet()) {
-            if (!powersNode.get(k).PIdle.equals(that.getPowerIdle(k))) {
+        for (Node k : powers.keySet()) {
+            if (!powers.get(k).equals(that.getPower(k))) {
                 return false;
             }
         }
-        
-        for (Node k : powersNode.keySet()) {
-            if (!powersNode.get(k).PperVM.equals(that.getPowerperVM(k))) {
-                return false;
-            }
-        }
-        
-        return rcId.equals(that.getResourceIdentifier()) && getDefaultPowerPerVM() == that.getDefaultPowerPerVM()
-                && getDefaultPowerIdle() == that.getDefaultPowerIdle();
+                
+        return rcId.equals(that.getResourceIdentifier())
+                && getDefaultPower() == that.getDefaultPower();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(rcId, powersNode, PIdleNoValue, PperVMNoValue);
+        return Objects.hash(rcId, powers, powerNoValue);
     }
     
     @Override
     public PowerView clone() {
-    	PowerView rc = new PowerView(rcId, PIdleNoValue, PperVMNoValue);
-        for (Map.Entry<Node, Powers> e : powersNode.entrySet()) {
-            rc.powersNode.put(e.getKey(), e.getValue());
+    	PowerView rc = new PowerView(rcId, powerNoValue);
+        for (Map.Entry<Node, Integer> e : powers.entrySet()) {
+            rc.powers.put(e.getKey(), e.getValue());
         }
         return rc;
     }
@@ -232,9 +185,9 @@ public class PowerView implements ModelView {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder("rc:").append(rcId).append(':');
-        for (Iterator<Map.Entry<Node, Powers>> ite = powersNode.entrySet().iterator(); ite.hasNext(); ) {
-            Map.Entry<Node, Powers> e = ite.next();
-            buf.append("<node ").append(e.getKey().toString()).append(',').append(e.getValue().PIdle).append(',').append(e.getValue().PperVM).append('>');
+        for (Iterator<Map.Entry<Node, Integer>> ite = powers.entrySet().iterator(); ite.hasNext(); ) {
+            Map.Entry<Node, Integer> e = ite.next();
+            buf.append("<node ").append(e.getKey().toString()).append(',').append(e.getValue()).append('>');
             if (ite.hasNext()) {
                 buf.append(',');
             }

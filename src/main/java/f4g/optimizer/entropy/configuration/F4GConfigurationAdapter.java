@@ -4,11 +4,14 @@ package f4g.optimizer.entropy.configuration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import btrplace.model.Model;
 import btrplace.model.Node;
 import btrplace.model.VM;
+import btrplace.model.view.ModelView;
 import btrplace.model.view.ShareableResource;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.entropy.NamingService;
@@ -36,9 +39,16 @@ import f4g.commons.util.Util;
  */
 public class F4GConfigurationAdapter
 {
+	public static final String VIEW_POWER_IDLES = "PowerIdles";
+	public static final String VIEW_POWER_PER_VM = "PowerPerVMs";
+	public static final String NAMING_SERVICE = "NamingService";
+	public static final String SHAREABLE_RESOURCE_CPU = "ShareableResourceCPU";
+	public static final String SHAREABLE_RESOURCE_RAM = "ShareableResourceRAM";
+	
 	FIT4GreenType currentFit4Green;
 	VMTypeType currentVMType;
-	
+		
+	private Logger log;
 	private OptimizationObjective optiObjective;
 	private IPowerCalculator powerCalculator;
 	
@@ -58,18 +68,20 @@ public class F4GConfigurationAdapter
 		this.powerCalculator = powerCalculator;
 		powerCalculation = new StaticPowerCalculation(null);
 		this.optiObjective = optiObjective;
+		log = Logger.getLogger(F4GConfigurationAdapter.class.getName());
 	}
 	
 	
 	/* 
 	 * extracts the configuration for the metamodel
 	 */
-	public void putConfiguration(Model model) {
+	public void attachViews(Model model) {
 				
-		NamingService ns = new NamingService("NamingService");
-		ShareableResource cpus = new ShareableResource("cpus");
-		ShareableResource memories = new ShareableResource("memories");
-		PowerView powers = new PowerView("powers");
+		NamingService ns = new NamingService(NAMING_SERVICE);
+		ShareableResource cpus = new ShareableResource(SHAREABLE_RESOURCE_CPU);
+		ShareableResource memories = new ShareableResource(SHAREABLE_RESOURCE_RAM); //TODO set names as static constants
+		PowerView powersIdles = new PowerView(VIEW_POWER_IDLES);
+		PowerView powersPerVMs = new PowerView(VIEW_POWER_PER_VM);
 		
 		for(ServerType server : Utils.getAllServers(currentFit4Green)) {
 					
@@ -77,7 +89,8 @@ public class F4GConfigurationAdapter
 			ns.putNodeName(node, server.getFrameworkID());
 			putServerCPUResource(node, server, cpus);
 			putServerMemoryResource(node, server, memories);
-			putServerPowerResource(node, server, powers);
+			putServerPowerIdleResource(node, server, powersIdles);
+			putServerPowerPerVMResource(node, server, powersPerVMs);
 					
 			if(server.getStatus() == ServerStatusType.ON ||
 			   server.getStatus() == ServerStatusType.POWERING_ON) { //POWERING_ON nodes are seen as ON by entropy as they will be soon on. This avoids ping-pong effect on the state.
@@ -100,9 +113,37 @@ public class F4GConfigurationAdapter
 		model.attach(ns);
 		model.attach(cpus);
 		model.attach(memories);
-		model.attach(powers);
+		model.attach(powersIdles);
+		model.attach(powersPerVMs);
 	}
 	
+	public void addVMViews(VM vm, CloudVmAllocationType request, Model mo) {
+		ShareableResource memories = (ShareableResource) mo.getView(ShareableResource.VIEW_ID_BASE + SHAREABLE_RESOURCE_RAM);
+		putVMMemoryConsumption(vm, request, memories);
+		ShareableResource cpus = (ShareableResource) mo.getView(ShareableResource.VIEW_ID_BASE + SHAREABLE_RESOURCE_CPU);
+		putVMCPUConsumption(vm, request, cpus);
+	}
+	
+	
+	private void putVMCPUConsumption(VM vm, CloudVmAllocationType request, ShareableResource s) {
+		
+		try {
+			VMTypeType.VMType SLA_VM = Util.findVMByName(request.getVmType(), currentVMType);
+			s.setConsumption(vm, SLA_VM.getCapacity().getVCpus().getValue());
+		} catch (NoSuchElementException e1) {
+			log.error("VM name " + request.getVmType() + " could not be found in SLA");
+		}		
+	}
+
+	private void putVMMemoryConsumption(VM vm, CloudVmAllocationType request, ShareableResource s) {
+		
+		try {
+			VMTypeType.VMType SLA_VM = Util.findVMByName(request.getVmType(), currentVMType);
+			s.setConsumption(vm, (int) SLA_VM.getCapacity().getVRam().getValue() * 1024);
+		} catch (NoSuchElementException e1) {
+			log.error("VM name " + request.getVmType() + " could not be found in SLA");
+		}
+	}
 	
 	private void putVMCPUConsumption(VM vm, VirtualMachineType F4GVM, ShareableResource s) {
 		
@@ -149,12 +190,15 @@ public class F4GConfigurationAdapter
 	
 	}
 	
-	private void putServerPowerResource(Node n, ServerType server, PowerView s) {
+	private void putServerPowerIdleResource(Node n, ServerType server, PowerView s) {
 		
-		PowerView.Powers p = new PowerView.Powers();
-		p.PIdle = (int) getPIdle(server);
-	    p.PperVM = (int) getPperVM(server);
-	    s.setPowers(n, p);		
+	    s.setPowers(n, (int) getPIdle(server));		
+	
+	}
+	
+	private void putServerPowerPerVMResource(Node n, ServerType server, PowerView s) {
+		
+		s.setPowers(n, (int) getPperVM(server));		
 	
 	}
 
@@ -209,13 +253,13 @@ public class F4GConfigurationAdapter
 //		return vm;
 //	}
 //	
-	public VM getVM(RequestType request) {
-		if(request instanceof CloudVmAllocationType) {
-			return getVM((CloudVmAllocationType)request);	
-		} else {
-			return getVM((TraditionalVmAllocationType)request);
-		}
-	}
+//	public VM getVM(RequestType request) {
+//		if(request instanceof CloudVmAllocationType) {
+//			return getVM((CloudVmAllocationType)request);	
+//		} else {
+//			return getVM((TraditionalVmAllocationType)request);
+//		}
+//	}
 	
 //	public VM getVM(CloudVmAllocationType request) {
 //		

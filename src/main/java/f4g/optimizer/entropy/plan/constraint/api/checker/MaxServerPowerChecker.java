@@ -2,6 +2,7 @@
 
 package f4g.optimizer.entropy.plan.constraint.api.checker;
 
+import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.constraint.api.MaxServerPower;
 import f4g.optimizer.entropy.plan.objective.PowerView;
 import btrplace.model.Model;
@@ -38,10 +39,12 @@ public class MaxServerPowerChecker extends AllowAllConstraintChecker<MaxServerPo
     }
     
 	private boolean isSatisfied(Model mo) {
-		PowerView pv = (PowerView) mo.getView(PowerView.VIEW_ID_BASE);
-        if (getConstraint().isContinuous()) {
+		PowerView powerIdles = (PowerView) mo.getView(PowerView.VIEW_ID_BASE + F4GConfigurationAdapter.VIEW_POWER_IDLES);
+		PowerView powerPerVMs = (PowerView) mo.getView(PowerView.VIEW_ID_BASE + F4GConfigurationAdapter.VIEW_POWER_PER_VM);
+		
+		if (getConstraint().isContinuous()) {
         	for(Node node : getConstraint().getInvolvedNodes()){
-        		if( pv.getPowerIdle(node) + pv.getPowerperVM(node) * mo.getMapping().getRunningVMs(node).size() >= getConstraint().getMaxServerPower()) {
+        		if(powerIdles.getPower(node) + powerPerVMs.getPower(node) * mo.getMapping().getRunningVMs(node).size() >= getConstraint().getMaxServerPower()) {
         			return false;
         		}
         	}            

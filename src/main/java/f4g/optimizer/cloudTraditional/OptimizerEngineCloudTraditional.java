@@ -34,21 +34,20 @@ import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.constraint.Running;
 import btrplace.model.constraint.SatConstraint;
+import btrplace.model.view.ShareableResource;
 
 import f4g.commons.controller.IController;
 import f4g.commons.core.Constants;
 import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
-import f4g.optimizer.entropy.plan.F4GPlanner;
 import f4g.optimizer.entropy.plan.action.F4GDriverFactory;
-import f4g.optimizer.entropy.plan.constraint.ClusterConstraintFactory;
-import f4g.optimizer.entropy.plan.constraint.ModelConstraintFactory;
-import f4g.optimizer.entropy.plan.constraint.PlacementConstraintFactory;
-import f4g.optimizer.entropy.plan.constraint.PolicyConstraintFactory;
-import f4g.optimizer.entropy.plan.constraint.SLAConstraintFactory;
+import f4g.optimizer.entropy.plan.constraint.factories.ClusterConstraintFactory;
+import f4g.optimizer.entropy.plan.constraint.factories.ModelConstraintFactory;
+import f4g.optimizer.entropy.plan.constraint.factories.PolicyConstraintFactory;
+import f4g.optimizer.entropy.plan.constraint.factories.SLAConstraintFactory;
 import f4g.optimizer.entropy.plan.objective.CPowerObjective;
-import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
 import f4g.optimizer.entropy.plan.objective.PowerView;
+import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.utils.IOptimizerServer;
 import f4g.optimizer.OptimizerEngine;
@@ -64,7 +63,6 @@ import f4g.schemas.java.actions.MoveVMActionType;
 import f4g.schemas.java.actions.PowerOffActionType;
 import f4g.schemas.java.actions.PowerOnActionType;
 import f4g.schemas.java.actions.ActionRequestType.ActionList;
-import f4g.schemas.java.*;
 import f4g.schemas.java.allocation.AllocationRequestType;
 import f4g.schemas.java.allocation.RequestType;
 import f4g.schemas.java.allocation.AllocationResponseType;
@@ -85,7 +83,6 @@ import f4g.commons.util.Util;
 import f4g.optimizer.utils.OptimizerWorkload;
 import f4g.optimizer.Optimizer.CloudTradCS;
 
-import btrplace.plan.DefaultReconfigurationPlan;
 import btrplace.plan.DependencyBasedPlanApplier;
 import btrplace.plan.ReconfigurationPlan;
 import btrplace.plan.TimeBasedPlanApplier;
@@ -93,9 +90,7 @@ import btrplace.plan.event.Action;
 import btrplace.solver.SolverException;
 import btrplace.solver.choco.ChocoReconfigurationAlgorithm;
 import btrplace.solver.choco.DefaultChocoReconfigurationAlgorithm;
-import btrplace.solver.choco.DefaultReconfigurationProblemBuilder;
-import btrplace.solver.choco.ReconfigurationProblem;
-import btrplace.solver.choco.constraint.minMTTR.CMinMTTR;
+
 
 /**
  * This class contains the algorithm for Cloud computing.
@@ -312,29 +307,24 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		
 		Model mo = new DefaultModel();
 		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(model, vmTypes, powerCalculator, optiObjective);
-		confAdapter.putConfiguration(mo);
+		confAdapter.attachViews(mo);
 				
 		RequestType request = (RequestType) allocationRequest.getRequest().getValue();
-		
-		VM VMtoAllocate = confAdapter.getVM(request);
-
-		if (VMtoAllocate == null) {
-			log.warn("Allocation request is not correct");
-			return null;
-		}
-
-		showVMs(vmTypes);
-		
+				
+		VM VMtoAllocate = mo.newVM();
 		mo.getMapping().addReadyVM(VMtoAllocate);
+		confAdapter.addVMViews(VMtoAllocate, (CloudVmAllocationType) request, mo); //TODO generalize
 	
 		List<SatConstraint> cstrs = new ArrayList<>();
 		cstrs.add(new Running(VMtoAllocate));
+		//cstrs.add(new CPowerObjective((PowerView)mo.getView(PowerView.VIEW_ID_BASE + "powers"), optiObjective));
 
 		// create definitive constraints
 		cstrs.addAll(getConstraints(model, request, mo.getMapping(), VMtoAllocate));
-		 		
+
+		
 		ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
-        
+		cra.getConstraintMapper().register(new CPowerObjective.Builder());
         try {
             ReconfigurationPlan plan = cra.solve(mo, cstrs, new PowerObjective());
             System.out.println("Time-based plan:");
@@ -370,7 +360,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
 		Model model = new DefaultModel();
 		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(F4Gmodel, vmTypes, powerCalculator, optiObjective);
-		confAdapter.putConfiguration(model);
+		confAdapter.attachViews(model);
 		
 		if (model.getMapping().getAllNodes().size() == 0) {
 			log.warn("No Nodes");
@@ -447,14 +437,14 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		List<SatConstraint> queue = new LinkedList<SatConstraint>();
 		
 		if (clusters != null) {
-			queue.addAll(new SLAConstraintFactory(clusters, src, model, -1, serverGroups).createSLAConstraints());
-			queue.addAll(new ClusterConstraintFactory(clusters, src).createClusterConstraints());
+//			queue.addAll(new SLAConstraintFactory(clusters, src, model, -1, serverGroups).createSLAConstraints());
+//			queue.addAll(new ClusterConstraintFactory(clusters, src).createClusterConstraints());
 //			if (ct != null) {
 //				queue.add(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
 //			}
 		}
-		queue.addAll(new PolicyConstraintFactory(clusters, src, model, federation, vmTypes, powerCalculator, costEstimator).createPolicyConstraints());
-		queue.addAll(new ModelConstraintFactory(src, model).getModelConstraints());
+//		queue.addAll(new PolicyConstraintFactory(clusters, src, model, federation, vmTypes, powerCalculator, costEstimator).createPolicyConstraints());
+//		queue.addAll(new ModelConstraintFactory(src, model).getModelConstraints());
 		return queue;
 	}
 	
@@ -473,21 +463,21 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		}
 		
 		if (clusters != null) {
-			queue.addAll(new SLAConstraintFactory(clusters, src, model, minPriority, serverGroups).createSLAConstraints());
-			ClusterConstraintFactory clusterConstraintFactory = new ClusterConstraintFactory(clusters, src);
-			queue.addAll(clusterConstraintFactory.createClusterConstraints());
+//			queue.addAll(new SLAConstraintFactory(clusters, src, model, minPriority, serverGroups).createSLAConstraints());
+//			ClusterConstraintFactory clusterConstraintFactory = new ClusterConstraintFactory(clusters, src);
+//			queue.addAll(clusterConstraintFactory.createClusterConstraints());
 //			if (ct != null) {
 //				queue.addAll(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
 //			}
-			queue.addAll(clusterConstraintFactory.restrictPlacementToClusters(request, VMtoAllocate));
+			//queue.addAll(clusterConstraintFactory.restrictPlacementToClusters(request, VMtoAllocate));
 		}
 		
-		queue.addAll(new ModelConstraintFactory(src, model).getModelConstraints());
+		//queue.addAll(new ModelConstraintFactory(src, model).getModelConstraints());
 		return queue;
 	}
 	
 
-	private List<AbstractBaseActionType> computeActions(FIT4GreenType F4GModel, Model model, List<SatConstraint> cstrs) {
+	private List<AbstractBaseActionType> computeActions(FIT4GreenType F4GModel, Model model, List<SatConstraint> cstrs, NamingService nameService) {
 		
 		List<AbstractBaseActionType> actions = new ArrayList<AbstractBaseActionType>();
 		
@@ -500,7 +490,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
             System.out.println("\nDependency based plan:");
             System.out.println(new DependencyBasedPlanApplier().toString(plan));
         
-            F4GDriverFactory f4GDriverFactory = new F4GDriverFactory(controller, F4GModel);
+            F4GDriverFactory f4GDriverFactory = new F4GDriverFactory(controller, F4GModel, nameService);
             
             for (Action action : plan.getActions()) {
     			log.debug("action: " + action.getClass().getName());

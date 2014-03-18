@@ -3,9 +3,12 @@ package f4g.optimizer.entropy.plan.objective;
 import btrplace.model.Model;
 import btrplace.model.Node;
 import btrplace.model.VM;
+import btrplace.model.constraint.Constraint;
 import btrplace.solver.choco.ReconfigurationProblem;
 import btrplace.solver.choco.actionModel.NodeActionModel;
-import f4g.commons.optimizer.OptimizationObjective;
+import btrplace.solver.choco.constraint.ChocoConstraintBuilder;
+import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
+import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
 import f4g.optimizer.utils.Pair;
 
 import java.util.ArrayList;
@@ -16,18 +19,22 @@ import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import solver.constraints.IntConstraintFactory;
+
 import solver.variables.BoolVar;
 import solver.variables.IntVar;
-import solver.variables.VariableFactory;
 import solver.Solver;
+
+import solver.variables.VariableFactory;
+import solver.constraints.IntConstraintFactory;
+import static solver.variables.VariableFactory.*;
+import static solver.constraints.IntConstraintFactory.*;
 
 public class CPowerObjective implements btrplace.solver.choco.constraint.CObjective {
   
-	PowerView powers;
+	//PowerView powers;
 	
     //objective: either Power or CO2
-	OptimizationObjective optiObjective;
+	//OptimizationObjective optiObjective;
 	    
     int reconfTime = 1000; // seconds (must be multiple of 1000s)
     int EnergyOn = 1; //KJoule, sample value
@@ -44,14 +51,12 @@ public class CPowerObjective implements btrplace.solver.choco.constraint.CObject
      *
      * @param vms A non-empty set of virtual machines
      */
-    public CPowerObjective(PowerView powers, OptimizationObjective optiObjective) {
-    	
-    	this.powers = powers;    	
-    	this.optiObjective = optiObjective;
+    public CPowerObjective() {
     }
     
 
-    @Override
+
+	@Override
     public boolean inject(ReconfigurationProblem m) {
 
     	Solver solver = m.getSolver();
@@ -61,88 +66,95 @@ public class CPowerObjective implements btrplace.solver.choco.constraint.CObject
     	
     	//sum the power Idle, the power for the VMs and extra power for the network
     	IntVar[] pows = new  IntVar[]{getPIdle(m), getPVMs(m)}; //, getPNetwork(m)
-        solver.post(IntConstraintFactory.sum(pows, globalPower));
+        solver.post(sum(pows, globalPower));
         
-    	solver.post(IntConstraintFactory.arithm(stableEnergy, "=", globalPower, "*", (int)reconfTime/1000));
+        solver.post(times(globalPower, fixed((int)reconfTime/1000, solver), stableEnergy));
     	//this equation represents the energy spent between two reconfigurations (that we'll try to minimize).
     	IntVar[] energies = new  IntVar[]{stableEnergy, getEMove(m), getEOnOff(m)};
-    	solver.post(IntConstraintFactory.sum(energies, reconfEnergy));
+    	solver.post(sum(energies, reconfEnergy));
      
         m.setObjective(true, reconfEnergy);
         return true;
     }
   	
-    public IntVar getPIdle(ReconfigurationProblem m) {
+    public IntVar getPIdle(ReconfigurationProblem rp) {
 
-    	Solver solver = m.getSolver();
-    	List<Node> nodes = new ArrayList<Node>();
-    	Collections.addAll(nodes, m.getNodes()); 
-    	int[] powerIdles =  ArrayUtils.toPrimitive(powers.getPowerIdles(nodes).toArray(new Integer[nodes.size()]));
+    	PowerView powerIdleView = (PowerView) rp.getSourceModel().getView(PowerView.VIEW_ID_BASE + F4GConfigurationAdapter.VIEW_POWER_IDLES);
     	
-    	IntVar PIdleTotal = VariableFactory.bounded("PIdleTotal", 0, Integer.MAX_VALUE / 100, solver);
-        IntConstraintFactory.scalar(getStates(m), powerIdles, PIdleTotal);
+    	Solver solver = rp.getSolver();
+    	List<Node> nodes = new ArrayList<Node>();
+    	Collections.addAll(nodes, rp.getNodes()); 
+    	int[] powerIdles =  ArrayUtils.toPrimitive(powerIdleView.getPowers(nodes).toArray(new Integer[nodes.size()]));
+    	
+    	IntVar PIdleTotal = bounded("PIdleTotal", 0, Integer.MAX_VALUE / 100, solver);
+    	solver.post(scalar(getStates(rp), powerIdles, PIdleTotal));
         
         return PIdleTotal; 
     }
 
 
-    public IntVar getPVMs(ReconfigurationProblem m) {
+    public IntVar getPVMs(ReconfigurationProblem rp) {
 
-    	Solver solver = m.getSolver();
+    	PowerView powerPerVMView = (PowerView) rp.getSourceModel().getView(PowerView.VIEW_ID_BASE + F4GConfigurationAdapter.VIEW_POWER_PER_VM);
+
+    	Solver solver = rp.getSolver();
     	List<Node> nodes = new ArrayList<Node>();
-    	Collections.addAll(nodes, m.getNodes()); 
-    	int[] powerperVMs =  ArrayUtils.toPrimitive(powers.getPowerperVMs(nodes).toArray(new Integer[nodes.size()]));
+    	Collections.addAll(nodes, rp.getNodes()); 
+    	int[] powerperVMs =  ArrayUtils.toPrimitive(powerPerVMView.getPowers(nodes).toArray(new Integer[nodes.size()]));
     	
-    	IntVar PowerperVMsTotal = VariableFactory.bounded("PowerperVMsTotal", 0, Integer.MAX_VALUE / 100, solver);
-        IntConstraintFactory.scalar(m.getNbRunningVMs(), powerperVMs, PowerperVMsTotal);
+    	IntVar PowerperVMsTotal = bounded("PowerperVMsTotal", 0, Integer.MAX_VALUE / 100, solver);
+    	solver.post(scalar(rp.getNbRunningVMs(), powerperVMs, PowerperVMsTotal));
         
         return PowerperVMsTotal; 
     }
 
-    public IntVar getEMove(ReconfigurationProblem m) {
+    public IntVar getEMove(ReconfigurationProblem rp) {
               
-    	Solver solver = m.getSolver();
-    	int[] EMoveperVMs = new int[m.getVMs().length];
+    	Solver solver = rp.getSolver();
+    	int[] EMoveperVMs = new int[rp.getVMs().length];
         Arrays.fill(EMoveperVMs, EnergyMove); 
         
-    	IntVar EMove = VariableFactory.bounded("EMove", 0, Integer.MAX_VALUE / 100, solver);
-    	IntConstraintFactory.scalar(getMoves(m), EMoveperVMs, EMove);
+    	IntVar EMove = bounded("EMove", 0, Integer.MAX_VALUE / 100, solver);
+    	solver.post(scalar(getMoves(rp), EMoveperVMs, EMove));
         return EMove;               
     }
     
     //energy spent to switch on and off machines
-    public IntVar getEOnOff(ReconfigurationProblem m) {
+    public IntVar getEOnOff(ReconfigurationProblem rp) {
         
-    	Solver solver = m.getSolver();
-    	int[] EOn = new int[m.getNodes().length];
+    	Solver solver = rp.getSolver();
+    	int[] EOn = new int[rp.getNodes().length];
         Arrays.fill(EOn, EnergyOff); 
-        int[] EOff = new int[m.getNodes().length];
+        int[] EOff = new int[rp.getNodes().length];
         Arrays.fill(EOff, EnergyOn); 
     	
-        Pair<BoolVar[], BoolVar[]> switchs = getSwitchOnOffs(m);
+        Pair<BoolVar[], BoolVar[]> switchs = getSwitchOnOffs(rp);
         
-		IntVar EOnTot = VariableFactory.bounded("EOnTot", 0, Integer.MAX_VALUE / 100, solver);
-    	IntConstraintFactory.scalar(switchs.getFirst(), EOn, EOnTot);
+		IntVar EOnTot = bounded("EOnTot", 0, Integer.MAX_VALUE / 100, solver);
+    	solver.post(scalar(switchs.getFirst(), EOn, EOnTot));
     	IntVar EOffTot = VariableFactory.bounded("EOffTot", 0, Integer.MAX_VALUE / 100, solver);
-    	IntConstraintFactory.scalar(switchs.getSecond(), EOff, EOffTot);
-        
-        return IntConstraintFactory.arithm(EOnTot, "+", EOffTot).reif();
+    	solver.post(scalar(switchs.getSecond(), EOff, EOffTot));
+    	IntVar ETot = bounded("ETot", 0, Integer.MAX_VALUE / 100, solver);
+    	solver.post(IntConstraintFactory.sum(new IntVar[]{EOnTot,EOffTot}, ETot));
+    	return ETot;
     }
     
     
-    public Pair<BoolVar[], BoolVar[]> getSwitchOnOffs(ReconfigurationProblem m) {
+    public Pair<BoolVar[], BoolVar[]> getSwitchOnOffs(ReconfigurationProblem rp) {
     	
-    	BoolVar[] switchOns  = new BoolVar[m.getNodes().length];
-        BoolVar[] switchOffs = new BoolVar[m.getNodes().length];
+    	BoolVar[] switchOns  = new BoolVar[rp.getNodes().length];
+        BoolVar[] switchOffs = new BoolVar[rp.getNodes().length];
         
         int i = 0;
-		for (Node node : m.getNodes()) {
-			BoolVar futurState = m.getNodeAction(node).getState();
+		for (Node node : rp.getNodes()) {
+			BoolVar futurState = rp.getNodeAction(node).getState();
 			//if the node if offline, it will be switched on if the future state is on, and vice-versa
-			if(m.getSourceModel().getMapping().isOffline(node)) {
+			if(rp.getSourceModel().getMapping().isOffline(node)) {
 				switchOns[i] = futurState;
+				switchOffs[i] = zero(rp.getSolver());
 			} else	{
-				switchOffs[i] = VariableFactory.not(futurState);
+				switchOffs[i] = not(futurState);
+				switchOns[i] = zero(rp.getSolver());
 			}
 		   i++;
 		}
@@ -150,26 +162,26 @@ public class CPowerObjective implements btrplace.solver.choco.constraint.CObject
     	
     }
     
-    public BoolVar[] getStates(ReconfigurationProblem m) {
+    public BoolVar[] getStates(ReconfigurationProblem rp) {
 
-		BoolVar[] states = new BoolVar[m.getNodes().length];
+		BoolVar[] states = new BoolVar[rp.getNodes().length];
     	int i = 0;
-		for (NodeActionModel action : m.getNodeActions()) {     
+		for (NodeActionModel action : rp.getNodeActions()) {     
 		   states[i] = action.getState();
 		   i++;
 		}
 		return states;
 	}
     
-    public BoolVar[] getMoves(ReconfigurationProblem m) {
-    	Solver solver = m.getSolver();
-    	BoolVar moves[] = new BoolVar[m.getVMs().length];
+    public BoolVar[] getMoves(ReconfigurationProblem rp) {
+    	Solver solver = rp.getSolver();
+    	BoolVar moves[] = new BoolVar[rp.getVMs().length];
         int i = 0;
-        for (VM vm : m.getVMs()) {        	
+        for (VM vm : rp.getVMs()) {        	
           	//A boolean variable to indicate whether the node is used or not
-            moves[i] = VariableFactory.bool("moves(" + vm.id() + ")", solver);
-            IntVar hoster = m.getVMAction(vm).getDSlice().getHoster();
-            moves[i] = IntConstraintFactory.arithm(hoster, "=", m.getCurrentVMLocation(i)).reif();
+            moves[i] = bool("moves(" + vm.id() + ")", solver);
+            IntVar hoster = rp.getVMAction(vm).getDSlice().getHoster();
+            moves[i] = arithm(hoster, "=", rp.getCurrentVMLocation(i)).reif();
             i++;
         }
         return moves;
@@ -220,4 +232,19 @@ public class CPowerObjective implements btrplace.solver.choco.constraint.CObject
 		// TODO Auto-generated method stub
 		
 	}
+	
+	 /**
+     * Builder associated to the constraint.
+     */
+    public static class Builder implements ChocoConstraintBuilder {
+        @Override
+        public Class<? extends Constraint> getKey() {
+            return PowerObjective.class;
+        }
+
+        @Override
+        public CPowerObjective build(Constraint cstr) {
+            return new CPowerObjective();
+        }
+    }
 }

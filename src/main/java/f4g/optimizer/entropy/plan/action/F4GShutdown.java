@@ -35,7 +35,7 @@ public class F4GShutdown extends F4GDriver {
 	public AbstractBaseActionType getActionToExecute() {
 
 		PowerOffActionType powerOff = new PowerOffActionType();
-		ServerType server = Utils.findServerByName(model,  nameService.getNodeName(action.getNode()));
+		ServerType server = Utils.findServerByName(model, nameService.getNodeName(action.getNode()));
 		FrameworkCapabilitiesType fc = (FrameworkCapabilitiesType) server.getFrameworkRef();
 		
 		powerOff.setNodeName(nameService.getNodeName(action.getNode()));
