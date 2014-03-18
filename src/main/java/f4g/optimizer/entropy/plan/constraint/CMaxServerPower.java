@@ -1,5 +1,3 @@
-
-
 package f4g.optimizer.entropy.plan.constraint;
 
 import java.util.Collection;

@@ -23,10 +23,12 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -48,15 +50,13 @@ import org.apache.commons.jxpath.JXPathNotFoundException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import btrplace.model.Mapping;
+import btrplace.model.Node;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
 
-import entropy.configuration.Configuration;
-import entropy.configuration.ManagedElementSet;
-import entropy.configuration.Node;
-import entropy.configuration.SimpleManagedElementSet;
-import entropy.configuration.VirtualMachine;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType;
 
 public class Utils {
@@ -757,54 +757,54 @@ public class Utils {
 	 * get the nodes in a cluster
 	 * 
 	 */
-	public static ManagedElementSet<Node> getNodesFromCluster(Cluster c, Configuration src) {
-		ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
-		for (String nodeName : c.getNodeController().getNodeName()) {
-			try {
-				Node n = src.getAllNodes().get(nodeName);
-				if (n != null) {
-					nodes.add(n);
-				}
-			} catch (Exception e) {
-			}
-		}
-		return nodes;
-	}
+//	public static Set<Node> getNodesFromCluster(Cluster c, NamingService ns) {
+//		Set<Node> nodes = new HashSet<Node>();
+//		for (String nodeName : c.getNodeController().getNodeName()) {
+//			try {
+//				Node n = ns.getsrc.getAllNodes().get(nodeName);
+//				if (n != null) {
+//					nodes.add(n);
+//				}
+//			} catch (Exception e) {
+//			}
+//		}
+//		return nodes;
+//	}
 	
 	/**
 	 * get the nodes in a federation
 	 * 
 	 */
-	public static ManagedElementSet<Node> getNodesFromFederation(FederationType fed, Configuration src) {
-		ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
-		if (fed.getBoundedCluster() != null) {
-			for (BoundedClustersType.Cluster bc : fed.getBoundedCluster().getCluster()) {
-				ClusterType.Cluster c = bc.getIdref();
-				nodes.addAll(getNodesFromCluster(c, src));
-			}
-		}
-		return nodes;
-		
-	}
+//	public static ManagedElementSet<Node> getNodesFromFederation(FederationType fed, Configuration src) {
+//		ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
+//		if (fed.getBoundedCluster() != null) {
+//			for (BoundedClustersType.Cluster bc : fed.getBoundedCluster().getCluster()) {
+//				ClusterType.Cluster c = bc.getIdref();
+//				nodes.addAll(getNodesFromCluster(c, src));
+//			}
+//		}
+//		return nodes;
+//		
+//	}
 	
 	/**
 	 * get the nodes in a cluster
 	 * 
 	 */
-	public static ManagedElementSet<VirtualMachine> getVMsFromNodes(ManagedElementSet<Node> nodes, Configuration src) {
-		// get all VMs for these nodes
-		ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
-		for (Node node : nodes) {
-			try {
-				ManagedElementSet<VirtualMachine> vm = src.getRunnings(node);
-				vms.addAll(vm);
-			} catch (Exception e) {
-			}
-
-		}
-		return vms;
-	}
-	
+//	public static ManagedElementSet<VirtualMachine> getVMsFromNodes(ManagedElementSet<Node> nodes, Configuration src) {
+//		// get all VMs for these nodes
+//		ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
+//		for (Node node : nodes) {
+//			try {
+//				ManagedElementSet<VirtualMachine> vm = src.getRunnings(node);
+//				vms.addAll(vm);
+//			} catch (Exception e) {
+//			}
+//
+//		}
+//		return vms;
+//	}
+//	
 	public static List<ServerType> getAllServersInFederation(FederationType fed, final FIT4GreenType f4g) {
 		List<ServerType> serversInFed = new ArrayList<ServerType>();
 		for (BoundedClustersType.Cluster bc : fed.getBoundedCluster().getCluster()) {

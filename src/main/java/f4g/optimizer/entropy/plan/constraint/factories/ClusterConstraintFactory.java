@@ -10,7 +10,7 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package f4g.optimizer.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint.factories;
 
 import java.util.ArrayList;
 import java.util.HashSet;

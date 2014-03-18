@@ -14,6 +14,6 @@ public class PowerObjective extends OptConstraint {
 
     @Override
     public String id() {
-        return "PowerObjective";
+        return "powerObjective";
     }
 }
