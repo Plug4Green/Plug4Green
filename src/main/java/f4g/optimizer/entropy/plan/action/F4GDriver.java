@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBElement;
 import btrplace.plan.event.Action;
 
 import f4g.commons.controller.IController;
+import f4g.optimizer.entropy.NamingService;
 import f4g.schemas.java.actions.AbstractBaseActionType;
 import f4g.schemas.java.actions.ActionRequestType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
@@ -21,7 +22,7 @@ public abstract class F4GDriver extends Driver {
 
 	IController controller;
 	protected FIT4GreenType model;
-	
+	NamingService nameService;
 
 	/**
 	 * Create and configure the driver to execute an action.
@@ -29,18 +30,19 @@ public abstract class F4GDriver extends Driver {
 	 * @param props the properties to configure the driver
      * @throws PropertiesHelperException if an error occurred while configuring the driver
 	 */
-	public F4GDriver(Action a, IController myController, FIT4GreenType myModel) {
+	public F4GDriver(Action a, IController controller, FIT4GreenType model, NamingService nameService) {
 		super(a);
-		controller = myController;
-		model = myModel;
+		this.controller = controller;
+		this.model = model;
+		this.nameService = nameService;
 	}
 	
-	public F4GDriver(List<Action> a, IController myController, FIT4GreenType myModel) {
+	public F4GDriver(List<Action> a, IController myController, FIT4GreenType myModel, NamingService nameService) {
 		//TODO fix
 		super(a.get(0));
-		controller = myController;
-		model = myModel;
-
+		this.controller = myController;
+		this.model = myModel;
+		this.nameService = nameService;
 	}
 		
 	

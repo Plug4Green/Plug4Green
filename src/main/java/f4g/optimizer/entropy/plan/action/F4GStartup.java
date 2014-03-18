@@ -3,14 +3,13 @@ package f4g.optimizer.entropy.plan.action;
 
 import btrplace.plan.event.BootNode;
 import f4g.commons.controller.IController;
+import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.actions.AbstractBaseActionType;
 import f4g.schemas.java.actions.PowerOnActionType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
 import f4g.schemas.java.metamodel.ServerType;
-
-import entropy.plan.action.Startup;
 
 
 public class F4GStartup extends F4GDriver {
@@ -29,8 +28,8 @@ public class F4GStartup extends F4GDriver {
      * @throws entropy.PropertiesHelperException if an error occurred while configuring the driver
      *
 	 */
-	public F4GStartup(BootNode a, IController myController, FIT4GreenType myModel) {
-		super(a, myController, myModel);
+	public F4GStartup(BootNode a, IController myController, FIT4GreenType myModel, NamingService nameService) {
+		super(a, myController, myModel, nameService);
 		action = a;
 	}
 	
@@ -40,10 +39,10 @@ public class F4GStartup extends F4GDriver {
 
 		PowerOnActionType powerOn = new PowerOnActionType();
 				
-		ServerType server = Utils.findServerByName(model,  action.getNode().getName());
+		ServerType server = Utils.findServerByName(model, nameService.getNodeName(action.getNode()));
 		FrameworkCapabilitiesType fc = (FrameworkCapabilitiesType) server.getFrameworkRef();
 		
-		powerOn.setNodeName(action.getNode().getName());
+		powerOn.setNodeName(nameService.getNodeName(action.getNode()));
 		powerOn.setFrameworkName(fc.getFrameworkName());
 		
 		return powerOn;

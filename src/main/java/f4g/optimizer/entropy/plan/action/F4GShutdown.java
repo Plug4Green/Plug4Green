@@ -3,6 +3,7 @@ package f4g.optimizer.entropy.plan.action;
 
 import btrplace.plan.event.ShutdownNode;
 import f4g.commons.controller.IController;
+import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.actions.AbstractBaseActionType;
 import f4g.schemas.java.actions.PowerOffActionType;
@@ -24,8 +25,8 @@ public class F4GShutdown extends F4GDriver {
      * @throws entropy.PropertiesHelperException if an error occurred while configuring the driver
      *
 	 */
-	public F4GShutdown(ShutdownNode a, IController myController, FIT4GreenType myModel) {
-		super(a, myController, myModel);
+	public F4GShutdown(ShutdownNode a, IController myController, FIT4GreenType myModel, NamingService nameService) {
+		super(a, myController, myModel, nameService);
 		action = a;
 	}
 	
@@ -34,10 +35,10 @@ public class F4GShutdown extends F4GDriver {
 	public AbstractBaseActionType getActionToExecute() {
 
 		PowerOffActionType powerOff = new PowerOffActionType();
-		ServerType server = Utils.findServerByName(model,  action.getNode().getName());
+		ServerType server = Utils.findServerByName(model,  nameService.getNodeName(action.getNode()));
 		FrameworkCapabilitiesType fc = (FrameworkCapabilitiesType) server.getFrameworkRef();
 		
-		powerOff.setNodeName(action.getNode().getName());
+		powerOff.setNodeName(nameService.getNodeName(action.getNode()));
 		powerOff.setFrameworkName(fc.getFrameworkName());
 
 		return powerOff;
