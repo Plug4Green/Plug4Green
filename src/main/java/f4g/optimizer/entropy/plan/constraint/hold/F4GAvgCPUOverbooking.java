@@ -12,11 +12,9 @@
  */
 package f4g.optimizer.entropy.plan.constraint;
 
-import choco.cp.solver.constraints.reified.FastIFFEq;
+
 import choco.cp.solver.constraints.reified.ReifiedFactory;
 import choco.kernel.solver.variables.integer.IntDomainVar;
-import entropy.configuration.*;
-import entropy.plan.choco.ReconfigurationProblem;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.ServerType;

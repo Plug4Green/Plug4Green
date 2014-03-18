@@ -12,15 +12,6 @@
 */
 package f4g.optimizer.entropy.plan.constraint;
 
-import entropy.configuration.Configuration;
-import entropy.configuration.ManagedElementSet;
-import entropy.configuration.Node;
-import entropy.configuration.SimpleManagedElementSet;
-import entropy.configuration.VirtualMachine;
-import entropy.plan.choco.ReconfigurationProblem;
-import entropy.vjob.PlacementConstraint;
-import entropy.vjob.builder.protobuf.PBVJob.vjob.Constraint;
-
 /**
  * {To be completed; use html notation, if necessary}
  * 
