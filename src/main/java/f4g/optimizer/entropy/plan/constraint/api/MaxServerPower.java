@@ -3,16 +3,13 @@ package f4g.optimizer.entropy.plan.constraint.api;
 import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.constraint.SatConstraint;
-import btrplace.model.constraint.checker.BanChecker;
 import btrplace.model.constraint.checker.SatConstraintChecker;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import f4g.optimizer.entropy.plan.constraint.api.checker.MaxServerPowerChecker;
-import f4g.optimizer.entropy.plan.constraint.api.checker.SpareNodesChecker;
+
 
 /**
  * A constraint that enforces a certain number of "spare" nodes.

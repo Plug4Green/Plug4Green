@@ -4,7 +4,6 @@ package f4g.optimizer.entropy.plan.constraint;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import solver.Solver;
@@ -17,15 +16,10 @@ import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.constraint.Ban;
 import btrplace.model.constraint.Constraint;
-import btrplace.model.view.ModelView;
-import btrplace.solver.SolverException;
 import btrplace.solver.choco.ReconfigurationProblem;
 import btrplace.solver.choco.constraint.ChocoConstraint;
 import btrplace.solver.choco.constraint.ChocoConstraintBuilder;
-import btrplace.solver.choco.view.ChocoModelView;
-import choco.Choco;
-import choco.cp.solver.constraints.integer.bool.BooleanFactory;
-import choco.cp.solver.constraints.reified.ReifiedFactory;
+
 import f4g.optimizer.entropy.plan.constraint.api.MaxServerPower;
 import f4g.optimizer.entropy.plan.constraint.api.SpareNodes;
 import f4g.optimizer.entropy.plan.objective.PowerView;
@@ -53,16 +47,16 @@ public class CMaxServerPower implements ChocoConstraint {
         PowerView pv = (PowerView) rp.getSourceModel().getView(PowerView.VIEW_ID_BASE);
         
         for (Node node : nodes) {	
-            
-            IntVar powerVMS = VariableFactory.bounded("powerVMS", 0, Integer.MAX_VALUE / 100, solver);
-            IntConstraintFactory.times(rp.getNbRunningVMs()[rp.getNode(node)], pv.getPowerperVM(node), powerVMS);
-
+                        
             IntVar powerIdle = VariableFactory.fixed(pv.getPowerIdle(node), solver);
-			
+            IntVar powerperVM = VariableFactory.fixed(pv.getPowerperVM(node), solver);
+            IntVar powerVMS = VariableFactory.bounded("powerVMS", 0, Integer.MAX_VALUE / 100, solver);
+            
+            IntConstraintFactory.times(rp.getNbRunningVMs()[rp.getNode(node)], powerperVM, powerVMS);
 			solver.post(IntConstraintFactory.arithm(powerVMS, "+", powerIdle, "<=", constraint.getMaxServerPower()));
-			
         }
 
+        return true;
     }
     @Override
     public String toString() {
