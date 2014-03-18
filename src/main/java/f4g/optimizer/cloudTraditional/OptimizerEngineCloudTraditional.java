@@ -313,14 +313,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		Model mo = new DefaultModel();
 		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(model, vmTypes, powerCalculator, optiObjective);
 		confAdapter.putConfiguration(mo);
-		
-		PowerView pv = new PowerView("PowerView", 10, 1);
-		mo.attach(pv);
-
-		NamingService ns = new NamingService("Names");
-		
-		mo.attach(ns);
-		
+				
 		RequestType request = (RequestType) allocationRequest.getRequest().getValue();
 		
 		VM VMtoAllocate = confAdapter.getVM(request);
@@ -405,7 +398,6 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		             
 		        } catch (SolverException ex) {
 		            System.err.println(ex.getMessage());
-
 		        }
 			 
 		ActionList actionList = new ActionList();
