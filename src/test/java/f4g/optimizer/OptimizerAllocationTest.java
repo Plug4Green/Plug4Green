@@ -323,7 +323,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
 	            
 		//server xxx consumes less than the others.
-		//assertEquals("id200000", ((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId());
+		assertEquals("id200000", ((CloudVmAllocationResponseType)response.getResponse().getValue()).getNodeId());
 		
 		//TEST 2
 		
@@ -348,7 +348,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		AllocationResponseType response2 = MyOptimizer2.allocateResource(allocationRequest, model);
 	            
 		//server xxx consumes less than the others.
-		//assertEquals("id100000", ((CloudVmAllocationResponseType)response2.getResponse().getValue()).getNodeId());
+		assertEquals("id100000", ((CloudVmAllocationResponseType)response2.getResponse().getValue()).getNodeId());
 		
 		
 	}
@@ -408,34 +408,34 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	/**
 	 * Test allocation success
 	 */
-	public void testAllocationSuccessTraditional() {
-		
-		modelGenerator.setNB_SERVERS(3);
-		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		modelGenerator.IS_CLOUD = false;
-		
-		modelGenerator.setNB_CPU(1);
-		modelGenerator.setCPU_USAGE(1);
-		modelGenerator.setMEMORY_USAGE(2);
-		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-		
-		optimizer.setComputingStyle(CloudTradCS.TRADITIONAL);
-		AllocationRequestType allocationRequest = createAllocationRequestTrad();
-		optimizer.setClusters(createDefaultCluster(3, null, null));
-		
-		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
-		
-		assertNotNull(response);
-		assertNotNull(response.getResponse());
-		assertTrue(response.getResponse().getValue() instanceof TraditionalVmAllocationResponseType);
-				
-		TraditionalVmAllocationResponseType VMAllocResponse = (TraditionalVmAllocationResponseType) response.getResponse().getValue();
-		
-		//New VM should be allocated on first server		
-		assertEquals("id100000", VMAllocResponse.getNodeId());
-		assertEquals("c1", VMAllocResponse.getClusterId());
-	}
+//	public void testAllocationSuccessTraditional() {
+//		
+//		modelGenerator.setNB_SERVERS(3);
+//		modelGenerator.setNB_VIRTUAL_MACHINES(1);
+//		modelGenerator.IS_CLOUD = false;
+//		
+//		modelGenerator.setNB_CPU(1);
+//		modelGenerator.setCPU_USAGE(1);
+//		modelGenerator.setMEMORY_USAGE(2);
+//		
+//		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+//		
+//		optimizer.setComputingStyle(CloudTradCS.TRADITIONAL);
+//		AllocationRequestType allocationRequest = createAllocationRequestTrad();
+//		optimizer.setClusters(createDefaultCluster(3, null, null));
+//		
+//		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
+//		
+//		assertNotNull(response);
+//		assertNotNull(response.getResponse());
+//		assertTrue(response.getResponse().getValue() instanceof TraditionalVmAllocationResponseType);
+//				
+//		TraditionalVmAllocationResponseType VMAllocResponse = (TraditionalVmAllocationResponseType) response.getResponse().getValue();
+//		
+//		//New VM should be allocated on first server		
+//		assertEquals("id100000", VMAllocResponse.getNodeId());
+//		assertEquals("c1", VMAllocResponse.getClusterId());
+//	}
 	
 	/**
 	 * Test allocation success
@@ -497,8 +497,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response);
-		assertNotNull(response.getResponse());
-		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
+		assertNull(response.getResponse());
 
 	}
 	

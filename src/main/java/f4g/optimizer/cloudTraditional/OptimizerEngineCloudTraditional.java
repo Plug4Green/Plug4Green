@@ -21,40 +21,29 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-
 import org.apache.log4j.Logger;
-
-import btrplace.model.DefaultModel;
-import btrplace.model.Mapping;
-import btrplace.model.Model;
-import btrplace.model.Node;
-import btrplace.model.VM;
-import btrplace.model.constraint.Running;
-import btrplace.model.constraint.SatConstraint;
-import btrplace.model.view.ShareableResource;
 
 import f4g.commons.controller.IController;
 import f4g.commons.core.Constants;
+import f4g.commons.power.IPowerCalculator;
+import f4g.commons.optimizer.ICostEstimator;
+import f4g.commons.util.Util;
 import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.action.F4GDriverFactory;
-import f4g.optimizer.entropy.plan.constraint.factories.ClusterConstraintFactory;
-import f4g.optimizer.entropy.plan.constraint.factories.ModelConstraintFactory;
-import f4g.optimizer.entropy.plan.constraint.factories.PolicyConstraintFactory;
-import f4g.optimizer.entropy.plan.constraint.factories.SLAConstraintFactory;
+import f4g.optimizer.entropy.plan.constraint.CNoStateChange;
+import f4g.optimizer.entropy.plan.constraint.api.NoStateChange;
 import f4g.optimizer.entropy.plan.objective.CPowerObjective;
-import f4g.optimizer.entropy.plan.objective.PowerView;
 import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
-import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.utils.IOptimizerServer;
 import f4g.optimizer.OptimizerEngine;
 import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.optimizer.utils.Utils;
 import f4g.optimizer.cloudTraditional.NetworkControl;
-import f4g.commons.power.IPowerCalculator;
+import f4g.optimizer.utils.OptimizerWorkload;
+import f4g.optimizer.Optimizer.CloudTradCS;
 import f4g.schemas.java.metamodel.*;
 import f4g.schemas.java.actions.AbstractBaseActionType;
 import f4g.schemas.java.actions.ActionRequestType;
@@ -79,9 +68,6 @@ import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
 import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType.Cluster;
-import f4g.commons.util.Util;
-import f4g.optimizer.utils.OptimizerWorkload;
-import f4g.optimizer.Optimizer.CloudTradCS;
 
 import btrplace.plan.DependencyBasedPlanApplier;
 import btrplace.plan.ReconfigurationPlan;
@@ -90,7 +76,15 @@ import btrplace.plan.event.Action;
 import btrplace.solver.SolverException;
 import btrplace.solver.choco.ChocoReconfigurationAlgorithm;
 import btrplace.solver.choco.DefaultChocoReconfigurationAlgorithm;
-
+import btrplace.model.DefaultModel;
+import btrplace.model.Mapping;
+import btrplace.model.Model;
+import btrplace.model.Node;
+import btrplace.model.VM;
+import btrplace.model.constraint.Root;
+import btrplace.model.constraint.Running;
+import btrplace.model.constraint.SatConstraint;
+import btrplace.model.view.ModelView;
 
 /**
  * This class contains the algorithm for Cloud computing.
@@ -317,14 +311,12 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	
 		List<SatConstraint> cstrs = new ArrayList<>();
 		cstrs.add(new Running(VMtoAllocate));
-		//cstrs.add(new CPowerObjective((PowerView)mo.getView(PowerView.VIEW_ID_BASE + "powers"), optiObjective));
 
-		// create definitive constraints
 		cstrs.addAll(getConstraints(model, request, mo.getMapping(), VMtoAllocate));
-
-		
+				
 		ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
 		cra.getConstraintMapper().register(new CPowerObjective.Builder());
+		cra.getConstraintMapper().register(new CNoStateChange.Builder());
         try {
             ReconfigurationPlan plan = cra.solve(mo, cstrs, new PowerObjective());
             
@@ -337,16 +329,18 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
                 Node dest = plan.getResult().getMapping().getVMLocation(VMtoAllocate);
             
                 // create the response
-      			return createAllocationResponseFromServer(dest, allocationRequest.getRequest().getValue());
+                NamingService ns = (NamingService) mo.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.NAMING_SERVICE);
+      			return createAllocationResponseFromServer(dest, allocationRequest.getRequest().getValue(), ns);
             } else {
             	return new AllocationResponseType();
             }
                     
-        } catch (SolverException ex) {
-            System.err.println(ex.getMessage());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
             log.debug("Allocation impossible, returning empty allocation");
 			return new AllocationResponseType();
         }
+        
 
 	}
 
@@ -380,17 +374,22 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			List<SatConstraint> cstrs = getConstraints(F4Gmodel, model.getMapping());
 			
 			ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
+			cra.getConstraintMapper().register(new CPowerObjective.Builder());
+			cra.setTimeLimit(5);
 			
 			Mapping resultMapping;
 			 try {
 		            ReconfigurationPlan plan = cra.solve(model, cstrs, new PowerObjective());
-		            System.out.println("Time-based plan:");
-		            System.out.println(new TimeBasedPlanApplier().toString(plan));
-		            System.out.println("\nDependency based plan:");
-		            System.out.println(new DependencyBasedPlanApplier().toString(plan));
+		            
+		            if(plan != null) {
+		            	System.out.println("Time-based plan:");
+			            System.out.println(new TimeBasedPlanApplier().toString(plan));
+			            System.out.println("\nDependency based plan:");
+			            System.out.println(new DependencyBasedPlanApplier().toString(plan));
 
-		            resultMapping = plan.getResult().getMapping();
-		             
+			            resultMapping = plan.getResult().getMapping();
+		            }
+		            		             
 		        } catch (SolverException ex) {
 		            System.err.println(ex.getMessage());
 		        }
@@ -437,6 +436,15 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		}
 	}
 			
+	//a simple allocation should not result in VM migration or node on/off
+	private List<SatConstraint> getAllocationConstraints(Mapping map) {
+	
+		List<SatConstraint> res = new ArrayList<SatConstraint>();
+		res.addAll(NoStateChange.newNoStateChanges(map.getAllNodes()));
+		res.addAll(Root.newRoot(map.getAllVMs()));
+		return res;
+		
+	}
 
 	private List<SatConstraint> getConstraints(FIT4GreenType model, Mapping src) {
 		List<SatConstraint> queue = new LinkedList<SatConstraint>();
@@ -563,31 +571,25 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 * 
 	 * @param model
 	 */
-	protected AllocationResponseType createAllocationResponseFromServer(
-			Node node, RequestType request) {
+	protected AllocationResponseType createAllocationResponseFromServer(Node node, RequestType request, NamingService ns) {
 		// Creates a response
 		AllocationResponseType response = new AllocationResponseType();
 
 		if (node != null) {
 
 			if (computingStyle == CloudTradCS.CLOUD) {
-				CloudVmAllocationResponseType cloudVmAllocationResponse = getResponse(
-						node, request);
-				response.setResponse((new ObjectFactory())
-						.createCloudVmAllocationResponse(cloudVmAllocationResponse));
+				CloudVmAllocationResponseType cloudVmAllocationResponse = getResponse(node, request, ns);
+				response.setResponse((new ObjectFactory()).createCloudVmAllocationResponse(cloudVmAllocationResponse));
 			} else {
-				TraditionalVmAllocationResponseType tradVmAllocationResponse = getResponse(node);
-				response.setResponse((new ObjectFactory())
-						.createTradinitionalVmAllocationResponse(tradVmAllocationResponse));
+				TraditionalVmAllocationResponseType tradVmAllocationResponse = getResponse(node, ns);
+				response.setResponse((new ObjectFactory()).createTradinitionalVmAllocationResponse(tradVmAllocationResponse));
 			}
 
 			log.debug("Allocated on: " + node.id());
 
 			try {
-				GregorianCalendar gcal = (GregorianCalendar) GregorianCalendar
-						.getInstance();
-				response.setDatetime(DatatypeFactory.newInstance()
-						.newXMLGregorianCalendar(gcal));
+				GregorianCalendar gcal = (GregorianCalendar) GregorianCalendar.getInstance();
+				response.setDatetime(DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal));
 
 			} catch (DatatypeConfigurationException e) {
 				log.debug("Error in date");
@@ -651,31 +653,29 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		return optimizerServers;
 	}
 
-	public CloudVmAllocationResponseType getResponse(Node node,
-			RequestType request) {
+	public CloudVmAllocationResponseType getResponse(Node node,	RequestType request, NamingService ns) {
 
 		CloudVmAllocationResponseType cloudVmAllocationResponse = new CloudVmAllocationResponseType();
 		CloudVmAllocationType CloudOperation = (CloudVmAllocationType) request;
 
 		// setting the response
-		cloudVmAllocationResponse.setNodeId(String.valueOf(node.id()));
+		cloudVmAllocationResponse.setNodeId(ns.getNodeName(node));
 
-		cloudVmAllocationResponse.setClusterId(Utils.getClusterId(
-				String.valueOf(node.id()), clusters));
+		cloudVmAllocationResponse.setClusterId(Utils.getClusterId(ns.getNodeName(node), clusters));
 		cloudVmAllocationResponse.setImageId(CloudOperation.getImageId());
 		cloudVmAllocationResponse.setUserId(CloudOperation.getUserId());
 		cloudVmAllocationResponse.setVmType(CloudOperation.getVmType());
 		return cloudVmAllocationResponse;
 	}
 
-	public TraditionalVmAllocationResponseType getResponse(Node node) {
+	public TraditionalVmAllocationResponseType getResponse(Node node, NamingService ns) {
 
 		TraditionalVmAllocationResponseType traditionalVmAllocationResponse = new TraditionalVmAllocationResponseType();
 
 		// setting the response
-		traditionalVmAllocationResponse.setNodeId(String.valueOf(node.id())); //TODO check association 
+		traditionalVmAllocationResponse.setNodeId(ns.getNodeName(node)); 
 
-		traditionalVmAllocationResponse.setClusterId(Utils.getClusterId(String.valueOf(node.id()), clusters));  //TODO check association 
+		traditionalVmAllocationResponse.setClusterId(Utils.getClusterId(ns.getNodeName(node), clusters));  
 		traditionalVmAllocationResponse.setImageId("");
 		traditionalVmAllocationResponse.setUserId("");
 		traditionalVmAllocationResponse.setVmType("");
