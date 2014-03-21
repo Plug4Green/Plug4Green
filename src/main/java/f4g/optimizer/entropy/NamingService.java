@@ -17,6 +17,7 @@
 
 package f4g.optimizer.entropy;
 
+import btrplace.model.Element;
 import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.view.ModelView;
@@ -24,163 +25,71 @@ import btrplace.model.view.ShareableResource;
 
 import java.util.*;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 /**
  *
  */
-public class NamingService implements ModelView {
+public class NamingService<T extends Element> implements ModelView {
 
-    /**
-     * The base of the view identifier. Once instantiated, it is completed
-     * by the resource identifier.
-     */
     public static final String VIEW_ID_BASE = "NamingService.";
     
-    private Map<Node, String> nodeNames;
-    private Map<VM, String> VMNames;
+    private BiMap<T, String> names;
 
     private String viewId;
 
     private String rcId;
-    /**
-     * Make a new resource that use {@link #DEFAULT_NO_VALUE}
-     * for both VMs and nodes.
-     *
-     * @param r the resource identifier
-     */
+    
     public NamingService(String r) {
-        this(r, new HashMap<Node, String>(), new HashMap<VM, String>());
+        this(r, new HashMap<T, String>());
     }
 
-    /**
-     * Make a new resource.
-     *
-     * @param id             the resource identifier
-     * @param defCapacity    the nodes default capacity
-     * @param defConsumption the VM default consumption
-     */
-    public NamingService(String id, Map<Node, String> nodeNames, Map<VM, String> VMNames) {
+    public NamingService(String id, Map<T, String> names) {
     	
         this.rcId = id;
         this.viewId = VIEW_ID_BASE + rcId;
-        this.nodeNames = nodeNames;
-        this.VMNames = VMNames;
+        this.names = HashBiMap.create(names);
     }
    
-    /**
-     * Get the node power Idle.
-     *
-     * @param n the node
-     * @return its capacity if it was defined otherwise the default value.
-     */
-    public String getNodeName(Node n) {
-        return nodeNames.get(n);
+    public String getName(T n) {
+        return names.get(n);
+    }
+    
+    public T getElement(String name) {
+    	return names.inverse().get(name);
     }
 
-        
-    /**
-     * Get the nodes with defined capacities
-     *
-     * @return a set that may be empty
-     */
-    public Set<Node> getNodes() {
-        return nodeNames.keySet();
+    public Set<T> getNames() {
+        return names.keySet();
     }
 
-    /**
-     * Get the capacity for a list of nodes.
-     *
-     * @param ids the node identifiers
-     * @return the capacity of each node. The order is maintained
-     */
-    public List<String> getNodeNames(List<Node> ids) {
+    public List<String> getNames(List<T> ids) {
         List<String> res = new ArrayList<>(ids.size());
-        for (Node n : ids) {
-            res.add(getNodeName(n));
+        for (T n : ids) {
+            res.add(getName(n));
         }
         return res;
     }
-    /**
-     * Get the node power Idle.
-     *
-     * @param n the node
-     * @return its capacity if it was defined otherwise the default value.
-     */
-    public String getVMName(VM n) {
-        return VMNames.get(n);
-    }
-
         
-    /**
-     * Get the nodes with defined capacities
-     *
-     * @return a set that may be empty
-     */
-    public Set<VM> getVMs() {
-        return VMNames.keySet();
-    }
-
-    /**
-     * Get the capacity for a list of nodes.
-     *
-     * @param ids the node identifiers
-     * @return the capacity of each node. The order is maintained
-     */
-    public List<String> getVMNames(List<VM> ids) {
-        List<String> res = new ArrayList<>(ids.size());
-        for (VM n : ids) {
-            res.add(getVMName(n));
-        }
-        return res;
+    public void putElementName(T n, String s) {
+    	names.put(n, s);
     }
     
-    public void putNodeName(Node n, String s) {
-    	nodeNames.put(n, s);
-    }
-    
-    public void putVMName(VM vm, String s) {
-    	VMNames.put(vm, s);
-    }
-    
-    /**
-     * Get the view identifier.
-     *
-     * @return {@code "ShareableResource.rcId"} where rcId equals {@link #getResourceIdentifier()}
-     */
     @Override
     public String getIdentifier() {
         return viewId;
     }
 
-	@Override
+	//TODO should be deleted from parent?
+    @Override
 	public boolean substituteVM(VM curId, VM nextId) {
 		// TODO Auto-generated method stub
 		return false;
 	}
    
-    /**
-     * Get the resource identifier
-     *
-     * @return a non-empty string
-     */
     public String getResourceIdentifier() {
         return rcId;
-    }
-
-    /**
-     * Get the default node capacity.
-     *
-     * @return the value.
-     */
-    public String getDefaultNodeName() {
-        return "DefaultNode";
-    }
-    /**
-     * Get the default node capacity.
-     *
-     * @return the value.
-     */
-    public String getDefaultVMName() {
-        return "DefaultVM";
     }
     
     @Override
@@ -191,63 +100,47 @@ public class NamingService implements ModelView {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        NamingService<T> that = (NamingService<T>) o;
 
-        NamingService that = (NamingService) o;
-
-        if (!that.getNodes().equals(nodeNames.keySet())){
+        if (!that.getNames().equals(names.keySet())){
             return false;
         }
 
-        for (Node k : nodeNames.keySet()) {
-            if (!nodeNames.get(k).equals(that.getNodeName(k))) {
+        for (T k : names.keySet()) {
+            if (!names.get(k).equals(that.getName(k))) {
                 return false;
             }
         }
         
-        for (VM k : VMNames.keySet()) {
-            if (!VMNames.get(k).equals(that.getVMName(k))) {
-                return false;
-            }
-        }
-        
-        return rcId.equals(that.getResourceIdentifier()) && getDefaultVMName() == that.getDefaultVMName()
-                && getDefaultNodeName() == that.getDefaultNodeName();
+        return rcId.equals(that.getResourceIdentifier());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(rcId, nodeNames, VMNames);
+        return Objects.hash(rcId, names);
     }
     
     @Override
-    public NamingService clone() {
-    	NamingService rc = new NamingService(rcId);
-        for (Map.Entry<Node, String> e : nodeNames.entrySet()) {
-            rc.nodeNames.put(e.getKey(), e.getValue());
+    public NamingService<T> clone() {
+    	NamingService<T> rc = new NamingService<T>(rcId);
+        for (Map.Entry<T, String> e : names.entrySet()) {
+            rc.names.put(e.getKey(), e.getValue());
         }
-        for (Map.Entry<VM, String> e : VMNames.entrySet()) {
-            rc.VMNames.put(e.getKey(), e.getValue());
-        }
+        
         return rc;
     }
 
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder("rc:").append(rcId).append(':');
-        for (Iterator<Map.Entry<Node, String>> ite = nodeNames.entrySet().iterator(); ite.hasNext(); ) {
-            Map.Entry<Node, String> e = ite.next();
-            buf.append("<node ").append(e.getKey().toString()).append(',').append(e.getValue()).append('>');
+        for (Iterator<Map.Entry<T, String>> ite = names.entrySet().iterator(); ite.hasNext(); ) {
+            Map.Entry<T, String> e = ite.next();
+            buf.append("<element ").append(e.getKey().toString()).append(',').append(e.getValue()).append('>');
             if (ite.hasNext()) {
                 buf.append(',');
             }
         }
-        for (Iterator<Map.Entry<VM, String>> ite = VMNames.entrySet().iterator(); ite.hasNext(); ) {
-            Map.Entry<VM, String> e = ite.next();
-            buf.append("<VM ").append(e.getKey().toString()).append(',').append(e.getValue()).append('>');
-            if (ite.hasNext()) {
-                buf.append(',');
-            }
-        }
+        
         return buf.toString();
     }
 

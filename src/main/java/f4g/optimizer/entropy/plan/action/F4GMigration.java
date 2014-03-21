@@ -2,6 +2,8 @@
 package f4g.optimizer.entropy.plan.action;
 
 
+import btrplace.model.Node;
+import btrplace.model.VM;
 import btrplace.plan.event.MigrateVM;
 import f4g.commons.controller.IController;
 import f4g.optimizer.entropy.NamingService;
@@ -31,8 +33,8 @@ public class F4GMigration extends F4GDriver {
      * @throws entropy.PropertiesHelperException if an error occurred while configuring the driver
      *
 	 */
-	public F4GMigration(MigrateVM a, IController myController, FIT4GreenType myModel, NamingService nameService) {
-		super(a, myController, myModel, nameService);
+	public F4GMigration(MigrateVM a, IController myController, FIT4GreenType myModel, NamingService<Node> nodeNS, NamingService<VM> VMNS) {
+		super(a, myController, myModel, nodeNS, VMNS);
 		action = a;
 		
 	}
@@ -42,11 +44,11 @@ public class F4GMigration extends F4GDriver {
 	public AbstractBaseActionType getActionToExecute() {
 
 
-		VirtualMachineType VM = Utils.findVirtualMachineByName(Utils.getAllVMs(model), nameService.getVMName(action.getVM()));
+		VirtualMachineType VM = Utils.findVirtualMachineByName(Utils.getAllVMs(model), VMNS.getName(action.getVM()));
 		FrameworkCapabilitiesType fc = (FrameworkCapabilitiesType) VM.getFrameworkRef();
 				
-		Boolean internalMove = Utils.getServerDatacenterbyName(nameService.getNodeName(action.getSourceNode()), model) == 
-			                   Utils.getServerDatacenterbyName(nameService.getNodeName(action.getDestinationNode()), model);
+		Boolean internalMove = Utils.getServerDatacenterbyName(nodeNS.getName(action.getSourceNode()), model) == 
+			                   Utils.getServerDatacenterbyName(nodeNS.getName(action.getDestinationNode()), model);
 		
 		AbstractBaseActionType moveVMAction;
 		
@@ -54,14 +56,14 @@ public class F4GMigration extends F4GDriver {
 		if((internalMove && fc.getVm().isIntraLiveMigrate()) 
 		|| !internalMove && fc.getVm().isInterLiveMigrate()) {
 			moveVMAction = new LiveMigrateVMActionType();
-			((LiveMigrateVMActionType)moveVMAction).setVirtualMachine(nameService.getVMName(action.getVM()));
-			((LiveMigrateVMActionType)moveVMAction).setSourceNodeController(nameService.getNodeName(action.getSourceNode()));
-			((LiveMigrateVMActionType)moveVMAction).setDestNodeController(nameService.getNodeName(action.getDestinationNode()));
+			((LiveMigrateVMActionType)moveVMAction).setVirtualMachine(VMNS.getName(action.getVM()));
+			((LiveMigrateVMActionType)moveVMAction).setSourceNodeController(nodeNS.getName(action.getSourceNode()));
+			((LiveMigrateVMActionType)moveVMAction).setDestNodeController(nodeNS.getName(action.getDestinationNode()));
 		} else {
 			moveVMAction = new MoveVMActionType();
-			((MoveVMActionType)moveVMAction).setVirtualMachine(nameService.getVMName(action.getVM()));
-			((MoveVMActionType)moveVMAction).setSourceNodeController(nameService.getNodeName(action.getSourceNode()));
-			((MoveVMActionType)moveVMAction).setDestNodeController(nameService.getNodeName(action.getDestinationNode()));
+			((MoveVMActionType)moveVMAction).setVirtualMachine(VMNS.getName(action.getVM()));
+			((MoveVMActionType)moveVMAction).setSourceNodeController(nodeNS.getName(action.getSourceNode()));
+			((MoveVMActionType)moveVMAction).setDestNodeController(nodeNS.getName(action.getDestinationNode()));
 		}
 				
 		moveVMAction.setFrameworkName(fc.getFrameworkName());

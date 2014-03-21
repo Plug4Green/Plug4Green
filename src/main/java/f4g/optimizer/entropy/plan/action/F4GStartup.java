@@ -1,6 +1,8 @@
 
 package f4g.optimizer.entropy.plan.action;
 
+import btrplace.model.Node;
+import btrplace.model.VM;
 import btrplace.plan.event.BootNode;
 import f4g.commons.controller.IController;
 import f4g.optimizer.entropy.NamingService;
@@ -28,8 +30,8 @@ public class F4GStartup extends F4GDriver {
      * @throws entropy.PropertiesHelperException if an error occurred while configuring the driver
      *
 	 */
-	public F4GStartup(BootNode a, IController myController, FIT4GreenType myModel, NamingService nameService) {
-		super(a, myController, myModel, nameService);
+	public F4GStartup(BootNode a, IController myController, FIT4GreenType myModel, NamingService<Node> nodeNS, NamingService<VM> VMNS) {
+		super(a, myController, myModel, nodeNS, VMNS);
 		action = a;
 	}
 	
@@ -39,10 +41,10 @@ public class F4GStartup extends F4GDriver {
 
 		PowerOnActionType powerOn = new PowerOnActionType();
 				
-		ServerType server = Utils.findServerByName(model, nameService.getNodeName(action.getNode()));
+		ServerType server = Utils.findServerByName(model, nodeNS.getName(action.getNode()));
 		FrameworkCapabilitiesType fc = (FrameworkCapabilitiesType) server.getFrameworkRef();
 		
-		powerOn.setNodeName(nameService.getNodeName(action.getNode()));
+		powerOn.setNodeName(nodeNS.getName(action.getNode()));
 		powerOn.setFrameworkName(fc.getFrameworkName());
 		
 		return powerOn;

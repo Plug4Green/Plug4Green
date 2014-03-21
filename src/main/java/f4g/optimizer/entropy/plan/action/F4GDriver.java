@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
+import btrplace.model.Node;
+import btrplace.model.VM;
 import btrplace.plan.event.Action;
 
 import f4g.commons.controller.IController;
@@ -22,7 +24,8 @@ public abstract class F4GDriver extends Driver {
 
 	IController controller;
 	protected FIT4GreenType model;
-	NamingService nameService;
+	NamingService<Node> nodeNS;
+	NamingService<VM> VMNS;
 
 	/**
 	 * Create and configure the driver to execute an action.
@@ -30,21 +33,13 @@ public abstract class F4GDriver extends Driver {
 	 * @param props the properties to configure the driver
      * @throws PropertiesHelperException if an error occurred while configuring the driver
 	 */
-	public F4GDriver(Action a, IController controller, FIT4GreenType model, NamingService nameService) {
+	public F4GDriver(Action a, IController controller, FIT4GreenType model, NamingService<Node> nodeNS, NamingService<VM> VMNS) {
 		super(a);
 		this.controller = controller;
 		this.model = model;
-		this.nameService = nameService;
+		this.nodeNS = nodeNS;
+		this.VMNS = VMNS;
 	}
-	
-	public F4GDriver(List<Action> a, IController myController, FIT4GreenType myModel, NamingService nameService) {
-		//TODO fix
-		super(a.get(0));
-		this.controller = myController;
-		this.model = myModel;
-		this.nameService = nameService;
-	}
-		
 	
 	
 	@Override

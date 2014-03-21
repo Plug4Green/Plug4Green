@@ -34,6 +34,7 @@ import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.action.F4GDriverFactory;
 import f4g.optimizer.entropy.plan.constraint.CNoStateChange;
+
 import f4g.optimizer.entropy.plan.constraint.api.NoStateChange;
 import f4g.optimizer.entropy.plan.objective.CPowerObjective;
 import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
@@ -331,7 +332,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
                 Node dest = plan.getResult().getMapping().getVMLocation(VMtoAllocate);
             
                 // create the response
-                NamingService ns = (NamingService) mo.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.NAMING_SERVICE);
+                NamingService<Node> ns = (NamingService<Node>) mo.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.NODE_NAMING_SERVICE);
       			return createAllocationResponseFromServer(dest, allocationRequest.getRequest().getValue(), ns);
             } else {
             	return new AllocationResponseType();
@@ -573,7 +574,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 * 
 	 * @param model
 	 */
-	protected AllocationResponseType createAllocationResponseFromServer(Node node, RequestType request, NamingService ns) {
+	protected AllocationResponseType createAllocationResponseFromServer(Node node, RequestType request, NamingService<Node> ns) {
 		// Creates a response
 		AllocationResponseType response = new AllocationResponseType();
 
@@ -587,7 +588,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 				response.setResponse((new ObjectFactory()).createTradinitionalVmAllocationResponse(tradVmAllocationResponse));
 			}
 
-			log.debug("Allocated on: " + ns.getNodeName(node));
+			log.debug("Allocated on: " + ns.getName(node));
 
 			try {
 				GregorianCalendar gcal = (GregorianCalendar) GregorianCalendar.getInstance();
@@ -655,29 +656,29 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		return optimizerServers;
 	}
 
-	public CloudVmAllocationResponseType getResponse(Node node,	RequestType request, NamingService ns) {
+	public CloudVmAllocationResponseType getResponse(Node node,	RequestType request, NamingService<Node> ns) {
 
 		CloudVmAllocationResponseType cloudVmAllocationResponse = new CloudVmAllocationResponseType();
 		CloudVmAllocationType CloudOperation = (CloudVmAllocationType) request;
 
 		// setting the response
-		cloudVmAllocationResponse.setNodeId(ns.getNodeName(node));
+		cloudVmAllocationResponse.setNodeId(ns.getName(node));
 
-		cloudVmAllocationResponse.setClusterId(Utils.getClusterId(ns.getNodeName(node), clusters));
+		cloudVmAllocationResponse.setClusterId(Utils.getClusterId(ns.getName(node), clusters));
 		cloudVmAllocationResponse.setImageId(CloudOperation.getImageId());
 		cloudVmAllocationResponse.setUserId(CloudOperation.getUserId());
 		cloudVmAllocationResponse.setVmType(CloudOperation.getVmType());
 		return cloudVmAllocationResponse;
 	}
 
-	public TraditionalVmAllocationResponseType getResponse(Node node, NamingService ns) {
+	public TraditionalVmAllocationResponseType getResponse(Node node, NamingService<Node> ns) {
 
 		TraditionalVmAllocationResponseType traditionalVmAllocationResponse = new TraditionalVmAllocationResponseType();
 
 		// setting the response
-		traditionalVmAllocationResponse.setNodeId(ns.getNodeName(node)); 
+		traditionalVmAllocationResponse.setNodeId(ns.getName(node)); 
 
-		traditionalVmAllocationResponse.setClusterId(Utils.getClusterId(ns.getNodeName(node), clusters));  
+		traditionalVmAllocationResponse.setClusterId(Utils.getClusterId(ns.getName(node), clusters));  
 		traditionalVmAllocationResponse.setImageId("");
 		traditionalVmAllocationResponse.setUserId("");
 		traditionalVmAllocationResponse.setVmType("");
