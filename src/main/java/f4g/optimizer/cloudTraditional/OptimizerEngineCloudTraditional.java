@@ -317,6 +317,8 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
 		cra.getConstraintMapper().register(new CPowerObjective.Builder());
 		cra.getConstraintMapper().register(new CNoStateChange.Builder());
+		cra.setVerbosity(3);
+		cra.doOptimize(true);
         try {
             ReconfigurationPlan plan = cra.solve(mo, cstrs, new PowerObjective());
             
@@ -375,7 +377,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			
 			ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
 			cra.getConstraintMapper().register(new CPowerObjective.Builder());
-			cra.setTimeLimit(5);
+            
 			
 			Mapping resultMapping;
 			 try {
@@ -585,7 +587,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 				response.setResponse((new ObjectFactory()).createTradinitionalVmAllocationResponse(tradVmAllocationResponse));
 			}
 
-			log.debug("Allocated on: " + node.id());
+			log.debug("Allocated on: " + ns.getNodeName(node));
 
 			try {
 				GregorianCalendar gcal = (GregorianCalendar) GregorianCalendar.getInstance();
