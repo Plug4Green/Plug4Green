@@ -41,7 +41,8 @@ public class F4GConfigurationAdapter
 {
 	public static final String VIEW_POWER_IDLES = "PowerIdles";
 	public static final String VIEW_POWER_PER_VM = "PowerPerVMs";
-	public static final String NAMING_SERVICE = "NamingService";
+	public static final String VM_NAMING_SERVICE = "VMNames";
+	public static final String NODE_NAMING_SERVICE = "NodeNames";
 	public static final String SHAREABLE_RESOURCE_CPU = "ShareableResourceCPU";
 	public static final String SHAREABLE_RESOURCE_RAM = "ShareableResourceRAM";
 	
@@ -77,7 +78,8 @@ public class F4GConfigurationAdapter
 	 */
 	public void attachViews(Model model) {
 				
-		NamingService ns = new NamingService(NAMING_SERVICE);
+		NamingService<VM> VMNS = new NamingService<VM>(VM_NAMING_SERVICE);
+		NamingService<Node> NodeNS = new NamingService<Node>(NODE_NAMING_SERVICE);
 		ShareableResource cpus = new ShareableResource(SHAREABLE_RESOURCE_CPU);
 		ShareableResource memories = new ShareableResource(SHAREABLE_RESOURCE_RAM); //TODO set names as static constants
 		PowerView powersIdles = new PowerView(VIEW_POWER_IDLES);
@@ -86,7 +88,7 @@ public class F4GConfigurationAdapter
 		for(ServerType server : Utils.getAllServers(currentFit4Green)) {
 					
 			Node node = model.newNode();
-			ns.putNodeName(node, server.getFrameworkID());
+			NodeNS.putName(node, server.getFrameworkID());
 			putServerCPUResource(node, server, cpus);
 			putServerMemoryResource(node, server, memories);
 			putServerPowerIdleResource(node, server, powersIdles);
@@ -101,7 +103,7 @@ public class F4GConfigurationAdapter
 					VM vm = model.newVM();	
 					model.getMapping().addRunningVM(vm, node);
 					
-					ns.putVMName(vm, VM.getFrameworkID());
+					VMNS.putName(vm, VM.getFrameworkID());
 					putVMCPUConsumption(vm, VM, cpus);
 					putVMMemoryConsumption(vm, VM, memories);
 					
@@ -110,7 +112,8 @@ public class F4GConfigurationAdapter
 				model.getMapping().addOfflineNode(node);
 			}
 		}
-		model.attach(ns);
+		model.attach(NodeNS);
+		model.attach(VMNS);
 		model.attach(cpus);
 		model.attach(memories);
 		model.attach(powersIdles);
