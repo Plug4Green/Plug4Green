@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.Set;
 
 import solver.Solver;
-import solver.constraints.IntConstraintFactory;
 import solver.variables.BoolVar;
 import solver.variables.IntVar;
-import solver.variables.VariableFactory;
+import static solver.constraints.IntConstraintFactory.*;
+import static solver.variables.VariableFactory.*;
 import util.tools.StringUtils;
 
 import btrplace.model.Model;
@@ -43,21 +43,23 @@ public class CSpareNodes implements ChocoConstraint {
         Collection<Node> nodes = constraint.getInvolvedNodes();	
         
         BoolVar[] free = new BoolVar[nodes.size()];
+        int i = 0;
         for (Node node : constraint.getInvolvedNodes()) {
         	BoolVar state = rp.getNodeAction(node).getState();
-        	IntVar NbVms = rp.getNbRunningVMs()[node.id()];
+        	IntVar NbVms = rp.getNbRunningVMs()[rp.getNode(node)];
     	        	    
-    	    free[node.id()] = VariableFactory.bool(StringUtils.randomName(), solver);
+    	    free[i] = bool(StringUtils.randomName(), solver);
 
     	    //if the server is off (state = false), then it is not free
-    	    solver.post(new FastIFFEq(VariableFactory.not(state), free[node.id()], 0));
+    	    solver.post(new FastIFFEq(not(state), free[i], 0));
     	    //if the server hosts VMs, then it is not free
-    	    solver.post(new FastIFFEq(IntConstraintFactory.arithm(NbVms, "/=", 0).reif(), free[node.id()], 0));
+    	    solver.post(new FastIFFEq(arithm(NbVms, "/=", 0).reif(), free[i], 0));
+    	    i++;
         }
         
-        IntVar freeNumber = VariableFactory.bounded("freeNumber", 0, nodes.size(), solver);
-        solver.post(IntConstraintFactory.sum(free, freeNumber));
-        solver.post(IntConstraintFactory.arithm(freeNumber, "<=", constraint.getMinSpareNodes()));
+        IntVar freeNumber = bounded("freeNumber", 0, nodes.size(), solver);
+        solver.post(sum(free, freeNumber));
+        solver.post(arithm(freeNumber, "<=", constraint.getMinSpareNodes()));
         
         return true;
     }
