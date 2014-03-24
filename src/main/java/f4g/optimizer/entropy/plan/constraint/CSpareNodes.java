@@ -49,7 +49,6 @@ public class CSpareNodes implements ChocoConstraint {
         	IntVar NbVms = rp.getNbRunningVMs()[rp.getNode(node)];
     	        	    
     	    free[i] = bool(StringUtils.randomName(), solver);
-
     	       	    
     	    //if the server is off (state = false), then it is not free
     	    solver.post(new FastImpliesEq(not(state), free[i], 0));

@@ -76,7 +76,7 @@ public class F4GConfigurationAdapter
 	/* 
 	 * extracts the configuration for the metamodel
 	 */
-	public void attachViews(Model model) {
+	public void addConfiguration(Model model) {
 				
 		NamingService<VM> VMNS = new NamingService<VM>(VM_NAMING_SERVICE);
 		NamingService<Node> NodeNS = new NamingService<Node>(NODE_NAMING_SERVICE);
@@ -118,6 +118,7 @@ public class F4GConfigurationAdapter
 		model.attach(memories);
 		model.attach(powersIdles);
 		model.attach(powersPerVMs);
+		
 	}
 	
 	public void addVMViews(VM vm, CloudVmAllocationType request, Model mo) {

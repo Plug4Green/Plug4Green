@@ -343,7 +343,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			
 		Model model = new DefaultModel();
 		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(F4GModel, vmTypes, powerCalculator, optiObjective);
-		confAdapter.attachViews(model);
+		confAdapter.addConfiguration(model);
 
 		List<SatConstraint> cstrs = getConstraints(F4GModel, model);
 		
