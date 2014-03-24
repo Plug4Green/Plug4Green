@@ -23,10 +23,13 @@ import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
 import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
+import f4g.schemas.java.constraints.optimizerconstraints.SpareNodes;
 import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
+
+
 import org.junit.Test;
 
 
@@ -157,12 +160,9 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVRam().setValue(1);
 		optimizer.runGlobalOptimization(model);
         		
-		assertEquals(5, getMoves().size());
-	
+		assertEquals(5, getMoves().size());	
 	}
 
-
-		
 	/**
 	 * Test the "expected saved power" field.
 	 * 
@@ -290,7 +290,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		servers.get(0).setStatus(ServerStatusType.OFF);
 		servers.get(1).setStatus(ServerStatusType.OFF);
 		
-		optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).getLoad().setSpareCPUs(new SpareCPUs(3, UnitType.ABSOLUTE));
+		optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).getLoad().setSpareNodes(new SpareNodes(1, UnitType.ABSOLUTE));
 		optimizer.setPowerCalculator(new MyPowerCalculator());
 		optimizer.runGlobalOptimization(model);
 		

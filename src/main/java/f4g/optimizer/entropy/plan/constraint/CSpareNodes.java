@@ -14,12 +14,12 @@ import util.tools.StringUtils;
 import btrplace.model.Model;
 import btrplace.model.Node;
 import btrplace.model.VM;
-import btrplace.model.constraint.Ban;
 import btrplace.model.constraint.Constraint;
 import btrplace.solver.choco.ReconfigurationProblem;
 import btrplace.solver.choco.constraint.ChocoConstraint;
 import btrplace.solver.choco.constraint.ChocoConstraintBuilder;
 import btrplace.solver.choco.extensions.FastIFFEq;
+import btrplace.solver.choco.extensions.FastImpliesEq;
 
 import f4g.optimizer.entropy.plan.constraint.api.SpareNodes;
 
@@ -50,10 +50,11 @@ public class CSpareNodes implements ChocoConstraint {
     	        	    
     	    free[i] = bool(StringUtils.randomName(), solver);
 
+    	       	    
     	    //if the server is off (state = false), then it is not free
-    	    solver.post(new FastIFFEq(not(state), free[i], 0));
+    	    solver.post(new FastImpliesEq(not(state), free[i], 0));
     	    //if the server hosts VMs, then it is not free
-    	    solver.post(new FastIFFEq(arithm(NbVms, "/=", 0).reif(), free[i], 0));
+    	    solver.post(new FastImpliesEq(arithm(NbVms, "!=", 0).reif(), free[i], 0));
     	    i++;
         }
         
@@ -75,7 +76,7 @@ public class CSpareNodes implements ChocoConstraint {
     public static class Builder implements ChocoConstraintBuilder {
         @Override
         public Class<? extends Constraint> getKey() {
-            return Ban.class;
+            return SpareNodes.class;
         }
 
         @Override

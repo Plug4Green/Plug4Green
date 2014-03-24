@@ -2,6 +2,8 @@
 package f4g.optimizer.entropy.plan.action;
 
 
+import btrplace.model.Node;
+import btrplace.model.VM;
 import btrplace.plan.event.Action;
 import btrplace.plan.event.BootNode;
 import btrplace.plan.event.MigrateVM;
@@ -15,17 +17,19 @@ public class F4GDriverFactory {
 	
 	IController controller;
 	FIT4GreenType model;
-	NamingService nameService;
+	NamingService<Node> nodeNames;
+	NamingService<VM> vmNames;
 	
 	/**
 	 * Create a new Factory.
 	 * @param clusters 
 	 * @param properties The properties used to create the factory
 	 */
-	public F4GDriverFactory(IController controller, FIT4GreenType model, NamingService nameService) {
+	public F4GDriverFactory(IController controller, FIT4GreenType model, NamingService<Node> nodeNames, NamingService<VM> vmNames) {
 		this.controller = controller;
 		this.model = model;
-		this.nameService = nameService;
+		this.nodeNames = nodeNames;
+		this.vmNames = vmNames;
 	}
 		
 	/**
@@ -37,11 +41,11 @@ public class F4GDriverFactory {
 	public F4GDriver transform(Action action) {
 		
 		if (action instanceof MigrateVM) {
-			return new F4GMigration((MigrateVM) action, controller, model, nameService);
+			return new F4GMigration((MigrateVM) action, controller, model, nodeNames, vmNames);
 		} else if (action instanceof BootNode) {
-			return new F4GStartup((BootNode) action, controller, model, nameService);
+			return new F4GStartup((BootNode) action, controller, model, nodeNames, vmNames);
 		} else if (action instanceof ShutdownNode) {
-			return new F4GShutdown((ShutdownNode) action, controller, model, nameService);		
+			return new F4GShutdown((ShutdownNode) action, controller, model, nodeNames, vmNames);		
 		} else {
 			return null;		
 		} 

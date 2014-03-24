@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import org.apache.log4j.Logger;
+import com.google.common.base.Optional;
 
 import f4g.commons.controller.IController;
 import f4g.commons.core.Constants;
@@ -33,9 +34,11 @@ import f4g.commons.util.Util;
 import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.action.F4GDriverFactory;
+import f4g.optimizer.entropy.plan.constraint.CMaxServerPower;
 import f4g.optimizer.entropy.plan.constraint.CNoStateChange;
+import f4g.optimizer.entropy.plan.constraint.CSpareNodes;
+import f4g.optimizer.entropy.plan.constraint.factories.PolicyConstraintFactory;
 
-import f4g.optimizer.entropy.plan.constraint.api.NoStateChange;
 import f4g.optimizer.entropy.plan.objective.CPowerObjective;
 import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
 import f4g.optimizer.utils.IOptimizerServer;
@@ -62,7 +65,6 @@ import f4g.schemas.java.allocation.TraditionalVmAllocationResponseType;
 import f4g.schemas.java.allocation.TraditionalVmAllocationType;
 import f4g.schemas.java.allocation.ObjectFactory;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
-import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
@@ -74,6 +76,7 @@ import btrplace.plan.DependencyBasedPlanApplier;
 import btrplace.plan.ReconfigurationPlan;
 import btrplace.plan.TimeBasedPlanApplier;
 import btrplace.plan.event.Action;
+import btrplace.plan.event.BootVM;
 import btrplace.solver.SolverException;
 import btrplace.solver.choco.ChocoReconfigurationAlgorithm;
 import btrplace.solver.choco.DefaultChocoReconfigurationAlgorithm;
@@ -82,10 +85,8 @@ import btrplace.model.Mapping;
 import btrplace.model.Model;
 import btrplace.model.Node;
 import btrplace.model.VM;
-import btrplace.model.constraint.Root;
 import btrplace.model.constraint.Running;
 import btrplace.model.constraint.SatConstraint;
-import btrplace.model.view.ModelView;
 
 /**
  * This class contains the algorithm for Cloud computing.
@@ -102,10 +103,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	}
 
 	CloudTradCS computingStyle;
-
 	ServerGroupType serverGroups;
-
-    private boolean optimize = true;
 
 	public void setServerGroups(ServerGroupType sg) {
 		this.serverGroups = sg;
@@ -124,34 +122,9 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	/**
 	 * SLA definition
 	 */
-	private ConstraintType ct;
 	private PolicyType policies;
 	private FederationType federation;
 	private SLAType SLAs;
-
-    /**
-     * Maximum solving duration. 0 for no time limit. Default is 5 seconds
-     */
-    private int searchTimeLimit = 5;
-
-
-    /**
-     * Get the search time limit.
-     * A duration equals to 0 indicates no time limit.
-     * @return a duration in seconds
-     */
-    public int getSearchTimeLimit() {
-        return searchTimeLimit;
-    }
-
-    /**
-     * Set the search time limit.
-     * A duration equals to 0 indicates no time limit.
-     * @param searchTimeLimit a duration in second.
-     */
-    public void setSearchTimeLimit(int searchTimeLimit) {
-        this.searchTimeLimit = searchTimeLimit;
-    }
 
 
     public SLAType getSla() {
@@ -178,26 +151,6 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		this.policies = policies;
 	}
 
-	public void setConstraintType(ConstraintType ct) {
-		this.ct = ct;
-	}
-
-    /**
-     * Indicates if the planner stops after computing a first solution.
-     * @return {@code true} if it continues
-     */
-    public boolean doOptimize() {
-        return optimize;
-    }
-
-    /**
-     * Indicates if the planner must stop after computing a first solution.
-     * @return {@code true} if it continues
-     */
-    public void doOptimize(boolean optimize) {
-        this.optimize = optimize;
-    }
-	
 	/**
 	 * constructor for production
 	 * 
@@ -219,7 +172,6 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			vmTypes = slaReader.getVMtypes();
 			clusters = slaReader.getCluster();
 			serverGroups = slaReader.getServerGroup();
-			ct = slaReader.getPCs();
 			policies = slaReader.getPolicies();
 			federation = slaReader.getFeds();
 			SLAs = slaReader.getSLAs();
@@ -252,7 +204,6 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		}		
 		
 		serverGroups = null;
-		ct = null;
 		SLAs = null;
 		policies = myPolicies;
 		federation = myFederation;
@@ -275,7 +226,6 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		vmTypes = slaReader.getVMtypes();
 		clusters = slaReader.getCluster();
 		serverGroups = slaReader.getServerGroup();
-		ct = slaReader.getPCs();
 		policies = slaReader.getPolicies();
 		federation = slaReader.getFeds();
 		SLAs = slaReader.getSLAs();
@@ -290,168 +240,160 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 *            Data structure describing the resource allocation request
 	 * @return A data structure representing the result of the allocation
 	 */
-	public AllocationResponseType allocateResource(
-			AllocationRequestType allocationRequest, FIT4GreenType model) {
-		log.debug("in allocateResource");
-
+	public AllocationResponseType allocateResource(AllocationRequestType allocationRequest, FIT4GreenType F4GModel) {
+		log.debug("allocateResource");
 		if (allocationRequest == null || allocationRequest.getRequest() == null) {
 			log.warn("Allocation request is not correct");
 			return null;
 		}
-		showAllocation(allocationRequest);
 		
-		Model mo = new DefaultModel();
-		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(model, vmTypes, powerCalculator, optiObjective);
-		confAdapter.attachViews(mo);
-				
-		RequestType request = (RequestType) allocationRequest.getRequest().getValue();
-				
-		VM VMtoAllocate = mo.newVM();
-		mo.getMapping().addReadyVM(VMtoAllocate);
-		confAdapter.addVMViews(VMtoAllocate, (CloudVmAllocationType) request, mo); //TODO generalize
-	
-		List<SatConstraint> cstrs = new ArrayList<>();
-		cstrs.add(new Running(VMtoAllocate));
-
-		cstrs.addAll(getConstraints(model, request, mo.getMapping(), VMtoAllocate));
-				
-		ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
-		cra.getConstraintMapper().register(new CPowerObjective.Builder());
-		cra.getConstraintMapper().register(new CNoStateChange.Builder());
-		cra.setVerbosity(3);
-		cra.doOptimize(true);
-        try {
-            ReconfigurationPlan plan = cra.solve(mo, cstrs, new PowerObjective());
-            
-            if(plan != null) {
-            	System.out.println("Time-based plan:");
-                System.out.println(new TimeBasedPlanApplier().toString(plan));
-                System.out.println("\nDependency based plan:");
-                System.out.println(new DependencyBasedPlanApplier().toString(plan));
-
-                Node dest = plan.getResult().getMapping().getVMLocation(VMtoAllocate);
-            
-                // create the response
-                NamingService<Node> ns = (NamingService<Node>) mo.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.NODE_NAMING_SERVICE);
-      			return createAllocationResponseFromServer(dest, allocationRequest.getRequest().getValue(), ns);
+		Optional<ReconfigurationPlan> oPlan = computePlan(F4GModel, Optional.of(allocationRequest));
+		
+		if(oPlan.isPresent()) {
+			ReconfigurationPlan plan = oPlan.get();
+			NamingService<Node> nodeNames = (NamingService<Node>) plan.getOrigin().getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.NODE_NAMING_SERVICE);
+			showAllocation(allocationRequest);
+		    
+			Node dest = null;
+            for(Action action : plan.getActions()) {
+            	if (action instanceof BootVM) {
+            		dest = ((BootVM)action).getDestinationNode();
+            		break;
+            	}			
+            }
+            if(dest != null) {
+            	return createAllocationResponseFromServer(dest, allocationRequest.getRequest().getValue(), nodeNames);	
             } else {
             	return new AllocationResponseType();
             }
-                    
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            log.debug("Allocation impossible, returning empty allocation");
-			return new AllocationResponseType();
-        }
-        
-
+            
+            
+        } else {
+           	return new AllocationResponseType();
+        } 
 	}
-
 	
 
 	/**
 	 * Handles a request for a global optimization
-	 * 
-	 * @param model
-	 *            the f4g model
-	 * @return true if successful, false otherwise
 	 */
 	@Override
-	public void runGlobalOptimization(FIT4GreenType F4Gmodel) {
+	public void runGlobalOptimization(FIT4GreenType F4GModel) {
 		log.debug("Performing Global Optimization");
-
-		Model model = new DefaultModel();
-		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(F4Gmodel, vmTypes, powerCalculator, optiObjective);
-		confAdapter.attachViews(model);
 		
-		if (model.getMapping().getAllNodes().size() == 0) {
-			log.warn("No Nodes");
-		} else {
-			List<AbstractBaseActionType> actions = new ArrayList<AbstractBaseActionType>();
-
-			if (model.getMapping().getAllVMs().size() == 0) {
-				log.debug("No VMs");
-			}
-			
-			// create the constraints
-			List<SatConstraint> cstrs = getConstraints(F4Gmodel, model.getMapping());
-			
-			ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
-			cra.getConstraintMapper().register(new CPowerObjective.Builder());
+		Optional<ReconfigurationPlan> oPlan = computePlan(F4GModel, Optional.<AllocationRequestType>absent());
+		
+		if(oPlan.isPresent()) {
+			ReconfigurationPlan plan = oPlan.get();
+			NamingService<Node> nodeNames = (NamingService<Node>) plan.getOrigin().getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.NODE_NAMING_SERVICE);
+			NamingService<VM> vmNames = (NamingService<VM>) plan.getOrigin().getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.VM_NAMING_SERVICE);
             
-			
-			Mapping resultMapping;
-			 try {
-		            ReconfigurationPlan plan = cra.solve(model, cstrs, new PowerObjective());
-		            
-		            if(plan != null) {
-		            	System.out.println("Time-based plan:");
-			            System.out.println(new TimeBasedPlanApplier().toString(plan));
-			            System.out.println("\nDependency based plan:");
-			            System.out.println(new DependencyBasedPlanApplier().toString(plan));
+            F4GDriverFactory f4GDriverFactory = new F4GDriverFactory(controller, F4GModel, nodeNames, vmNames);
+            
+            List<AbstractBaseActionType> actions = new ArrayList<AbstractBaseActionType>();
+			for (Action action : plan.getActions()) {
+    			log.debug("action: " + action.getClass().getName());
 
-			            resultMapping = plan.getResult().getMapping();
-		            }
-		            		             
-		        } catch (SolverException ex) {
-		            System.err.println(ex.getMessage());
-		        }
-			 
-		ActionList actionList = new ActionList();
-		// initialise actions in case of empty list
-		actionList.getAction();
-		
-		List<PowerOnActionType> powerOns = new ArrayList<PowerOnActionType>();
-		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-		List<AbstractBaseActionType> moves = new ArrayList<AbstractBaseActionType>();
-		for (AbstractBaseActionType action : actions) {
-			if (action instanceof PowerOnActionType)
-				powerOns.add((PowerOnActionType) action);
-			if (action instanceof PowerOffActionType)
-				powerOffs.add((PowerOffActionType) action);
-			if (action instanceof MoveVMActionType 
-			 || action instanceof LiveMigrateVMActionType)
-				moves.add(action);
-		}
-		
-		//sort actions (first ON, then moves, then OFF)
-		Collections.sort(actions, new ActionComparator());
-		
-		// create JAXB actions
-		for (AbstractBaseActionType action : actions) {
-			actionList.getAction().add((new f4g.schemas.java.actions.ObjectFactory()).createAction(action));
-		}
-		
-		// compute the new datacenter with only moves
-		FIT4GreenType newFederationWithMoves = performMoves(moves, F4Gmodel);
-		FIT4GreenType newFederation = performOnOffs(powerOns, powerOffs, newFederationWithMoves);
+    			AbstractBaseActionType f4gAction = f4GDriverFactory.transform(action).getActionToExecute();
+    			if(f4gAction != null){
+    				actions.add(f4gAction);	
+    			}    			 
+    		}
+    		
+    		List<PowerOnActionType> powerOns = new ArrayList<PowerOnActionType>();
+    		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
+    		List<AbstractBaseActionType> moves = new ArrayList<AbstractBaseActionType>();
+    		for (AbstractBaseActionType action : actions) {
+    			if (action instanceof PowerOnActionType)
+    				powerOns.add((PowerOnActionType) action);
+    			if (action instanceof PowerOffActionType)
+    				powerOffs.add((PowerOffActionType) action);
+    			if (action instanceof MoveVMActionType 
+    			 || action instanceof LiveMigrateVMActionType)
+    				moves.add(action);
+    		}
+    		
+    		//sort actions (first ON, then moves, then OFF)
+    		Collections.sort(actions, new ActionComparator());
+    		
+    		ActionList actionList = new ActionList();
+    		// create JAXB actions
+    		for (AbstractBaseActionType action : actions) {
+    			actionList.getAction().add((new f4g.schemas.java.actions.ObjectFactory()).createAction(action));
+    		}
+    		
+    		// compute the new datacenter with only moves
+    		FIT4GreenType newFederationWithMoves = performMoves(moves, F4GModel);
+    		FIT4GreenType newFederation = performOnOffs(powerOns, powerOffs, newFederationWithMoves);
 
-		// -------------------
-		// ON/OFF actions on network equipment
-		ActionList myNetworkActionList = NetworkControl.getOnOffActions(newFederation, F4Gmodel);
-		actionList.getAction().addAll(myNetworkActionList.getAction());
-		newFederation = NetworkControl.performOnOffs(newFederation,
-				myNetworkActionList);
-		// -------------------
+    		// -------------------
+    		// ON/OFF actions on network equipmentF4GModel
+    		ActionList myNetworkActionList = NetworkControl.getOnOffActions(newFederation, F4GModel);
+    		actionList.getAction().addAll(myNetworkActionList.getAction());
+    		newFederation = NetworkControl.performOnOffs(newFederation,
+    				myNetworkActionList);
+    		// -------------------
 
-		ActionRequestType actionRequest = getActionRequest(actionList, F4Gmodel, newFederation);
-		controller.executeActionList(actionRequest);
-		}
+    		ActionRequestType actionRequest = getActionRequest(actionList, F4GModel, newFederation);
+    		controller.executeActionList(actionRequest);
+		}		
 	}
-			
-	//a simple allocation should not result in VM migration or node on/off
-	private List<SatConstraint> getAllocationConstraints(Mapping map) {
 	
-		List<SatConstraint> res = new ArrayList<SatConstraint>();
-		res.addAll(NoStateChange.newNoStateChanges(map.getAllNodes()));
-		res.addAll(Root.newRoot(map.getAllVMs()));
-		return res;
+	public Optional<ReconfigurationPlan> computePlan(FIT4GreenType F4GModel, Optional<AllocationRequestType> oAllocationRequest) {
+			
+		Model model = new DefaultModel();
+		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(F4GModel, vmTypes, powerCalculator, optiObjective);
+		confAdapter.attachViews(model);
+
+		List<SatConstraint> cstrs = getConstraints(F4GModel, model);
+		
+		if(oAllocationRequest.isPresent()) {
+			VM VMtoAllocate = model.newVM();
+			model.getMapping().addReadyVM(VMtoAllocate);
+			cstrs.add(new Running(VMtoAllocate));
+			
+			RequestType request = (RequestType) oAllocationRequest.get().getRequest().getValue();	
+			confAdapter.addVMViews(VMtoAllocate, (CloudVmAllocationType) request, model); //TODO generalize
+		}
+		
+		ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
+		registerF4GConstraints(cra);
+		cra.setVerbosity(3);
+		cra.doOptimize(true);
+			
+		ReconfigurationPlan plan = null;
+		try {
+			plan = cra.solve(model, cstrs, new PowerObjective());
+		    if(plan != null) {
+		       	System.out.println("Time-based plan:");
+			    System.out.println(new TimeBasedPlanApplier().toString(plan));
+			    System.out.println("\nDependency based plan:");
+			    System.out.println(new DependencyBasedPlanApplier().toString(plan));
+			    return Optional.of(plan);
+		    } else {
+		    	return Optional.absent();
+		    }
+	    } catch (SolverException ex) {
+		    System.out.println("computePlan exception: " + ex.getLocalizedMessage());
+		    return Optional.absent();
+		}
+	}
+			 
+			
+	public void registerF4GConstraints(ChocoReconfigurationAlgorithm cra) {
+		
+		cra.getConstraintMapper().register(new CPowerObjective.Builder());
+		cra.getConstraintMapper().register(new CNoStateChange.Builder());
+		cra.getConstraintMapper().register(new CSpareNodes.Builder());
+		cra.getConstraintMapper().register(new CMaxServerPower.Builder());
 		
 	}
-
-	private List<SatConstraint> getConstraints(FIT4GreenType model, Mapping src) {
-		List<SatConstraint> queue = new LinkedList<SatConstraint>();
+	
+	
+	private List<SatConstraint> getConstraints(FIT4GreenType F4Gmodel, Model model) {
 		
+		List<SatConstraint> constraints = new LinkedList<SatConstraint>();
+
 		if (clusters != null) {
 //			queue.addAll(new SLAConstraintFactory(clusters, src, model, -1, serverGroups).createSLAConstraints());
 //			queue.addAll(new ClusterConstraintFactory(clusters, src).createClusterConstraints());
@@ -459,9 +401,10 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 //				queue.add(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
 //			}
 		}
-//		queue.addAll(new PolicyConstraintFactory(clusters, src, model, federation, vmTypes, powerCalculator, costEstimator).createPolicyConstraints());
+
+		constraints.addAll(new PolicyConstraintFactory(clusters, model, F4Gmodel, federation, vmTypes, powerCalculator, costEstimator).createPolicyConstraints());
 //		queue.addAll(new ModelConstraintFactory(src, model).getModelConstraints());
-		return queue;
+		return constraints;
 	}
 	
 	private List<SatConstraint> getConstraints(FIT4GreenType model, RequestType request, Mapping src, VM VMtoAllocate) {
@@ -493,7 +436,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	}
 	
 
-	private List<AbstractBaseActionType> computeActions(FIT4GreenType F4GModel, Model model, List<SatConstraint> cstrs, NamingService nameService) {
+	private List<AbstractBaseActionType> computeActions(FIT4GreenType F4GModel, Model model, List<SatConstraint> cstrs, NamingService<Node> nodeNames, NamingService<VM> vmNames) {
 		
 		List<AbstractBaseActionType> actions = new ArrayList<AbstractBaseActionType>();
 		
@@ -506,7 +449,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
             System.out.println("\nDependency based plan:");
             System.out.println(new DependencyBasedPlanApplier().toString(plan));
         
-            F4GDriverFactory f4GDriverFactory = new F4GDriverFactory(controller, F4GModel, nameService);
+            F4GDriverFactory f4GDriverFactory = new F4GDriverFactory(controller, F4GModel, nodeNames, vmNames);
             
             for (Action action : plan.getActions()) {
     			log.debug("action: " + action.getClass().getName());
@@ -524,39 +467,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		return actions;
 	}
 
-	/**
-	 * suppress from the configuration all VMs and nodes associated to non satisfied constraints
-	 * TODO: reactivate
-	 */
-//	private Configuration getDegradedConfiguration(Configuration src, List<VJob> queue) {
-//		
-//		Configuration deg = src.clone();
-//		for(VJob q : queue) {
-//			for(PlacementConstraint c : q.getConstraints()) {
-//				if(!c.isSatisfied(src)) {
-//					log.debug("broken constraint: " + c.getClass().getName());
-//					for(VirtualMachine vm : c.getAllVirtualMachines()) {
-//						log.debug("removing VM " + vm.getName());
-//						deg.remove(vm);
-//					}
-//					for(Node n : c.getNodes()) {
-//						for(VirtualMachine vm : src.getRunnings(n)) {
-//							log.debug("removing VM " + vm.getName());
-//							deg.remove(vm); //TODO remove this when Entropy is corrected
-//						}
-//						boolean ret = deg.remove(n);
-//						if(ret) {
-//							deg.getAllNodes().remove(n);
-//							log.debug("removing node " + n.getName());
-//						}
-//						
-//					}
-//				}
-//			}
-//		}
-//		return deg;
-//	}
-
+	
 	private List<IOptimizerServer> getServersInCluster(final ArrayList<IOptimizerServer> optimizerServers, ClusterType.Cluster cluster) {
 		List<IOptimizerServer> serversInCluster = new ArrayList<IOptimizerServer>();
 		for (IOptimizerServer s : optimizerServers) {
@@ -626,25 +537,21 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
 	}
 
-	protected ArrayList<IOptimizerServer> getOptimizerServers(
-			DatacenterType datacenter) {
+	protected ArrayList<IOptimizerServer> getOptimizerServers(DatacenterType datacenter) {
 
 		if (computingStyle == CloudTradCS.CLOUD) {
 			// get translations between F4G types and optimizer types
-			final ArrayList<IOptimizerServer> optimizerServers = Utils
-					.getAllOptimizerServersCloud(datacenter, vmTypes);
+			final ArrayList<IOptimizerServer> optimizerServers = Utils.getAllOptimizerServersCloud(datacenter, vmTypes);
 			return optimizerServers;
 		} else {
 			// get translations between F4G types and optimizer types
-			final ArrayList<IOptimizerServer> optimizerServers = Utils
-					.getAllOptimizerServersTradi(datacenter);
+			final ArrayList<IOptimizerServer> optimizerServers = Utils.getAllOptimizerServersTradi(datacenter);
 			return optimizerServers;
 		}
 
 	}
 
-	protected ArrayList<IOptimizerServer> getOptimizerServers(
-			FIT4GreenType federation) {
+	protected ArrayList<IOptimizerServer> getOptimizerServers(FIT4GreenType federation) {
 
 		// get translations between F4G types and optimizer types
 		final ArrayList<IOptimizerServer> optimizerServers = new ArrayList<IOptimizerServer>();

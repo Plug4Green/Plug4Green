@@ -31,12 +31,12 @@ import btrplace.model.constraint.SatConstraint;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.optimizer.entropy.NamingService;
+import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.constraint.api.NoStateChange;
 import f4g.optimizer.entropy.plan.constraint.api.SpareNodes;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType.Policy;
-import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
 import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
@@ -48,6 +48,7 @@ import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
 
+import btrplace.model.Model;
 import btrplace.model.Node;
 import btrplace.model.VM;
 /**
@@ -60,11 +61,10 @@ public class PolicyConstraintFactory {
 
 	private List<SatConstraint> v;
 	private Mapping src;
-	private FIT4GreenType model;
+	private FIT4GreenType F4Gmodel;
 	public Logger log;
 	private FederationType federation;
     private NamingService<Node> nodeNames;
-    private Mapping map;
     private NamingService<VM> vmNames;
     
 	/**
@@ -79,23 +79,23 @@ public class PolicyConstraintFactory {
 	 * Constructor needing an instance of the SLAReader and an entropy
 	 * configuration element.
 	 */
-	public PolicyConstraintFactory(ClusterType myClusters, Mapping src,
-			FIT4GreenType model, FederationType federation, 
-			VMTypeType myVMs, IPowerCalculator myPowerCalculator, ICostEstimator myCostEstimator, 
-			NamingService<Node> nodeNames, NamingService<VM> vmNames, Mapping map) {
+	public PolicyConstraintFactory(ClusterType myClusters, Model model,
+			FIT4GreenType F4Gmodel, FederationType federation, 
+			VMTypeType myVMs, 
+			IPowerCalculator myPowerCalculator, 
+			ICostEstimator myCostEstimator) {
 
 		v = new LinkedList<SatConstraint>();
-		this.src = src;
-		this.model = model;
+		this.F4Gmodel = F4Gmodel;
 		this.clusters = myClusters;
 		this.log = Logger.getLogger(this.getClass().getName());
 		this.federation = federation;
 		this.SLAvms = myVMs;
 		this.powerCalculator = myPowerCalculator;	
 		this.costEstimator = myCostEstimator;
-		this.nodeNames = nodeNames;
-		this.vmNames = vmNames;
-		this.map = map;
+		this.nodeNames = (NamingService<Node>) model.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.NODE_NAMING_SERVICE);
+		this.vmNames = (NamingService<VM>) model.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.VM_NAMING_SERVICE);
+		this.src = model.getMapping();
 	}
 
 	public List<SatConstraint> createPolicyConstraints() {
@@ -187,7 +187,7 @@ public class PolicyConstraintFactory {
 		log.debug("Adding DelayBetweenMoveConstraint constraint...");
 		log.debug("delayTimeBetweenMove from method parameter: " + delayTimeBetweenMove);
 		Set<Node> nodes = Utils.getNodesFromCluster(c, nodeNames);
-		List<ServerType> allServers = Utils.getAllServers(model);
+		List<ServerType> allServers = Utils.getAllServers(F4Gmodel);
 
 		// get all VMs for these nodes
 		Set<VM> vms = new HashSet<VM>();
@@ -203,8 +203,8 @@ public class PolicyConstraintFactory {
 		if(delayTimeBetweenMove <= 0)
 			return;
 
-		if (model.getDatetime() != null) {
-			XMLGregorianCalendar earliestLastTimeMove = model.getDatetime();
+		if (F4Gmodel.getDatetime() != null) {
+			XMLGregorianCalendar earliestLastTimeMove = F4Gmodel.getDatetime();
 			log.debug("earliestLastTimeMove: " + earliestLastTimeMove);
 			DatatypeFactory factory;
 			try {
@@ -258,7 +258,7 @@ public class PolicyConstraintFactory {
 		log.debug("Adding addDelayBetweenOnOffConstraint constraint...");
 		log.debug("delayTimeBetweenOnOff from method parameter: " + delayTimeBetweenOnOff);
 		Set<Node> nodes = Utils.getNodesFromCluster(c, nodeNames);
-		List<ServerType> allServers = Utils.getAllServers(model);
+		List<ServerType> allServers = Utils.getAllServers(F4Gmodel);
 
 		// node to apply the constraint to
 		Set<Node> ns = new HashSet<Node>();
@@ -274,8 +274,8 @@ public class PolicyConstraintFactory {
 		if(delayTimeBetweenOnOff <= 0)
 			return;
 
-		if (model.getDatetime() != null) {
-			XMLGregorianCalendar earliestLastTimeOnOff = model.getDatetime();
+		if (F4Gmodel.getDatetime() != null) {
+			XMLGregorianCalendar earliestLastTimeOnOff = F4Gmodel.getDatetime();
 			log.debug("earliestLastTimeOnOff: " + earliestLastTimeOnOff);
 			DatatypeFactory factory;
 			try {
@@ -326,8 +326,8 @@ public class PolicyConstraintFactory {
 
 	private void addPeriodVMThreshold(Set<Node> nodes, List<PeriodType> periods, float overbooking) {
 
-		if(model.getDatetime() != null) {
-			LoadType load = SLAReader.getVMSlotsThreshold(model.getDatetime().toGregorianCalendar().getTime(), periods);					
+		if(F4Gmodel.getDatetime() != null) {
+			LoadType load = SLAReader.getVMSlotsThreshold(F4Gmodel.getDatetime().toGregorianCalendar().getTime(), periods);					
 			if(nodes.size() !=0 && load != null) {
 //				if(load.getSpareCPUs() != null && load.getSpareCPUs().getValue() > 0 ) {
 //
@@ -343,13 +343,13 @@ public class PolicyConstraintFactory {
 
 				if(load.getSpareNodes() != null && load.getSpareNodes().getValue() > 0 ) {
 
-					int nbCores = 0;
+					int nbNodes = 0;
 					switch (load.getSpareNodes().getUnitType()) {
-					case ABSOLUTE: nbCores = load.getSpareNodes().getValue(); break;
-					case RELATIVE: nbCores = load.getSpareNodes().getValue() * src.getAllNodes().size() / 100; break;
+					case ABSOLUTE: nbNodes = load.getSpareNodes().getValue(); break;
+					case RELATIVE: nbNodes = load.getSpareNodes().getValue() * src.getAllNodes().size() / 100; break;
 					}
 
-					v.add(new SpareNodes(nodes, nbCores));
+					v.add(new SpareNodes(nodes, nbNodes));
 				}
 			}
 
