@@ -10,7 +10,7 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package f4g.optimizer.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint.factories;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import btrplace.model.constraint.Lonely;
 import btrplace.model.constraint.SatConstraint;
 import f4g.optimizer.OptimizerEngine;
+import f4g.optimizer.entropy.NamingService;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType;
 import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType;
@@ -51,7 +52,7 @@ public class SLAConstraintFactory {
 	public Logger log;
 	int minPriority;
 	private ServerGroupType sg;
-	
+	NamingService ns;
 
 	/**
 	 * Cluster definition
@@ -63,7 +64,7 @@ public class SLAConstraintFactory {
 	 * configuration element.
 	 */
 	public SLAConstraintFactory(ClusterType myClusters, Mapping src,
-			FIT4GreenType model, int minPriority, ServerGroupType sg) {
+			FIT4GreenType model, int minPriority, ServerGroupType sg, NamingService ns) {
 		
         v = new LinkedList<SatConstraint>();
 		this.src = src;
@@ -73,7 +74,7 @@ public class SLAConstraintFactory {
 		log = Logger.getLogger(this.getClass().getName());
 		this.sg = sg;
 		log.debug("minPriority=" + minPriority);
-		
+		this.ns = ns;
 	}
 
 	public List<SatConstraint> createSLAConstraints() {
@@ -85,7 +86,7 @@ public class SLAConstraintFactory {
 				Set<Node> nodes = new HashSet<Node>();
 				for (String nodeName : c.getNodeController().getNodeName()) {
 					try {
-						Node n = src.getAllNodes().get(nodeName);
+						Node n = ns.get.get(nodeName);
 						if (n != null) {
 							nodes.add(n);
 						}

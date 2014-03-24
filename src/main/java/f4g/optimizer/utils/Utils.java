@@ -37,6 +37,7 @@ import javax.xml.bind.Unmarshaller;
 
 import f4g.optimizer.utils.OptimizerRackServer;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
+import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
 import f4g.optimizer.utils.OptimizerBladeServer;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
@@ -757,35 +758,35 @@ public class Utils {
 	 * get the nodes in a cluster
 	 * 
 	 */
-//	public static Set<Node> getNodesFromCluster(Cluster c, NamingService ns) {
-//		Set<Node> nodes = new HashSet<Node>();
-//		for (String nodeName : c.getNodeController().getNodeName()) {
-//			try {
-//				Node n = ns.getsrc.getAllNodes().get(nodeName);
-//				if (n != null) {
-//					nodes.add(n);
-//				}
-//			} catch (Exception e) {
-//			}
-//		}
-//		return nodes;
-//	}
+	public static Set<Node> getNodesFromCluster(Cluster c, NamingService<Node> ns) {
+		Set<Node> nodes = new HashSet<Node>();
+		for (String nodeName : c.getNodeController().getNodeName()) {
+			try {
+				Node n = ns.getElement(nodeName);
+				if (n != null) {
+					nodes.add(n);
+				}
+			} catch (Exception e) {
+			}
+		}
+		return nodes;
+	}
 	
 	/**
 	 * get the nodes in a federation
 	 * 
 	 */
-//	public static ManagedElementSet<Node> getNodesFromFederation(FederationType fed, Configuration src) {
-//		ManagedElementSet<Node> nodes = new SimpleManagedElementSet<Node>();
-//		if (fed.getBoundedCluster() != null) {
-//			for (BoundedClustersType.Cluster bc : fed.getBoundedCluster().getCluster()) {
-//				ClusterType.Cluster c = bc.getIdref();
-//				nodes.addAll(getNodesFromCluster(c, src));
-//			}
-//		}
-//		return nodes;
-//		
-//	}
+	public static Set<Node> getNodesFromFederation(FederationType fed, NamingService<Node> ns) {
+		Set<Node> nodes = new HashSet<Node>();
+		if (fed.getBoundedCluster() != null) {
+			for (BoundedClustersType.Cluster bc : fed.getBoundedCluster().getCluster()) {
+				ClusterType.Cluster c = bc.getIdref();
+				nodes.addAll(getNodesFromCluster(c, ns));
+			}
+		}
+		return nodes;
+		
+	}
 	
 	/**
 	 * get the nodes in a cluster

@@ -6,6 +6,7 @@ import btrplace.model.VM;
 import btrplace.model.constraint.Constraint;
 import btrplace.solver.choco.ReconfigurationProblem;
 import btrplace.solver.choco.actionModel.NodeActionModel;
+import btrplace.solver.choco.constraint.CObjective;
 import btrplace.solver.choco.constraint.ChocoConstraintBuilder;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
@@ -29,10 +30,8 @@ import solver.constraints.IntConstraintFactory;
 import static solver.variables.VariableFactory.*;
 import static solver.constraints.IntConstraintFactory.*;
 
-public class CPowerObjective implements btrplace.solver.choco.constraint.CObjective {
+public class CPowerObjective implements CObjective {
   
-	//PowerView powers;
-	
     //objective: either Power or CO2
 	//OptimizationObjective optiObjective;
 	    
@@ -57,23 +56,23 @@ public class CPowerObjective implements btrplace.solver.choco.constraint.CObject
 
 
 	@Override
-    public boolean inject(ReconfigurationProblem m) {
+    public boolean inject(ReconfigurationProblem rp) {
 
-    	Solver solver = m.getSolver();
+    	Solver solver = rp.getSolver();
     	IntVar reconfEnergy = VariableFactory.bounded("reconfEnergy", 0, Integer.MAX_VALUE / 100, solver); //In Watts
     	IntVar globalPower = VariableFactory.bounded("globalPower", 0, Integer.MAX_VALUE / 100, solver); //In Watts 
     	IntVar stableEnergy = VariableFactory.bounded("stableEnergy", 0, Integer.MAX_VALUE / 100, solver);  //in KJ
     	
     	//sum the power Idle, the power for the VMs and extra power for the network
-    	IntVar[] pows = new  IntVar[]{getPIdle(m), getPVMs(m)}; //, getPNetwork(m)
+    	IntVar[] pows = new  IntVar[]{getPVMs(rp)}; //, getPIdle(rp)}; //, getPNetwork(m)
         solver.post(sum(pows, globalPower));
         
         solver.post(times(globalPower, fixed((int)reconfTime/1000, solver), stableEnergy));
     	//this equation represents the energy spent between two reconfigurations (that we'll try to minimize).
-    	IntVar[] energies = new  IntVar[]{stableEnergy, getEMove(m), getEOnOff(m)};
+    	IntVar[] energies = new  IntVar[]{stableEnergy}; //, getEMove(rp), getEOnOff(rp)};
     	solver.post(sum(energies, reconfEnergy));
      
-        m.setObjective(true, reconfEnergy);
+        rp.setObjective(true, reconfEnergy);
         return true;
     }
   	
@@ -105,6 +104,7 @@ public class CPowerObjective implements btrplace.solver.choco.constraint.CObject
     	IntVar PowerperVMsTotal = bounded("PowerperVMsTotal", 0, Integer.MAX_VALUE / 100, solver);
     	solver.post(scalar(rp.getNbRunningVMs(), powerperVMs, PowerperVMsTotal));
         
+    	System.out.print(PowerperVMsTotal);
         return PowerperVMsTotal; 
     }
 

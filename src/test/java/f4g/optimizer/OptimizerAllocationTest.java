@@ -504,37 +504,4 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	}
 	
 	
-	/**
-	 * A policy is not satisfied
-	 * The policies are not taken into account in allocation, so allocation is possible.		
-	 */
-	public void testAllocationPolicyNotSatisfied() {
-		
-		modelGenerator.setNB_SERVERS(10);
-		modelGenerator.setNB_VIRTUAL_MACHINES(6);
-		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(6); //2 cores
-		modelGenerator.setRAM_SIZE(100);
-
-    	FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-    	    	    	
-		AllocationRequestType request = createAllocationRequestCloud("m1.small");
-		
-		//This policy is not met by the configuration
-		optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).getLoad().setSpareCPUs(new SpareCPUs(3, UnitType.ABSOLUTE));
-		
-		AllocationResponseType response = optimizer.allocateResource(request, model);
-		
-		assertNotNull(response);
-		assertNotNull(response.getResponse());
-		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
-				
-		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
-		
-		//The policies are not taken into account in allocation, so allocation is possible.		
-		assertEquals("id100000", VMAllocResponse.getNodeId());
-
-	}
-
-
 }

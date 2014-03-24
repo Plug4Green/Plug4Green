@@ -88,7 +88,7 @@ public class F4GConfigurationAdapter
 		for(ServerType server : Utils.getAllServers(currentFit4Green)) {
 					
 			Node node = model.newNode();
-			NodeNS.putName(node, server.getFrameworkID());
+			NodeNS.putElementName(node, server.getFrameworkID());
 			putServerCPUResource(node, server, cpus);
 			putServerMemoryResource(node, server, memories);
 			putServerPowerIdleResource(node, server, powersIdles);
@@ -103,7 +103,7 @@ public class F4GConfigurationAdapter
 					VM vm = model.newVM();	
 					model.getMapping().addRunningVM(vm, node);
 					
-					VMNS.putName(vm, VM.getFrameworkID());
+					VMNS.putElementName(vm, VM.getFrameworkID());
 					putVMCPUConsumption(vm, VM, cpus);
 					putVMMemoryConsumption(vm, VM, memories);
 					

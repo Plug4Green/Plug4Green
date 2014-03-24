@@ -10,7 +10,7 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package f4g.optimizer.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint.factories;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -26,9 +26,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.log4j.Logger;
 
 import btrplace.model.Mapping;
+import btrplace.model.constraint.Root;
 import btrplace.model.constraint.SatConstraint;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.cloudTraditional.SLAReader;
+import f4g.optimizer.entropy.NamingService;
+import f4g.optimizer.entropy.plan.constraint.api.NoStateChange;
+import f4g.optimizer.entropy.plan.constraint.api.SpareNodes;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType.Policy;
@@ -59,7 +63,10 @@ public class PolicyConstraintFactory {
 	private FIT4GreenType model;
 	public Logger log;
 	private FederationType federation;
-
+    private NamingService<Node> nodeNames;
+    private Mapping map;
+    private NamingService<VM> vmNames;
+    
 	/**
 	 * Cluster definition
 	 */
@@ -74,18 +81,21 @@ public class PolicyConstraintFactory {
 	 */
 	public PolicyConstraintFactory(ClusterType myClusters, Mapping src,
 			FIT4GreenType model, FederationType federation, 
-			VMTypeType myVMs, IPowerCalculator myPowerCalculator, ICostEstimator myCostEstimator) {
+			VMTypeType myVMs, IPowerCalculator myPowerCalculator, ICostEstimator myCostEstimator, 
+			NamingService<Node> nodeNames, NamingService<VM> vmNames, Mapping map) {
 
 		v = new LinkedList<SatConstraint>();
 		this.src = src;
 		this.model = model;
-		clusters = myClusters;
-		log = Logger.getLogger(this.getClass().getName());
+		this.clusters = myClusters;
+		this.log = Logger.getLogger(this.getClass().getName());
 		this.federation = federation;
-		SLAvms = myVMs;
-		powerCalculator = myPowerCalculator;	
-		costEstimator = myCostEstimator;
-
+		this.SLAvms = myVMs;
+		this.powerCalculator = myPowerCalculator;	
+		this.costEstimator = myCostEstimator;
+		this.nodeNames = nodeNames;
+		this.vmNames = vmNames;
+		this.map = map;
 	}
 
 	public List<SatConstraint> createPolicyConstraints() {
@@ -112,7 +122,7 @@ public class PolicyConstraintFactory {
 				}
 				if (myPol.getPeriodVMThreshold() != null) {
 					periodVMThreshold = pol.getIdref().getPeriodVMThreshold();
-					Set<Node> nodes = Utils.getNodesFromFederation(federation, src);
+					Set<Node> nodes = Utils.getNodesFromFederation(federation, nodeNames);
 					if (nodes.size() != 0) {
 						addPeriodVMThreshold(nodes, periodVMThreshold, 1);
 					} else {
@@ -121,18 +131,18 @@ public class PolicyConstraintFactory {
 					}
 				}
 			}
-			if (federation.getBoundedCluster() != null) {
-				for (BoundedClustersType.Cluster bc : federation
-						.getBoundedCluster().getCluster()) {
-					Cluster c = bc.getIdref();
-					addDelayBetweenMoveConstraint(c,  delayTimeBetweenMove, true);
-					addDelayBetweenOnOffConstraint(c, delayTimeBetweenOnOff, true);
-					if (myPaybackTime != null) {
-						addVMPaybackTimeConstraint(c, myPaybackTime);
-					}
-
-				}
-			}
+//			if (federation.getBoundedCluster() != null) {
+//				for (BoundedClustersType.Cluster bc : federation
+//						.getBoundedCluster().getCluster()) {
+//					Cluster c = bc.getIdref();
+//					addDelayBetweenMoveConstraint(c,  delayTimeBetweenMove, true);
+//					addDelayBetweenOnOffConstraint(c, delayTimeBetweenOnOff, true);
+//					if (myPaybackTime != null) {
+//						addVMPaybackTimeConstraint(c, myPaybackTime);
+//					}
+//
+//				}
+//			}
 		}
 
 		if(clusters != null) {
@@ -140,12 +150,12 @@ public class PolicyConstraintFactory {
 			for (Cluster c : clusterList) {
 				addDelayBetweenMoveConstraint(c, 0, false);
 				addDelayBetweenOnOffConstraint(c, 0, false);
-				if(c.getBoundedPolicies() != null && c.getBoundedPolicies().getPolicy().size() != 0) {
-					PolicyType.Policy firstPol = c.getBoundedPolicies().getPolicy().get(0).getIdref();
-					if(firstPol.getVMMigrationPaybacktime() != null) {
-						addVMPaybackTimeConstraint(c, firstPol.getVMMigrationPaybacktime());
-					}							
-				}
+//				if(c.getBoundedPolicies() != null && c.getBoundedPolicies().getPolicy().size() != 0) {
+//					PolicyType.Policy firstPol = c.getBoundedPolicies().getPolicy().get(0).getIdref();
+//					if(firstPol.getVMMigrationPaybacktime() != null) {
+//						addVMPaybackTimeConstraint(c, firstPol.getVMMigrationPaybacktime());
+//					}							
+//				}
 
 				if (c.getBoundedPolicies() != null) {
 					for (Policy pol : c.getBoundedPolicies().getPolicy()) {
@@ -159,7 +169,7 @@ public class PolicyConstraintFactory {
 								overbooking = c.getBoundedSLAs().getSLA().get(0).getIdref().getQoSConstraints().getMaxVirtualCPUPerCore().getValue();
 							}
 							List<PeriodType> periodVMThreshold = pol.getIdref().getPeriodVMThreshold();
-							Set<Node> nodes = Utils.getNodesFromCluster(c, src);
+							Set<Node> nodes = Utils.getNodesFromCluster(c, nodeNames);
 							addPeriodVMThreshold(nodes, periodVMThreshold, overbooking);
 						}
 					}
@@ -176,7 +186,7 @@ public class PolicyConstraintFactory {
 
 		log.debug("Adding DelayBetweenMoveConstraint constraint...");
 		log.debug("delayTimeBetweenMove from method parameter: " + delayTimeBetweenMove);
-		Set<Node> nodes = Utils.getNodesFromCluster(c, src);
+		Set<Node> nodes = Utils.getNodesFromCluster(c, nodeNames);
 		List<ServerType> allServers = Utils.getAllServers(model);
 
 		// get all VMs for these nodes
@@ -207,10 +217,8 @@ public class PolicyConstraintFactory {
 				for (Node node : nodes) {
 
 					for (ServerType st : allServers) {
-						if (st.getFrameworkID().equals(node.getName())) {
-							Set<VM> vm = src.getRunnings(node);
-							List<VirtualMachineType> vmModel = f4g.optimizer.utils.Utils
-									.getVMs(st);
+						if (st.getFrameworkID().equals(nodeNames.getName(node))) {
+							List<VirtualMachineType> vmModel = f4g.optimizer.utils.Utils.getVMs(st);
 							for (VirtualMachineType vmt : vmModel) {
 								// lastMigration is greater than
 								// "Now"-delayTime -> within the interval
@@ -224,7 +232,7 @@ public class PolicyConstraintFactory {
 										.compare(
 												earliestLastTimeMove) == DatatypeConstants.GREATER) {
 									log.debug("*** comparison is TRUE");
-									vms.add(vm.get(vmt.getFrameworkID()));
+									vms.add(vmNames.getElement(vmt.getFrameworkID()));
 								}
 							}
 						}
@@ -233,7 +241,7 @@ public class PolicyConstraintFactory {
 
 				if (vms.size() != 0) {
 					log.debug("Adding F4GDelayBetweenMove constraint");
-					v.add(new F4GDelayBetweenMove(vms));
+					v.addAll(Root.newRoot(vms));
 				}
 			} catch (DatatypeConfigurationException e1) {
 				log.error("Exception", e1);
@@ -249,7 +257,7 @@ public class PolicyConstraintFactory {
 
 		log.debug("Adding addDelayBetweenOnOffConstraint constraint...");
 		log.debug("delayTimeBetweenOnOff from method parameter: " + delayTimeBetweenOnOff);
-		Set<Node> nodes = Utils.getNodesFromCluster(c, src);
+		Set<Node> nodes = Utils.getNodesFromCluster(c, nodeNames);
 		List<ServerType> allServers = Utils.getAllServers(model);
 
 		// node to apply the constraint to
@@ -280,9 +288,7 @@ public class PolicyConstraintFactory {
 				for (Node node : nodes) {
 					
 					for (ServerType st : allServers) {
-						if (st.getFrameworkID().equals(node.getName())) {
-							
-
+						if (st.getFrameworkID().equals(nodeNames.getName(node))) {
 							if (st.getLastOnOffTimestamp() != null
 									&& st
 									.getLastOnOffTimestamp()
@@ -290,15 +296,14 @@ public class PolicyConstraintFactory {
 											earliestLastTimeOnOff) == DatatypeConstants.GREATER) {
 								log.debug("*** comparison is TRUE");
 								ns.add(node);
-							}
-							
+							}							
 						}
 					}					
 				}
 
 				if (ns.size() != 0) {
 					log.debug("Adding F4GDelayBetweenOnOff constraint");
-					v.add(new F4GServerNoStateChange(ns));
+					v.addAll(NoStateChange.newNoStateChanges(ns));
 				}
 			} catch (DatatypeConfigurationException e1) {
 				log.error("Exception", e1);
@@ -309,31 +314,31 @@ public class PolicyConstraintFactory {
 		}
 	}
 
-	private void addVMPaybackTimeConstraint(Cluster c, int myPaybackTime) {
-
-		Set<Node> nodes = Utils.getNodesFromCluster(c, src);
-		Set<VM> vms = Utils.getVMsFromNodes(nodes, src);
-
-		if(myPaybackTime > 0) {
-			v.add(new F4GVMPaybackTimeConstraint(vms, myPaybackTime, model, SLAvms, powerCalculator, costEstimator ));
-		}			
-	}
+//	private void addVMPaybackTimeConstraint(Cluster c, int myPaybackTime) {
+//
+//		Set<Node> nodes = Utils.getNodesFromCluster(c, nodeNames);
+//		Set<VM> vms = Utils.getVMsFromNodes(nodes, vmNames);
+//
+//		if(myPaybackTime > 0) {
+//			v.add(new F4GVMPaybackTimeConstraint(vms, myPaybackTime, model, SLAvms, powerCalculator, costEstimator ));
+//		}			
+//	}
 
 	private void addPeriodVMThreshold(Set<Node> nodes, List<PeriodType> periods, float overbooking) {
 
 		if(model.getDatetime() != null) {
 			LoadType load = SLAReader.getVMSlotsThreshold(model.getDatetime().toGregorianCalendar().getTime(), periods);					
 			if(nodes.size() !=0 && load != null) {
-				if(load.getSpareCPUs() != null && load.getSpareCPUs().getValue() > 0 ) {
-
-					int nbCores = 0;
-					switch (load.getSpareCPUs().getUnitType()) {
-					case ABSOLUTE: nbCores = load.getSpareCPUs().getValue(); break;
-					case RELATIVE: nbCores = load.getSpareCPUs().getValue() * src.getAllNodes().size() / 100; break;
-					}
-
-					v.add(new SpareCPUs(nodes, nbCores, overbooking));
-				}
+//				if(load.getSpareCPUs() != null && load.getSpareCPUs().getValue() > 0 ) {
+//
+//					int nbCores = 0;
+//					switch (load.getSpareCPUs().getUnitType()) {
+//					case ABSOLUTE: nbCores = load.getSpareCPUs().getValue(); break;
+//					case RELATIVE: nbCores = load.getSpareCPUs().getValue() * src.getAllNodes().size() / 100; break;
+//					}
+//
+//					v.add(new SpareCPUs(nodes, nbCores, overbooking));
+//				}
 
 
 				if(load.getSpareNodes() != null && load.getSpareNodes().getValue() > 0 ) {
@@ -344,7 +349,7 @@ public class PolicyConstraintFactory {
 					case RELATIVE: nbCores = load.getSpareNodes().getValue() * src.getAllNodes().size() / 100; break;
 					}
 
-					v.addConstraint(new SpareNodes(nodes, nbCores));
+					v.add(new SpareNodes(nodes, nbCores));
 				}
 			}
 
