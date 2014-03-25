@@ -64,12 +64,12 @@ public class CPowerObjective implements CObjective {
     	IntVar stableEnergy = VariableFactory.bounded("stableEnergy", 0, Integer.MAX_VALUE / 100, solver);  //in KJ
     	
     	//sum the power Idle, the power for the VMs and extra power for the network
-    	IntVar[] pows = new  IntVar[]{getPVMs(rp)}; //, getPIdle(rp)}; //, getPNetwork(m)
+    	IntVar[] pows = new  IntVar[]{getPVMs(rp), getPIdle(rp)}; //, getPNetwork(m)
         solver.post(sum(pows, globalPower));
         
         solver.post(times(globalPower, fixed((int)reconfTime/1000, solver), stableEnergy));
     	//this equation represents the energy spent between two reconfigurations (that we'll try to minimize).
-    	IntVar[] energies = new  IntVar[]{stableEnergy}; //, getEMove(rp), getEOnOff(rp)};
+    	IntVar[] energies = new  IntVar[]{stableEnergy, getEMove(rp), getEOnOff(rp)};
     	solver.post(sum(energies, reconfEnergy));
      
         rp.setObjective(true, reconfEnergy);
