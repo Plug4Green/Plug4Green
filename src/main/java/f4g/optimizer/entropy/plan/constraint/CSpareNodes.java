@@ -59,7 +59,7 @@ public class CSpareNodes implements ChocoConstraint {
         
         IntVar freeNumber = bounded("freeNumber", 0, nodes.size(), solver);
         solver.post(sum(free, freeNumber));
-        solver.post(arithm(freeNumber, "<=", constraint.getMinSpareNodes()));
+        solver.post(arithm(freeNumber, ">=", constraint.getMinSpareNodes()));
         
         return true;
     }
