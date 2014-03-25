@@ -37,6 +37,7 @@ import f4g.optimizer.entropy.plan.action.F4GDriverFactory;
 import f4g.optimizer.entropy.plan.constraint.CMaxServerPower;
 import f4g.optimizer.entropy.plan.constraint.CNoStateChange;
 import f4g.optimizer.entropy.plan.constraint.CSpareNodes;
+import f4g.optimizer.entropy.plan.constraint.factories.ClusterConstraintFactory;
 import f4g.optimizer.entropy.plan.constraint.factories.ModelConstraintFactory;
 import f4g.optimizer.entropy.plan.constraint.factories.PolicyConstraintFactory;
 
@@ -86,7 +87,6 @@ import btrplace.model.Mapping;
 import btrplace.model.Model;
 import btrplace.model.Node;
 import btrplace.model.VM;
-import btrplace.model.constraint.ResourceCapacity;
 import btrplace.model.constraint.Running;
 import btrplace.model.constraint.SatConstraint;
 
@@ -399,7 +399,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
 		if (clusters != null) {
 //			queue.addAll(new SLAConstraintFactory(clusters, src, model, -1, serverGroups).createSLAConstraints());
-//			queue.addAll(new ClusterConstraintFactory(clusters, src).createClusterConstraints());
+			constraints.addAll(new ClusterConstraintFactory(clusters, model).createClusterConstraints());
 //			if (ct != null) {
 //				queue.add(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
 //			}

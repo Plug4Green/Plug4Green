@@ -20,11 +20,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import btrplace.model.Mapping;
+import btrplace.model.Node;
+import btrplace.model.Model;
 import btrplace.model.VM;
+import btrplace.model.constraint.Fence;
 import btrplace.model.constraint.SatConstraint;
-import f4g.optimizer.cloudTraditional.SLAReader;
-import f4g.schemas.java.allocation.AllocationRequestType;
 import f4g.schemas.java.allocation.CloudVmAllocationType;
 import f4g.schemas.java.allocation.RequestType;
 import f4g.schemas.java.allocation.TraditionalVmAllocationType;
@@ -32,35 +32,28 @@ import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 
-import btrplace.model.Node;
 /**
  * A Class containing everything relevant to cluster constraints
  * 
- * 
- * @author TS
  */
-public class ClusterConstraintFactory {
-	public Logger log;
+public class ClusterConstraintFactory extends ConstraintFactory {
 	
-	private Mapping src;
-
 	/**
 	 * Cluster definition
 	 */
 	private ClusterType clusters;
+	protected FIT4GreenType F4GModel;
 
 	/**
 	 * Constructor needing an instance of the SLAReader and an entropy
 	 * configuration element.
 	 */
-	public ClusterConstraintFactory(ClusterType myClusters, Mapping src) {
-		clusters = myClusters;
-		this.src = src;
-		log = Logger.getLogger(ClusterConstraintFactory.class.getName());
+	public ClusterConstraintFactory(ClusterType myClusters, Model model) {
+		super(model);
+		this.clusters = myClusters;
+    	this.log = Logger.getLogger(ClusterConstraintFactory.class.getName());
 	}
 
-	public ClusterConstraintFactory() {
-	}
 
 	/**
 	 * 
@@ -80,7 +73,7 @@ public class ClusterConstraintFactory {
 				// get all nodes in a cluster
 				Set<Node> nodes = new HashSet<Node>();
 				for (String nodeName : c.getNodeController().getNodeName()) {
-					Node n = src.getAllNodes().get(nodeName);
+					Node n = nodeNames.getElement(nodeName);
 					if(n!=null) {
 						nodes.add(n);
 					}
@@ -90,10 +83,10 @@ public class ClusterConstraintFactory {
 				// get all VMs for these nodes
 				Set<VM> vms = new HashSet<VM>();
 				for (Node node : nodes) {
-					vms.addAll(src.getRunningVMs(node));
+					vms.addAll(map.getRunningVMs(node));
 				}
 				if (vms.size() > 0 && nodes.size() > 0) {
-					v.add(new Fence(vms, nodes));
+					v.addAll(Fence.newFences(vms, nodes));
 				}	
 			}
 		} catch (Exception e) {
@@ -121,7 +114,7 @@ public class ClusterConstraintFactory {
 				if (c.getName().equals(clusterName)) {
 					// get all nodes in a cluster
 					for (String nodeName : c.getNodeController().getNodeName()) {
-						Node n = src.getAllNodes().get(nodeName);
+						Node n = nodeNames.getElement(nodeName);
 						if(n!=null) {
 							nodes.add(n);
 						}
@@ -164,14 +157,14 @@ public class ClusterConstraintFactory {
 
 			Set<VM> vms = new HashSet<VM>();
 			vms.add(vm);
-			Set<btrplace.model.Node> nodes = new HashSet<Node>();
+			Set<Node> nodes = new HashSet<Node>();
 			for(String clusterName : clusterList) {
 				for (Node node : getAllNodesforACluster(clusterName)) {
-					nodes.add(src.getAllNodes().get(node.getName()));
+					nodes.add(node);
 				}
 			}		
 			if (vms.size() > 0 && nodes.size() > 0) {
-				v.add(new Fence(vms, nodes));
+				v.addAll(Fence.newFences(vms, nodes));
 			}
 			if (nodes.size() == 0) {
 				log.warn("Allocation on a cluster with no servers or all servers overloaded!");
