@@ -60,7 +60,7 @@ import btrplace.model.VM;
 public class PolicyConstraintFactory {
 
 	private List<SatConstraint> v;
-	private Mapping src;
+	private Mapping map;
 	private FIT4GreenType F4Gmodel;
 	public Logger log;
 	private FederationType federation;
@@ -95,7 +95,7 @@ public class PolicyConstraintFactory {
 		this.costEstimator = myCostEstimator;
 		this.nodeNames = (NamingService<Node>) model.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.NODE_NAMING_SERVICE);
 		this.vmNames = (NamingService<VM>) model.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.VM_NAMING_SERVICE);
-		this.src = model.getMapping();
+		this.map = model.getMapping();
 	}
 
 	public List<SatConstraint> createPolicyConstraints() {
@@ -127,7 +127,7 @@ public class PolicyConstraintFactory {
 						addPeriodVMThreshold(nodes, periodVMThreshold, 1);
 					} else {
 						//if the federation contains no servers, we include them all (conservative measure for testing)
-						addPeriodVMThreshold(src.getAllNodes(),	periodVMThreshold, 1);
+						addPeriodVMThreshold(map.getAllNodes(),	periodVMThreshold, 1);
 					}
 				}
 			}
@@ -334,7 +334,7 @@ public class PolicyConstraintFactory {
 //					int nbCores = 0;
 //					switch (load.getSpareCPUs().getUnitType()) {
 //					case ABSOLUTE: nbCores = load.getSpareCPUs().getValue(); break;
-//					case RELATIVE: nbCores = load.getSpareCPUs().getValue() * src.getAllNodes().size() / 100; break;
+//					case RELATIVE: nbCores = load.getSpareCPUs().getValue() * map.getAllNodes().size() / 100; break;
 //					}
 //
 //					v.add(new SpareCPUs(nodes, nbCores, overbooking));
@@ -346,7 +346,7 @@ public class PolicyConstraintFactory {
 					int nbNodes = 0;
 					switch (load.getSpareNodes().getUnitType()) {
 					case ABSOLUTE: nbNodes = load.getSpareNodes().getValue(); break;
-					case RELATIVE: nbNodes = load.getSpareNodes().getValue() * src.getAllNodes().size() / 100; break;
+					case RELATIVE: nbNodes = load.getSpareNodes().getValue() * map.getAllNodes().size() / 100; break;
 					}
 
 					v.add(new SpareNodes(nodes, nbNodes));
