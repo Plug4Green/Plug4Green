@@ -44,8 +44,7 @@ public class F4GHardwareConstraint extends F4GConstraint {
 	/**
 	 * 
 	 */
-	public F4GHardwareConstraint(int i, Object o, ManagedElementSet<Node> nodes,
-			ManagedElementSet<VirtualMachine> vms, FIT4GreenType model) {
+	public F4GHardwareConstraint(int i, Object o, ManagedElementSet<Node> nodes, ManagedElementSet<VirtualMachine> vms, FIT4GreenType model) {
 		super(); 
 		this.model = model;
 		

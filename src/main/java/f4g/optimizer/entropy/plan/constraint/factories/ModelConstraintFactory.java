@@ -48,24 +48,19 @@ import f4g.schemas.java.metamodel.VirtualMachineType;
  * {To be completed; use html notation, if necessary}
  * 
  */
-public class ModelConstraintFactory {
+public class ModelConstraintFactory extends ConstraintFactory {
+    
+	protected FIT4GreenType F4GModel;
 
-	public Logger log;  
-	private Mapping map;
-	private FIT4GreenType F4GModel;
-    private NamingService<Node> nodeNames;
-    private NamingService<VM> vmNames;
-	
 	/**
 	 * Constructor needing an instance of the SLAReader and an entropy
 	 * configuration element.
 	 */
 	public ModelConstraintFactory(Model model, FIT4GreenType F4GModel) {
+		super(model);
 		log = Logger.getLogger(this.getClass().getName()); 
-		this.nodeNames = (NamingService<Node>) model.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.NODE_NAMING_SERVICE);
-		this.vmNames = (NamingService<VM>) model.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.VM_NAMING_SERVICE);
-		this.map = model.getMapping();
 		this.F4GModel = F4GModel;
+		
 	}
 
 	public List<SatConstraint> getModelConstraints() {

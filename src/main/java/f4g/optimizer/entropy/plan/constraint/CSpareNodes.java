@@ -42,24 +42,24 @@ public class CSpareNodes implements ChocoConstraint {
     	Solver solver = rp.getSolver();
         Collection<Node> nodes = constraint.getInvolvedNodes();	
         
-        BoolVar[] free = new BoolVar[nodes.size()];
+        BoolVar[] spareNode = new BoolVar[nodes.size()];
         int i = 0;
         for (Node node : constraint.getInvolvedNodes()) {
         	BoolVar state = rp.getNodeAction(node).getState();
         	IntVar NbVms = rp.getNbRunningVMs()[rp.getNode(node)];
     	        	    
-    	    free[i] = bool(StringUtils.randomName(), solver);
+        	spareNode[i] = bool(StringUtils.randomName(), solver);
     	       	    
     	    //if the server is off (state = false), then it is not free
-    	    solver.post(new FastImpliesEq(not(state), free[i], 0));
+    	    solver.post(new FastImpliesEq(not(state), spareNode[i], 0));
     	    //if the server hosts VMs, then it is not free
-    	    solver.post(new FastImpliesEq(arithm(NbVms, "!=", 0).reif(), free[i], 0));
+    	    solver.post(new FastImpliesEq(arithm(NbVms, "!=", 0).reif(), spareNode[i], 0));
     	    i++;
         }
         
-        IntVar freeNumber = bounded("freeNumber", 0, nodes.size(), solver);
-        solver.post(sum(free, freeNumber));
-        solver.post(arithm(freeNumber, ">=", constraint.getMinSpareNodes()));
+        IntVar spareNodes = bounded("freeNumber", 0, nodes.size(), solver);
+        solver.post(sum(spareNode, spareNodes));
+        solver.post(arithm(spareNodes, ">=", constraint.getMinSpareNodes()));
         
         return true;
     }
