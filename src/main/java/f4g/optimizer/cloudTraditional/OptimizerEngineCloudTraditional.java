@@ -37,6 +37,7 @@ import f4g.optimizer.entropy.plan.action.F4GDriverFactory;
 import f4g.optimizer.entropy.plan.constraint.CMaxServerPower;
 import f4g.optimizer.entropy.plan.constraint.CNoStateChange;
 import f4g.optimizer.entropy.plan.constraint.CSpareNodes;
+import f4g.optimizer.entropy.plan.constraint.factories.ModelConstraintFactory;
 import f4g.optimizer.entropy.plan.constraint.factories.PolicyConstraintFactory;
 
 import f4g.optimizer.entropy.plan.objective.CPowerObjective;
@@ -85,6 +86,7 @@ import btrplace.model.Mapping;
 import btrplace.model.Model;
 import btrplace.model.Node;
 import btrplace.model.VM;
+import btrplace.model.constraint.ResourceCapacity;
 import btrplace.model.constraint.Running;
 import btrplace.model.constraint.SatConstraint;
 
@@ -346,7 +348,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		confAdapter.addConfiguration(model);
 
 		List<SatConstraint> cstrs = getConstraints(F4GModel, model);
-		
+        
 		if(oAllocationRequest.isPresent()) {
 			VM VMtoAllocate = model.newVM();
 			model.getMapping().addReadyVM(VMtoAllocate);
@@ -360,6 +362,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		registerF4GConstraints(cra);
 		cra.setVerbosity(3);
 		cra.doOptimize(true);
+		cra.setTimeLimit(5);
 			
 		ReconfigurationPlan plan = null;
 		try {
@@ -403,7 +406,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		}
 
 		constraints.addAll(new PolicyConstraintFactory(clusters, model, F4Gmodel, federation, vmTypes, powerCalculator, costEstimator).createPolicyConstraints());
-//		queue.addAll(new ModelConstraintFactory(src, model).getModelConstraints());
+		constraints.addAll(new ModelConstraintFactory(model, F4Gmodel).getModelConstraints());
 		return constraints;
 	}
 	

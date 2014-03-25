@@ -10,7 +10,7 @@
  *   {To be completed}
  * ============================= /Header ==============================
  */
-package f4g.optimizer.entropy.plan.constraint;
+package f4g.optimizer.entropy.plan.constraint.factories;
 
 
 import java.util.ArrayList;
@@ -22,12 +22,18 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import btrplace.model.Mapping;
+import btrplace.model.Model;
+import btrplace.model.Node;
+import btrplace.model.VM;
 import btrplace.model.constraint.Ban;
 import btrplace.model.constraint.Fence;
 import btrplace.model.constraint.Offline;
 import btrplace.model.constraint.Online;
 import btrplace.model.constraint.Root;
 import btrplace.model.constraint.SatConstraint;
+
+import f4g.optimizer.entropy.NamingService;
+import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.DatacenterType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
@@ -36,30 +42,30 @@ import f4g.schemas.java.metamodel.ServerStatusType;
 import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
 
-import btrplace.model.Node;
-import btrplace.model.VM;
+
 
 /**
  * {To be completed; use html notation, if necessary}
  * 
- * 
- * @author ts
  */
 public class ModelConstraintFactory {
 
 	public Logger log;  
-	private Mapping src;
-	private FIT4GreenType model;
-
+	private Mapping map;
+	private FIT4GreenType F4GModel;
+    private NamingService<Node> nodeNames;
+    private NamingService<VM> vmNames;
 	
 	/**
 	 * Constructor needing an instance of the SLAReader and an entropy
 	 * configuration element.
 	 */
-	public ModelConstraintFactory(Mapping src, FIT4GreenType model) {
+	public ModelConstraintFactory(Model model, FIT4GreenType F4GModel) {
 		log = Logger.getLogger(this.getClass().getName()); 
-		this.src = src;
-		this.model = model;
+		this.nodeNames = (NamingService<Node>) model.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.NODE_NAMING_SERVICE);
+		this.vmNames = (NamingService<VM>) model.getView(NamingService.VIEW_ID_BASE + F4GConfigurationAdapter.VM_NAMING_SERVICE);
+		this.map = model.getMapping();
+		this.F4GModel = F4GModel;
 	}
 
 	public List<SatConstraint> getModelConstraints() {
@@ -73,17 +79,17 @@ public class ModelConstraintFactory {
 	}
 	
 	public List<SatConstraint> getNodeTypeConstraints() {
-		List<SatConstraint> v = new LinkedList<SatConstraint>();
+		List<SatConstraint> v = new ArrayList<SatConstraint>();
 		
 		Set<VM> vms = new HashSet<VM>();
-		vms.addAll(src.getAllVMs());
+		vms.addAll(map.getAllVMs());
 		Set<Node> onlines = new HashSet<Node>();
 		Set<Node> offlines = new HashSet<Node>();
 		Set<Node> empties = new HashSet<Node>();
 		
-		for(ServerType s : Utils.getAllServers(model)) {
+		for(ServerType s : Utils.getAllServers(F4GModel)) {
 	
-			Node n = src.getAllNodes().get(s.getFrameworkID());
+			Node n = nodeNames.getElement(s.getFrameworkID());
 			if(n!=null)	 {
 				switch(s.getName()) {          
 			    case CLOUD_CONTROLLER          : {
@@ -115,15 +121,15 @@ public class ModelConstraintFactory {
 			}
 		}
 		if(onlines.size() != 0) {
-			v.addAll(new Online.newOnlines(onlines));	
+			v.addAll(Online.newOnlines(onlines));	
 		}
 		
 		if(offlines.size() != 0) {
-			v.addAll(new Offline.newOfflines(offlines));	
+			v.addAll(Offline.newOfflines(offlines));	
 		}
 		
 		if(empties.size() != 0 && vms.size() != 0) {
-			v.addAll(new newBans(vms, empties));	
+			v.addAll(Ban.newBans(vms, empties));	
 		}
 		
 		return v;
@@ -132,14 +138,14 @@ public class ModelConstraintFactory {
 	public List<SatConstraint> getFrameworkCapabilitiesConstraints() {
 		List<SatConstraint> v = new LinkedList<SatConstraint>();
 		int i = 0;
-		List<DatacenterType> dcs = Utils.getAllDatacenters(model);
+		List<DatacenterType> dcs = Utils.getAllDatacenters(F4GModel);
 		for(DatacenterType dc : dcs) {
 			i++;
 			
 			//Get all VMs of the DC
 			Set<VM> vms = new HashSet<VM>();
 			for(VirtualMachineType vm : Utils.getAllVMs(dc)) {
-				VM myVM = src.getAllVirtualMachines().get(vm.getFrameworkID());
+				VM myVM = vmNames.getElement(vm.getFrameworkID());
 				if(myVM != null) {
 					vms.add(myVM);
 				}				
@@ -148,7 +154,7 @@ public class ModelConstraintFactory {
 			//get all nodes of the DC
 			Set<Node> nodes = new HashSet<Node>();
 			for(ServerType s : Utils.getAllServers(dc)) {
-				Node n = src.getAllNodes().get(s.getFrameworkID());
+				Node n = nodeNames.getElement(s.getFrameworkID());
 				if(n!=null){
 					nodes.add(n);
 				}
@@ -193,7 +199,7 @@ public class ModelConstraintFactory {
 						
 						Set<Node> onNodes = new HashSet<Node>();
 						for(Node n : nodes) {
-							if(src.isOnline(n)) {
+							if(map.isOnline(n)) {
 								onNodes.add(n);
 							}
 						}	
@@ -206,7 +212,7 @@ public class ModelConstraintFactory {
 					if(!fc.getNode().isPowerOn()) {
 						Set<Node> offNodes = new HashSet<Node>();
 						for(Node n : nodes) {
-							if(src.isOffline(n)) {
+							if(map.isOffline(n)) {
 								offNodes.add(n);
 							}
 						}	
