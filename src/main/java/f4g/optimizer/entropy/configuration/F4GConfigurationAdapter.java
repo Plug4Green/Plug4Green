@@ -155,14 +155,24 @@ public class F4GConfigurationAdapter
 		if(F4GVM.getCloudVmType() != null) {
 			SLA_VM = Util.findVMByName(F4GVM.getCloudVmType(), currentVMType);	
 		}
-						
+					
 		//If the measured values are present in the VM, we take these.
 		//otherwise, we take the specification values from the SLA.
-		if(F4GVM.getNumberOfCPUs() != null) {
-			s.setConsumption(vm, F4GVM.getNumberOfCPUs().getValue());		
-		} else {
-			s.setConsumption(vm, SLA_VM.getCapacity().getVCpus().getValue());
-		}
+        int nbCPUs;
+        if(F4GVM.getNumberOfCPUs() != null) {
+                nbCPUs = F4GVM.getNumberOfCPUs().getValue();
+        } else {
+                nbCPUs = SLA_VM.getCapacity().getVCpus().getValue();
+        }
+
+        double CPUUsage;
+        if(F4GVM.getActualCPUUsage() != null) {
+                CPUUsage = F4GVM.getActualCPUUsage().getValue();
+        } else {
+                CPUUsage = SLA_VM.getExpectedLoad().getVCpuLoad().getValue();
+        }
+		
+		s.setConsumption(vm, (int) (CPUUsage * nbCPUs));
 		
 	}
 
@@ -184,7 +194,8 @@ public class F4GConfigurationAdapter
 	private void putServerCPUResource(Node n, ServerType server, ShareableResource s) {
 		
 		ArrayList<CoreType> cores = Utils.getAllCores(server.getMainboard().get(0));
-		s.setCapacity(n, cores.size());		
+		//CPU capacity is a percentage of one core. 4 cores = 400% CPU capacity
+		s.setCapacity(n, cores.size() * 100);		
 	
 	}
 

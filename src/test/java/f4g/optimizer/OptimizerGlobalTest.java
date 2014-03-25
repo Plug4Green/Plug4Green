@@ -294,10 +294,9 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.setPowerCalculator(new MyPowerCalculator());
 		optimizer.runGlobalOptimization(model);
 		
-		//turning On only one machine, id1 is more efficient than id0
+		//turning On only one machine
 		assertEquals(1, getPowerOns().size());
-		assertEquals("id200000", getPowerOns().get(0).getNodeName());
-		
+				
 	}
 	
 	
