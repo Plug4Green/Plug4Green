@@ -11,10 +11,6 @@ import btrplace.model.constraint.Ban;
 import btrplace.model.constraint.checker.AllowAllConstraintChecker;
 
 /**
- * Checker for the {@link Ban} constraint
- *
- * @author Fabien Hermenier
- * @see Ban
  */
 public class MaxServerPowerChecker extends AllowAllConstraintChecker<MaxServerPower> {
     
