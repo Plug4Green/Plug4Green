@@ -12,7 +12,7 @@ import f4g.commons.controller.IController;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
-import f4g.optimizer.entropy.plan.constraint.sliceScheduling.LocalScheduler;
+//import f4g.optimizer.entropy.plan.constraint.sliceScheduling.LocalScheduler;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.optimizer.Optimizer.CloudTradCS;
