@@ -19,7 +19,6 @@ import java.net.URL;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -42,8 +41,6 @@ import f4g.schemas.java.constraints.optimizerconstraints.RepeatsType;
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
 import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
 
 /**
  * {To be completed; use html notation, if necessary}

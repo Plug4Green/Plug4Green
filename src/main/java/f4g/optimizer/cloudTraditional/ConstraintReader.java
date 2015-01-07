@@ -12,15 +12,13 @@
  */
 package f4g.optimizer.cloudTraditional;
 
-import java.io.FileReader;
 import java.io.InputStream;
-import java.util.LinkedList;
 import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import org.apache.log4j.Logger;
+
 import f4g.schemas.java.constraints.placement.Ban;
 import f4g.schemas.java.constraints.placement.Capacity;
 import f4g.schemas.java.constraints.placement.ConstraintType;
