@@ -21,16 +21,16 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import btrplace.model.Mapping;
-import btrplace.model.Model;
-import btrplace.model.Node;
-import btrplace.model.VM;
-import btrplace.model.constraint.Ban;
-import btrplace.model.constraint.Fence;
-import btrplace.model.constraint.Offline;
-import btrplace.model.constraint.Online;
-import btrplace.model.constraint.Root;
-import btrplace.model.constraint.SatConstraint;
+import org.btrplace.model.Mapping;
+import org.btrplace.model.Model;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
+import org.btrplace.model.constraint.Ban;
+import org.btrplace.model.constraint.Fence;
+import org.btrplace.model.constraint.Offline;
+import org.btrplace.model.constraint.Online;
+import org.btrplace.model.constraint.Root;
+import org.btrplace.model.constraint.SatConstraint;
 
 import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
@@ -116,15 +116,15 @@ public class ModelConstraintFactory extends ConstraintFactory {
 			}
 		}
 		if(onlines.size() != 0) {
-			v.addAll(Online.newOnlines(onlines));	
+			v.addAll(Online.newOnline(onlines));	
 		}
 		
 		if(offlines.size() != 0) {
-			v.addAll(Offline.newOfflines(offlines));	
+			v.addAll(Offline.newOffline(offlines));	
 		}
 		
 		if(empties.size() != 0 && vms.size() != 0) {
-			v.addAll(Ban.newBans(vms, empties));	
+			v.addAll(Ban.newBan(vms, empties));	
 		}
 		
 		return v;
@@ -175,7 +175,7 @@ public class ModelConstraintFactory extends ConstraintFactory {
 									+ " are NOT allowed to move to another DC");
 							if (dcs.size() >= 2) {
 								if (vms.size() > 0 && nodes.size() > 0) {
-									v.addAll(Fence.newFences(vms, nodes));
+									v.addAll(Fence.newFence(vms, nodes));
 								}
 							}
 
@@ -183,7 +183,7 @@ public class ModelConstraintFactory extends ConstraintFactory {
 
 					} else {
 						log.debug("VMs are NOT allowed to move in DC #" + i);
-						v.addAll(Root.newRoot(vms));
+						v.addAll(Root.newRoots(vms));
 					}
 				}
 				
@@ -200,7 +200,7 @@ public class ModelConstraintFactory extends ConstraintFactory {
 						}	
 						//keep ON nodes ON
 						if(onNodes.size() != 0) {
-							v.addAll(Online.newOnlines(onNodes));							
+							v.addAll(Online.newOnline(onNodes));							
 						}
 						
 					}
@@ -213,7 +213,7 @@ public class ModelConstraintFactory extends ConstraintFactory {
 						}	
 						//keep OFF nodes OFF
 						if(offNodes.size() != 0) {
-							v.addAll(Offline.newOfflines(offNodes));
+							v.addAll(Offline.newOffline(offNodes));
 						}
 					}
 					

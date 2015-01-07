@@ -2,16 +2,15 @@
 package f4g.optimizer.entropy.plan.action;
 
 
-import btrplace.model.Node;
-import btrplace.model.VM;
-import btrplace.plan.event.MigrateVM;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
+import org.btrplace.plan.event.MigrateVM;
 import f4g.commons.controller.IController;
 import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.actions.AbstractBaseActionType;
 import f4g.schemas.java.actions.LiveMigrateVMActionType;
 import f4g.schemas.java.actions.MoveVMActionType;
-import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
 import f4g.schemas.java.metamodel.VirtualMachineType;

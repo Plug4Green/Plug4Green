@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-Copyright 2012 FIT4Green project.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <!-- The Basics -->
@@ -23,9 +9,14 @@ Copyright 2012 FIT4Green project.
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
-      <groupId>btrplace</groupId>
-      <artifactId>solver-bundle</artifactId>
-      <version>0.35</version>
+      <groupId>org.btrplace</groupId>
+      <artifactId>scheduler-api</artifactId>
+      <version>0.39</version>
+    </dependency>
+    <dependency>
+      <groupId>org.btrplace</groupId>
+      <artifactId>scheduler-choco</artifactId>
+      <version>0.39</version>
     </dependency>
     <dependency>
       <groupId>choco</groupId>
@@ -282,9 +273,9 @@ Copyright 2012 FIT4Green project.
     </plugins>
   </build>
   <!-- More Project Information -->
-  <name>FIT4Green</name>
-  <description>FIT4Green plug-in is an application that focuses on saving energy in Data Centres </description>
-  <url>https://github.com/fit4green/FIT4Green</url>
+  <name>Plug4Green</name>
+  <description>Plug4Green plug-in is an application that focuses on saving energy in Data Centres </description>
+  <url>https://github.com/fit4green/Plug4Green</url>
   <inceptionYear>2013</inceptionYear>
   <developers>
     <developer>
@@ -330,14 +321,14 @@ Copyright 2012 FIT4Green project.
       <id>choco.repos</id>
       <url>http://www.emn.fr/z-info/choco-repo/mvn/repository/</url>
     </repository>
-    <repository>
+    <!--repository>
       <id>btrp-releases</id>
       <url>http://btrp.inria.fr/repos/releases</url>
     </repository>
     <repository>
       <id>btrp-snapshots</id>
       <url>http://btrp.inria.fr/repos/snapshot-releases</url>
-    </repository>
+    </repository-->
     <repository>
       <id>xom</id>
       <url>http://maven.repository.redhat.com/techpreview/eap6/6.0.0/maven-repository/xom/xom/1.2.7-redhat-1/</url>

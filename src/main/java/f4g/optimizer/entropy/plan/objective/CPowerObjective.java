@@ -1,13 +1,13 @@
 package f4g.optimizer.entropy.plan.objective;
 
-import btrplace.model.Model;
-import btrplace.model.Node;
-import btrplace.model.VM;
-import btrplace.model.constraint.Constraint;
-import btrplace.solver.choco.ReconfigurationProblem;
-import btrplace.solver.choco.actionModel.NodeActionModel;
-import btrplace.solver.choco.constraint.CObjective;
-import btrplace.solver.choco.constraint.ChocoConstraintBuilder;
+import org.btrplace.model.Model;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
+import org.btrplace.model.constraint.Constraint;
+import org.btrplace.scheduler.choco.ReconfigurationProblem;
+import org.btrplace.scheduler.choco.transition.NodeTransition;
+import org.btrplace.scheduler.choco.constraint.CObjective;
+import org.btrplace.scheduler.choco.constraint.ChocoConstraintBuilder;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
 import f4g.optimizer.utils.Pair;
@@ -166,7 +166,7 @@ public class CPowerObjective implements CObjective {
 
 		BoolVar[] states = new BoolVar[rp.getNodes().length];
     	int i = 0;
-		for (NodeActionModel action : rp.getNodeActions()) {     
+		for (NodeTransition action : rp.getNodeActions()) {     
 		   states[i] = action.getState();
 		   i++;
 		}

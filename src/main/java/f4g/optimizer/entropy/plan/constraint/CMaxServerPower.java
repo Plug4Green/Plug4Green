@@ -1,20 +1,14 @@
 package f4g.optimizer.entropy.plan.constraint;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import solver.Solver;
-import solver.constraints.IntConstraintFactory;
-import solver.variables.IntVar;
-import solver.variables.VariableFactory;
-
-import btrplace.model.Model;
-import btrplace.model.VM;
-import btrplace.model.constraint.Constraint;
-import btrplace.solver.choco.ReconfigurationProblem;
-import btrplace.solver.choco.constraint.ChocoConstraint;
-import btrplace.solver.choco.constraint.ChocoConstraintBuilder;
+import org.btrplace.model.Model;
+import org.btrplace.model.VM;
+import org.btrplace.model.constraint.Constraint;
+import org.btrplace.scheduler.choco.ReconfigurationProblem;
+import org.btrplace.scheduler.choco.constraint.ChocoConstraint;
+import org.btrplace.scheduler.choco.constraint.ChocoConstraintBuilder;
 
 import f4g.optimizer.entropy.plan.constraint.api.MaxServerPower;
 

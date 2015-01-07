@@ -1,9 +1,9 @@
 
 package f4g.optimizer.entropy;
 
-import btrplace.model.Element;
-import btrplace.model.VM;
-import btrplace.model.view.ModelView;
+import org.btrplace.model.Element;
+import org.btrplace.model.VM;
+import org.btrplace.model.view.ModelView;
 
 import java.util.*;
 

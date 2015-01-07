@@ -12,7 +12,7 @@ import java.util.List;
 
 import choco.kernel.common.logging.ChocoLogging;
 import choco.kernel.common.util.iterators.DisposableIntIterator;
-import entropy.configuration.*;
+import org.btrplace.configuration.*;
 
 import org.apache.log4j.Logger;
 import f4g.optimizer.entropy.configuration.F4GNode;

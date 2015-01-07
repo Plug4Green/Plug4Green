@@ -11,15 +11,14 @@ import static solver.constraints.IntConstraintFactory.*;
 import static solver.variables.VariableFactory.*;
 import util.tools.StringUtils;
 
-import btrplace.model.Model;
-import btrplace.model.Node;
-import btrplace.model.VM;
-import btrplace.model.constraint.Constraint;
-import btrplace.solver.choco.ReconfigurationProblem;
-import btrplace.solver.choco.constraint.ChocoConstraint;
-import btrplace.solver.choco.constraint.ChocoConstraintBuilder;
-import btrplace.solver.choco.extensions.FastIFFEq;
-import btrplace.solver.choco.extensions.FastImpliesEq;
+import org.btrplace.model.Model;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
+import org.btrplace.model.constraint.Constraint;
+import org.btrplace.scheduler.choco.ReconfigurationProblem;
+import org.btrplace.scheduler.choco.constraint.ChocoConstraint;
+import org.btrplace.scheduler.choco.constraint.ChocoConstraintBuilder;
+import org.btrplace.scheduler.choco.extensions.FastImpliesEq;
 
 import f4g.optimizer.entropy.plan.constraint.api.SpareNodes;
 

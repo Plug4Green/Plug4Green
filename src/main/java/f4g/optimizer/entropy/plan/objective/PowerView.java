@@ -17,10 +17,9 @@
 
 package f4g.optimizer.entropy.plan.objective;
 
-import btrplace.model.Node;
-import btrplace.model.VM;
-import btrplace.model.view.ModelView;
-import btrplace.model.view.ShareableResource;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
+import org.btrplace.model.view.ModelView;
 
 import java.util.*;
 

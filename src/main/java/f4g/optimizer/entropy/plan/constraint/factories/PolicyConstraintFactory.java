@@ -25,9 +25,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.log4j.Logger;
 
-import btrplace.model.Mapping;
-import btrplace.model.constraint.Root;
-import btrplace.model.constraint.SatConstraint;
+import org.btrplace.model.Mapping;
+import org.btrplace.model.constraint.Root;
+import org.btrplace.model.constraint.SatConstraint;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.optimizer.entropy.NamingService;
@@ -48,9 +48,9 @@ import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
 
-import btrplace.model.Model;
-import btrplace.model.Node;
-import btrplace.model.VM;
+import org.btrplace.model.Model;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
 /**
  * {To be completed; use html notation, if necessary}
  * 
@@ -241,7 +241,7 @@ public class PolicyConstraintFactory {
 
 				if (vms.size() != 0) {
 					log.debug("Adding F4GDelayBetweenMove constraint");
-					v.addAll(Root.newRoot(vms));
+					v.addAll(Root.newRoots(vms));
 				}
 			} catch (DatatypeConfigurationException e1) {
 				log.error("Exception", e1);

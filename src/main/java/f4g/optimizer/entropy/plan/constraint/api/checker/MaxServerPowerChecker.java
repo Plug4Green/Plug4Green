@@ -5,10 +5,9 @@ package f4g.optimizer.entropy.plan.constraint.api.checker;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.constraint.api.MaxServerPower;
 import f4g.optimizer.entropy.plan.objective.PowerView;
-import btrplace.model.Model;
-import btrplace.model.Node;
-import btrplace.model.constraint.Ban;
-import btrplace.model.constraint.checker.AllowAllConstraintChecker;
+import org.btrplace.model.Model;
+import org.btrplace.model.Node;
+import org.btrplace.model.constraint.AllowAllConstraintChecker;
 
 /**
  */

@@ -2,12 +2,12 @@
 package f4g.optimizer.entropy.plan.action;
 
 
-import btrplace.model.Node;
-import btrplace.model.VM;
-import btrplace.plan.event.Action;
-import btrplace.plan.event.BootNode;
-import btrplace.plan.event.MigrateVM;
-import btrplace.plan.event.ShutdownNode;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
+import org.btrplace.plan.event.Action;
+import org.btrplace.plan.event.BootNode;
+import org.btrplace.plan.event.MigrateVM;
+import org.btrplace.plan.event.ShutdownNode;
 import f4g.commons.controller.IController;
 import f4g.optimizer.entropy.NamingService;
 import f4g.schemas.java.metamodel.FIT4GreenType;

@@ -18,8 +18,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import btrplace.model.Mapping;
-import btrplace.model.constraint.SatConstraint;
+import org.btrplace.model.Mapping;
+import org.btrplace.model.constraint.SatConstraint;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.schemas.java.constraints.optimizerconstraints.Ban;
 import f4g.schemas.java.constraints.optimizerconstraints.Capacity;
@@ -34,8 +34,8 @@ import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint;
 
-import btrplace.model.Node;
-import btrplace.model.VM;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
 /**
  * Class containing all methods and parameters needed to add placement
  * constraints read from the input file to the optimizer

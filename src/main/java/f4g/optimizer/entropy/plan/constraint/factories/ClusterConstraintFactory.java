@@ -20,11 +20,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import btrplace.model.Node;
-import btrplace.model.Model;
-import btrplace.model.VM;
-import btrplace.model.constraint.Fence;
-import btrplace.model.constraint.SatConstraint;
+import org.btrplace.model.Node;
+import org.btrplace.model.Model;
+import org.btrplace.model.VM;
+import org.btrplace.model.constraint.Fence;
+import org.btrplace.model.constraint.SatConstraint;
 import f4g.schemas.java.allocation.CloudVmAllocationType;
 import f4g.schemas.java.allocation.RequestType;
 import f4g.schemas.java.allocation.TraditionalVmAllocationType;
@@ -86,7 +86,7 @@ public class ClusterConstraintFactory extends ConstraintFactory {
 					vms.addAll(map.getRunningVMs(node));
 				}
 				if (vms.size() > 0 && nodes.size() > 0) {
-					v.addAll(Fence.newFences(vms, nodes));
+					v.addAll(Fence.newFence(vms, nodes));
 				}	
 			}
 		} catch (Exception e) {
@@ -164,7 +164,7 @@ public class ClusterConstraintFactory extends ConstraintFactory {
 				}
 			}		
 			if (vms.size() > 0 && nodes.size() > 0) {
-				v.addAll(Fence.newFences(vms, nodes));
+				v.addAll(Fence.newFence(vms, nodes));
 			}
 			if (nodes.size() == 0) {
 				log.warn("Allocation on a cluster with no servers or all servers overloaded!");

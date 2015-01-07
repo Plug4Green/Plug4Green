@@ -1,13 +1,11 @@
 
 package f4g.optimizer.entropy.plan.action;
 
-import java.util.List;
-
 import javax.xml.bind.JAXBElement;
 
-import btrplace.model.Node;
-import btrplace.model.VM;
-import btrplace.plan.event.Action;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
+import org.btrplace.plan.event.Action;
 
 import f4g.commons.controller.IController;
 import f4g.optimizer.entropy.NamingService;

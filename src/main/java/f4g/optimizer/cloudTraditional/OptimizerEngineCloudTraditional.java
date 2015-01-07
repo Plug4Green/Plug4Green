@@ -74,21 +74,20 @@ import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType.Cluster;
 
-import btrplace.plan.DependencyBasedPlanApplier;
-import btrplace.plan.ReconfigurationPlan;
-import btrplace.plan.TimeBasedPlanApplier;
-import btrplace.plan.event.Action;
-import btrplace.plan.event.BootVM;
-import btrplace.solver.SolverException;
-import btrplace.solver.choco.ChocoReconfigurationAlgorithm;
-import btrplace.solver.choco.DefaultChocoReconfigurationAlgorithm;
-import btrplace.model.DefaultModel;
-import btrplace.model.Mapping;
-import btrplace.model.Model;
-import btrplace.model.Node;
-import btrplace.model.VM;
-import btrplace.model.constraint.Running;
-import btrplace.model.constraint.SatConstraint;
+import org.btrplace.plan.DependencyBasedPlanApplier;
+import org.btrplace.plan.ReconfigurationPlan;
+import org.btrplace.plan.TimeBasedPlanApplier;
+import org.btrplace.plan.event.Action;
+import org.btrplace.plan.event.BootVM;
+import org.btrplace.scheduler.choco.ChocoScheduler;
+import org.btrplace.scheduler.choco.DefaultChocoScheduler;
+import org.btrplace.model.DefaultModel;
+import org.btrplace.model.Mapping;
+import org.btrplace.model.Model;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
+import org.btrplace.model.constraint.Running;
+import org.btrplace.model.constraint.SatConstraint;
 
 /**
  * This class contains the algorithm for Cloud computing.
@@ -358,7 +357,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			confAdapter.addVMViews(VMtoAllocate, (CloudVmAllocationType) request, model); //TODO generalize
 		}
 		
-		ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
+		ChocoScheduler cra = new DefaultChocoScheduler();
 		registerF4GConstraints(cra);
 		cra.setVerbosity(3);
 		cra.doOptimize(true);
@@ -376,14 +375,14 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		    } else {
 		    	return Optional.absent();
 		    }
-	    } catch (SolverException ex) {
+	    } catch (Exception ex) {
 		    System.out.println("computePlan exception: " + ex.getLocalizedMessage());
 		    return Optional.absent();
 		}
 	}
 			 
 			
-	public void registerF4GConstraints(ChocoReconfigurationAlgorithm cra) {
+	public void registerF4GConstraints(ChocoScheduler cra) {
 		
 		cra.getConstraintMapper().register(new CPowerObjective.Builder());
 		cra.getConstraintMapper().register(new CNoStateChange.Builder());
@@ -443,7 +442,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		
 		List<AbstractBaseActionType> actions = new ArrayList<AbstractBaseActionType>();
 		
-        ChocoReconfigurationAlgorithm cra = new DefaultChocoReconfigurationAlgorithm();
+        ChocoScheduler cra = new DefaultChocoScheduler();
         
         try {
             ReconfigurationPlan plan = cra.solve(model, cstrs, new PowerObjective());
@@ -463,7 +462,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
     			}    			 
     		}
             
-        } catch (SolverException ex) {
+        } catch (Exception ex) {
             System.err.println(ex.getMessage());            
         }
 		

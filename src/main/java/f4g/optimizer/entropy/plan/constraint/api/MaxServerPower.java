@@ -1,22 +1,13 @@
 package f4g.optimizer.entropy.plan.constraint.api;
 
-import btrplace.model.Node;
-import btrplace.model.VM;
-import btrplace.model.constraint.SatConstraint;
-import btrplace.model.constraint.checker.SatConstraintChecker;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
+import org.btrplace.model.constraint.SatConstraint;
 
 import java.util.Collection;
 import java.util.Collections;
 
-import f4g.optimizer.entropy.plan.constraint.api.checker.MaxServerPowerChecker;
 
-
-/**
- * A constraint that enforces a certain number of "spare" nodes.
- * A spare node is a node online, but with no workload.
- * 
- * @see SatConstraint
- */
 public class MaxServerPower extends SatConstraint {
 
     private int maxServerPower;
@@ -46,10 +37,10 @@ public class MaxServerPower extends SatConstraint {
         return !b;
     }
 
-    @Override
-    public SatConstraintChecker getChecker() {
-        return new MaxServerPowerChecker(this);
-    }
+//    @Override
+//    public SatConstraintChecker getChecker() {
+//        return new MaxServerPowerChecker(this);
+//    }
 
     public int getMaxServerPower() {
 		return maxServerPower;

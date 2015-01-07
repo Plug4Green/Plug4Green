@@ -1,23 +1,8 @@
-/**
-* ============================== Header ============================== 
-* file:          Utils.java
-* project:       FIT4Green/Optimizer
-* created:       26 nov. 2010 by cdupont
-* last modified: $LastChangedDate: 2012-04-27 14:52:52 +0200 (vie, 27 abr 2012) $ by $LastChangedBy: f4g.cnit $
-* revision:      $LastChangedRevision: 1383 $
-* 
-* short description:
-*   utility fonctions to fetch the model 
-*   
-* ============================= /Header ==============================
-*/
-
 package f4g.optimizer.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -51,9 +36,9 @@ import org.apache.commons.jxpath.JXPathNotFoundException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import btrplace.model.Mapping;
-import btrplace.model.Node;
+import org.btrplace.model.Node;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
@@ -841,7 +826,40 @@ public class Utils {
 		
 	}
 	
-
+	//TODO simplified versions of accessors
+	public static FrequencyType getCPUFrequency(ServerType server) {
+		return server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getFrequency();
+	}
+	
+	public static Optional<FrequencyType> getGPUFrequency(ServerType server) {
+		if(server.getMainboard().get(0).getGPU() != null) {
+			return Optional.of(server.getMainboard().get(0).getGPU().get(0).getCoreFrequency());
+		} else {
+			return Optional.absent();
+		}
+		
+	}
+	
+	public static StorageCapacityType getHDDCapacty(ServerType server) {
+		return server.getMainboard().get(0).getHardDisk().get(0).getStorageCapacity();
+	}
+	
+	public static Optional<RAIDLevelType> getRAIDLevel(ServerType server) {
+		if(server.getMainboard().get(0).getHardwareRAID().get(0) != null) {
+			return Optional.of(server.getMainboard().get(0).getHardwareRAID().get(0).getLevel());
+		} else {
+			return Optional.absent();
+		}
+	}
+	
+	public static Optional<BandwidthType> getBandwidth(ServerType server) {
+		if(server.getMainboard().get(0).getEthernetNIC().get(0).getProcessingBandwidth() != null) {
+			return Optional.of(server.getMainboard().get(0).getEthernetNIC().get(0).getProcessingBandwidth());
+		} else {
+			return Optional.absent();
+		}
+	}
+	
 	public static boolean initLogger(String pathName) {
 				
 		try {

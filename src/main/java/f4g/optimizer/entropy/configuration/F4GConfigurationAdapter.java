@@ -2,25 +2,20 @@ package f4g.optimizer.entropy.configuration;
 
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
-import btrplace.model.Model;
-import btrplace.model.Node;
-import btrplace.model.VM;
-import btrplace.model.view.ModelView;
-import btrplace.model.view.ShareableResource;
+import org.btrplace.model.Model;
+import org.btrplace.model.Node;
+import org.btrplace.model.VM;
+import org.btrplace.model.view.ShareableResource;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.plan.objective.PowerView;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.allocation.CloudVmAllocationType;
-import f4g.schemas.java.allocation.RequestType;
-import f4g.schemas.java.allocation.TraditionalVmAllocationType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType.VMType;
 import f4g.schemas.java.metamodel.CoreType;
