@@ -197,6 +197,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		
 		//enough CPU: New VM should be allocated on first server		
 		assertEquals("id100000", ((CloudVmAllocationResponseType) response.getResponse().getValue()).getNodeId());
+		//assertEquals(0, getPowerOns().size());
 		
 		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVCpus().setValue(2);
 
@@ -204,7 +205,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		
 		//not enough CPU: VMs now need 2 CPUs
 		assertNull(response.getResponse());
-		
+				
 	}
 
 	/**
