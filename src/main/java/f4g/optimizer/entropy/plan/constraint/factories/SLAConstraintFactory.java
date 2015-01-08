@@ -194,40 +194,42 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 //			}
 //		}
 		
-		// Max Server CPU Load			
-		if (type.getMaxServerCPULoad() != null && type.getMaxServerCPULoad().getValue() != 0) {
-			if (type.getMaxServerCPULoad().getPriority() >= minPriority) {
-				v.add(new F4GCPUConstraint(nodes, (double) type.getMaxServerCPULoad().getValue()));
-			}
-		}
+//		// Max Server CPU Load			
+//		if (type.getMaxServerCPULoad() != null && type.getMaxServerCPULoad().getValue() != 0) {
+//			if (type.getMaxServerCPULoad().getPriority() >= minPriority) {
+//				v.add(new F4GCPUConstraint(nodes, (double) type.getMaxServerCPULoad().getValue()));
+//			}
+//		}
+//		
+//		// Memory Overbooking on Server Level
+//		if (type.getMaxVRAMperPhyRAM() != null && type.getMaxVRAMperPhyRAM().getValue() != 0) {
+//			if (type.getMaxVRAMperPhyRAM().getPriority() >= minPriority) {
+//				v.add(new F4GMemoryOverbookingConstraint(nodes,	model, (double) type.getMaxVRAMperPhyRAM().getValue(), clusters));
+//			}
+//		}
+//		
+//		// CPU Overbooking on Cluster Level
+//		if (type.getMaxServerAvgVCPUperCore() != null && type.getMaxServerAvgVCPUperCore().getValue() != 0) {
+//			if (type.getMaxServerAvgVCPUperCore().getPriority() >= minPriority) {
+//					v.add(new F4GAvgCPUOverbooking(nodes, (double) type.getMaxServerAvgVCPUperCore().getValue(), model));						
+//			}
+//		}
+//		
+//		// Memory Overbooking on Cluster Level
+//		if (type.getMaxServerAvgVRAMperPhyRAM() != null && type.getMaxServerAvgVRAMperPhyRAM().getValue() != 0) {
+//			if (type.getMaxServerAvgVRAMperPhyRAM().getPriority() >= minPriority) {
+//				v.add(new F4GAvgMemoryOverbooking(nodes, (double) type.getMaxServerAvgVRAMperPhyRAM().getValue(), model));
+//			}
+//		}
+//		
+//		// Max VMs per Server
+//		if (type.getMaxVMperServer() != null && type.getMaxVMperServer().getValue() != 0) {
+//			if (type.getMaxVMperServer().getPriority() >= minPriority) {
+//				v.add(new F4GCapacity(nodes, type.getMaxVMperServer().getValue()));
+//			}
+//		}
 		
-		// Memory Overbooking on Server Level
-		if (type.getMaxVRAMperPhyRAM() != null && type.getMaxVRAMperPhyRAM().getValue() != 0) {
-			if (type.getMaxVRAMperPhyRAM().getPriority() >= minPriority) {
-				v.add(new F4GMemoryOverbookingConstraint(nodes,	model, (double) type.getMaxVRAMperPhyRAM().getValue(), clusters));
-			}
-		}
-		
-		// CPU Overbooking on Cluster Level
-		if (type.getMaxServerAvgVCPUperCore() != null && type.getMaxServerAvgVCPUperCore().getValue() != 0) {
-			if (type.getMaxServerAvgVCPUperCore().getPriority() >= minPriority) {
-					v.add(new F4GAvgCPUOverbooking(nodes, (double) type.getMaxServerAvgVCPUperCore().getValue(), model));						
-			}
-		}
-		
-		// Memory Overbooking on Cluster Level
-		if (type.getMaxServerAvgVRAMperPhyRAM() != null && type.getMaxServerAvgVRAMperPhyRAM().getValue() != 0) {
-			if (type.getMaxServerAvgVRAMperPhyRAM().getPriority() >= minPriority) {
-				v.add(new F4GAvgMemoryOverbooking(nodes, (double) type.getMaxServerAvgVRAMperPhyRAM().getValue(), model));
-			}
-		}
-		
-		// Max VMs per Server
-		if (type.getMaxVMperServer() != null && type.getMaxVMperServer().getValue() != 0) {
-			if (type.getMaxVMperServer().getPriority() >= minPriority) {
-				v.add(new F4GCapacity(nodes, type.getMaxVMperServer().getValue()));
-			}
-		}
+		return v;
 	}
 
 	private List<SatConstraint> getSecurity(SecurityConstraintsType type, Set<VM> vms, Set<Node> nodes) {
@@ -266,7 +268,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 					filteredNodes.add(nodeNames.getElement(n.getFrameworkID()));
 				}
 			}
-			v.addAll(Fence.newFences(vms, filteredNodes));
+			v.addAll(Fence.newFence(vms, filteredNodes));
 		}
 		
 		// GPU Frequency of the node
@@ -277,7 +279,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 					filteredNodes.add(nodeNames.getElement(n.getFrameworkID()));
 				}
 			}
-			v.addAll(Fence.newFences(vms, filteredNodes));
+			v.addAll(Fence.newFence(vms, filteredNodes));
 		}
 		
 		// Harddisk capacity of the node
@@ -288,7 +290,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 					filteredNodes.add(nodeNames.getElement(n.getFrameworkID()));
 				}
 			}
-			v.addAll(Fence.newFences(vms, filteredNodes));
+			v.addAll(Fence.newFence(vms, filteredNodes));
 		}
 		
 //		// RAM space for vms guaranteed
@@ -319,7 +321,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 					filteredNodes.add(nodeNames.getElement(n.getFrameworkID()));
 				}
 			}
-			v.addAll(Fence.newFences(vms, filteredNodes));
+			v.addAll(Fence.newFence(vms, filteredNodes));
 		}
 		return v;
 	}
