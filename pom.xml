@@ -176,10 +176,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <!--The Compiler Plugin is used to compile the sources of your project-->
-        <version>2.3.2</version>
+        <version>3.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
           <excludes>
             <exclude>f4g/f4gGui/**</exclude>
             <exclude>f4g/communicatorEni/**</exclude>
