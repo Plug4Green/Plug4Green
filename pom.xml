@@ -11,12 +11,17 @@
     <dependency>
       <groupId>org.btrplace</groupId>
       <artifactId>scheduler-api</artifactId>
-      <version>0.39</version>
+      <version>0.40</version>
     </dependency>
     <dependency>
       <groupId>org.btrplace</groupId>
       <artifactId>scheduler-choco</artifactId>
-      <version>0.39</version>
+      <version>0.40</version>
+    </dependency>
+    <dependency>
+      <groupId>org.choco-solver</groupId>
+      <artifactId>choco-solver</artifactId>
+      <version>3.3.0</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -322,10 +327,6 @@
     <repository>
       <id>xom</id>
       <url>http://maven.repository.redhat.com/techpreview/eap6/6.0.0/maven-repository/xom/xom/1.2.7-redhat-1/</url>
-    </repository>
-    <repository>
-      <id>entropy.repos</id>
-      <url>http://www.emn.fr/z-info/entropy/repository</url>
     </repository>
   </repositories>
 </project>
