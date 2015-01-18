@@ -8,6 +8,15 @@ import org.btrplace.scheduler.choco.ReconfigurationProblem;
 import org.btrplace.scheduler.choco.transition.NodeTransition;
 import org.btrplace.scheduler.choco.constraint.CObjective;
 import org.btrplace.scheduler.choco.constraint.ChocoConstraintBuilder;
+import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.IntConstraintFactory;
+import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
+import org.chocosolver.solver.variables.BoolVar;
+import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.VariableFactory;
+import org.chocosolver.solver.constraints.ICF;
+import org.chocosolver.solver.variables.VF;
+
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
 import f4g.optimizer.utils.Pair;
@@ -19,16 +28,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-
-
-import solver.variables.BoolVar;
-import solver.variables.IntVar;
-import solver.Solver;
-
-import solver.variables.VariableFactory;
-import solver.constraints.IntConstraintFactory;
-import static solver.variables.VariableFactory.*;
-import static solver.constraints.IntConstraintFactory.*;
 
 public class CPowerObjective implements CObjective {
   
@@ -65,14 +64,18 @@ public class CPowerObjective implements CObjective {
     	
     	//sum the power Idle, the power for the VMs and extra power for the network
     	IntVar[] pows = new  IntVar[]{getPVMs(rp), getPIdle(rp)}; //, getPNetwork(m)
-        solver.post(sum(pows, globalPower));
+        solver.post(ICF.sum(pows, globalPower));
         
-        solver.post(times(globalPower, fixed((int)reconfTime/1000, solver), stableEnergy));
+        solver.post(ICF.times(globalPower, VF.fixed((int)reconfTime/1000, solver), stableEnergy));
     	//this equation represents the energy spent between two reconfigurations (that we'll try to minimize).
     	IntVar[] energies = new  IntVar[]{stableEnergy, getEMove(rp), getEOnOff(rp)};
-    	solver.post(sum(energies, reconfEnergy));
+    	solver.post(ICF.sum(energies, reconfEnergy));
      
         rp.setObjective(true, reconfEnergy);
+        
+        injectHeuristic(rp);
+        postCostConstraints();
+        
         return true;
     }
   	
@@ -85,8 +88,8 @@ public class CPowerObjective implements CObjective {
     	Collections.addAll(nodes, rp.getNodes()); 
     	int[] powerIdles =  ArrayUtils.toPrimitive(powerIdleView.getPowers(nodes).toArray(new Integer[nodes.size()]));
     	
-    	IntVar PIdleTotal = bounded("PIdleTotal", 0, Integer.MAX_VALUE / 100, solver);
-    	solver.post(scalar(getStates(rp), powerIdles, PIdleTotal));
+    	IntVar PIdleTotal = VF.bounded("PIdleTotal", 0, Integer.MAX_VALUE / 100, solver);
+    	solver.post(ICF.scalar(getStates(rp), powerIdles, PIdleTotal));
         
         return PIdleTotal; 
     }
@@ -101,8 +104,8 @@ public class CPowerObjective implements CObjective {
     	Collections.addAll(nodes, rp.getNodes()); 
     	int[] powerperVMs =  ArrayUtils.toPrimitive(powerPerVMView.getPowers(nodes).toArray(new Integer[nodes.size()]));
     	
-    	IntVar PowerperVMsTotal = bounded("PowerperVMsTotal", 0, Integer.MAX_VALUE / 100, solver);
-    	solver.post(scalar(rp.getNbRunningVMs(), powerperVMs, PowerperVMsTotal));
+    	IntVar PowerperVMsTotal = VF.bounded("PowerperVMsTotal", 0, Integer.MAX_VALUE / 100, solver);
+    	solver.post(ICF.scalar(rp.getNbRunningVMs(), powerperVMs, PowerperVMsTotal));
         
     	System.out.print(PowerperVMsTotal);
         return PowerperVMsTotal; 
@@ -114,8 +117,8 @@ public class CPowerObjective implements CObjective {
     	int[] EMoveperVMs = new int[rp.getVMs().length];
         Arrays.fill(EMoveperVMs, EnergyMove); 
         
-    	IntVar EMove = bounded("EMove", 0, Integer.MAX_VALUE / 100, solver);
-    	solver.post(scalar(getMoves(rp), EMoveperVMs, EMove));
+    	IntVar EMove = VF.bounded("EMove", 0, Integer.MAX_VALUE / 100, solver);
+    	solver.post(ICF.scalar(getMoves(rp), EMoveperVMs, EMove));
         return EMove;               
     }
     
@@ -130,12 +133,12 @@ public class CPowerObjective implements CObjective {
     	
         Pair<BoolVar[], BoolVar[]> switchs = getSwitchOnOffs(rp);
         
-		IntVar EOnTot = bounded("EOnTot", 0, Integer.MAX_VALUE / 100, solver);
-    	solver.post(scalar(switchs.getFirst(), EOn, EOnTot));
+		IntVar EOnTot = VF.bounded("EOnTot", 0, Integer.MAX_VALUE / 100, solver);
+    	solver.post(ICF.scalar(switchs.getFirst(), EOn, EOnTot));
     	IntVar EOffTot = VariableFactory.bounded("EOffTot", 0, Integer.MAX_VALUE / 100, solver);
-    	solver.post(scalar(switchs.getSecond(), EOff, EOffTot));
-    	IntVar ETot = bounded("ETot", 0, Integer.MAX_VALUE / 100, solver);
-    	solver.post(IntConstraintFactory.sum(new IntVar[]{EOnTot,EOffTot}, ETot));
+    	solver.post(ICF.scalar(switchs.getSecond(), EOff, EOffTot));
+    	IntVar ETot = VF.bounded("ETot", 0, Integer.MAX_VALUE / 100, solver);
+    	solver.post(ICF.sum(new IntVar[]{EOnTot,EOffTot}, ETot));
     	return ETot;
     }
     
@@ -151,10 +154,10 @@ public class CPowerObjective implements CObjective {
 			//if the node if offline, it will be switched on if the future state is on, and vice-versa
 			if(rp.getSourceModel().getMapping().isOffline(node)) {
 				switchOns[i] = futurState;
-				switchOffs[i] = zero(rp.getSolver());
+				switchOffs[i] = VF.zero(rp.getSolver());
 			} else	{
-				switchOffs[i] = not(futurState);
-				switchOns[i] = zero(rp.getSolver());
+				switchOffs[i] = VF.not(futurState);
+				switchOns[i] = VF.zero(rp.getSolver());
 			}
 		   i++;
 		}
@@ -179,13 +182,20 @@ public class CPowerObjective implements CObjective {
         int i = 0;
         for (VM vm : rp.getVMs()) {        	
           	//A boolean variable to indicate whether the node is used or not
-            moves[i] = bool("moves(" + vm.id() + ")", solver);
+            moves[i] = VF.bool("moves(" + vm.id() + ")", solver);
             IntVar hoster = rp.getVMAction(vm).getDSlice().getHoster();
-            moves[i] = arithm(hoster, "=", rp.getCurrentVMLocation(i)).reif();
+            moves[i] = ICF.arithm(hoster, "=", rp.getCurrentVMLocation(i)).reif();
             i++;
         }
         return moves;
 	}   
+    
+    private void injectHeuristic(ReconfigurationProblem p) {
+    
+        List<AbstractStrategy> strats = new ArrayList<>();
+        
+        
+    }
     
     //Computes the power of the network
 //    public IntVar getPNetwork(ReconfigurationProblem m) {
