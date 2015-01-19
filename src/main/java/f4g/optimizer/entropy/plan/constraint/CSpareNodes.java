@@ -4,13 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import solver.Solver;
-import solver.variables.BoolVar;
-import solver.variables.IntVar;
-import static solver.constraints.IntConstraintFactory.*;
-import static solver.variables.VariableFactory.*;
-import util.tools.StringUtils;
-
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
 import org.btrplace.model.VM;
@@ -19,6 +12,12 @@ import org.btrplace.scheduler.choco.ReconfigurationProblem;
 import org.btrplace.scheduler.choco.constraint.ChocoConstraint;
 import org.btrplace.scheduler.choco.constraint.ChocoConstraintBuilder;
 import org.btrplace.scheduler.choco.extensions.FastImpliesEq;
+import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.variables.BoolVar;
+import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.util.tools.StringUtils;
+import org.chocosolver.solver.variables.VF;
+import org.chocosolver.solver.constraints.ICF;
 
 import f4g.optimizer.entropy.plan.constraint.api.SpareNodes;
 
@@ -47,18 +46,18 @@ public class CSpareNodes implements ChocoConstraint {
         	BoolVar state = rp.getNodeAction(node).getState();
         	IntVar NbVms = rp.getNbRunningVMs()[rp.getNode(node)];
     	        	    
-        	spareNode[i] = bool(StringUtils.randomName(), solver);
+        	spareNode[i] = VF.bool(StringUtils.randomName(), solver);
     	       	    
     	    //if the server is off (state = false), then it is not free
-    	    solver.post(new FastImpliesEq(not(state), spareNode[i], 0));
+    	    solver.post(new FastImpliesEq(VF.not(state), spareNode[i], 0));
     	    //if the server hosts VMs, then it is not free
-    	    solver.post(new FastImpliesEq(arithm(NbVms, "!=", 0).reif(), spareNode[i], 0));
+    	    solver.post(new FastImpliesEq(ICF.arithm(NbVms, "!=", 0).reif(), spareNode[i], 0));
     	    i++;
         }
         
-        IntVar spareNodes = bounded("freeNumber", 0, nodes.size(), solver);
-        solver.post(sum(spareNode, spareNodes));
-        solver.post(arithm(spareNodes, ">=", constraint.getMinSpareNodes()));
+        IntVar spareNodes = VF.bounded("freeNumber", 0, nodes.size(), solver);
+        solver.post(ICF.sum(spareNode, spareNodes));
+        solver.post(ICF.arithm(spareNodes, ">=", constraint.getMinSpareNodes()));
         
         return true;
     }

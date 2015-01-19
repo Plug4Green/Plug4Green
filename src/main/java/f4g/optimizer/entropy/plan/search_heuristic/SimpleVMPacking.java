@@ -4,22 +4,9 @@
 //
 //import java.util.Collections;
 //
-//import org.apache.log4j.Logger;
-//import f4g.optimizer.entropy.configuration.F4GNode;
-//import f4g.optimizer.entropy.configuration.F4GNodeComparator;
-//import f4g.optimizer.entropy.configuration.F4GResourcePicker;
-// 
-//import choco.kernel.memory.IStateInt;
-//import choco.kernel.solver.ContradictionException;
-//import choco.kernel.solver.branch.AbstractLargeIntBranchingStrategy;
-//import choco.kernel.solver.search.IntBranchingDecision;
-//import choco.kernel.solver.variables.integer.IntDomainVar;
-//import choco.cp.solver.variables.integer.BooleanVarImpl;
-//import entropy.configuration.Configuration;
-//import entropy.configuration.ManagedElementSet;
-//import entropy.configuration.Node;
-//import entropy.configuration.VirtualMachine;
-//import entropy.plan.choco.ReconfigurationProblem;
+//import org.btrplace.scheduler.choco.ReconfigurationProblem;
+//import org.chocosolver.memory.IStateInt;
+//
 //
 //public class SimpleVMPacking extends AbstractLargeIntBranchingStrategy {
 //	
@@ -27,11 +14,11 @@
 //    
 //    ReconfigurationProblem pb;
 //    IntDomainVar[] hosters;
-//    ManagedElementSet<Node> nodes;
+//    Set<Node> nodes;
 //    IStateInt sourceServer;
 //    IStateInt targetServer;
 //
-//	public SimpleVMPacking(ReconfigurationProblem myPb, ManagedElementSet<Node> myNodes) {
+//	public SimpleVMPacking(ReconfigurationProblem myPb, Set<Node> myNodes) {
 //
 //    	log = Logger.getLogger(this.getClass().getName());
 //		pb = myPb;
