@@ -11,17 +11,12 @@
     <dependency>
       <groupId>org.btrplace</groupId>
       <artifactId>scheduler-api</artifactId>
-      <version>0.40</version>
+      <version>0.41-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.btrplace</groupId>
       <artifactId>scheduler-choco</artifactId>
-      <version>0.40</version>
-    </dependency>
-    <dependency>
-      <groupId>org.choco-solver</groupId>
-      <artifactId>choco-solver</artifactId>
-      <version>3.3.0</version>
+      <version>0.41-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -150,7 +145,6 @@
           <strict>false</strict>
           <extension>true</extension>
           <schemaDirectory>${basedir}/src/main/resources/schemas</schemaDirectory>
-          <outputDirectory>${basedir}/src/main/java</outputDirectory>
           <args>
             <arg>-Xvisitor</arg>
             <arg>-Xvisitor-package:com.massfords.humantask</arg>
@@ -328,5 +322,10 @@
       <id>xom</id>
       <url>http://maven.repository.redhat.com/techpreview/eap6/6.0.0/maven-repository/xom/xom/1.2.7-redhat-1/</url>
     </repository>
+      <repository>
+          <id>sonatype-snapshots</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          <layout>default</layout>
+      </repository>
   </repositories>
 </project>

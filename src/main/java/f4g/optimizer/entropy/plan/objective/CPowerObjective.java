@@ -1,16 +1,25 @@
 package f4g.optimizer.entropy.plan.objective;
 
+import org.btrplace.model.Mapping;
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
 import org.btrplace.model.VM;
 import org.btrplace.model.constraint.Constraint;
 import org.btrplace.scheduler.choco.ReconfigurationProblem;
+import org.btrplace.scheduler.choco.SliceUtils;
+import org.btrplace.scheduler.choco.constraint.mttr.*;
 import org.btrplace.scheduler.choco.transition.NodeTransition;
 import org.btrplace.scheduler.choco.constraint.CObjective;
 import org.btrplace.scheduler.choco.constraint.ChocoConstraintBuilder;
+import org.btrplace.scheduler.choco.transition.TransitionUtils;
+import org.btrplace.scheduler.choco.transition.VMTransition;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.IntConstraintFactory;
+import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
+import org.chocosolver.solver.search.strategy.selectors.variables.InputOrder;
 import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
+import org.chocosolver.solver.search.strategy.strategy.IntStrategy;
+import org.chocosolver.solver.search.strategy.strategy.StrategiesSequencer;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VariableFactory;
@@ -21,11 +30,7 @@ import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
 import f4g.optimizer.utils.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -73,7 +78,7 @@ public class CPowerObjective implements CObjective {
      
         rp.setObjective(true, reconfEnergy);
         
-        injectHeuristic(rp);
+        injectPlacementHeuristic(rp, reconfEnergy);
         postCostConstraints();
         
         return true;
@@ -188,13 +193,13 @@ public class CPowerObjective implements CObjective {
             i++;
         }
         return moves;
-	}   
-    
+	}
+
     private void injectHeuristic(ReconfigurationProblem p) {
-    
+
         List<AbstractStrategy> strats = new ArrayList<>();
-        
-        
+
+
     }
     
     //Computes the power of the network
@@ -255,6 +260,89 @@ public class CPowerObjective implements CObjective {
         @Override
         public CPowerObjective build(Constraint cstr) {
             return new CPowerObjective();
+        }
+    }
+
+    private void injectPlacementHeuristic(ReconfigurationProblem p, IntVar cost) {
+
+        Model mo = p.getSourceModel();
+        Mapping map = mo.getMapping();
+
+        OnStableNodeFirst schedHeuristic = new OnStableNodeFirst(p, this);
+
+        //Get the VMs to place
+        Set<VM> onBadNodes = new HashSet<>(p.getManageableVMs());
+
+        //Get the VMs that runs and have a pretty low chances to move
+        Set<VM> onGoodNodes = map.getRunningVMs(map.getOnlineNodes());
+        onGoodNodes.removeAll(onBadNodes);
+
+        VMTransition[] goodActions = p.getVMActions(onGoodNodes);
+        VMTransition[] badActions = p.getVMActions(onBadNodes);
+
+        Solver s = p.getSolver();
+
+        //Get the VMs to move for exclusion issue
+        Set<VM> vmsToExclude = new HashSet<>(p.getManageableVMs());
+        for (Iterator<VM> ite = vmsToExclude.iterator(); ite.hasNext(); ) {
+            VM vm = ite.next();
+            if (!(map.isRunning(vm) && p.getFutureRunningVMs().contains(vm))) {
+                ite.remove();
+            }
+        }
+        List<AbstractStrategy> strategies = new ArrayList<>();
+
+        Map<IntVar, VM> pla = VMPlacementUtils.makePlacementMap(p);
+        if (!vmsToExclude.isEmpty()) {
+            List<VMTransition> actions = new LinkedList<>();
+            //Get all the involved slices
+            for (VM vm : vmsToExclude) {
+                if (p.getFutureRunningVMs().contains(vm)) {
+                    actions.add(p.getVMAction(vm));
+                }
+            }
+            IntVar[] scopes = SliceUtils.extractHoster(TransitionUtils.getDSlices(actions));
+
+            strategies.add(new IntStrategy(scopes, new MovingVMs(p, map, actions), new RandomVMPlacement(p, pla, true)));
+        }
+
+        placeVMs(p, strategies, badActions, schedHeuristic, pla);
+        placeVMs(p, strategies, goodActions, schedHeuristic, pla);
+
+        //VMs to run
+/*        Set<VM> vmsToRun = new HashSet<>(map.getReadyVMs());
+        vmsToRun.removeAll(p.getFutureReadyVMs());
+
+        VMTransition[] runActions = p.getVMActions(vmsToRun);
+
+        placeVMs(strategies, runActions, schedHeuristic, pla);
+  */
+
+        if (p.getNodeActions().length > 0) {
+            //Boot some nodes if needed
+            strategies.add(new IntStrategy(TransitionUtils.getStarts(p.getNodeActions()), new InputOrder<>(), new IntDomainMin()));
+        }
+
+        ///SCHEDULING PROBLEM
+        MovementGraph gr = new MovementGraph(p);
+        strategies.add(new IntStrategy(SliceUtils.extractStarts(TransitionUtils.getDSlices(p.getVMActions())), new StartOnLeafNodes(p, gr), new IntDomainMin()));
+        strategies.add(new IntStrategy(schedHeuristic.getScope(), schedHeuristic, new IntDomainMin()));
+
+        //At this stage only it matters to plug the cost constraints
+        strategies.add(new IntStrategy(new IntVar[]{p.getEnd(), cost}, new InputOrder<>(), new IntDomainMin()));
+
+        s.getSearchLoop().set(new StrategiesSequencer(s.getEnvironment(), strategies.toArray(new AbstractStrategy[strategies.size()])));
+    }
+
+    /*
+     * Try to place the VMs associated on the actions in a random node while trying first to stay on the current node
+     */
+    private void placeVMs(ReconfigurationProblem rp, List<AbstractStrategy> strategies, VMTransition[] actions, OnStableNodeFirst schedHeuristic, Map<IntVar, VM> map) {
+        if (actions.length > 0) {
+            IntVar[] hosts = SliceUtils.extractHoster(TransitionUtils.getDSlices(actions));
+            if (hosts.length > 0) {
+                strategies.add(new IntStrategy(hosts, new HostingVariableSelector(schedHeuristic), new RandomVMPlacement(rp, map, true)));
+            }
         }
     }
 }

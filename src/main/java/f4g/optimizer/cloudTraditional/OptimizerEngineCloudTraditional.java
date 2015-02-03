@@ -359,12 +359,13 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		
 		ChocoScheduler cra = new DefaultChocoScheduler();
 		registerF4GConstraints(cra);
-		cra.setVerbosity(3);
+		//cra.setVerbosity(3);
 		cra.doOptimize(true);
 		cra.setTimeLimit(5);
 			
 		ReconfigurationPlan plan = null;
 		try {
+            //System.err.println(model);
 			plan = cra.solve(model, cstrs, new PowerObjective());
 		    if(plan != null) {
 		       	System.out.println("Time-based plan:");
@@ -378,7 +379,9 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	    } catch (Exception ex) {
 		    System.out.println("computePlan exception: " + ex.getLocalizedMessage());
 		    return Optional.absent();
-		}
+		} finally {
+            System.out.println(cra.getStatistics());
+        }
 	}
 			 
 			

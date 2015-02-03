@@ -49,3 +49,4 @@ Desktop.ini
 src/main/java/f4g/schemas/
 *.class
 
+.idea
