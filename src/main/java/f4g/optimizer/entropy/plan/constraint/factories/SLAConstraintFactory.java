@@ -27,9 +27,11 @@ import org.btrplace.model.Mapping;
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
 import org.btrplace.model.VM;
+import org.btrplace.model.constraint.Overbook;
 
 import f4g.optimizer.OptimizerEngine;
 import f4g.optimizer.entropy.NamingService;
+import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.constraint.api.MaxServerPower;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
@@ -179,13 +181,13 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 		}
 		
 		// Maximum vCPU per core
-//		if (type.getMaxVirtualCPUPerCore() != null) {
-//			if (type.getMaxVirtualCPUPerCore().getPriority() >= minPriority) {
-//				if (vms.size() != 0) {
-//					v.add(new F4GCPUOverbookingConstraint(nodes, (double) type.getMaxVirtualCPUPerCore().getValue()));
-//				}
-//			}
-//		}
+		if (type.getMaxVirtualCPUPerCore() != null) {
+			if (type.getMaxVirtualCPUPerCore().getPriority() >= minPriority) {
+				if (vms.size() != 0) {
+					v.addAll(Overbook.newOverbooks(nodes, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, (double) type.getMaxVirtualCPUPerCore().getValue()));
+				}
+			}
+		}
 		
 		// Max Virtual CPU Load per core
 //		if (type.getMaxVirtualLoadPerCore() != null && type.getMaxVirtualLoadPerCore().getValue() != 0) {
