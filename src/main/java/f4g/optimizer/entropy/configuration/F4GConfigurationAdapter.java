@@ -128,7 +128,7 @@ public class F4GConfigurationAdapter
 		
 		try {
 			VMTypeType.VMType SLA_VM = Util.findVMByName(request.getVmType(), currentVMType);
-			s.setConsumption(vm, SLA_VM.getCapacity().getVCpus().getValue());
+			s.setConsumption(vm, SLA_VM.getCapacity().getVCpus().getValue() * 100);
 		} catch (NoSuchElementException e1) {
 			log.error("VM name " + request.getVmType() + " could not be found in SLA");
 		}		
