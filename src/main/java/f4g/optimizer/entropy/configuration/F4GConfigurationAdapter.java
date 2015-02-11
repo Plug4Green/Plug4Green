@@ -171,7 +171,7 @@ public class F4GConfigurationAdapter
 		
 	}
 
-	private void putVMMemoryConsumption(VM vm, VirtualMachineType F4GVM, ShareableResource s) {
+	private void putVMMemoryConsumption(final VM vm, final VirtualMachineType F4GVM, ShareableResource s) {
 		
 		VMTypeType.VMType SLA_VM = null;
 		if(F4GVM.getCloudVmType() != null) {
@@ -186,7 +186,7 @@ public class F4GConfigurationAdapter
 		
 	}
 		
-	private void putServerCPUResource(Node n, ServerType server, ShareableResource s) {
+	private void putServerCPUResource(final Node n, final ServerType server, ShareableResource s) {
 		
 		ArrayList<CoreType> cores = Utils.getAllCores(server.getMainboard().get(0));
 		//CPU capacity is a percentage of one core. 4 cores = 400% CPU capacity
@@ -194,19 +194,19 @@ public class F4GConfigurationAdapter
 	
 	}
 
-	private void putServerMemoryResource(Node n, ServerType server, ShareableResource s) {
+	private void putServerMemoryResource(final Node n, final ServerType server, ShareableResource s) {
 		
 	     s.setCapacity(n, (int) Utils.getMemory(server) * 1024);		
 	
 	}
 	
-	private void putServerPowerIdleResource(Node n, ServerType server, PowerView s) {
+	private void putServerPowerIdleResource(final Node n, final ServerType server, PowerView s) {
 		
 	    s.setPowers(n, (int) getPIdle(server));		
 	
 	}
 	
-	private void putServerPowerPerVMResource(Node n, ServerType server, PowerView s) {
+	private void putServerPowerPerVMResource(final Node n, final ServerType server, PowerView s) {
 		
 		s.setPowers(n, (int) getPperVM(server));		
 	
