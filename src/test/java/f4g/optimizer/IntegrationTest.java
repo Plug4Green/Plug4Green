@@ -253,14 +253,12 @@ public class IntegrationTest extends OptimizerTest {
         List<ServerType> servers = Utils.getAllServers(model);
 
         //server 0 has less power usage
-        //servers.get(0).getMainboard().get(0).getCPU().get(0).getCore().get(0).setFrequencyMin(new FrequencyType(0.5));
-       // servers.get(0).getMainboard().get(0).getCPU().get(0).getCore().get(0).setFrequency(new FrequencyType(0.5));
-        servers.get(0).getMainboard().get(0).setPowerIdle(new PowerType(10));//.getCPU().get(0).getCore().get(0).setVoltage(new VoltageType(1));
+        servers.get(0).getMainboard().get(0).setPowerMax(new PowerType(10));
 
         optimizer.runGlobalOptimization(model);
       
         // going to the low power server
-        assertEquals("id100000", getMoves().get(0).getSourceNodeController());
+        assertEquals("id100000", getMoves().get(0).getDestNodeController());
 
     }
 
