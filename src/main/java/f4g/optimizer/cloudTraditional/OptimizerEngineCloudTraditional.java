@@ -358,6 +358,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		}
 		
 		ChocoScheduler cra = new DefaultChocoScheduler();
+		//register all F4G constraints and the objective
 		registerF4GConstraints(cra);
 		//cra.setVerbosity(3);
 		cra.doOptimize(true);

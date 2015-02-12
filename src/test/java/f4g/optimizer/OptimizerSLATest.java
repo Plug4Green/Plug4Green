@@ -189,16 +189,14 @@ public class OptimizerSLATest extends OptimizerTest {
 		assertEquals(0, getMoves().size()); //no Overbooking (==1) -> servers already full
 
 		// TEST 3 with overbooking setting = 2
-		optimizer.getSla().getSLA().get(0).getQoSConstraints()
-				.getMaxVirtualCPUPerCore().setValue((float) 2.0);
+		optimizer.getSla().getSLA().get(0).getQoSConstraints().getMaxVirtualCPUPerCore().setValue((float) 2.0);
 
 		optimizer.runGlobalOptimization(model);
 
 		assertEquals(8, getMoves().size()); 
 		
 		// TEST 4 with overbooking setting = 1.5
-		optimizer.getSla().getSLA().get(0).getQoSConstraints()
-				.getMaxVirtualCPUPerCore().setValue((float) 1.5);
+		optimizer.getSla().getSLA().get(0).getQoSConstraints().getMaxVirtualCPUPerCore().setValue((float) 1.5);
 
 		optimizer.runGlobalOptimization(model);
 
@@ -215,8 +213,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		vms.get(2).setCloudVmType("m1.xlarge");
 		vms.get(3).setCloudVmType("m1.xlarge");
 
-		optimizer.getSla().getSLA().get(0).getQoSConstraints()
-				.getMaxVirtualCPUPerCore().setValue((float) 2.0);
+		optimizer.getSla().getSLA().get(0).getQoSConstraints().getMaxVirtualCPUPerCore().setValue((float) 2.0);
 
 		optimizer.runGlobalOptimization(model);
 		
