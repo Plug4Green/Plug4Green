@@ -366,7 +366,8 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			
 		ReconfigurationPlan plan = null;
 		try {
-            //System.err.println(model);
+            System.err.println(model);
+            System.err.println(cstrs);
 			plan = cra.solve(model, cstrs, new PowerObjective());
 		    if(plan != null) {
 		       	System.out.println("Time-based plan:");
