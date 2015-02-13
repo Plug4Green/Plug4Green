@@ -330,7 +330,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 
 	private List<SatConstraint> getEnergy(EnergyConstraintsType energyConstraints,	Set<VM> vms, Set<Node> nodes) {
 		List<SatConstraint> v = new ArrayList<SatConstraint>();
-		if (energyConstraints.getMaxPowerServer().getPriority() >= minPriority) {
+		if (energyConstraints.getMaxPowerServer() != null && energyConstraints.getMaxPowerServer().getPriority() >= minPriority) {
 			v.add(new MaxServerPower(nodes, energyConstraints.getMaxPowerServer().getValue()));
 		}
 		return v;

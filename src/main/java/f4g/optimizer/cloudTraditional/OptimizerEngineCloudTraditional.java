@@ -21,9 +21,12 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+
 import org.apache.log4j.Logger;
+
 import com.google.common.base.Optional;
 
 import f4g.commons.controller.IController;
@@ -40,7 +43,7 @@ import f4g.optimizer.entropy.plan.constraint.CSpareNodes;
 import f4g.optimizer.entropy.plan.constraint.factories.ClusterConstraintFactory;
 import f4g.optimizer.entropy.plan.constraint.factories.ModelConstraintFactory;
 import f4g.optimizer.entropy.plan.constraint.factories.PolicyConstraintFactory;
-
+import f4g.optimizer.entropy.plan.constraint.factories.SLAConstraintFactory;
 import f4g.optimizer.entropy.plan.objective.CPowerObjective;
 import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
 import f4g.optimizer.utils.IOptimizerServer;
@@ -401,7 +404,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		List<SatConstraint> constraints = new LinkedList<SatConstraint>();
 
 		if (clusters != null) {
-//			queue.addAll(new SLAConstraintFactory(clusters, src, model, -1, serverGroups).createSLAConstraints());
+			constraints.addAll(new SLAConstraintFactory(clusters, model, F4Gmodel, -1, serverGroups).createSLAConstraints());
 			constraints.addAll(new ClusterConstraintFactory(clusters, model).createClusterConstraints());
 //			if (ct != null) {
 //				queue.add(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
