@@ -367,21 +367,20 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setCORE(4); 
 		
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-			
-		optimizer.setClusters(createDefaultCluster(8, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
+
 		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(100));
 		
-		//TEST 1
-		//8 VMS -> full servers
-				
-		//transferring VMs
+		//TEST 1		
+		//transferring VMs: server id100000 has 8 VMs, id200000 has zero 
 		List<VirtualMachineType> VMs0 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(0).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 		List<VirtualMachineType> VMs1 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 		VMs0.addAll(VMs1);
 		VMs1.clear();
 				
 		optimizer.runGlobalOptimization(model);
-		
+
+		//id100000 is too full, 4 VMs should move out
 		assertEquals(4, getMoves().size());
 			
 	}
