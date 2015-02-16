@@ -46,7 +46,7 @@ public class DisRequestRunJob extends DisRequest {
 				hostlist += "+" + hosts[i];
 			log.debug("hostlist: " +  hostlist);
 		}
-		disRequest.addHeader(RequestType.RUNJOB);
+		disRequest.addHeader(Request.RUNJOB);
 		disRequest.addString(jobId);
 		disRequest.addString(hostlist);
 		log.debug("Added destination: " +  hostlist);

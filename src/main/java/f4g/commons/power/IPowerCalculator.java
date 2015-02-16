@@ -1,20 +1,20 @@
 package f4g.commons.power;
 
 import f4g.commons.com.util.PowerData;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.SiteType;
-import f4g.schemas.java.metamodel.DatacenterType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.MainboardType;
-import f4g.schemas.java.metamodel.OperatingSystemTypeType;
-import f4g.schemas.java.metamodel.RAIDType;
-import f4g.schemas.java.metamodel.HardDiskType;
-import f4g.schemas.java.metamodel.SolidStateDiskType;
-import f4g.schemas.java.metamodel.CPUType;
-import f4g.schemas.java.metamodel.CoreType;
-import f4g.schemas.java.metamodel.FanType;
-import f4g.schemas.java.metamodel.RackType;
-import f4g.schemas.java.metamodel.NASType;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.Site;
+import f4g.schemas.java.metamodel.Datacenter;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.Mainboard;
+import f4g.schemas.java.metamodel.OperatingSystemType;
+import f4g.schemas.java.metamodel.RAID;
+import f4g.schemas.java.metamodel.HardDisk;
+import f4g.schemas.java.metamodel.SolidStateDisk;
+import f4g.schemas.java.metamodel.CPU;
+import f4g.schemas.java.metamodel.Core;
+import f4g.schemas.java.metamodel.Fan;
+import f4g.schemas.java.metamodel.Rack;
+import f4g.schemas.java.metamodel.NAS;
 /**
  * Interface to be implemented by the Power Calculator component
  * 
@@ -29,7 +29,7 @@ public interface IPowerCalculator {
 	 * @param model
 	 * @return data structure containing the power consumption in Watts of the Fit4Green system 
 	 */
-	public PowerData computePowerFIT4Green(FIT4GreenType model);
+	public PowerData computePowerFIT4Green(FIT4Green model);
 	
 	/**
 	 * 
@@ -38,7 +38,7 @@ public interface IPowerCalculator {
 	 * @param site
 	 * @return a data structure containing the power consumption in Watts of a FIT4Green site 
 	 */
-	public PowerData computePowerSite(SiteType site);
+	public PowerData computePowerSite(Site site);
 	
 	/**
 	 * 
@@ -47,7 +47,7 @@ public interface IPowerCalculator {
 	 * @param datacenter
 	 * @return a data structure containing the power consumption in Watts of a FIT4Green datacenter 
 	 */
-	public PowerData computePowerDatacenter(DatacenterType datacenter);
+	public PowerData computePowerDatacenter(Datacenter datacenter);
 	
 	/**
 	 * 
@@ -56,7 +56,7 @@ public interface IPowerCalculator {
 	 * @param rack
 	 * @return a data structure containing the power consumption in Watts of a FIT4Green rack 
 	 */
-	public PowerData computePowerRack(RackType rack);
+	public PowerData computePowerRack(Rack rack);
 	
 	/**
 	 * 
@@ -65,7 +65,7 @@ public interface IPowerCalculator {
 	 * @param server
 	 * @return a data structure containing the power consumption in Watts of a FIT4Green server 
 	 */
-	public PowerData computePowerServer(ServerType server);
+	public PowerData computePowerServer(Server server);
 	
 	/**
 	 * 
@@ -74,7 +74,7 @@ public interface IPowerCalculator {
 	 * @param mainboard, operatingSystem
 	 * @return a data structure containing the power consumption in Watts of a server's mainboard 
 	 */
-	public PowerData computePowerMainboard(MainboardType mainboard,OperatingSystemTypeType operatingSystem);
+	public PowerData computePowerMainboard(Mainboard mainboard,OperatingSystemType operatingSystem);
 	
 	/**
 	 * 
@@ -83,7 +83,7 @@ public interface IPowerCalculator {
 	 * @param raid
 	 * @return a data structure containing the power consumption in Watts of a RAID device  
 	 */
-	public PowerData computePowerRAID(RAIDType raid);
+	public PowerData computePowerRAID(RAID raid);
 	
 	/**
 	 * 
@@ -92,7 +92,7 @@ public interface IPowerCalculator {
 	 * @param hardDisk
 	 * @return a data structure containing the power consumption in Watts of a hard disk   
 	 */
-	public PowerData computePowerHardDisk(HardDiskType hardDisk);
+	public PowerData computePowerHardDisk(HardDisk hardDisk);
 	
 	/**
 	 * 
@@ -101,7 +101,7 @@ public interface IPowerCalculator {
 	 * @param hardDisk
 	 * @return a data structure currently containing a value of zero for the power consumption of a solid state disk   
 	 */
-	public PowerData computePowerSolidStateDisk(SolidStateDiskType ssdisk);
+	public PowerData computePowerSolidStateDisk(SolidStateDisk ssdisk);
 	
 	/**
 	 * 
@@ -110,7 +110,7 @@ public interface IPowerCalculator {
 	 * @param cpu, operatingSystem
 	 * @return a data structure containing the power consumption in Watts of a central processing unit  
 	 */
-	public PowerData computePowerCPU(CPUType cpu,OperatingSystemTypeType operatingSystem);
+	public PowerData computePowerCPU(CPU cpu,OperatingSystemType operatingSystem);
 	
 	/**
 	 * 
@@ -120,7 +120,7 @@ public interface IPowerCalculator {
 	 *         
 	 * @return a data structure containing the power consumption in Watts of a core of a specific CPU  
 	 */
-	public PowerData computePowerCore(CoreType myCore, CPUType cpu,OperatingSystemTypeType operatingSystem);
+	public PowerData computePowerCore(Core myCore, CPU cpu,OperatingSystemType operatingSystem);
 	
 	/**
 	 * 
@@ -130,7 +130,7 @@ public interface IPowerCalculator {
 	 *         
 	 * @return a data structure containing the power consumption in Watts of a core of a specific CPU  
 	 */
-	public PowerData computePowerMainboardRAMs(MainboardType mainboard);
+	public PowerData computePowerMainboardRAMs(Mainboard mainboard);
 	
 	
 	/**
@@ -142,7 +142,7 @@ public interface IPowerCalculator {
 	 *
 	 * @author nasirali
 	 */
-	public PowerData computePowerFAN(FanType fan);
+	public PowerData computePowerFAN(Fan fan);
 	
 	/**
 	 * compute the current power consumption of SAN
@@ -153,7 +153,7 @@ public interface IPowerCalculator {
 	 *
 	 * @author nasirali
 	 */
-	public PowerData computePowerSAN(RackType obj);
+	public PowerData computePowerSAN(Rack obj);
 	
 	/**
 	 * This method computes only the idle power of SAN.
@@ -164,7 +164,7 @@ public interface IPowerCalculator {
 	 *
 	 * @author nasirali
 	 */
-	public PowerData computePowerIdleSAN(RackType obj);
+	public PowerData computePowerIdleSAN(Rack obj);
 
 /**
 	 * compute the current power consumption of NAS
@@ -177,7 +177,7 @@ public interface IPowerCalculator {
 	 *
 	 * @author basmadji
 	 */
-	public PowerData computePowerNAS(NASType obj);
+	public PowerData computePowerNAS(NAS obj);
 	
 	/**
 	 * This method computes only the idle power of NAS.
@@ -190,7 +190,7 @@ public interface IPowerCalculator {
 	 * @author basmadji
 
 	 */
-	public PowerData computePowerIdleNAS(NASType obj);
+	public PowerData computePowerIdleNAS(NAS obj);
 	/**
 	 * 
 	 * This method is called by the core component responsible for starting up and shutting

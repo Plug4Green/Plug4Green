@@ -39,14 +39,14 @@ import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType.Policy;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
-import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
-import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.Load;
+import f4g.schemas.java.constraints.optimizerconstraints.Period;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.VirtualMachine;
 
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
@@ -61,7 +61,7 @@ public class PolicyConstraintFactory {
 
 	private List<SatConstraint> v;
 	private Mapping map;
-	private FIT4GreenType F4Gmodel;
+	private FIT4Green F4Gmodel;
 	public Logger log;
 	private FederationType federation;
     private NamingService<Node> nodeNames;
@@ -80,7 +80,7 @@ public class PolicyConstraintFactory {
 	 * configuration element.
 	 */
 	public PolicyConstraintFactory(ClusterType myClusters, Model model,
-			FIT4GreenType F4Gmodel, FederationType federation, 
+			FIT4Green F4Gmodel, FederationType federation, 
 			VMTypeType myVMs, 
 			IPowerCalculator myPowerCalculator, 
 			ICostEstimator myCostEstimator) {
@@ -104,7 +104,7 @@ public class PolicyConstraintFactory {
 			int delayTimeBetweenMove = 0;
 			int delayTimeBetweenOnOff = 0;
 			Integer myPaybackTime = null;
-			List<PeriodType> periodVMThreshold = null;
+			List<Period> periodVMThreshold = null;
 			for (Policy pol : federation.getBoundedPolicies().getPolicy()) {
 				PolicyType.Policy myPol = pol.getIdref();
 				if (myPol.getDelayBetweenMove() != null
@@ -168,7 +168,7 @@ public class PolicyConstraintFactory {
 									c.getBoundedSLAs().getSLA().get(0).getIdref().getQoSConstraints().getMaxVirtualCPUPerCore() != null) {
 								overbooking = c.getBoundedSLAs().getSLA().get(0).getIdref().getQoSConstraints().getMaxVirtualCPUPerCore().getValue();
 							}
-							List<PeriodType> periodVMThreshold = pol.getIdref().getPeriodVMThreshold();
+							List<Period> periodVMThreshold = pol.getIdref().getPeriodVMThreshold();
 							Set<Node> nodes = Utils.getNodesFromCluster(c, nodeNames);
 							addPeriodVMThreshold(nodes, periodVMThreshold, overbooking);
 						}
@@ -187,7 +187,7 @@ public class PolicyConstraintFactory {
 		log.debug("Adding DelayBetweenMoveConstraint constraint...");
 		log.debug("delayTimeBetweenMove from method parameter: " + delayTimeBetweenMove);
 		Set<Node> nodes = Utils.getNodesFromCluster(c, nodeNames);
-		List<ServerType> allServers = Utils.getAllServers(F4Gmodel);
+		List<Server> allServers = Utils.getAllServers(F4Gmodel);
 
 		// get all VMs for these nodes
 		Set<VM> vms = new HashSet<VM>();
@@ -216,10 +216,10 @@ public class PolicyConstraintFactory {
 				log.debug("earliestLastTimeMove plus delayBetweenMove: " + earliestLastTimeMove);
 				for (Node node : nodes) {
 
-					for (ServerType st : allServers) {
+					for (Server st : allServers) {
 						if (st.getFrameworkID().equals(nodeNames.getName(node))) {
-							List<VirtualMachineType> vmModel = f4g.optimizer.utils.Utils.getVMs(st);
-							for (VirtualMachineType vmt : vmModel) {
+							List<VirtualMachine> vmModel = f4g.optimizer.utils.Utils.getVMs(st);
+							for (VirtualMachine vmt : vmModel) {
 								// lastMigration is greater than
 								// "Now"-delayTime -> within the interval
 								// where the VM should be ignored for
@@ -258,7 +258,7 @@ public class PolicyConstraintFactory {
 		log.debug("Adding addDelayBetweenOnOffConstraint constraint...");
 		log.debug("delayTimeBetweenOnOff from method parameter: " + delayTimeBetweenOnOff);
 		Set<Node> nodes = Utils.getNodesFromCluster(c, nodeNames);
-		List<ServerType> allServers = Utils.getAllServers(F4Gmodel);
+		List<Server> allServers = Utils.getAllServers(F4Gmodel);
 
 		// node to apply the constraint to
 		Set<Node> ns = new HashSet<Node>();
@@ -287,7 +287,7 @@ public class PolicyConstraintFactory {
 				log.debug("earliestLastTimeOnOff plus delayBetweenOnOff: " + earliestLastTimeOnOff);
 				for (Node node : nodes) {
 					
-					for (ServerType st : allServers) {
+					for (Server st : allServers) {
 						if (st.getFrameworkID().equals(nodeNames.getName(node))) {
 							if (st.getLastOnOffTimestamp() != null
 									&& st
@@ -324,10 +324,10 @@ public class PolicyConstraintFactory {
 //		}			
 //	}
 
-	private void addPeriodVMThreshold(Set<Node> nodes, List<PeriodType> periods, float overbooking) {
+	private void addPeriodVMThreshold(Set<Node> nodes, List<Period> periods, float overbooking) {
 
 		if(F4Gmodel.getDatetime() != null) {
-			LoadType load = SLAReader.getVMSlotsThreshold(F4Gmodel.getDatetime().toGregorianCalendar().getTime(), periods);					
+			Load load = SLAReader.getVMSlotsThreshold(F4Gmodel.getDatetime().toGregorianCalendar().getTime(), periods);					
 			if(nodes.size() !=0 && load != null) {
 //				if(load.getSpareCPUs() != null && load.getSpareCPUs().getValue() > 0 ) {
 //

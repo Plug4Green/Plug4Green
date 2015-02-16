@@ -15,14 +15,14 @@ import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.plan.objective.PowerView;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.allocation.CloudVmAllocationType;
+import f4g.schemas.java.allocation.CloudVmAllocation;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType.VMType;
-import f4g.schemas.java.metamodel.CoreType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.ServerStatusType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.Core;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.ServerStatus;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.VirtualMachine;
 import f4g.commons.util.StaticPowerCalculation;
 import f4g.commons.util.Util;
 
@@ -41,7 +41,7 @@ public class F4GConfigurationAdapter
 	public static final String SHAREABLE_RESOURCE_CPU = "ShareableResourceCPU";
 	public static final String SHAREABLE_RESOURCE_RAM = "ShareableResourceRAM";
 	
-	FIT4GreenType currentFit4Green;
+	FIT4Green currentFit4Green;
 	VMTypeType currentVMType;
 		
 	private Logger log;
@@ -50,17 +50,17 @@ public class F4GConfigurationAdapter
 	
 	private StaticPowerCalculation powerCalculation;
 	
-    public FIT4GreenType getCurrentFIT4Green() {
+    public FIT4Green getCurrentFIT4Green() {
 		return currentFit4Green;
 	}
 
-	public void setCurrentFIT4Green(FIT4GreenType currentFIT4Green) {
+	public void setCurrentFIT4Green(FIT4Green currentFIT4Green) {
 		this.currentFit4Green = currentFIT4Green;
 	}
 
-	public F4GConfigurationAdapter(FIT4GreenType f4g, VMTypeType vmType, IPowerCalculator powerCalculator, OptimizationObjective optiObjective) {
+	public F4GConfigurationAdapter(FIT4Green f4g, VMTypeType vm, IPowerCalculator powerCalculator, OptimizationObjective optiObjective) {
 		currentFit4Green = f4g;
-		currentVMType = vmType;
+		currentVMType = vm;
 		this.powerCalculator = powerCalculator;
 		powerCalculation = new StaticPowerCalculation(null);
 		this.optiObjective = optiObjective;
@@ -80,7 +80,7 @@ public class F4GConfigurationAdapter
 		PowerView powersIdles = new PowerView(VIEW_POWER_IDLES);
 		PowerView powersPerVMs = new PowerView(VIEW_POWER_PER_VM);
 		
-		for(ServerType server : Utils.getAllServers(currentFit4Green)) {
+		for(Server server : Utils.getAllServers(currentFit4Green)) {
 					
 			Node node = model.newNode();
 			NodeNS.putElementName(node, server.getFrameworkID());
@@ -89,12 +89,12 @@ public class F4GConfigurationAdapter
 			putServerPowerIdleResource(node, server, powersIdles);
 			putServerPowerPerVMResource(node, server, powersPerVMs);
 					
-			if(server.getStatus() == ServerStatusType.ON ||
-			   server.getStatus() == ServerStatusType.POWERING_ON) { //POWERING_ON nodes are seen as ON by entropy as they will be soon on. This avoids ping-pong effect on the state.
+			if(server.getStatus() == ServerStatus.ON ||
+			   server.getStatus() == ServerStatus.POWERING_ON) { //POWERING_ON nodes are seen as ON by entropy as they will be soon on. This avoids ping-pong effect on the state.
 				
 				model.getMapping().addOnlineNode(node);
 			
-				for(VirtualMachineType VM : Utils.getVMs(server)) {
+				for(VirtualMachine VM : Utils.getVMs(server)) {
 					VM vm = model.newVM();	
 					model.getMapping().addRunningVM(vm, node);
 					
@@ -116,7 +116,7 @@ public class F4GConfigurationAdapter
 		
 	}
 	
-	public void addVMViews(VM vm, CloudVmAllocationType request, Model mo) {
+	public void addVMViews(VM vm, CloudVmAllocation request, Model mo) {
 		ShareableResource memories = (ShareableResource) mo.getView(ShareableResource.VIEW_ID_BASE + SHAREABLE_RESOURCE_RAM);
 		putVMMemoryConsumption(vm, request, memories);
 		ShareableResource cpus = (ShareableResource) mo.getView(ShareableResource.VIEW_ID_BASE + SHAREABLE_RESOURCE_CPU);
@@ -124,31 +124,31 @@ public class F4GConfigurationAdapter
 	}
 	
 	
-	private void putVMCPUConsumption(VM vm, CloudVmAllocationType request, ShareableResource s) {
+	private void putVMCPUConsumption(VM vm, CloudVmAllocation request, ShareableResource s) {
 		
 		try {
-			VMTypeType.VMType SLA_VM = Util.findVMByName(request.getVmType(), currentVMType);
+			VMTypeType.VMType SLA_VM = Util.findVMByName(request.getVm(), currentVMType);
 			s.setConsumption(vm, SLA_VM.getCapacity().getVCpus().getValue() * 100);
 		} catch (NoSuchElementException e1) {
-			log.error("VM name " + request.getVmType() + " could not be found in SLA");
+			log.error("VM name " + request.getVm() + " could not be found in SLA");
 		}		
 	}
 
-	private void putVMMemoryConsumption(VM vm, CloudVmAllocationType request, ShareableResource s) {
+	private void putVMMemoryConsumption(VM vm, CloudVmAllocation request, ShareableResource s) {
 		
 		try {
-			VMTypeType.VMType SLA_VM = Util.findVMByName(request.getVmType(), currentVMType);
+			VMTypeType.VMType SLA_VM = Util.findVMByName(request.getVm(), currentVMType);
 			s.setConsumption(vm, (int) SLA_VM.getCapacity().getVRam().getValue() * 1024);
 		} catch (NoSuchElementException e1) {
-			log.error("VM name " + request.getVmType() + " could not be found in SLA");
+			log.error("VM name " + request.getVm() + " could not be found in SLA");
 		}
 	}
 	
-	private void putVMCPUConsumption(VM vm, VirtualMachineType F4GVM, ShareableResource s) {
+	private void putVMCPUConsumption(VM vm, VirtualMachine F4GVM, ShareableResource s) {
 		
 		VMTypeType.VMType SLA_VM = null;
-		if(F4GVM.getCloudVmType() != null) {
-			SLA_VM = Util.findVMByName(F4GVM.getCloudVmType(), currentVMType);	
+		if(F4GVM.getCloudVm() != null) {
+			SLA_VM = Util.findVMByName(F4GVM.getCloudVm(), currentVMType);	
 		}
 					
 		//If the measured values are present in the VM, we take these.
@@ -171,11 +171,12 @@ public class F4GConfigurationAdapter
 		
 	}
 
-	private void putVMMemoryConsumption(final VM vm, final VirtualMachineType F4GVM, ShareableResource s) {
+
+	private void putVMMemoryConsumption(final VM vm, final VirtualMachine F4GVM, ShareableResource s) {
 		
 		VMTypeType.VMType SLA_VM = null;
-		if(F4GVM.getCloudVmType() != null) {
-			SLA_VM = Util.findVMByName(F4GVM.getCloudVmType(), currentVMType);	
+		if(F4GVM.getCloudVm() != null) {
+			SLA_VM = Util.findVMByName(F4GVM.getCloudVm(), currentVMType);	
 		}
 		
 		if(F4GVM.getActualMemoryUsage() != null) {
@@ -186,34 +187,31 @@ public class F4GConfigurationAdapter
 		
 	}
 		
-	private void putServerCPUResource(final Node n, final ServerType server, ShareableResource s) {
+	private void putServerCPUResource(final Node n, final Server server, ShareableResource s) {
 		
-		ArrayList<CoreType> cores = Utils.getAllCores(server.getMainboard().get(0));
+		ArrayList<Core> cores = Utils.getAllCores(server.getMainboard().get(0));
 		//CPU capacity is a percentage of one core. 4 cores = 400% CPU capacity
 		s.setCapacity(n, cores.size() * 100);		
 	
 	}
 
-	private void putServerMemoryResource(final Node n, final ServerType server, ShareableResource s) {
-		
+	private void putServerMemoryResource(final Node n, final Server server, ShareableResource s) {
+
 	     s.setCapacity(n, (int) Utils.getMemory(server) * 1024);		
-	
 	}
 	
-	private void putServerPowerIdleResource(final Node n, final ServerType server, PowerView s) {
+	private void putServerPowerIdleResource(final Node n, final Server server, PowerView s) {
 		
 	    s.setPowers(n, (int) getPIdle(server));		
-	
 	}
 	
-	private void putServerPowerPerVMResource(final Node n, final ServerType server, PowerView s) {
+	private void putServerPowerPerVMResource(final Node n, final Server server, PowerView s) {
 		
 		s.setPowers(n, (int) getPperVM(server));		
-	
 	}
 
 	
-//	private VM getVM(Node node, VirtualMachineType VM) {
+//	private VM getVM(Node node, VirtualMachine VM) {
 //		
 //		//VM type should be set OR some measurements should be present
 //		if(VM.getCloudVmType() == null &&
@@ -263,22 +261,22 @@ public class F4GConfigurationAdapter
 //		return vm;
 //	}
 //	
-//	public VM getVM(RequestType request) {
-//		if(request instanceof CloudVmAllocationType) {
-//			return getVM((CloudVmAllocationType)request);	
+//	public VM getVM(Request request) {
+//		if(request instanceof CloudVmAllocation) {
+//			return getVM((CloudVmAllocation)request);	
 //		} else {
-//			return getVM((TraditionalVmAllocationType)request);
+//			return getVM((TraditionalVmAllocation)request);
 //		}
 //	}
 	
-//	public VM getVM(CloudVmAllocationType request) {
+//	public VM getVM(CloudVmAllocation request) {
 //		
 //		VMTypeType.VMType SLA_VM;
 //		
 //		try {
-//			SLA_VM = Util.findVMByName(request.getVmType(), currentVMType);
+//			SLA_VM = Util.findVMByName(request.getVm(), currentVMType);
 //		} catch (NoSuchElementException e1) {
-//			log.error("VM name " + request.getVmType() + " could not be found in SLA");
+//			log.error("VM name " + request.getVm() + " could not be found in SLA");
 //			return null;
 //		}
 //
@@ -297,7 +295,7 @@ public class F4GConfigurationAdapter
 //		return vm;
 //	}
 	
-//	public VM getVM(TraditionalVmAllocationType request) {
+//	public VM getVM(TraditionalVmAllocation request) {
 //		
 //		int nbCPUs;
 //		if(request.getNumberOfCPUs() != null) nbCPUs = request.getNumberOfCPUs();
@@ -325,7 +323,7 @@ public class F4GConfigurationAdapter
 
 
 	
-//	private Node getNode(ServerType server) {
+//	private Node getNode(Server server) {
 //		
 //		
 //		//freq in Hz
@@ -350,12 +348,12 @@ public class F4GConfigurationAdapter
 //	}
 	
 	 
-	public float getPIdle(ServerType server) {
+	public float getPIdle(Server server) {
       
 		double ue = getUsageEffectiveness(server);		
 		
-    	ServerStatusType status = server.getStatus();
-    	server.setStatus(ServerStatusType.ON); //set the server status to ON to avoid a null power
+    	ServerStatus status = server.getStatus();
+    	server.setStatus(ServerStatus.ON); //set the server status to ON to avoid a null power
         float powerIdle = (float) (powerCalculation.computePowerIdle(server, powerCalculator) * ue);
         server.setStatus(status);
                     
@@ -363,20 +361,20 @@ public class F4GConfigurationAdapter
     }
     
 
-    public float getPperVM(ServerType server) {
+    public float getPperVM(Server server) {
                 
     	double ue = getUsageEffectiveness(server);	
     	
         VMType vm = currentVMType.getVMType().get(0);
-    	ServerStatusType status = server.getStatus();
-    	server.setStatus(ServerStatusType.ON); //set the server status to ON to avoid a null power
+    	ServerStatus status = server.getStatus();
+    	server.setStatus(ServerStatus.ON); //set the server status to ON to avoid a null power
     	float PperVM = (float) (powerCalculation.computePowerForVM(server, vm, powerCalculator) * ue);
         server.setStatus(status);
             
         return PperVM;        
     }
 
-	private double getUsageEffectiveness(ServerType server) {
+	private double getUsageEffectiveness(Server server) {
     	if(optiObjective == OptimizationObjective.Power) {
     		return Utils.getServerSite(server, currentFit4Green).getPUE().getValue();
     	} else {

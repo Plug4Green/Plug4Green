@@ -32,18 +32,18 @@ import f4g.commons.com.AbstractCom;
 import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
-import f4g.schemas.java.actions.AbstractBaseActionType;
-import f4g.schemas.java.actions.LiveMigrateVMActionType;
-import f4g.schemas.java.actions.MoveVMActionType;
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.actions.StandByActionType;
-import f4g.schemas.java.actions.StartJobActionType;
-import f4g.schemas.java.metamodel.CpuUsageType;
-import f4g.schemas.java.metamodel.FrameworkStatusType;
-import f4g.schemas.java.metamodel.ServerStatusType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.actions.AbstractBaseAction;
+import f4g.schemas.java.actions.LiveMigrateVMAction;
+import f4g.schemas.java.actions.MoveVMAction;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.actions.StandByAction;
+import f4g.schemas.java.actions.StartJobAction;
+import f4g.schemas.java.metamodel.CpuUsage;
+import f4g.schemas.java.metamodel.FrameworkStatus;
+import f4g.schemas.java.metamodel.ServerStatus;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.VirtualMachine;
 
 /**
  * Communicator demo to show how a communicator works
@@ -103,11 +103,11 @@ public class ComDemo  extends AbstractCom implements Runnable {
 					// set the status of comDemo
 					if("Stopped".equals(comDemoStatus_) && !"Starting".equals(comDemoStatus_)){
 						// update the status in the model to starting
-						setStatus(FrameworkStatusType.STARTING);
+						setStatus(FrameworkStatus.STARTING);
 					}
 					else if(!"Running".equals(comDemoStatus_)){
 						// update the status in the model to running
-						setStatus(FrameworkStatusType.RUNNING);
+						setStatus(FrameworkStatus.RUNNING);
 					}
 				}
 				
@@ -136,7 +136,7 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	 *
 	 * @author jclegea
 	 */
-	private void setStatus(FrameworkStatusType status){				
+	private void setStatus(FrameworkStatus status){				
 		comDemoStatus_ = status.value();
 		log.debug("STATUS " + this.comName + ": " + comDemoStatus_);
 		monitor.setFrameworkStatus(this.comName, status);		
@@ -384,10 +384,10 @@ public class ComDemo  extends AbstractCom implements Runnable {
 		try{
 			powerState = datacenterInformation_.getPowerState(siteIndex, datacenterIndex, rackIndex, enclosureIndex, hostIndex);
 			if("ON".equals(powerState) == true){					
-				operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatusType.ON);
+				operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.ON);
 				operationSet.add(operation);
 			} else{
-				operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatusType.OFF);
+				operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.OFF);
 				operationSet.add(operation);
 			}
 			
@@ -523,20 +523,20 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	throws Exception{
 		String key;		
 		HashMap serverList;
-		ServerType serverType = new ServerType();
-		VirtualMachineType serverVirtualMachine;
-		List<VirtualMachineType> virtualMachineList;
+		Server serverType = new Server();
+		VirtualMachine serverVirtualMachine;
+		List<VirtualMachine> virtualMachineList;
 		
 		try{
 			actualHostList.clear();		
 			key = this.comName + "_" + datacenterInformation_.getHostName(siteIndex,datacenterIndex, rackIndex, enclosureIndex,hostIndex);
 			serverList = monitor.getMonitoredObjectsCopy(this.comName);		
-			serverType = (ServerType)serverList.get(key);
+			serverType = (Server)serverList.get(key);
 			if(serverType != null){
 				virtualMachineList = serverType.getNativeHypervisor().getVirtualMachine();
 				for (Iterator iterator = virtualMachineList.iterator(); iterator
 					.hasNext();) {
-					serverVirtualMachine = (VirtualMachineType) iterator.next();
+					serverVirtualMachine = (VirtualMachine) iterator.next();
 					//log.debug("SERVERTYPE: " + serverVirtualMachine.getFrameworkID());														
 					actualHostList.add(serverVirtualMachine.getFrameworkID());					
 				}
@@ -556,10 +556,10 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	@Override
 	public boolean executeActionList(ArrayList actionList) {
 		
-		PowerOnActionType powerOnAction;
-		PowerOffActionType powerOffAction;
-		LiveMigrateVMActionType migrateAction;
-		MoveVMActionType moveAction;
+		PowerOnAction powerOnAction;
+		PowerOffAction powerOffAction;
+		LiveMigrateVMAction migrateAction;
+		MoveVMAction moveAction;
 		int i=0;
 
 		String key = null;
@@ -571,48 +571,48 @@ public class ComDemo  extends AbstractCom implements Runnable {
 		
 		// First 
 		log.debug(this.comName + ": executing action list...");
-		JAXBElement<? extends AbstractBaseActionType> elem;
+		JAXBElement<? extends AbstractBaseAction> elem;
 		Iterator iter = actionList.iterator();
 		while (iter.hasNext()) {
-			elem = (JAXBElement<? extends AbstractBaseActionType>) iter.next();
+			elem = (JAXBElement<? extends AbstractBaseAction>) iter.next();
 
 			Object action = elem.getValue();
 			action = elem.getValue().getClass().cast(action);
 			try {
-				if (action.getClass().equals(PowerOffActionType.class)) {					
+				if (action.getClass().equals(PowerOffAction.class)) {					
 					// perform power off action										
-					powerOffAction = (PowerOffActionType) action;
+					powerOffAction = (PowerOffAction) action;
 					
 					// set the status of powering on to the servers
 					key = comName + "_" + powerOffAction.getNodeName();
-					operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatusType.POWERING_OFF);
+					operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.POWERING_OFF);
 					operationSet.add(operation);
 					if(operationSet != null){
 						monitor.simpleUpdateNode(key,operationSet);				
 					}
 					
 					this.powerOff(powerOffAction);
-				} else if (action.getClass().equals(PowerOnActionType.class)) {
+				} else if (action.getClass().equals(PowerOnAction.class)) {
 					// perform power on action
 					
-					powerOnAction = (PowerOnActionType) action;
+					powerOnAction = (PowerOnAction) action;
 					
 					// set the status of powering on to the servers
 					key = comName + "_" + powerOnAction.getNodeName();
-					operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatusType.POWERING_ON);
+					operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.POWERING_ON);
 					operationSet.add(operation);
 					if(operationSet != null){
 						monitor.simpleUpdateNode(key,operationSet);				
 					}
 					// call the method to power on
 					this.powerOn(powerOnAction);
-				} else if (action.getClass().equals(LiveMigrateVMActionType.class)) {
+				} else if (action.getClass().equals(LiveMigrateVMAction.class)) {
 					// perform migrate vm action
-					migrateAction = (LiveMigrateVMActionType) action;
+					migrateAction = (LiveMigrateVMAction) action;
 					this.liveMigrate(migrateAction);
-				} else if (action.getClass().equals(MoveVMActionType.class)) {
+				} else if (action.getClass().equals(MoveVMAction.class)) {
 					// perform move vm action
-					moveAction = (MoveVMActionType) action;
+					moveAction = (MoveVMAction) action;
 					this.moveVm(moveAction);
 				}
 			} catch (SecurityException e) {
@@ -626,59 +626,59 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	}
 
 	/* (non-Javadoc)
-	 * @see f4gcom.IComOperationSet#powerOn(f4g.schemas.java.actions.PowerOnActionType)
+	 * @see f4gcom.IComOperationSet#powerOn(f4g.schemas.java.actions.PowerOnAction)
 	 */	
 	@Override
-	public boolean powerOn(PowerOnActionType action) {
+	public boolean powerOn(PowerOnAction action) {
 		// Here include the code to power on a host
 		log.debug("POWERING ON: " + action.getNodeName());
 		return false;
 	}
 
 	/* (non-Javadoc)
-	 * @see f4gcom.IComOperationSet#powerOff(f4g.schemas.java.actions.PowerOffActionType)
+	 * @see f4gcom.IComOperationSet#powerOff(f4g.schemas.java.actions.PowerOffAction)
 	 */
 	@Override
-	public boolean powerOff(PowerOffActionType action) {
+	public boolean powerOff(PowerOffAction action) {
 		// Here include the code to power off a host
 		log.debug("POWERING OFF: " + action.getNodeName());
 		return false;
 	}
 
 	/* (non-Javadoc)
-	 * @see f4gcom.IComOperationSet#liveMigrate(f4g.schemas.java.actions.LiveMigrateVMActionType)
+	 * @see f4gcom.IComOperationSet#liveMigrate(f4g.schemas.java.actions.LiveMigrateVMAction)
 	 */
 	@Override
-	public boolean liveMigrate(LiveMigrateVMActionType action) {
+	public boolean liveMigrate(LiveMigrateVMAction action) {
 		// Here include the code to live migrate a virtual machine
 		log.debug("Live migrate: " + action.getFrameworkName() + " from " + action.getSourceNodeController() + " to " + action.getDestNodeController());
 		return false;
 	}
 
 	/* (non-Javadoc)
-	 * @see f4gcom.IComOperationSet#moveVm(f4g.schemas.java.actions.MoveVMActionType)
+	 * @see f4gcom.IComOperationSet#moveVm(f4g.schemas.java.actions.MoveVMAction)
 	 */
 	@Override
-	public boolean moveVm(MoveVMActionType action) {
+	public boolean moveVm(MoveVMAction action) {
 		// Here include the code to move a virtual machine
 		log.debug("Move: " + action.getFrameworkName() + " from " + action.getSourceNodeController() + " to " + action.getDestNodeController());
 		return false;
 	}
 
 	/* (non-Javadoc)
-	 * @see f4gcom.IComOperationSet#startJob(f4g.schemas.java.actions.StartJobActionType)
+	 * @see f4gcom.IComOperationSet#startJob(f4g.schemas.java.actions.StartJobAction)
 	 */
 	@Override
-	public boolean startJob(StartJobActionType action) {
+	public boolean startJob(StartJobAction action) {
 		log.error("Operation not supported on this Com component");
 		return false;
 	}
 
 	/* (non-Javadoc)
-	 * @see f4gcom.IComOperationSet#standBy(f4g.schemas.java.actions.StandByActionType)
+	 * @see f4gcom.IComOperationSet#standBy(f4g.schemas.java.actions.StandByAction)
 	 */
 	@Override
-	public boolean standBy(StandByActionType action) {
+	public boolean standBy(StandByAction action) {
 		log.error("Operation not supported on this Com component");
 		return false;
 	}		

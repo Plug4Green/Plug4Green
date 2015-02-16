@@ -42,7 +42,7 @@ public class Optimizer implements IOptimizer{
 
 
 	//the three engines for each computing styles are held here
-	private Map<DCComputingStyleType, OptimizerEngine> engines;
+	private Map<DCComputingStyle, OptimizerEngine> engines;
 
 	public enum CloudTradCS {
 		CLOUD,
@@ -68,13 +68,13 @@ public class Optimizer implements IOptimizer{
 		log = Logger.getLogger(Optimizer.class.getName());
 		
 		log.debug("Initializing engines...");
-		engines = new HashMap<DCComputingStyleType, OptimizerEngine> ();
+		engines = new HashMap<DCComputingStyle, OptimizerEngine> ();
 		
 				
 		//initialization of the three engines
-		engines.put(DCComputingStyleType.SUPER,       new OptimizerEngineHPC(controller, powerCalculator, costEstimator));
-		engines.put(DCComputingStyleType.TRADITIONAL, new OptimizerEngineCloudTraditional(controller, powerCalculator, costEstimator, CloudTradCS.TRADITIONAL));
-		engines.put(DCComputingStyleType.CLOUD,       new OptimizerEngineCloudTraditional(controller, powerCalculator, costEstimator, CloudTradCS.CLOUD));
+		engines.put(DCComputingStyle.SUPER,       new OptimizerEngineHPC(controller, powerCalculator, costEstimator));
+		engines.put(DCComputingStyle.TRADITIONAL, new OptimizerEngineCloudTraditional(controller, powerCalculator, costEstimator, CloudTradCS.TRADITIONAL));
+		engines.put(DCComputingStyle.CLOUD,       new OptimizerEngineCloudTraditional(controller, powerCalculator, costEstimator, CloudTradCS.CLOUD));
 		 
 		//default objective to power
 		setOptimizationObjective(OptimizationObjective.Power);
@@ -90,9 +90,9 @@ public class Optimizer implements IOptimizer{
 	 * @return A data structure representing the result of the allocation
 	 */
 	@Override
-	public AllocationResponseType allocateResource(AllocationRequestType allocationRequest, FIT4GreenType model){
+	public AllocationResponse allocateResource(AllocationRequest allocationRequest, FIT4Green model){
 		
-		DatacenterType myDC = Utils.getFirstDatacenter(model);
+		Datacenter myDC = Utils.getFirstDatacenter(model);
 		
 		if(myDC!=null &&
 		   myDC.getComputingStyle() != null) {
@@ -115,11 +115,11 @@ public class Optimizer implements IOptimizer{
 	 * @return true if successful, false otherwise
 	 */
 	@Override
-	public boolean performGlobalOptimization(FIT4GreenType model) {
+	public boolean performGlobalOptimization(FIT4Green model) {
 		
 		log.debug("Optimizer: performGlobalOptimization");
 		
-		DatacenterType myDC = Utils.getFirstDatacenter(model);
+		Datacenter myDC = Utils.getFirstDatacenter(model);
 		
 		if(myDC!=null &&
 		   myDC.getComputingStyle() != null) {
@@ -141,7 +141,7 @@ public class Optimizer implements IOptimizer{
 	 * set the optimization objective for the 3 computing styles
 	 */
 	public void setOptimizationObjective(OptimizationObjective optiObjective) {
-		for (DCComputingStyleType style : DCComputingStyleType.values()) {
+		for (DCComputingStyle style : DCComputingStyle.values()) {
 			engines.get(style).setOptiObjective(optiObjective);
 		}	
 	}

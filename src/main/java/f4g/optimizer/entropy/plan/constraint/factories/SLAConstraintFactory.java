@@ -34,13 +34,13 @@ import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedSLAsType.SLA;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType.ServerGroup;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.FrequencyType;
-import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.Frequency;
+import f4g.schemas.java.metamodel.Server;
 
 public class SLAConstraintFactory  extends ConstraintFactory {
 
-	private FIT4GreenType F4GModel;
+	private FIT4Green F4GModel;
 	private ServerGroupType sg;
 
 	int minPriority;
@@ -53,7 +53,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 	 * Constructor needing an instance of the SLAReader and an entropy
 	 * configuration element.
 	 */
-	public SLAConstraintFactory(ClusterType clusters, Model model, FIT4GreenType F4GModel, int minPriority, ServerGroupType sg) {
+	public SLAConstraintFactory(ClusterType clusters, Model model, FIT4Green F4GModel, int minPriority, ServerGroupType sg) {
 		super(model);
 		this.minPriority = minPriority;
 		this.clusters = clusters;
@@ -153,7 +153,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 		// Bandwidth Constraint
 		if (type.getBandwidth() != null && type.getBandwidth().getPriority() >= minPriority) {
 			List<Node> filteredNodes = new ArrayList<Node>();
-			for (ServerType n : Utils.getAllServers(F4GModel)){
+			for (Server n : Utils.getAllServers(F4GModel)){
 				if (Utils.getBandwidth(n).isPresent() && Utils.getBandwidth(n).get().getValue() >= type.getBandwidth().getValue()){ 
 					filteredNodes.add(nodeNames.getElement(n.getFrameworkID()));
 				}
@@ -250,7 +250,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 		// CPU Frequency of the node
 		if (type.getCompPowerGHz() != null && type.getCompPowerGHz().getPriority() >= minPriority) {
 			List<Node> filteredNodes = new ArrayList<Node>();
-			for (ServerType n : Utils.getAllServers(F4GModel)){
+			for (Server n : Utils.getAllServers(F4GModel)){
 				if (Utils.getCPUFrequency(n).getValue() >= type.getCompPowerGHz().getValue()){ 
 					filteredNodes.add(nodeNames.getElement(n.getFrameworkID()));
 				}
@@ -261,7 +261,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 		// GPU Frequency of the node
 		if (type.getGPUFreqGHz() != null && type.getGPUFreqGHz().getPriority() >= minPriority) {
 			List<Node> filteredNodes = new ArrayList<Node>();
-			for (ServerType n : Utils.getAllServers(F4GModel)){
+			for (Server n : Utils.getAllServers(F4GModel)){
 				if (Utils.getGPUFrequency(n).isPresent() && Utils.getGPUFrequency(n).get().getValue() >= type.getGPUFreqGHz().getValue()){ 
 					filteredNodes.add(nodeNames.getElement(n.getFrameworkID()));
 				}
@@ -272,7 +272,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 		// Harddisk capacity of the node
 		if (type.getHDDCapacity() != null && type.getHDDCapacity().getPriority() >= minPriority) {
 			List<Node> filteredNodes = new ArrayList<Node>();
-			for (ServerType n : Utils.getAllServers(F4GModel)){
+			for (Server n : Utils.getAllServers(F4GModel)){
 				if (Utils.getHDDCapacty(n).getValue() >= type.getHDDCapacity().getValue()){ 
 					filteredNodes.add(nodeNames.getElement(n.getFrameworkID()));
 				}
@@ -283,7 +283,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 //		// RAM space for vms guaranteed
 //		if (type.getMemorySpaceGB() != null && type.getMemorySpaceGB().getPriority() >= minPriority) {
 //			List<Node> filteredNodes = new ArrayList<Node>();
-//			for (ServerType n : Utils.getAllServers(F4GModel)){
+//			for (Server n : Utils.getAllServers(F4GModel)){
 //				if (Utils.getHDDCapacty(n).getValue() >= type.getHDDCapacity().getValue()){ 
 //					filteredNodes.add(nodeNames.getElement(n.getFrameworkID()));
 //				}
@@ -303,7 +303,7 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 		
 		if (type.getRAIDLevel() != null && type.getRAIDLevel().getPriority() >= minPriority) {
 			List<Node> filteredNodes = new ArrayList<Node>();
-			for (ServerType n : Utils.getAllServers(F4GModel)){
+			for (Server n : Utils.getAllServers(F4GModel)){
 				if (Utils.getRAIDLevel(n).isPresent() && Utils.getRAIDLevel(n).get().getValue() >= type.getRAIDLevel().getValue()){ 
 					filteredNodes.add(nodeNames.getElement(n.getFrameworkID()));
 				}

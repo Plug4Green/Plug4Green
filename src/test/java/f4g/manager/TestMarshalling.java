@@ -32,15 +32,15 @@ import f4g.commons.core.Configuration;
 import f4g.commons.core.Constants;
 import f4g.manager.couchDB.ConvertToJSON;
 import f4g.manager.couchDB.DataBase;
-import f4g.schemas.java.actions.AbstractBaseActionType;
-import f4g.schemas.java.actions.ActionRequestType;
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.metamodel.CUEType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.PUEType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.SiteType;
+import f4g.schemas.java.actions.AbstractBaseAction;
+import f4g.schemas.java.actions.ActionRequest;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.metamodel.CUE;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.PUE;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.Site;
 
 import com.rits.cloning.Cloner;
 
@@ -51,12 +51,12 @@ import com.rits.cloning.Cloner;
  */
 public class TestMarshalling {
 	
-	private static void dispatch (ActionRequestType actionRequest, ArrayList actions) {
+	private static void dispatch (ActionRequest actionRequest, ArrayList actions) {
 		
 		ConvertToJSON con = new ConvertToJSON();
 		String data;
 		
-		ActionRequestType.ActionList updatedActionList = new ActionRequestType.ActionList(actions);
+		ActionRequest.ActionList updatedActionList = new ActionRequest.ActionList(actions);
 		actionRequest.setActionList(updatedActionList);
 		
 		System.out.println("Converting to JSON updated action request...");
@@ -66,25 +66,25 @@ public class TestMarshalling {
 		
 	}
 	
-	private static ActionRequestType createActions () {
+	private static ActionRequest createActions () {
 		
-		PowerOffActionType off = new PowerOffActionType();
+		PowerOffAction off = new PowerOffAction();
 		off.setID(UUID.randomUUID().toString());
 		off.setFrameworkName("a-com");
 		off.setNodeName("a-node");
 		
-		PowerOffActionType off1 = new PowerOffActionType();
+		PowerOffAction off1 = new PowerOffAction();
 		off1.setID(UUID.randomUUID().toString());
 		off1.setFrameworkName("another-com");
 		off1.setNodeName("another-node");
 		
-		PowerOnActionType on = new PowerOnActionType();
+		PowerOnAction on = new PowerOnAction();
 		on.setID(UUID.randomUUID().toString());
 		on.setFrameworkName("a-com");
 		on.setNodeName("yet-another-node");
 		
-		ActionRequestType actionRequest = new ActionRequestType();
-		ActionRequestType.ActionList actionList = new ActionRequestType.ActionList();
+		ActionRequest actionRequest = new ActionRequest();
+		ActionRequest.ActionList actionList = new ActionRequest.ActionList();
 		
 		f4g.schemas.java.actions.ObjectFactory actionFactory = new f4g.schemas.java.actions.ObjectFactory();
 		
@@ -119,7 +119,7 @@ public class TestMarshalling {
 		System.out.println("Starting...");
 		
 //		System.out.println("Creating dummy action request...");
-//		ActionRequestType actionRequest = createActions();
+//		ActionRequest actionRequest = createActions();
 //		
 //		System.out.println("Converting action request to JSON...");
 //		ConvertToJSON con = new ConvertToJSON();
@@ -327,15 +327,15 @@ public class TestMarshalling {
 //			String comName = (String)iter.next();
 //			ArrayList actions = (ArrayList)groupedActions.get(comName);
 //			
-//			JAXBElement<? extends AbstractBaseActionType> elem;
+//			JAXBElement<? extends AbstractBaseAction> elem;
 //			Iterator iter1 = actions.iterator();
 //			
 //			while (iter1.hasNext()) {
 //
-//				elem = (JAXBElement<? extends AbstractBaseActionType>) iter1.next();
+//				elem = (JAXBElement<? extends AbstractBaseAction>) iter1.next();
 //				Object action = elem.getValue();
 //				action = elem.getValue().getClass().cast(action);
-//				((AbstractBaseActionType)action).setForwarded(true);
+//				((AbstractBaseAction)action).setForwarded(true);
 //			}
 //			
 //			dispatch(actionRequest,actions);
@@ -343,7 +343,7 @@ public class TestMarshalling {
 			
 		
 //		System.out.println("Creating dummy model...");
-//		FIT4GreenType model = new FIT4GreenType();
+//		FIT4Green model = new FIT4Green();
 //		
 //		try {
 //			TimeZone gmt = TimeZone.getTimeZone("GMT");
@@ -353,10 +353,10 @@ public class TestMarshalling {
 //			e.printStackTrace();
 //		}
 //		
-//		SiteType site = new SiteType();
-//		PowerType p = new PowerType(0.0);
-//		CUEType cue = new CUEType(0.5);
-//		PUEType pue = new PUEType(1.5);
+//		Site site = new Site();
+//		Power p = new Power(0.0);
+//		CUE cue = new CUE(0.5);
+//		PUE pue = new PUE(1.5);
 //		site.setComputedPower(p);
 //		site.setCUE(cue);
 //		site.setPUE(pue);

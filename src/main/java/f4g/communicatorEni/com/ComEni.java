@@ -30,14 +30,14 @@ import f4g.communicatorEni.com.simulation.ComEniUpdateSimulationThread;
 import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
-import f4g.schemas.java.actions.AbstractBaseActionType;
-import f4g.schemas.java.actions.LiveMigrateVMActionType;
-import f4g.schemas.java.actions.MoveVMActionType;
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.actions.StartJobActionType;
-import f4g.schemas.java.actions.StandByActionType;
-import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.schemas.java.actions.AbstractBaseAction;
+import f4g.schemas.java.actions.LiveMigrateVMAction;
+import f4g.schemas.java.actions.MoveVMAction;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.actions.StartJobAction;
+import f4g.schemas.java.actions.StandByAction;
+import f4g.schemas.java.metamodel.ServerStatus;
 import f4g.commons.com.AbstractCom;
 import f4g.communicatorEni.com.ComEniConstants;
 
@@ -199,10 +199,10 @@ public class ComEni extends AbstractCom implements Runnable {
 	 */
 	@Override
 	public boolean executeActionList(ArrayList actionList) {
-		ArrayList<PowerOnActionType> powerOnOperations = new ArrayList<PowerOnActionType>();
-		ArrayList<PowerOffActionType> powerOffOperations = new ArrayList<PowerOffActionType>();
-		ArrayList<MoveVMActionType> moveVmOperations = new ArrayList<MoveVMActionType>();
-		ArrayList<LiveMigrateVMActionType> migrateVmOperations = new ArrayList<LiveMigrateVMActionType>();
+		ArrayList<PowerOnAction> powerOnOperations = new ArrayList<PowerOnAction>();
+		ArrayList<PowerOffAction> powerOffOperations = new ArrayList<PowerOffAction>();
+		ArrayList<MoveVMAction> moveVmOperations = new ArrayList<MoveVMAction>();
+		ArrayList<LiveMigrateVMAction> migrateVmOperations = new ArrayList<LiveMigrateVMAction>();
 		int i=0, j=0;
 		String urlMoveVm = null;
 		String userNameMoveVm = null;
@@ -217,22 +217,22 @@ public class ComEni extends AbstractCom implements Runnable {
 		operationSet = new ComOperationCollector();
 		
 		log.debug(this.comName + ": executing action list...");
-		JAXBElement<? extends AbstractBaseActionType> elem;
+		JAXBElement<? extends AbstractBaseAction> elem;
 		Iterator iter = actionList.iterator();
 		while (iter.hasNext()) {
-			elem = (JAXBElement<? extends AbstractBaseActionType>) iter.next();
+			elem = (JAXBElement<? extends AbstractBaseAction>) iter.next();
 
 			Object action = elem.getValue();
 			action = elem.getValue().getClass().cast(action);
 			try {
-				if (action.getClass().equals(PowerOffActionType.class)) {
-					powerOffOperations.add((PowerOffActionType) action);
-				} else if (action.getClass().equals(PowerOnActionType.class)) {
-					powerOnOperations.add((PowerOnActionType) action);
-				} else if (action.getClass().equals(LiveMigrateVMActionType.class)) {					
-					migrateVmOperations.add((LiveMigrateVMActionType) action);
-				} else if (action.getClass().equals(MoveVMActionType.class)) {
-					moveVmOperations.add((MoveVMActionType) action);
+				if (action.getClass().equals(PowerOffAction.class)) {
+					powerOffOperations.add((PowerOffAction) action);
+				} else if (action.getClass().equals(PowerOnAction.class)) {
+					powerOnOperations.add((PowerOnAction) action);
+				} else if (action.getClass().equals(LiveMigrateVMAction.class)) {					
+					migrateVmOperations.add((LiveMigrateVMAction) action);
+				} else if (action.getClass().equals(MoveVMAction.class)) {
+					moveVmOperations.add((MoveVMAction) action);
 				}
 			} catch (SecurityException e) {
 				log.error("Exception",e);
@@ -243,14 +243,14 @@ public class ComEni extends AbstractCom implements Runnable {
 		
 		// Performing first power on operations 
 		iter = powerOnOperations.iterator();
-		PowerOnActionType powerOnAction;
+		PowerOnAction powerOnAction;
 		while (iter.hasNext()) {
 			try{
-				powerOnAction = (PowerOnActionType) iter.next();
+				powerOnAction = (PowerOnAction) iter.next();
 				
 				// set the status of powering on to the servers
 				key = comName + "_" + powerOnAction.getNodeName();
-				operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatusType.POWERING_ON);
+				operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.POWERING_ON);
 				operationSet.add(operation);
 				if(operationSet != null){
 					monitor.simpleUpdateNode(key,operationSet);				
@@ -262,9 +262,9 @@ public class ComEni extends AbstractCom implements Runnable {
 
 				
 			// Update as the state in the model as fast as possible to avoid possible errors when Optimizing
-//			key = comName + "_" + ((PowerOnActionType) iter.next()).getNodeName();
+//			key = comName + "_" + ((PowerOnAction) iter.next()).getNodeName();
 //			log.debug("update status " + key + " ON");
-//			operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatusType.ON);
+//			operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.ON);
 //			operationSet.add(operation);
 //			if(operationSet != null){
 //				monitor.simpleUpdateNode(key,operationSet);				
@@ -285,25 +285,25 @@ public class ComEni extends AbstractCom implements Runnable {
 			i=0;
 			try{
 				//log.debug("vm: " + moveVmOperations.get(i).getVirtualMachine());
-				MoveVMActionType moveAction = (MoveVMActionType)iter.next();
+				MoveVMAction moveAction = (MoveVMAction)iter.next();
 				this.moveVm(moveAction);
 
 			
 			// Deleting the VM on the model and creating the vm on the target host
-//			log.debug("Moving Virtual Machine " + ((MoveVMActionType) moveAction).getVirtualMachine() + " to " + ((MoveVMActionType) moveAction).getDestNodeController());
+//			log.debug("Moving Virtual Machine " + ((MoveVMAction) moveAction).getVirtualMachine() + " to " + ((MoveVMAction) moveAction).getDestNodeController());
 //			// Deleting from source host
-//			key = comName + "_" + ((MoveVMActionType) moveAction).getSourceNodeController();
-//			operation = new ComOperation(ComOperation.TYPE_REMOVE,"./nativeHypervisor/virtualMachine/frameworkID",((MoveVMActionType) moveAction).getVirtualMachine() + " a a 0");
+//			key = comName + "_" + ((MoveVMAction) moveAction).getSourceNodeController();
+//			operation = new ComOperation(ComOperation.TYPE_REMOVE,"./nativeHypervisor/virtualMachine/frameworkID",((MoveVMAction) moveAction).getVirtualMachine() + " a a 0");
 //			operations.add(operation);
 //			((ConcurrentLinkedQueue<ComOperationCollector>) this.getQueuesHashMap().get(key)).add(operations);
 //			monitor.updateNode(key, this);
 //			operations.remove(operation);
 //			((ConcurrentLinkedQueue<ComOperationCollector>) this.getQueuesHashMap().get(key)).poll();
 //			// Adding to target host
-//			key = comName + "_" + ((MoveVMActionType) moveAction).getDestNodeController(); 
+//			key = comName + "_" + ((MoveVMAction) moveAction).getDestNodeController(); 
 //			operation = new ComOperation(ComOperation.TYPE_ADD, 
-//					"./nativeHypervisor/virtualMachine/frameworkID",((MoveVMActionType) moveAction).getVirtualMachine() + " a a 1 " +
-//					((MoveVMActionType) moveAction).getVirtualMachine());
+//					"./nativeHypervisor/virtualMachine/frameworkID",((MoveVMAction) moveAction).getVirtualMachine() + " a a 1 " +
+//					((MoveVMAction) moveAction).getVirtualMachine());
 //			operations.add(operation);
 //			((ConcurrentLinkedQueue<ComOperationCollector>)this.getQueuesHashMap().get(key)).add(operations);						
 //			monitor.updateNode(key, this);
@@ -340,7 +340,7 @@ public class ComEni extends AbstractCom implements Runnable {
 			i=0;
 			try{
 				//log.debug("vm: " + moveVmOperations.get(i).getVirtualMachine());				
-				LiveMigrateVMActionType migrateAction = (LiveMigrateVMActionType) iter.next();
+				LiveMigrateVMAction migrateAction = (LiveMigrateVMAction) iter.next();
 				this.liveMigrate(migrateAction);
 			}catch(Exception e){
 				log.error("Exception",e);
@@ -351,15 +351,15 @@ public class ComEni extends AbstractCom implements Runnable {
 		
 		// Performing at last power off operations
 		iter = powerOffOperations.iterator();
-		PowerOffActionType powerOffAction;
+		PowerOffAction powerOffAction;
 		while (iter.hasNext()) {
 			try{
-			powerOffAction = (PowerOffActionType) iter.next();
+			powerOffAction = (PowerOffAction) iter.next();
 			this.powerOff(powerOffAction);
 			
 			// set the status of powering on to the servers
 			key = comName + "_" + powerOffAction.getNodeName();
-			operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatusType.POWERING_OFF);
+			operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.POWERING_OFF);
 			operationSet.add(operation);
 			if(operationSet != null){
 				monitor.simpleUpdateNode(key,operationSet);				
@@ -370,9 +370,9 @@ public class ComEni extends AbstractCom implements Runnable {
 
 			
 			// Update as the state in the model as fast as possible to avoid possible errors when Optimizing			
-//			key = comName + "_" + ((PowerOffActionType) iter.next()).getNodeName();
+//			key = comName + "_" + ((PowerOffAction) iter.next()).getNodeName();
 //			log.debug("update status " + key + " OFF");
-//			operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatusType.OFF);
+//			operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.OFF);
 //			operationSet.add(operation);
 //			if(operationSet != null){
 //				monitor.simpleUpdateNode(key,operationSet);				
@@ -398,7 +398,7 @@ public class ComEni extends AbstractCom implements Runnable {
 	 * @author jclegea
 	 */
 	@Override
-	public boolean liveMigrate(LiveMigrateVMActionType action) {
+	public boolean liveMigrate(LiveMigrateVMAction action) {
 		String[] actionArguments = new String[16];
 		boolean isMigrated = false;
 		String dataCenterName = configurationEni_.getProperty(action.getDestNodeController() + "_DC");
@@ -450,7 +450,7 @@ public class ComEni extends AbstractCom implements Runnable {
 	 * @author jclegea
 	 */
 	@Override
-	public boolean moveVm(MoveVMActionType action) {
+	public boolean moveVm(MoveVMAction action) {
 		String[] actionArguments = new String[16];
 		boolean isMoved = false;
 		String dataCenterName = configurationEni_.getProperty(action.getDestNodeController() + "_DC");
@@ -499,7 +499,7 @@ public class ComEni extends AbstractCom implements Runnable {
 	 *  Return error when operation is not supported.
 	 */
 	@Override
-	public boolean powerOn(PowerOnActionType action) {
+	public boolean powerOn(PowerOnAction action) {
 		String ip = null;
 		String userilo = null;
 		String passilo = null;
@@ -548,7 +548,7 @@ public class ComEni extends AbstractCom implements Runnable {
 	 *  Return error when operation is not supported.
 	 */
 	@Override
-	public boolean powerOff(PowerOffActionType action) {
+	public boolean powerOff(PowerOffAction action) {
 		//log.error("Operation not supported on this Com component");
 		String port = null;
 		String ip = null;
@@ -591,7 +591,7 @@ public class ComEni extends AbstractCom implements Runnable {
 	 *  Return error when operation is not supported.
 	 */
 	@Override
-	public boolean startJob(StartJobActionType action) {
+	public boolean startJob(StartJobAction action) {
 		log.error("Operation not supported on this Com component");
 		return false;
 	}
@@ -601,7 +601,7 @@ public class ComEni extends AbstractCom implements Runnable {
 	 *  Return error when operation is not supported.
 	 */
 	@Override
-	public boolean standBy(StandByActionType action) {
+	public boolean standBy(StandByAction action) {
 		log.error("Operation not supported on this Com component");
 		return false;
 	}

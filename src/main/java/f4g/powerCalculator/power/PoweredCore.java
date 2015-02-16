@@ -1,30 +1,30 @@
 package f4g.powerCalculator.power;
 
 import f4g.powerCalculator.power.PoweredComponent;
-import f4g.schemas.java.metamodel.FrequencyType;
-import f4g.schemas.java.metamodel.VoltageType;
-import f4g.schemas.java.metamodel.CoreType;
-import f4g.schemas.java.metamodel.CPUArchitectureType;
-import f4g.schemas.java.metamodel.OperatingSystemTypeType;
-import f4g.schemas.java.metamodel.CoreLoadType;
-import f4g.schemas.java.metamodel.NrOfTransistorsType;
-import f4g.schemas.java.metamodel.NrOfPstatesType;
+import f4g.schemas.java.metamodel.Frequency;
+import f4g.schemas.java.metamodel.Voltage;
+import f4g.schemas.java.metamodel.Core;
+import f4g.schemas.java.metamodel.CPUArchitecture;
+import f4g.schemas.java.metamodel.OperatingSystemType;
+import f4g.schemas.java.metamodel.CoreLoad;
+import f4g.schemas.java.metamodel.NrOfTransistors;
+import f4g.schemas.java.metamodel.NrOfPstates;
 import org.apache.log4j.Logger;
 
 // Repository implementation
-public class PoweredCore extends CoreType implements PoweredComponent{	
+public class PoweredCore extends Core implements PoweredComponent{	
 	
-	CPUArchitectureType CPUBrand;
+	CPUArchitecture CPUBrand;
 	int numberOfCPUCores =0;
 	private double numOfTrans=0.0;
-	OperatingSystemTypeType operatingSystem;
+	OperatingSystemType operatingSystem;
 	double pFreq = 0.0;
 	boolean dvfs;
 	int loadedCoreCount; 
 	
 	static Logger log = Logger.getLogger(PoweredCore.class.getName());
 	
-	public PoweredCore(int numberOfCores, FrequencyType frequency, FrequencyType frequencyMin, FrequencyType frequencyMax, VoltageType voltage,CPUArchitectureType brand,OperatingSystemTypeType operatingSystem, CoreLoadType load, NrOfPstatesType totalPstates, NrOfTransistorsType transistorNumber, boolean dvfs, int loadedCores){
+	public PoweredCore(int numberOfCores, Frequency frequency, Frequency frequencyMin, Frequency frequencyMax, Voltage voltage,CPUArchitecture brand,OperatingSystemType operatingSystem, CoreLoad load, NrOfPstates totalPstates, NrOfTransistors transistorNumber, boolean dvfs, int loadedCores){
         this.totalPstates = totalPstates;
 		this.numOfTrans = transistorNumber.getValue()/numberOfCores;
 		this.frequencyMin = frequencyMin;
@@ -98,7 +98,7 @@ public class PoweredCore extends CoreType implements PoweredComponent{
 
 		if(this.dvfs && corePower > 0.0){
 			corePower = corePower - (calEnergRedFact(this.numberOfCPUCores, this.frequency.getValue(), loadedCoreCount) * corePower);
-			if (this.CPUBrand == CPUArchitectureType.AMD) corePower = corePower * 1.02;
+			if (this.CPUBrand == CPUArchitecture.AMD) corePower = corePower * 1.02;
    		 }
 		return (corePower+coreIdlePower);
 	}//end of computePower method
@@ -123,7 +123,7 @@ public class PoweredCore extends CoreType implements PoweredComponent{
 			p = (0.114312*(this.voltage.getValue() * this.voltage.getValue()) + (-0.22835 * this.voltage.getValue()) + 0.139204)* this.voltage.getValue() * numOfTrans;
 
 		if(this.dvfs){
-		    if (this.CPUBrand != null && this.CPUBrand == CPUArchitectureType.AMD){
+		    if (this.CPUBrand != null && this.CPUBrand == CPUArchitecture.AMD){
 	
 		    	double minFreq = 0.0;
 		    	double f=0.0;
@@ -169,8 +169,8 @@ public class PoweredCore extends CoreType implements PoweredComponent{
 		    	return delta*p;
 		    
 		    }else{ 
-					if (this.CPUBrand != null && this.CPUBrand == CPUArchitectureType.INTEL && numberOfCPUCores == 2) return 0.942*p;
-					else if (this.CPUBrand != null && this.CPUBrand == CPUArchitectureType.INTEL && numberOfCPUCores == 4) return 0.728*p;
+					if (this.CPUBrand != null && this.CPUBrand == CPUArchitecture.INTEL && numberOfCPUCores == 2) return 0.942*p;
+					else if (this.CPUBrand != null && this.CPUBrand == CPUArchitecture.INTEL && numberOfCPUCores == 4) return 0.728*p;
 					 else 
 						 	 return 0.316*p;
 		    }
@@ -203,15 +203,15 @@ public class PoweredCore extends CoreType implements PoweredComponent{
 		}
 		
 		//For AMD Quad core Processors
-		if (this.CPUBrand != null && this.CPUBrand == CPUArchitectureType.AMD && this.numberOfCPUCores == 4)
+		if (this.CPUBrand != null && this.CPUBrand == CPUArchitecture.AMD && this.numberOfCPUCores == 4)
 			corePower = (this.voltage.getValue()*3.052+1.5*(tempFreq-2.0))*tempFreq*this.voltage.getValue()*this.voltage.getValue();
 		
 		else corePower = computeCapacitance(tempFreq, this.voltage.getValue(),this.numberOfCPUCores)*tempFreq*this.voltage.getValue()*this.voltage.getValue();
 		
 		//For Windows operating system on Intel CPUs
-		if( this.CPUBrand != null && this.CPUBrand == CPUArchitectureType.INTEL && this.operatingSystem != null && this.operatingSystem == OperatingSystemTypeType.WINDOWS)
+		if( this.CPUBrand != null && this.CPUBrand == CPUArchitecture.INTEL && this.operatingSystem != null && this.operatingSystem == OperatingSystemType.WINDOWS)
 			corePower = corePower*0.95;
-		else if(this.CPUBrand != null && this.CPUBrand == CPUArchitectureType.AMD && this.operatingSystem != null && this.operatingSystem == OperatingSystemTypeType.WINDOWS)
+		else if(this.CPUBrand != null && this.CPUBrand == CPUArchitecture.AMD && this.operatingSystem != null && this.operatingSystem == OperatingSystemType.WINDOWS)
 			corePower = corePower*0.93;
 		
 		return corePower;

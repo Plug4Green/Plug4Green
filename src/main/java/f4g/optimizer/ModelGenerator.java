@@ -111,18 +111,18 @@ public class ModelGenerator {
 	public int    NB_SWITCHES = 0;
 	public int    NB_ROUTERS = 0;
     
-    public static BitErrorRateType defaultBitErrorRate = new BitErrorRateType(0.0);          // default values for a typical Ethernet link
-    public static PropagationDelayType defaultPropagationDelay = new PropagationDelayType(0.0);
-    public static NetworkTrafficType defaultLineCapacity = new NetworkTrafficType(8.0);      //  1 Byte/sec
-    public static PowerType defaultPortPowerIdle = new PowerType(  0 );
-    public static PowerType defaultPortPowerMax = new PowerType( 1.0 );
-    public static NetworkPortBufferSizeType defaultBufferSize = new NetworkPortBufferSizeType(50);
-    public static PowerType defaultSwitchPowerIdle = new PowerType( 48.0 );             // small Cisco switch
-    public static PowerType defaultSwitchPowerMax = new PowerType( 50.0 );
-    public static PowerType defaultRouterPowerIdle = new PowerType( 12.0 );             // small Cisco router
-    public static PowerType defaultRouterPowerMax = new PowerType( 13.0 );
-    public static BandwidthType defaultRouterProcessingBandwidth = new BandwidthType(1000000000);
-    public static BandwidthType defaultSwitchProcessingBandwidth = new BandwidthType(1000000000);
+    public static BitErrorRate defaultBitErrorRate = new BitErrorRate(0.0);          // default values for a typical Ethernet link
+    public static PropagationDelay defaultPropagationDelay = new PropagationDelay(0.0);
+    public static NetworkTraffic defaultLineCapacity = new NetworkTraffic(8.0);      //  1 Byte/sec
+    public static Power defaultPortPowerIdle = new Power(  0 );
+    public static Power defaultPortPowerMax = new Power( 1.0 );
+    public static NetworkPortBufferSize defaultBufferSize = new NetworkPortBufferSize(50);
+    public static Power defaultSwitchPowerIdle = new Power( 48.0 );             // small Cisco switch
+    public static Power defaultSwitchPowerMax = new Power( 50.0 );
+    public static Power defaultRouterPowerIdle = new Power( 12.0 );             // small Cisco router
+    public static Power defaultRouterPowerMax = new Power( 13.0 );
+    public static Bandwidth defaultRouterProcessingBandwidth = new Bandwidth(1000000000);
+    public static Bandwidth defaultSwitchProcessingBandwidth = new Bandwidth(1000000000);
     
 
     public String schema_location =  "src/main/resources/schemas/MetaModel.xsd";
@@ -273,20 +273,20 @@ public class ModelGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public FIT4GreenType createFIT4GreenType(){
+	public FIT4Green createFIT4Green(){
 		
 			
-		FIT4GreenType fIT4Green = new FIT4GreenType();
+		FIT4Green fIT4Green = new FIT4Green();
 		try {
 			fIT4Green.setDatetime(DatatypeFactory.newInstance().newXMLGregorianCalendar(/*year*/2012, /*month*/ 04, /*day*/ 04, /*hour*/ 8,  /*minute*/ 00, /*second*/ 00, /*millisecond*/ 00, /*timezone*/ 2 ));
 		} catch (DatatypeConfigurationException e) {
 				e.printStackTrace();
 		}
-		SiteType site = new SiteType();
+		Site site = new Site();
 				
-		site.setComputedPower(new PowerType(0.0));
-		site.setCUE(new CUEType(10.0));
-		site.setPUE(new PUEType(1.0));
+		site.setComputedPower(new Power(0.0));
+		site.setCUE(new CUE(10.0));
+		site.setPUE(new PUE(1.0));
 				
 		fIT4Green.getSite().add(site);
 		return fIT4Green;
@@ -298,28 +298,28 @@ public class ModelGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public FIT4GreenType createFIT4GreenType2Sites(){
+	public FIT4Green createFIT4Green2Sites(){
 		
 			
-		FIT4GreenType fIT4Green = new FIT4GreenType();
+		FIT4Green fIT4Green = new FIT4Green();
 		try {
 			fIT4Green.setDatetime(DatatypeFactory.newInstance().newXMLGregorianCalendar(/*year*/2012, /*month*/ 04, /*day*/ 04, /*hour*/ 8,  /*minute*/ 00, /*second*/ 00, /*millisecond*/ 00, /*timezone*/ 2 ));
 		} catch (DatatypeConfigurationException e) {
 				e.printStackTrace();
 		}
-		SiteType site1 = new SiteType();
+		Site site1 = new Site();
 				
-		site1.setComputedPower(new PowerType(0.0));
-		site1.setCUE(new CUEType(30.0));
-		site1.setPUE(new PUEType(1.0));
+		site1.setComputedPower(new Power(0.0));
+		site1.setCUE(new CUE(30.0));
+		site1.setPUE(new PUE(1.0));
 				
 		fIT4Green.getSite().add(site1);
 	
-		SiteType site2 = new SiteType();
+		Site site2 = new Site();
 		
-		site2.setComputedPower(new PowerType(0.0));
-		site2.setCUE(new CUEType(12.0));
-		site2.setPUE(new PUEType(2.0));
+		site2.setComputedPower(new Power(0.0));
+		site2.setCUE(new CUE(12.0));
+		site2.setPUE(new PUE(2.0));
 				
 		fIT4Green.getSite().add(site2);
 		
@@ -332,34 +332,34 @@ public class ModelGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public DatacenterType createDatacenterType(String FWName){
+	public Datacenter createDatacenter(String FWName){
 			
-		DatacenterType datacenter = new DatacenterType();
-		RackType rack = new RackType();
-		NetworkLoadType networkLoad = new NetworkLoadType();
-		VMActionsType vMActions = new VMActionsType();
+		Datacenter datacenter = new Datacenter();
+		Rack rack = new Rack();
+		NetworkLoad networkLoad = new NetworkLoad();
+		VMActions vMActions = new VMActions();
 		
 		vMActions.setIntraMoveVM(true);
 		vMActions.setInterMoveVM(false);
 		vMActions.setIntraLiveMigrate(false);
 		vMActions.setInterLiveMigrate(false);
 		
-		NodeActionsType nodeActions = new NodeActionsType();
+		NodeActions nodeActions = new NodeActions();
 		nodeActions.setPowerOff(true);
 		nodeActions.setPowerOn(true);		
 		
-		FrameworkCapabilitiesType frameworkCapability = new FrameworkCapabilitiesType();
+		FrameworkCapabilities frameworkCapability = new FrameworkCapabilities();
 		frameworkCapability.setFrameworkName(FWName);
 		frameworkCapability.setId(FWName);
 		frameworkCapability.setVm(vMActions);
 		frameworkCapability.setNode(nodeActions);
-		frameworkCapability.setStatus(FrameworkStatusType.RUNNING);
+		frameworkCapability.setStatus(FrameworkStatus.RUNNING);
 		
-		datacenter.setComputingStyle(DCComputingStyleType.CLOUD);
-		datacenter.setComputedPower(new PowerType(0.0));
+		datacenter.setComputingStyle(DCComputingStyle.CLOUD);
+		datacenter.setComputedPower(new Power(0.0));
 		datacenter.setNetworkLoad(networkLoad);
 	
-		rack.setComputedPower(new PowerType(0.0));
+		rack.setComputedPower(new Power(0.0));
 		
 		datacenter.getFrameworkCapabilities().add(frameworkCapability);
 		datacenter.getRack().add(rack);
@@ -373,10 +373,10 @@ public class ModelGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public FIT4GreenType createPopulatedFIT4GreenType() {
+	public FIT4Green createPopulatedFIT4Green() {
 		
-		FIT4GreenType fIT4Green = createFIT4GreenType();
-		DatacenterType DC1 = createDatacenterType("DC1");
+		FIT4Green fIT4Green = createFIT4Green();
+		Datacenter DC1 = createDatacenter("DC1");
 		fIT4Green.getSite().get(0).getDatacenter().add(DC1);
 
         int frameworkid = SERVER_FRAMEWORK_ID;
@@ -413,11 +413,11 @@ public class ModelGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public FIT4GreenType createPopulatedFIT4GreenType2DC() {
+	public FIT4Green createPopulatedFIT4Green2DC() {
 		
-		FIT4GreenType fIT4Green = createFIT4GreenType();
-		DatacenterType DC1 = createDatacenterType("DC1");
-		DatacenterType DC2 = createDatacenterType("DC2");
+		FIT4Green fIT4Green = createFIT4Green();
+		Datacenter DC1 = createDatacenter("DC1");
+		Datacenter DC2 = createDatacenter("DC2");
 		fIT4Green.getSite().get(0).getDatacenter().add(DC1);
 		fIT4Green.getSite().get(0).getDatacenter().add(DC2);
 		
@@ -437,11 +437,11 @@ public class ModelGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public FIT4GreenType createPopulatedFIT4GreenType2Sites() {
+	public FIT4Green createPopulatedFIT4Green2Sites() {
 		
-		FIT4GreenType fIT4Green = createFIT4GreenType2Sites();
-		DatacenterType DC1 = createDatacenterType("DC1");
-		DatacenterType DC2 = createDatacenterType("DC2");
+		FIT4Green fIT4Green = createFIT4Green2Sites();
+		Datacenter DC1 = createDatacenter("DC1");
+		Datacenter DC2 = createDatacenter("DC2");
 		fIT4Green.getSite().get(0).getDatacenter().add(DC1);
 		fIT4Green.getSite().get(1).getDatacenter().add(DC2);
 		
@@ -462,19 +462,19 @@ public class ModelGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public RackableServerType createRandomServer(FrameworkCapabilitiesType frameworkCapabilitie, int id){
+	public RackableServer createRandomServer(FrameworkCapabilities frameworkCapabilitie, int id){
 		
 		Random random = new Random();
 		
-		RackableServerType        rackableServer        = new RackableServerType();
-		CoolingSystemType         coolingSystem         = new CoolingSystemType();
-		NativeOperatingSystemType nativeOperatingSystem = new NativeOperatingSystemType();
-		MainboardType             mainboard             = new MainboardType();
-		RAMStickType              RAMStick              = new RAMStickType();
-		HardDiskType              hardDisk              = new HardDiskType();
-		NICType                   NIC                   = new NICType();
-		HostedHypervisorType      hostedHypervisor      = new HostedHypervisorType();
-		PSUType                   PSU                   = new PSUType();
+		RackableServer        rackableServer        = new RackableServer();
+		CoolingSystem         coolingSystem         = new CoolingSystem();
+		NativeOperatingSystem nativeOperatingSystem = new NativeOperatingSystem();
+		Mainboard             mainboard             = new Mainboard();
+		RAMStick              RAMStick              = new RAMStick();
+		HardDisk              hardDisk              = new HardDisk();
+		NIC                   NIC                   = new NIC();
+		HostedHypervisor      hostedHypervisor      = new HostedHypervisor();
+		PSU                   PSU                   = new PSU();
 		
 		//same frequencies and powers for every CPU and cores.
 		double CPUfrequency = genRandomDouble(MIN_FREQUENCY,      MAX_FREQUENCY,      random);
@@ -486,52 +486,52 @@ public class ModelGenerator {
 		int nbCPU = genRandomInteger(MIN_CPU, MAX_CPU, random);
 		
 		for (int i=0; i < nbCPU; i++ ){
-			CPUType CPU = new CPUType();
-			CPU.setPowerIdle(new PowerType(CPUpowerIdle));
-			CPU.setPowerMax(new PowerType(CPUpowerMax));
-			CPU.setArchitecture(CPUArchitectureType.AMD);
-			CPU.setTransistorNumber(new NrOfTransistorsType(NUMBER_OF_TRANSISTORS));
+			CPU CPU = new CPU();
+			CPU.setPowerIdle(new Power(CPUpowerIdle));
+			CPU.setPowerMax(new Power(CPUpowerMax));
+			CPU.setArchitecture(CPUArchitecture.AMD);
+			CPU.setTransistorNumber(new NrOfTransistors(NUMBER_OF_TRANSISTORS));
 			CPU.setDVFS(true);
 			
 			
 			for (int j=0; j< nbCorePerCPU; j++ ){
-				CoreType core = new CoreType();
-				core.setFrequency(new FrequencyType(CPUfrequency));
-				//core.setFrequencyMin(new FrequencyType(MIN_FREQUENCY));
-				//core.setFrequencyMax(new FrequencyType(MAX_FREQUENCY));
-				core.setCoreLoad(new CoreLoadType(0.1));
-				core.setVoltage(new VoltageType(CPU_VOLTAGE));
-				core.setLastPstate(new NrOfPstatesType(0));
-				core.setTotalPstates(new NrOfPstatesType(0));
+				Core core = new Core();
+				core.setFrequency(new Frequency(CPUfrequency));
+				//core.setFrequencyMin(new Frequency(MIN_FREQUENCY));
+				//core.setFrequencyMax(new Frequency(MAX_FREQUENCY));
+				core.setCoreLoad(new CoreLoad(0.1));
+				core.setVoltage(new Voltage(CPU_VOLTAGE));
+				core.setLastPstate(new NrOfPstates(0));
+				core.setTotalPstates(new NrOfPstates(0));
 				CPU.getCore().add(core);
 				
 			}
 			mainboard.getCPU().add(CPU);
 		}
 		
-		NIC           .setProcessingBandwidth(new BandwidthType(genRandomDouble( MIN_NIC_BANDWITCH,          MAX_NIC_BANDWITCH, random)));
-		NIC           .setPowerIdle(          new PowerType(genRandomDouble( MIN_NIC_POWER_IDLE,         MAX_NIC_POWER_IDLE, random)));
-		NIC           .setPowerMax(           new PowerType(genRandomDouble( MIN_NIC_POWER_DELTA_MAX,    MAX_NIC_POWER_DELTA_MAX, random) + NIC.getPowerIdle().getValue()));
-		RAMStick      .setSize(               new RAMSizeType(genRandomInteger(MIN_RAM_SIZE,               MAX_RAM_SIZE, random)));
-		hardDisk      .setStorageCapacity(    new StorageCapacityType(genRandomInteger(MIN_STORAGE_SIZE,           MAX_STORAGE_SIZE, random)));
+		NIC           .setProcessingBandwidth(new Bandwidth(genRandomDouble( MIN_NIC_BANDWITCH,          MAX_NIC_BANDWITCH, random)));
+		NIC           .setPowerIdle(          new Power(genRandomDouble( MIN_NIC_POWER_IDLE,         MAX_NIC_POWER_IDLE, random)));
+		NIC           .setPowerMax(           new Power(genRandomDouble( MIN_NIC_POWER_DELTA_MAX,    MAX_NIC_POWER_DELTA_MAX, random) + NIC.getPowerIdle().getValue()));
+		RAMStick      .setSize(               new RAMSize(genRandomInteger(MIN_RAM_SIZE,               MAX_RAM_SIZE, random)));
+		hardDisk      .setStorageCapacity(    new StorageCapacity(genRandomInteger(MIN_STORAGE_SIZE,           MAX_STORAGE_SIZE, random)));
 		//coolingSystem .setNumberOfFans(       genRandomInteger(MIN_FAN,                    MAX_FAN, random));
-		mainboard.setPowerIdle(               new PowerType(genRandomDouble( MIN_SERVER_POWER_IDLE,      MAX_SERVER_POWER_IDLE, random)));
-		mainboard.setPowerMax(                new PowerType(genRandomDouble( MIN_SERVER_POWER_DELTA_MAX, MAX_SERVER_POWER_DELTA_MAX, random) + mainboard.getPowerIdle().getValue()));
+		mainboard.setPowerIdle(               new Power(genRandomDouble( MIN_SERVER_POWER_IDLE,      MAX_SERVER_POWER_IDLE, random)));
+		mainboard.setPowerMax(                new Power(genRandomDouble( MIN_SERVER_POWER_DELTA_MAX, MAX_SERVER_POWER_DELTA_MAX, random) + mainboard.getPowerIdle().getValue()));
 		
 		//PSU.setCertification(PSUCertificationType.CERT_1);
 		
-		hardDisk.setMaxReadRate(new IoRateType(0));
-		hardDisk.setMaxWriteRate(new IoRateType(0));
-		hardDisk.setReadRate(new IoRateType(0));
-		hardDisk.setWriteRate(new IoRateType(0));
-		hardDisk.setPowerIdle(new PowerType(0));
-		hardDisk.setPowerMax(new PowerType(0));
-		hardDisk.setRpm(new RPMType(0));
+		hardDisk.setMaxReadRate(new IoRate(0));
+		hardDisk.setMaxWriteRate(new IoRate(0));
+		hardDisk.setReadRate(new IoRate(0));
+		hardDisk.setWriteRate(new IoRate(0));
+		hardDisk.setPowerIdle(new Power(0));
+		hardDisk.setPowerMax(new Power(0));
+		hardDisk.setRpm(new RPM(0));
 		
-		NetworkPortType netPort = new NetworkPortType();
-		netPort.setPowerIdle(new PowerType(1.0));
-		netPort.setPowerMax(new PowerType(2.0));
-		netPort.setLineCapacity(new NetworkTrafficType(1.0));
+		NetworkPort netPort = new NetworkPort();
+		netPort.setPowerIdle(new Power(1.0));
+		netPort.setPowerMax(new Power(2.0));
+		netPort.setLineCapacity(new NetworkTraffic(1.0));
 		netPort.setId("id" + String.valueOf(NIC_FRAMEWORK_ID + id + 10));
 		netPort.setPortID("PortID");
 		
@@ -541,11 +541,11 @@ public class ModelGenerator {
 		NIC.setID("id" + String.valueOf(NIC_FRAMEWORK_ID + id));
 		NIC.setForwardFlag(false);
 		NIC.getNetworkPort().add(netPort);
-		NIC.setStatus(NetworkNodeStatusType.ON);
+		NIC.setStatus(NetworkNodeStatus.ON);
 		RAMStick.setType(RAMTypeType.DDR);
 		RAMStick.setVendor(RAMTypeVendorType.GENERIC);
-		RAMStick.setVoltage(new VoltageType(0));
-		RAMStick.setFrequency(new FrequencyType(0));
+		RAMStick.setVoltage(new Voltage(0));
+		RAMStick.setFrequency(new Frequency(0));
 		RAMStick.setBufferType(BufferTypeType.FULLY_BUFFERED);
 		
 		mainboard.getRAMStick().add(RAMStick);
@@ -553,24 +553,24 @@ public class ModelGenerator {
 		mainboard.getEthernetNIC().add(NIC);
 		mainboard.setFrameworkID("id" + String.valueOf(MAINBOARD_FRAMEWORK_ID + id));
 	
-		hostedHypervisor.setHypervisorName(HostedHypervisorNameType.VM_WARE);
+		hostedHypervisor.setHypervisorName(HostedHypervisorName.VM_WARE);
 		hostedHypervisor.setFrameworkID("id" + String.valueOf(HYPERVISOR_FRAMEWORK_ID + id));
 		
-		nativeOperatingSystem.setName(OperatingSystemTypeType.LINUX);
+		nativeOperatingSystem.setName(OperatingSystemType.LINUX);
 		nativeOperatingSystem.getHostedHypervisor().add(hostedHypervisor);
 		
-		PSU.setLoad(new PSULoadType(50));
-		PSU.setEfficiency(new EfficiencyType(50));
+		PSU.setLoad(new PSULoad(50));
+		PSU.setEfficiency(new Efficiency(50));
 		
 		//rackableServer.setPSU(PSU);
 		rackableServer.setFrameworkRef((Object)frameworkCapabilitie);
-		rackableServer.setName(ServerRoleType.CLOUD_NODE_CONTROLLER);
-		rackableServer.setStatus(ServerStatusType.ON);
+		rackableServer.setName(ServerRole.CLOUD_NODE_CONTROLLER);
+		rackableServer.setStatus(ServerStatus.ON);
 		rackableServer.setFrameworkID("id" + String.valueOf(id));
 		rackableServer.setNativeOperatingSystem(nativeOperatingSystem);
 		//rackableServer.setCoolingSystem(coolingSystem);
 		rackableServer.getMainboard().add(mainboard);
-		rackableServer.setName(ServerRoleType.CLOUD_NODE_CONTROLLER);
+		rackableServer.setName(ServerRole.CLOUD_NODE_CONTROLLER);
 		rackableServer.getPSU().add(PSU);
 
 		int max_nb_VM = Math.min(nbCorePerCPU*nbCPU, MAX_NB_VIRTUAL_MACHINES);
@@ -580,7 +580,7 @@ public class ModelGenerator {
 		
 		//adding a number of VMs (max one VM per core)
 		for(int i=0; i<nb_VM; i++){
-			VirtualMachineType VM = createVirtualMachineType(rackableServer, frameworkCapabilitie, id + VM_FRAMEWORK_ID + i);
+			VirtualMachine VM = createVirtualMachine(rackableServer, frameworkCapabilitie, id + VM_FRAMEWORK_ID + i);
 			if(VM != null){
 				hostedHypervisor.getVirtualMachine().add(VM);
 			} else {
@@ -597,13 +597,13 @@ public class ModelGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public VirtualMachineType createVirtualMachineType(ServerType runningOn, FrameworkCapabilitiesType frameworkCapabilitie, int id){
+	public VirtualMachine createVirtualMachine(Server runningOn, FrameworkCapabilities frameworkCapabilitie, int id){
 		
 		Random random = new Random();
 		
-		VirtualMachineType virtualMachine = new VirtualMachineType();
-		HostedOperatingSystemType hostedOperatingSystem = new HostedOperatingSystemType();
-		hostedOperatingSystem.setName(OperatingSystemTypeType.LINUX);
+		VirtualMachine virtualMachine = new VirtualMachine();
+		HostedOperatingSystem hostedOperatingSystem = new HostedOperatingSystem();
+		hostedOperatingSystem.setName(OperatingSystemType.LINUX);
 				
 		if(! IS_CLOUD) {
 			
@@ -631,16 +631,16 @@ public class ModelGenerator {
 			if(MIN_MEMORY_USAGE  > max_memory_usage)  { log.debug("memory exhausted.");	   return null; }
 
         
-			virtualMachine.setNumberOfCPUs(          new NrOfCpusType(genRandomInteger(MIN_NB_CPU,        max_nb_cpu,        random)));
-			virtualMachine.setActualCPUUsage(        new CpuUsageType(genRandomDouble( MIN_CPU_USAGE,     MAX_CPU_USAGE,     random)));
-			virtualMachine.setActualNetworkUsage(    new NetworkUsageType(genRandomDouble( MIN_NETWORK_USAGE, max_network_usage, random)));  //TODO correct types
-			virtualMachine.setActualStorageUsage(    new StorageUsageType(genRandomDouble( MIN_STORAGE_USAGE, max_storage_usage, random)));
-			virtualMachine.setActualMemoryUsage(     new MemoryUsageType(genRandomDouble( MIN_MEMORY_USAGE,  max_memory_usage,  random)));
-			virtualMachine.setActualDiskIORate(      new IoRateType(0.0)); //TODO correct 
+			virtualMachine.setNumberOfCPUs(          new NrOfCpus(genRandomInteger(MIN_NB_CPU,        max_nb_cpu,        random)));
+			virtualMachine.setActualCPUUsage(        new CpuUsage(genRandomDouble( MIN_CPU_USAGE,     MAX_CPU_USAGE,     random)));
+			virtualMachine.setActualNetworkUsage(    new NetworkUsage(genRandomDouble( MIN_NETWORK_USAGE, max_network_usage, random)));  //TODO correct types
+			virtualMachine.setActualStorageUsage(    new StorageUsage(genRandomDouble( MIN_STORAGE_USAGE, max_storage_usage, random)));
+			virtualMachine.setActualMemoryUsage(     new MemoryUsage(genRandomDouble( MIN_MEMORY_USAGE,  max_memory_usage,  random)));
+			virtualMachine.setActualDiskIORate(      new IoRate(0.0)); //TODO correct 
 		
 		} else {
 			
-			virtualMachine.setCloudVmType(VM_TYPE);
+			virtualMachine.setCloudVm(VM_TYPE);
 			
 			virtualMachine.setNumberOfCPUs(       null);    
 			virtualMachine.setActualCPUUsage(     null);   
@@ -668,9 +668,9 @@ public class ModelGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public FIT4GreenType addRandomServersToModel(FIT4GreenType FIT4Green){
+	public FIT4Green addRandomServersToModel(FIT4Green FIT4Green){
 		
-		FrameworkCapabilitiesType frameworkCapability = FIT4Green.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0);
+		FrameworkCapabilities frameworkCapability = FIT4Green.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0);
 		
 		for(int i=0; i<MAX_NB_SERVERS; i++)
 			FIT4Green.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().add( createRandomServer(frameworkCapability, i));
@@ -726,8 +726,8 @@ public class ModelGenerator {
 	 */
 	public void populateModel(String fromModelFile, String toModelFile) {
 		
-		FIT4GreenType model = getModel(fromModelFile);
-		FIT4GreenType populatedF4G = addRandomServersToModel(model);
+		FIT4Green model = getModel(fromModelFile);
+		FIT4Green populatedF4G = addRandomServersToModel(model);
 		
 	}
 	
@@ -739,7 +739,7 @@ public class ModelGenerator {
 	public void createPopulatedModel(String toModelFile) {
 		
 
-		FIT4GreenType populatedF4G = createPopulatedFIT4GreenType();
+		FIT4Green populatedF4G = createPopulatedFIT4Green();
 		
 		
 //		if(validate(populatedF4G)){
@@ -756,7 +756,7 @@ public class ModelGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public boolean validate(FIT4GreenType FIT4Green){
+	public boolean validate(FIT4Green FIT4Green){
 		
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	    
@@ -764,7 +764,7 @@ public class ModelGenerator {
 			Schema schema = schemaFactory.newSchema(new File(schema_location));
 			Marshaller marshaller = Util.getJaxbContext().createMarshaller();
 		    marshaller.setSchema(schema);
-		    JAXBElement<FIT4GreenType> element = (new ObjectFactory()).createFIT4Green(FIT4Green);
+		    JAXBElement<FIT4Green> element = (new ObjectFactory()).createFIT4Green(FIT4Green);
 	   		marshaller.marshal (element, new DefaultHandler());
 			return true;
 			
@@ -789,7 +789,7 @@ public class ModelGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public FIT4GreenType getModel(String modelPathName) {
+	public FIT4Green getModel(String modelPathName) {
 		
 		InputStream isModel = null;
 		if((new File(modelPathName)).exists()) {
@@ -837,7 +837,7 @@ public class ModelGenerator {
 			// objects composed of classes from the "org.f4g.schema" package.
 			poElement = (JAXBElement<?>) u.unmarshal(isModel);
 			
-			return (FIT4GreenType) poElement.getValue();
+			return (FIT4Green) poElement.getValue();
 			
 
 		} catch (JAXBException je) {
@@ -856,15 +856,15 @@ public class ModelGenerator {
 	 *
 	 * @author rlent
 	 */
-	public BoxSwitchType createRandomBoxSwitch(FrameworkCapabilitiesType frameworkCapabilitie, int id) {
+	public BoxSwitch createRandomBoxSwitch(FrameworkCapabilities frameworkCapabilitie, int id) {
 		
 		Random random = new Random();
 		
-		BoxSwitchType node = new BoxSwitchType();
+		BoxSwitch node = new BoxSwitch();
 		node.setFrameworkID("id" + String.valueOf(id));
 		node.setID("id" + String.valueOf(id));
 		node.setForwardFlag(true);
-		node.setStatus(NetworkNodeStatusType.ON);		
+		node.setStatus(NetworkNodeStatus.ON);		
         node.setPowerIdle( defaultSwitchPowerIdle  );
         node.setPowerMax( defaultSwitchPowerMax );
         node.setProcessingBandwidth( defaultSwitchProcessingBandwidth );
@@ -877,15 +877,15 @@ public class ModelGenerator {
 	 *
 	 * @author rlent
 	 */
-	public BoxRouterType createRandomBoxRouter(FrameworkCapabilitiesType frameworkCapabilitie, int id){
+	public BoxRouter createRandomBoxRouter(FrameworkCapabilities frameworkCapabilitie, int id){
 		
 		Random random = new Random();
 		
-		BoxRouterType node = new BoxRouterType();
+		BoxRouter node = new BoxRouter();
 		node.setFrameworkID("id" + String.valueOf(id));
 		node.setID("id" + String.valueOf(id));
 		node.setForwardFlag(true);
-		node.setStatus(NetworkNodeStatusType.ON);				
+		node.setStatus(NetworkNodeStatus.ON);				
         node.setPowerIdle( defaultRouterPowerIdle );
         node.setPowerMax( defaultRouterPowerMax );
         node.setProcessingBandwidth( defaultRouterProcessingBandwidth );
@@ -896,19 +896,19 @@ public class ModelGenerator {
 	
     
     /**
-     * Connect two NetworkNodeType using defaul values
+     * Connect two NetworkNode using defaul values
 	 *
 	 * @author rlent
      */
-    public static void connectNetDevsFullDuplex(NetworkNodeType node0, NetworkNodeType node1) 
+    public static void connectNetDevsFullDuplex(NetworkNode node0, NetworkNode node1) 
     {
         // 1. Create a link to connect the nodes
         
-        LinkType link = new LinkType(defaultPropagationDelay, defaultBitErrorRate, null);
+        Link link = new Link(defaultPropagationDelay, defaultBitErrorRate, null);
         
         // 2. Create a network port for node 0 
         
-        NetworkPortType port0 = new NetworkPortType();      
+        NetworkPort port0 = new NetworkPort();      
         port0.setLineCapacity( defaultLineCapacity );
         port0.setPowerIdle( defaultPortPowerIdle );
         port0.setPowerMax( defaultPortPowerMax );
@@ -916,7 +916,7 @@ public class ModelGenerator {
         
         // 3. Create a network port for node 1 
         
-        NetworkPortType port1 = new NetworkPortType();
+        NetworkPort port1 = new NetworkPort();
         port1.setLineCapacity( defaultLineCapacity );
         port1.setPowerIdle( defaultPortPowerIdle );
         port1.setPowerMax( defaultPortPowerMax );
@@ -935,32 +935,32 @@ public class ModelGenerator {
 
 
     /**
-     * Connect a ServerType to a NetworkNodeType using defaul values
+     * Connect a Server to a NetworkNode using defaul values
 	 *
 	 * @author rlent
      */
-    public static void connectServerToNetDevFullDuplex(ServerType server, NetworkNodeType node) 
+    public static void connectServerToNetDevFullDuplex(Server server, NetworkNode node) 
     {
 
 //        for (int i = 0; i < allServers.size(); i++) {
-//        	ServerType server = allServers.get(i);
+//        	Server server = allServers.get(i);
 //            
 //            System.out.println("-> " + server.getFrameworkID() );
 //            
-//            MainboardType amainboard = server.getMainboard().get(0); 
-//            NICType anic = amainboard.getEthernetNIC().get(0);
+//            Mainboard amainboard = server.getMainboard().get(0); 
+//            NIC anic = amainboard.getEthernetNIC().get(0);
 //            
 //        }
 
         // 1. Create a link to connect the nodes
         
-        LinkType link = new LinkType(defaultPropagationDelay, defaultBitErrorRate, null);
+        Link link = new Link(defaultPropagationDelay, defaultBitErrorRate, null);
         
         // 2. Create a network port for server 
         
-        NetworkNodeType nic0 = server.getMainboard().get(0).getEthernetNIC().get(0);    // first server's NIC is a NetworkNode
-        NetworkPortType port0 = nic0.getNetworkPort().get(0);      
-//        NetworkPortType port0 = new NetworkPortType();      
+        NetworkNode nic0 = server.getMainboard().get(0).getEthernetNIC().get(0);    // first server's NIC is a NetworkNode
+        NetworkPort port0 = nic0.getNetworkPort().get(0);      
+//        NetworkPort port0 = new NetworkPort();      
         port0.setLineCapacity( defaultLineCapacity );
         port0.setPowerIdle( defaultPortPowerIdle );
         port0.setPowerMax( defaultPortPowerMax );
@@ -968,7 +968,7 @@ public class ModelGenerator {
         
         // 3. Create a network port for node 
         
-        NetworkPortType port1 = new NetworkPortType();
+        NetworkPort port1 = new NetworkPort();
         port1.setLineCapacity( defaultLineCapacity );
         port1.setPowerIdle( defaultPortPowerIdle );
         port1.setPowerMax( defaultPortPowerMax );

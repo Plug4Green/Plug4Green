@@ -7,11 +7,11 @@ import org.btrplace.plan.event.BootNode;
 import f4g.commons.controller.IController;
 import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.utils.Utils;
-import f4g.schemas.java.actions.AbstractBaseActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
-import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.actions.AbstractBaseAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.FrameworkCapabilities;
+import f4g.schemas.java.metamodel.Server;
 
 
 public class F4GStartup extends F4GDriver {
@@ -30,19 +30,19 @@ public class F4GStartup extends F4GDriver {
      * @throws entropy.PropertiesHelperException if an error occurred while configuring the driver
      *
 	 */
-	public F4GStartup(BootNode a, IController myController, FIT4GreenType myModel, NamingService<Node> nodeNS, NamingService<VM> VMNS) {
+	public F4GStartup(BootNode a, IController myController, FIT4Green myModel, NamingService<Node> nodeNS, NamingService<VM> VMNS) {
 		super(a, myController, myModel, nodeNS, VMNS);
 		action = a;
 	}
 	
 
 	@Override
-	public AbstractBaseActionType getActionToExecute() {
+	public AbstractBaseAction getActionToExecute() {
 
-		PowerOnActionType powerOn = new PowerOnActionType();
+		PowerOnAction powerOn = new PowerOnAction();
 				
-		ServerType server = Utils.findServerByName(model, nodeNS.getName(action.getNode()));
-		FrameworkCapabilitiesType fc = (FrameworkCapabilitiesType) server.getFrameworkRef();
+		Server server = Utils.findServerByName(model, nodeNS.getName(action.getNode()));
+		FrameworkCapabilities fc = (FrameworkCapabilities) server.getFrameworkRef();
 		
 		powerOn.setNodeName(nodeNS.getName(action.getNode()));
 		powerOn.setFrameworkName(fc.getFrameworkName());

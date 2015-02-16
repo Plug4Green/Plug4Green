@@ -10,23 +10,23 @@
 */
 package f4g.optimizer.cloudTraditional;
 
-import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
-import f4g.schemas.java.metamodel.NetworkNodeType;
-import f4g.schemas.java.metamodel.NetworkPortType;
-import f4g.schemas.java.metamodel.NetworkNodeStatusType;
+import f4g.schemas.java.metamodel.FrameworkCapabilities;
+import f4g.schemas.java.metamodel.NetworkNode;
+import f4g.schemas.java.metamodel.NetworkPort;
+import f4g.schemas.java.metamodel.NetworkNodeStatus;
 import f4g.schemas.java.actions.ObjectFactory;
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.actions.ActionRequestType.ActionList;
-import f4g.schemas.java.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.actions.ActionRequest.ActionList;
+import f4g.schemas.java.actions.AbstractBaseAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import f4g.optimizer.utils.Utils;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.ServerStatusType;
-import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.ServerStatus;
+import f4g.schemas.java.metamodel.Server;
 import com.rits.cloning.Cloner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -36,23 +36,23 @@ import javax.xml.bind.JAXBElement;
 
 public class NetworkControl {
 
-	public static ActionList getOnOffActions(FIT4GreenType federation, FIT4GreenType model) {
+	public static ActionList getOnOffActions(FIT4Green federation, FIT4Green model) {
 
 		ActionList actionList = new ActionList();
         actionList.getAction();     // initialize
 		ObjectFactory objectFactory = new ObjectFactory();
-        List<NetworkNodeType> allSwitches = Utils.getAllNetworkDeviceNodes(federation);
+        List<NetworkNode> allSwitches = Utils.getAllNetworkDeviceNodes(federation);
 
-        for( NetworkNodeType node : allSwitches ) {
+        for( NetworkNode node : allSwitches ) {
             boolean should_be_on = false; 
             boolean access_sw = false;
-            for( NetworkPortType port : node.getNetworkPort() ) {
+            for( NetworkPort port : node.getNetworkPort() ) {
                 if( port.getNetworkPortRef() != null ) {
       
                     try {
-                        ServerType server = Utils.findServerByName(federation, (String) port.getNetworkPortRef());
+                        Server server = Utils.findServerByName(federation, (String) port.getNetworkPortRef());
                         access_sw = true;
-                        if( server.getStatus() == ServerStatusType.ON) {
+                        if( server.getStatus() == ServerStatus.ON) {
                             should_be_on = true;
                             break;
                         }
@@ -62,20 +62,20 @@ public class NetworkControl {
                      
                 }
             }
-            if( access_sw && should_be_on && node.getStatus() != NetworkNodeStatusType.ON ) {
+            if( access_sw && should_be_on && node.getStatus() != NetworkNodeStatus.ON ) {
                     // switch on
-                    PowerOnActionType action = new PowerOnActionType();
+                    PowerOnAction action = new PowerOnAction();
                     action.setNodeName(node.getID());  
-            		FrameworkCapabilitiesType fc = (FrameworkCapabilitiesType) node.getFrameworkRef();
+            		FrameworkCapabilities fc = (FrameworkCapabilities) node.getFrameworkRef();
             		action.setFrameworkName(fc.getFrameworkName());
                     actionList.getAction().add(objectFactory.createPowerOn(action));
             }
             else            
-                if( access_sw && ! should_be_on && node.getStatus() == NetworkNodeStatusType.ON ) {
+                if( access_sw && ! should_be_on && node.getStatus() == NetworkNodeStatus.ON ) {
                     // switch off
-                    PowerOffActionType action = new PowerOffActionType();
+                    PowerOffAction action = new PowerOffAction();
                     action.setNodeName(node.getID());  
-            		FrameworkCapabilitiesType fc = (FrameworkCapabilitiesType) node.getFrameworkRef();         		
+            		FrameworkCapabilities fc = (FrameworkCapabilities) node.getFrameworkRef();         		
             		action.setFrameworkName(fc.getFrameworkName());
                     actionList.getAction().add(objectFactory.createPowerOff(action));                
                }
@@ -86,22 +86,22 @@ public class NetworkControl {
 	}
     
     
-    public static FIT4GreenType performOnOffs(FIT4GreenType federation, ActionList actionList) {
+    public static FIT4Green performOnOffs(FIT4Green federation, ActionList actionList) {
         
         Cloner cloner=new Cloner();
-        FIT4GreenType newFederation = cloner.deepClone(federation);
+        FIT4Green newFederation = cloner.deepClone(federation);
         
-        for (JAXBElement<? extends AbstractBaseActionType> action : actionList.getAction()) {
+        for (JAXBElement<? extends AbstractBaseAction> action : actionList.getAction()) {
             
-            if( action.getValue() instanceof PowerOnActionType) {
-                String nodeName = ((PowerOnActionType)action.getValue()).getNodeName();
-                NetworkNodeType node = Utils.findNetworkNodeByName(newFederation, nodeName);
-                node.setStatus(NetworkNodeStatusType.ON);
+            if( action.getValue() instanceof PowerOnAction) {
+                String nodeName = ((PowerOnAction)action.getValue()).getNodeName();
+                NetworkNode node = Utils.findNetworkNodeByName(newFederation, nodeName);
+                node.setStatus(NetworkNodeStatus.ON);
             }
             else{
-                String nodeName = ((PowerOffActionType)action.getValue()).getNodeName();
-                NetworkNodeType node = Utils.findNetworkNodeByName(newFederation, nodeName);
-                node.setStatus(NetworkNodeStatusType.OFF);
+                String nodeName = ((PowerOffAction)action.getValue()).getNodeName();
+                NetworkNode node = Utils.findNetworkNodeByName(newFederation, nodeName);
+                node.setStatus(NetworkNodeStatus.OFF);
             }
             
         }
@@ -110,11 +110,11 @@ public class NetworkControl {
     }
 
     
-  //  protected static NetworkNodeType findNetworkNodeByName(FIT4GreenType f4g, final String frameWorkID) {
+  //  protected static NetworkNode findNetworkNodeByName(FIT4Green f4g, final String frameWorkID) {
     
-  //      Iterator<NetworkNodeType> it = Utils.getAllNetworkDeviceNodes(f4g).iterator();
-  //      Predicate<NetworkNodeType> isID = new Predicate<NetworkNodeType>() {
-  //          @Override public boolean apply(NetworkNodeType s) {
+  //      Iterator<NetworkNode> it = Utils.getAllNetworkDeviceNodes(f4g).iterator();
+  //      Predicate<NetworkNode> isID = new Predicate<NetworkNode>() {
+  //          @Override public boolean apply(NetworkNode s) {
   //              return s.getFrameworkID().equals(frameWorkID);
   //          }
   //      };

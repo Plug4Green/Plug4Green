@@ -9,9 +9,9 @@ import org.btrplace.plan.event.Action;
 
 import f4g.commons.controller.IController;
 import f4g.optimizer.entropy.NamingService;
-import f4g.schemas.java.actions.AbstractBaseActionType;
-import f4g.schemas.java.actions.ActionRequestType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.actions.AbstractBaseAction;
+import f4g.schemas.java.actions.ActionRequest;
+import f4g.schemas.java.metamodel.FIT4Green;
 
 /**
  * Adding energetic considerations to NodeComparator
@@ -21,7 +21,7 @@ public abstract class F4GDriver extends Driver {
 			
 
 	IController controller;
-	protected FIT4GreenType model;
+	protected FIT4Green model;
 	NamingService<Node> nodeNS;
 	NamingService<VM> VMNS;
 
@@ -31,7 +31,7 @@ public abstract class F4GDriver extends Driver {
 	 * @param props the properties to configure the driver
      * @throws PropertiesHelperException if an error occurred while configuring the driver
 	 */
-	public F4GDriver(Action a, IController controller, FIT4GreenType model, NamingService<Node> nodeNS, NamingService<VM> VMNS) {
+	public F4GDriver(Action a, IController controller, FIT4Green model, NamingService<Node> nodeNS, NamingService<VM> VMNS) {
 		super(a);
 		this.controller = controller;
 		this.model = model;
@@ -43,12 +43,12 @@ public abstract class F4GDriver extends Driver {
 	@Override
 	public void execute(){
 				
-		ActionRequestType actionRequest = new ActionRequestType();
-		ActionRequestType.ActionList actionList = new ActionRequestType.ActionList();
+		ActionRequest actionRequest = new ActionRequest();
+		ActionRequest.ActionList actionList = new ActionRequest.ActionList();
 		
-		AbstractBaseActionType action = getActionToExecute();
+		AbstractBaseAction action = getActionToExecute();
 		
-		JAXBElement<AbstractBaseActionType> JAXBAction = (new f4g.schemas.java.actions.ObjectFactory()).createAction(action);
+		JAXBElement<AbstractBaseAction> JAXBAction = (new f4g.schemas.java.actions.ObjectFactory()).createAction(action);
 			    	
 		actionList.getAction().add(JAXBAction);
 		
@@ -64,7 +64,7 @@ public abstract class F4GDriver extends Driver {
 	 * Get the command to execute on the remote host.
 	 * @return a shell command
 	 */
-	public abstract AbstractBaseActionType getActionToExecute();
+	public abstract AbstractBaseAction getActionToExecute();
 	
 	@Override
 	public String toString() {

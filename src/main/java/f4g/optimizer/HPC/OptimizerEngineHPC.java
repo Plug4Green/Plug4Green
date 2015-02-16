@@ -15,17 +15,17 @@
 package f4g.optimizer.HPC;
 
 
-import f4g.schemas.java.actions.ActionRequestType;
-import f4g.schemas.java.actions.ActionRequestType.ActionList;
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.actions.StandByActionType;
-import f4g.schemas.java.actions.StartJobActionType;
+import f4g.schemas.java.actions.ActionRequest;
+import f4g.schemas.java.actions.ActionRequest.ActionList;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.actions.StandByAction;
+import f4g.schemas.java.actions.StartJobAction;
 
-import f4g.schemas.java.allocation.HpcClusterAllocationType;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
-import f4g.schemas.java.allocation.HpcClusterAllocationResponseType;
+import f4g.schemas.java.allocation.HpcClusterAllocation;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
+import f4g.schemas.java.allocation.HpcClusterAllocationResponse;
 
 import org.apache.commons.jxpath.JXPathContext;
 import f4g.commons.optimizer.ICostEstimator;
@@ -34,34 +34,34 @@ import f4g.optimizer.HPC.OptimalJob;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.controller.IController;
 import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.metamodel.ApplicationBenchmarkType;
-import f4g.schemas.java.metamodel.CoreLoadType;
-import f4g.schemas.java.metamodel.CpuUsageType;
-import f4g.schemas.java.metamodel.DatacenterType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.FanType;
-import f4g.schemas.java.metamodel.HardDiskType;
+import f4g.schemas.java.metamodel.ApplicationBenchmark;
+import f4g.schemas.java.metamodel.CoreLoad;
+import f4g.schemas.java.metamodel.CpuUsage;
+import f4g.schemas.java.metamodel.Datacenter;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.Fan;
+import f4g.schemas.java.metamodel.HardDisk;
 import f4g.schemas.java.IDREFS;
-import f4g.schemas.java.metamodel.IoRateType;
-import f4g.schemas.java.metamodel.JobPriorityType;
-import f4g.schemas.java.metamodel.JobTimeType;
-import f4g.schemas.java.metamodel.MainboardType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
-import f4g.schemas.java.metamodel.NrOfCoresType;
-import f4g.schemas.java.metamodel.NrOfNodesType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.QueueType;
-import f4g.schemas.java.metamodel.RPMType;
-import f4g.schemas.java.metamodel.SiteType;
-import f4g.schemas.java.metamodel.JobStatusType;
-import f4g.schemas.java.metamodel.JobType;
-import f4g.schemas.java.metamodel.NodeStatusType;
-import f4g.schemas.java.metamodel.RAMStickType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.RackableServerType;
-import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
-import f4g.schemas.java.metamodel.CPUType;
-import f4g.schemas.java.metamodel.CoreType;
+import f4g.schemas.java.metamodel.IoRate;
+import f4g.schemas.java.metamodel.JobPriority;
+import f4g.schemas.java.metamodel.JobTime;
+import f4g.schemas.java.metamodel.Mainboard;
+import f4g.schemas.java.metamodel.MemoryUsage;
+import f4g.schemas.java.metamodel.NrOfCores;
+import f4g.schemas.java.metamodel.NrOfNodes;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.Queue;
+import f4g.schemas.java.metamodel.RPM;
+import f4g.schemas.java.metamodel.Site;
+import f4g.schemas.java.metamodel.JobStatus;
+import f4g.schemas.java.metamodel.Job;
+import f4g.schemas.java.metamodel.NodeStatus;
+import f4g.schemas.java.metamodel.RAMStick;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.RackableServer;
+import f4g.schemas.java.metamodel.FrameworkCapabilities;
+import f4g.schemas.java.metamodel.CPU;
+import f4g.schemas.java.metamodel.Core;
 import f4g.schemas.java.actions.ObjectFactory;
 
 
@@ -88,19 +88,19 @@ import java.util.Collections;
  */
 public class OptimizerEngineHPC extends OptimizerEngine{
 	
-	static List<JobType> jobList = new LinkedList<JobType>(); // List of jobs in the queue
-	static List<ServerType> srvList = new LinkedList<ServerType> (); // List of Servers
-	static List<JobType> runningList = new LinkedList<JobType>(); // List of running jobs
+	static List<Job> jobList = new LinkedList<Job>(); // List of jobs in the queue
+	static List<Server> srvList = new LinkedList<Server> (); // List of Servers
+	static List<Job> runningList = new LinkedList<Job>(); // List of running jobs
 	static List<String> jobIdList = new ArrayList<String>();
 	static List<Boolean> reservedList = new ArrayList<Boolean> (); 
 	static List<Double> serverMemoryList = new ArrayList<Double> ();
 	static List<Integer> serverCoresList = new ArrayList<Integer> ();
 	static List<Integer> serverCoresInUseList = new ArrayList<Integer> ();
-	ActionRequestType actionRequest = new ActionRequestType(); 
+	ActionRequest actionRequest = new ActionRequest(); 
 	ActionList actionList = new ActionList();
-	FIT4GreenType model = null;
-	List<PowerOnActionType> serverOns = new ArrayList<PowerOnActionType> ();
-	List<PowerOffActionType> serverOffs = new ArrayList<PowerOffActionType> ();
+	FIT4Green model = null;
+	List<PowerOnAction> serverOns = new ArrayList<PowerOnAction> ();
+	List<PowerOffAction> serverOffs = new ArrayList<PowerOffAction> ();
 
 	static int scheduling = 0; // 0 = fifo, 1 = bff, 2 = bbf
 	static int threshold = 0;
@@ -144,10 +144,10 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	/**
 	 * Gets a best cluster for a job in the federated scenario
 	 * 
-	 * @param int nodes, int cores, long memory, long wallTime, FIT4GreenType model
+	 * @param int nodes, int cores, long memory, long wallTime, FIT4Green model
 	 * @return Data Centre ID
 	 */
-	public String getBestCluster(HpcClusterAllocationType hpcRequest, FIT4GreenType model) {
+	public String getBestCluster(HpcClusterAllocation hpcRequest, FIT4Green model) {
 		
 		log.debug("OptimizerEngineHPC: getBestCluster: Getting best cluster for the job");
 
@@ -171,31 +171,31 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	/**
 	 * Gets a best cluster fast as possible for a job in the federated scenario
 	 * 
-	 * @param int nodes, int cores, long memory, long wallTime, FIT4GreenType model
+	 * @param int nodes, int cores, long memory, long wallTime, FIT4Green model
 	 * @return Data Centre ID
 	 */
 	
-	public String getDCfastAsPossible(HpcClusterAllocationType hpcRequest, FIT4GreenType model) {
+	public String getDCfastAsPossible(HpcClusterAllocation hpcRequest, FIT4Green model) {
 		
 		String dcID = new String();
 				
 		String tempString = hpcRequest.getSuitableClusters();
 		String[] suitableClusters = tempString.split(" ");
 
-		JobType myJob = new JobType();
-		NrOfCoresType nOfCores = new NrOfCoresType();
+		Job myJob = new Job();
+		NrOfCores nOfCores = new NrOfCores();
 		nOfCores.setValue(hpcRequest.getNeededCoresPerNode());
 		myJob.setNeededCoresPerNode(nOfCores);
 		
-		MemoryUsageType neededMemory = new MemoryUsageType ();
+		MemoryUsage neededMemory = new MemoryUsage ();
 		neededMemory.setValue(hpcRequest.getNeededMemory());
 		myJob.setNeededMemory(neededMemory);
 		
-		NrOfNodesType nrOfNodes = new NrOfNodesType ();
+		NrOfNodes nrOfNodes = new NrOfNodes ();
 		nrOfNodes.setValue(hpcRequest.getNumberOfNodes());
 		myJob.setNumberOfNodes(nrOfNodes);
 		
-		JobTimeType wallTime = new JobTimeType ();
+		JobTime wallTime = new JobTime ();
 		wallTime.setValue(hpcRequest.getWallTime());
 		myJob.setWallTime(wallTime);
 		
@@ -224,7 +224,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
         	Object element = elements.next();
         	
         	//Find out if the data centre is suitable for executing the job
-        	String tempID = ((DatacenterType)element).getFrameworkCapabilities().get(0).getId();
+        	String tempID = ((Datacenter)element).getFrameworkCapabilities().get(0).getId();
         	isSuitable = isSuitableCluster(tempID, suitableClusters);
         	estimatedLatestFinish = 0;
         	estimatedWaitTime = 0;
@@ -234,14 +234,14 @@ public class OptimizerEngineHPC extends OptimizerEngine{
         		log.debug("Data Centre is suitable: " +tempID);
         		dcRank = 0;
         		C = 0.0;
-        		dcRank = getDCRank(hpcRequest.getBenchmarkName(), ((DatacenterType)element));
+        		dcRank = getDCRank(hpcRequest.getBenchmarkName(), ((Datacenter)element));
     			log.debug("smallestRank: " + smallestRank);
     			log.debug("dcRank: " + dcRank);
     			C = (double)smallestRank/(double)dcRank;
     			log.debug("C: " + C);
         		
 				//Get the estimated wait time
-				estimatedWaitTime = (long) (getEstimatedWaitTime(((DatacenterType)element), myJob) * 1.1);					
+				estimatedWaitTime = (long) (getEstimatedWaitTime(((Datacenter)element), myJob) * 1.1);					
 				estimatedLatestFinish = getEpochTime() + estimatedWaitTime + (long)(myJob.getWallTime().getValue() * C);
 				log.debug("Data Centre estimatedWaitTime: " +estimatedWaitTime);
 				log.debug("Data Centre estimatedLatestFinish: " +estimatedLatestFinish);
@@ -251,7 +251,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 				if(estimatedWaitTime == 0)
 				{
 					log.debug("Resources were found and the size of the queue in the data centre is zero.");
-					dcID = ((DatacenterType)element).getFrameworkCapabilities().get(0).getId();
+					dcID = ((Datacenter)element).getFrameworkCapabilities().get(0).getId();
 					break;
 				}
 				//If no data centre was found that can execute the job immediately, find the data centre
@@ -259,7 +259,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 				else if(estimatedLatestFinish < candidateFinish || candidateFinish == -1) {
 					log.debug("estimatedLatestFinish in the data centre: " +getEpochDate(estimatedLatestFinish));
 					candidateFinish = estimatedLatestFinish;
-					dcID = ((DatacenterType)element).getFrameworkCapabilities().get(0).getId();
+					dcID = ((Datacenter)element).getFrameworkCapabilities().get(0).getId();
 					log.debug("Selecting data center: "+dcID +", with the lowest estimated wait time.");
 				}
 //				else if(queueSize < candidateQueueSize || candidateQueueSize == -1)
@@ -267,7 +267,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 //					log.debug("Size of the queue in the data centre: " +queueSize); 
 //					log.debug("Resources found: " +resourcesFound);
 //					candidateQueueSize = queueSize;
-//					dcID = ((DatacenterType)element).getFrameworkCapabilities().get(0).getId();
+//					dcID = ((Datacenter)element).getFrameworkCapabilities().get(0).getId();
 //				}
         	}
         }
@@ -281,11 +281,11 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * Gets a best cluster energy aware by utilizing the power calculator 
 	 * for a job in the federated scenario
 	 * 
-	 * @param int nodes, int cores, long memory, long wallTime, FIT4GreenType model
+	 * @param int nodes, int cores, long memory, long wallTime, FIT4Green model
 	 * @return Data Centre ID
 	 */
 	
-	public String getDCpowerCalculator(HpcClusterAllocationType hpcRequest, FIT4GreenType model) {
+	public String getDCpowerCalculator(HpcClusterAllocation hpcRequest, FIT4Green model) {
 		
 		String dcID = new String();
 		double jobPower = 0.0;
@@ -310,21 +310,21 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		smallestRank = getSmallestRank(hpcRequest.getBenchmarkName(), model);
 		log.debug("Smallest rank: "+smallestRank);
 		
-		JobType myJob = new JobType();
+		Job myJob = new Job();
 
-		NrOfCoresType nOfCores = new NrOfCoresType();
+		NrOfCores nOfCores = new NrOfCores();
 		nOfCores.setValue(hpcRequest.getNeededCoresPerNode());
 		myJob.setNeededCoresPerNode(nOfCores);
 		
-		MemoryUsageType neededMemory = new MemoryUsageType ();
+		MemoryUsage neededMemory = new MemoryUsage ();
 		neededMemory.setValue(hpcRequest.getNeededMemory());
 		myJob.setNeededMemory(neededMemory);
 		
-		NrOfNodesType nrOfNodes = new NrOfNodesType ();
+		NrOfNodes nrOfNodes = new NrOfNodes ();
 		nrOfNodes.setValue(hpcRequest.getNumberOfNodes());
 		myJob.setNumberOfNodes(nrOfNodes);
 		
-		JobTimeType wallTime = new JobTimeType ();
+		JobTime wallTime = new JobTime ();
 		wallTime.setValue(hpcRequest.getWallTime());
 		myJob.setWallTime(wallTime);
 						
@@ -347,11 +347,11 @@ public class OptimizerEngineHPC extends OptimizerEngine{
         	
         	//Use either PUE or CUE based on the optimization objective
         	if(getOptiObjective().toString().matches("Power"))
-        		optObjective = ((SiteType)element).getPUE().getValue();
+        		optObjective = ((Site)element).getPUE().getValue();
         	else
-        		optObjective = ((SiteType)element).getCUE().getValue();
+        		optObjective = ((Site)element).getCUE().getValue();
         		
-			Iterator<DatacenterType> dcItr = ((SiteType)element).getDatacenter().iterator();
+			Iterator<Datacenter> dcItr = ((Site)element).getDatacenter().iterator();
 			while(dcItr.hasNext()) 
 			{
 	    		//queueSize = 0;
@@ -364,7 +364,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	    		C = 0.0;
 	    		energyChange = 0.0;
 	    		
-				DatacenterType dcObject = dcItr.next();
+				Datacenter dcObject = dcItr.next();
 				dcRank = getDCRank(hpcRequest.getBenchmarkName(), dcObject);
 				//numServers = getClusterNumServers(dcObject);
 				//queueSize = getQueueSize(dcObject);
@@ -375,10 +375,10 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	        	isSuitable = isSuitableCluster(tempID, suitableClusters);
 	        	if(isSuitable)
 	        	{				
-					Iterator<RackableServerType> serverItr = dcObject .getRack().get(0).getRackableServer().iterator();					
+					Iterator<RackableServer> serverItr = dcObject .getRack().get(0).getRackableServer().iterator();					
 					while(serverItr.hasNext()) 
 					{
-						ServerType serverObject = serverItr.next();
+						Server serverObject = serverItr.next();
 
 		        		// The node is a compute node
 		        		if(serverObject.getName().toString().matches("HPC_COMPUTE_NODE"))
@@ -386,7 +386,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		        					        					      			
 		        			//Estimate the power consumption of the job in the cluster
 		        			// by using a single server (all servers are homogeneous)
-		        			ServerType tempServer = getServerIdle(serverObject, powerCalculator);
+		        			Server tempServer = getServerIdle(serverObject, powerCalculator);
 		        			
 		        			double idlePower = 0.0;
 		        			idlePower = computeIdlePower(tempServer, powerCalculator);
@@ -487,11 +487,11 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	/**
 	 * Checks if a data centre has free resources for a job
 	 * 
-	 * @param DatacenterType datacenter, JobType myJob
+	 * @param Datacenter datacenter, Job myJob
 	 * @return true if resources found, false otherwise
 	 */
 	
-	public boolean checkDataCenter(DatacenterType datacenter, JobType myJob)
+	public boolean checkDataCenter(Datacenter datacenter, Job myJob)
 	{
 		
 		double serverMemory;	
@@ -501,23 +501,23 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		// Go through the meta-model and forms temporary data structures for
 		// the job queue, jobs that are currently running, and servers
 		
-		Iterator<RackableServerType> myItr = datacenter.getRack().get(0).getRackableServer().iterator();
+		Iterator<RackableServer> myItr = datacenter.getRack().get(0).getRackableServer().iterator();
 
         // Iteration over the "rackableServer" items
         while (myItr.hasNext())
         {       	
-        	ServerType serverObject = myItr.next();
+        	Server serverObject = myItr.next();
            			
         	// The node is the RMS
-    		if(((ServerType)serverObject).getName().toString().matches("HPC_RESOURCE_MANAGEMENT"))
+    		if(((Server)serverObject).getName().toString().matches("HPC_RESOURCE_MANAGEMENT"))
     		{
     			
     			/// Form temporary data structures for the queue and running jobs
-    			Iterator<JobType> itr = ((ServerType)serverObject).getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs().iterator();
+    			Iterator<Job> itr = ((Server)serverObject).getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs().iterator();
     			while(itr.hasNext()) 
     			{
     				// Retrieve the job from the meta-model and place it into a list
-    				JobType jobObject = itr.next();  								
+    				Job jobObject = itr.next();  								
     				enqueue(jobObject);
     			}
  		
@@ -527,20 +527,20 @@ public class OptimizerEngineHPC extends OptimizerEngine{
     		else
     		{
     			// Create a temporary server structure
-    			ServerType server = serverObject;   			
+    			Server server = serverObject;   			
 				serverMemory = 0;				
 				serverCores = 0;
 				coresInUse = 0;
 				
 				// Iteration over the "Cores" objects
-				Iterator<CPUType> cpuIter = serverObject.getMainboard().get(0).getCPU().iterator();
+				Iterator<CPU> cpuIter = serverObject.getMainboard().get(0).getCPU().iterator();
 				while(cpuIter.hasNext())
 				{
-					CPUType cpuObject = cpuIter.next();
-					Iterator<CoreType> coreIter = cpuObject.getCore().iterator();
+					CPU cpuObject = cpuIter.next();
+					Iterator<Core> coreIter = cpuObject.getCore().iterator();
 					while(coreIter.hasNext())
 					{
-						CoreType coreObject = coreIter.next();
+						Core coreObject = coreIter.next();
 						serverCores++;
 					}
 				}
@@ -548,10 +548,10 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 				coresInUse = server.getNativeOperatingSystem().getNode().get(0).getCoresInUse().getValue();
     			
 				// Iteration over the RAMStick objects
-    			Iterator<RAMStickType> iter = serverObject.getMainboard().get(0).getRAMStick().iterator();
+    			Iterator<RAMStick> iter = serverObject.getMainboard().get(0).getRAMStick().iterator();
 				while(iter.hasNext())
 				{
-					RAMStickType tempObject =  iter.next();
+					RAMStick tempObject =  iter.next();
 					serverMemory = serverMemory + tempObject.getSize().getValue();
 					
 				}
@@ -561,7 +561,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	    			Iterator<Object> jobIter = serverObject.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().iterator();
 	    			while(jobIter.hasNext())
 	    			{
-	    				JobType tempJob =  (JobType) jobIter.next();
+	    				Job tempJob =  (Job) jobIter.next();
 	    				serverMemory = serverMemory - tempJob.getNeededMemory().getValue();					
 	    			}
 				}
@@ -635,9 +635,9 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	
 	public void testAllocateResource()
 	{
-		AllocationRequestType request = new AllocationRequestType();
+		AllocationRequest request = new AllocationRequest();
 		//Creates a request
-		HpcClusterAllocationType hpcRequest = new HpcClusterAllocationType();
+		HpcClusterAllocation hpcRequest = new HpcClusterAllocation();
 		hpcRequest.setNeededCoresPerNode(4);
 		hpcRequest.setNeededMemory(2);
 		hpcRequest.setNumberOfNodes(1);
@@ -651,9 +651,9 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		f4g.schemas.java.allocation.ObjectFactory allocationFactory = new f4g.schemas.java.allocation.ObjectFactory();		
 		request.setRequest((allocationFactory.createHpcClusterAllocation(hpcRequest)));
 		
-		AllocationResponseType response = allocateResource(request, getModelCopy());
+		AllocationResponse response = allocateResource(request, getModelCopy());
 
-		HpcClusterAllocationResponseType hpcResponse = (HpcClusterAllocationResponseType)response.getResponse().getValue();
+		HpcClusterAllocationResponse hpcResponse = (HpcClusterAllocationResponse)response.getResponse().getValue();
 		
 		log.debug("Selected cluster ID: " +hpcResponse.getClusterId());
 	}
@@ -665,7 +665,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * @return none
 	 */
 	@Override
-	public void runGlobalOptimization(FIT4GreenType model) {
+	public void runGlobalOptimization(FIT4Green model) {
 		
 		//TODO: this function should be able to distinguish which cluster wants global optimization
 		
@@ -712,27 +712,27 @@ public class OptimizerEngineHPC extends OptimizerEngine{
     			
     		}
     		
-        	DatacenterType datacenter = (DatacenterType)elements.next();
+        	Datacenter datacenter = (Datacenter)elements.next();
         	        	
     		if(datacenter.getFrameworkCapabilities().get(0).getStatus().toString().matches("RUNNING"))
     		{
             	log.debug("OptimizerEngineHPC: Performing Global Optimization on Data Centre: " +datacenter.getFrameworkCapabilities().get(0).getId());		
 
 				// Iteration over the "RackableServer" objects
-				Iterator<RackableServerType> serverIter = datacenter.getRack().get(0).getRackableServer().iterator();
+				Iterator<RackableServer> serverIter = datacenter.getRack().get(0).getRackableServer().iterator();
 				while(serverIter.hasNext())
 				{
-					ServerType server = serverIter.next();
+					Server server = serverIter.next();
 		        	// The node is the RMS
 		    		if(server.getName().toString().matches("HPC_RESOURCE_MANAGEMENT"))
 		    		{
 		    			
 		    			/// Form temporary data structures for the queue and running jobs
-		    			Iterator<JobType> itr = server.getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs().iterator();
+		    			Iterator<Job> itr = server.getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs().iterator();
 		    			while(itr.hasNext()) 
 		    			{
 		    				// Retrieve the job from the meta-model and place it into a list
-		    				JobType jobObject = itr.next();  								
+		    				Job jobObject = itr.next();  								
 		    				enqueue(jobObject);
 		    			}
 		 		
@@ -742,22 +742,22 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		    		else
 		    		{
 		    			// Create a temporary server structure
-		    			ServerType tempServer = server;   			
+		    			Server tempServer = server;   			
 						serverMemory = 0;				
 						serverCores = 0;
 						coresInUse = 0;
 						
 						// Iteration over the "CPU" objects
-						Iterator<CPUType> cpuIter = server.getMainboard().get(0).getCPU().iterator();
+						Iterator<CPU> cpuIter = server.getMainboard().get(0).getCPU().iterator();
 						while(cpuIter.hasNext())
 						{
-							CPUType cpuObject = cpuIter.next();
+							CPU cpuObject = cpuIter.next();
 							
 							// Iteration over the "Core" objects
-							Iterator<CoreType> coreIter = cpuObject.getCore().iterator();
+							Iterator<Core> coreIter = cpuObject.getCore().iterator();
 							while(coreIter.hasNext())
 							{
-								CoreType coreObject = coreIter.next();
+								Core coreObject = coreIter.next();
 								serverCores++;
 							}
 						}
@@ -765,10 +765,10 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 						coresInUse = tempServer.getNativeOperatingSystem().getNode().get(0).getCoresInUse().getValue();
 		    			
 						// Iteration over the RAMStick objects
-		    			Iterator<RAMStickType> iter = server.getMainboard().get(0).getRAMStick().iterator();
+		    			Iterator<RAMStick> iter = server.getMainboard().get(0).getRAMStick().iterator();
 						while(iter.hasNext())
 						{
-							RAMStickType tempObject =  iter.next();
+							RAMStick tempObject =  iter.next();
 							serverMemory = serverMemory + tempObject.getSize().getValue();
 							
 						}
@@ -779,7 +779,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 			    			Iterator<Object> jobIter = tempServer.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().iterator();
 			    			while(jobIter.hasNext())
 			    			{
-			    				JobType tempJob =  (JobType) jobIter.next();
+			    				Job tempJob =  (Job) jobIter.next();
 			    				serverMemory = serverMemory - tempJob.getNeededMemory().getValue();		  					
 			    			}
 						}
@@ -836,35 +836,35 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 			{
 				printActionList();
 				//Report the power before optimization
-				//DatacenterType tempdatacenter = Utils.getFirstDatacenter(model);
+				//Datacenter tempdatacenter = Utils.getFirstDatacenter(model);
 				double powerSaved = 0.0;
 				double powerFormerly = 0.0;
 				//double powerFormerly = powerCalculator.computePowerDatacenter(tempdatacenter).getActualConsumption();
 				log.debug("datacenter power consumption before:" + powerFormerly);
-				PowerType powerBefore = new PowerType();
+				Power powerBefore = new Power();
 				powerBefore.setValue(powerFormerly);
 				
 				// Get the Power Off and Power On actions from  the action list
-//				for (JAXBElement<? extends AbstractBaseActionType> action : actionList.getAction()){
-//					if (action.getValue() instanceof PowerOnActionType) 
-//						serverOns.add((PowerOnActionType)action.getValue());
+//				for (JAXBElement<? extends AbstractBaseAction> action : actionList.getAction()){
+//					if (action.getValue() instanceof PowerOnAction) 
+//						serverOns.add((PowerOnAction)action.getValue());
 //				}
 //				
-//				for (JAXBElement<? extends AbstractBaseActionType> action : actionList.getAction()){
-//					if (action.getValue() instanceof PowerOffActionType) 
+//				for (JAXBElement<? extends AbstractBaseAction> action : actionList.getAction()){
+//					if (action.getValue() instanceof PowerOffAction) 
 //					{
-//						serverOffs.add((PowerOffActionType)action.getValue());
+//						serverOffs.add((PowerOffAction)action.getValue());
 //					}
 //				}
 									    
 				//Report the power after optimization
-//			    DatacenterType newDatacenter = performOnOffs(serverOns, serverOffs, datacenter);
+//			    Datacenter newDatacenter = performOnOffs(serverOns, serverOffs, datacenter);
 //				double powerAfter = powerCalculator.computePowerDatacenter(newDatacenter).getActualConsumption();
 //				log.debug("datacenter power consumption after:" + powerAfter);
 	
 				//Report the saved power
 				//powerSaved = powerAfter - powerBefore;
-				PowerType powerAfter = new PowerType();
+				Power powerAfter = new Power();
 				powerAfter.setValue(0.0);
 				log.debug("powerSaved: " + powerSaved);
 				actionRequest.setComputedPowerBefore(powerBefore);
@@ -892,7 +892,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * @return A data structure representing the result of the allocation
 	 */
 	@Override
-	public AllocationResponseType allocateResource(AllocationRequestType allocationRequest, FIT4GreenType model) {
+	public AllocationResponse allocateResource(AllocationRequest allocationRequest, FIT4Green model) {
 		
 		log.debug("Processing request: " + allocationRequest);
 		log.debug(" Request Operation: " + allocationRequest.getRequest().getValue());
@@ -901,13 +901,13 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		// The allocation request must be of type HPCClusterAllocation
 		if (allocationRequest == null ||
 				allocationRequest.getRequest() == null ||	
-				! (allocationRequest.getRequest().getValue() instanceof HpcClusterAllocationType)) {
+				! (allocationRequest.getRequest().getValue() instanceof HpcClusterAllocation)) {
 
 				log.warn("Allocation request is not correct for HPC");
 				return null;
 		}
 		
-		HpcClusterAllocationType hpcRequest = (HpcClusterAllocationType)allocationRequest.getRequest().getValue();
+		HpcClusterAllocation hpcRequest = (HpcClusterAllocation)allocationRequest.getRequest().getValue();
 		
 		log.debug(" Request Nodes: " + hpcRequest.getNumberOfNodes());
 		log.debug(" Request Cores: " + hpcRequest.getNeededCoresPerNode());
@@ -919,12 +919,12 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		clusterID = getBestCluster(hpcRequest, model);
 		
 		//Creates a response
-		HpcClusterAllocationResponseType hpcResponse = new HpcClusterAllocationResponseType();	
+		HpcClusterAllocationResponse hpcResponse = new HpcClusterAllocationResponse();	
 		hpcResponse.setClusterId(clusterID);
 		
 		f4g.schemas.java.allocation.ObjectFactory allocationFactory = new f4g.schemas.java.allocation.ObjectFactory();
 		
-		AllocationResponseType response  = new AllocationResponseType();
+		AllocationResponse response  = new AllocationResponse();
 		response.setResponse((allocationFactory.createHpcClusterAllocationResponse(hpcResponse)));
 					
 		//response.setAllocationLog("OptimizerHPC: Allocated: expr=" + allocationRequest.getExpression() + ", value=" + allocationRequest.getValue());
@@ -956,11 +956,11 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 			
 			for(int j = 0; j < srvList.size(); j++)
 			{
-				ServerType server = srvList.get(j);
+				Server server = srvList.get(j);
 				coresInUse = serverCoresInUseList.get(j);
 				availableCores = serverCoresList.get(j) - coresInUse;
 				
-				NodeStatusType status = server.getNativeOperatingSystem().getNode().get(0).getStatus();
+				NodeStatus status = server.getNativeOperatingSystem().getNode().get(0).getStatus();
 				
 				//log.debug("Server cores: " +serverCoresList.get(j));
 				//log.debug("Available cores: " +availableCores); .toString().matches("IDLE")
@@ -1027,11 +1027,11 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	}
 	
 	/**
-	 * Method for placing a JobType object into jobList
+	 * Method for placing a Job object into jobList
 	 * Forms the queue based on the job priority
-	 * @param JobType
+	 * @param Job
 	 */
-	public void enqueue(JobType job)
+	public void enqueue(Job job)
 	{
 		
 		int jobPriority = job.getPriority().getValue();
@@ -1056,7 +1056,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 				// high priority jobs going into the top
 				for(int i = 0; i < jobList.size(); i++)
 				{
-					JobType tempjob = jobList.get(i);
+					Job tempjob = jobList.get(i);
 					tempPriority = tempjob.getPriority().getValue();
 					if(jobPriority > tempPriority)
 					{
@@ -1084,7 +1084,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 				// Form queue based on priority
 				for(int i = 0; i < runningList.size(); i++)
 				{
-					JobType tempjob = runningList.get(i);
+					Job tempjob = runningList.get(i);
 					tempCompTime = tempjob.getTimeOfStart().getValue() + tempjob.getWallTime().getValue();
 					if(jobCompTime < tempCompTime)
 					{
@@ -1144,7 +1144,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 					do
 					{
 						
-						JobType temp_job = jobList.get(index); // Pop a job from the queue
+						Job temp_job = jobList.get(index); // Pop a job from the queue
 						boolean resourcesFound = true;
 						int nodes;
 						nodes = temp_job.getNumberOfNodes().getValue();
@@ -1188,7 +1188,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 								
 //								for(int i = 0; i < nodes; i++)
 //								{
-//									ServerType server = srvList.get(serverNumber[i]);
+//									Server server = srvList.get(serverNumber[i]);
 //									if (server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("OFF") || server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("STANDBY") || server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("HYBERNATED"))
 //									{
 //										generateStartJob = false;
@@ -1198,7 +1198,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 								// Generate actions that the server needs to do
 								for(int i = 0; i < nodes; i++)
 								{
-									ServerType server = srvList.get(serverNumber[i]);
+									Server server = srvList.get(serverNumber[i]);
 									if(server.getNativeOperatingSystem().getNode().get(0).getJobRef() != null){
 										server.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().add(temp_job);
 									}
@@ -1208,7 +1208,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 										server.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().add(temp_job);
 									}
 							
-									server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.valueOf("RUNNING"));
+									server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.valueOf("RUNNING"));
 									serverCoresInUseList.set(serverNumber[i], (serverCoresInUseList.get(serverNumber[i]) + temp_job.getNeededCoresPerNode().getValue()));
 									serverMemoryList.set(serverNumber[i], (serverMemoryList.get(serverNumber[i]) - temp_job.getNeededMemory().getValue()));
 									
@@ -1219,7 +1219,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 								}
 //								for(int i = 0; i < nodes; i++)
 //								{
-//									ServerType server = srvList.get(serverNumber[i]);
+//									Server server = srvList.get(serverNumber[i]);
 //									if(server.getNativeOperatingSystem().getNode().get(0).getJobRef() != null){
 //										server.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().add(temp_job);
 //									}
@@ -1231,7 +1231,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 //									//server.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().add(temp_job);
 //									if(server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("IDLE") || server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("RUNNING"))
 //									{								
-//										server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.valueOf("RUNNING"));
+//										server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.valueOf("RUNNING"));
 //										serverCoresInUseList.set(serverNumber[i], (serverCoresInUseList.get(serverNumber[i]) + temp_job.getNeededCoresPerNode().getValue()));
 //										serverMemoryList.set(serverNumber[i], (serverMemoryList.get(serverNumber[i]) - temp_job.getNeededMemory().getValue()));
 //										if(generateStartJob == true)
@@ -1247,7 +1247,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 //										//reservedList.set(serverNumber[i], true);
 //										serverCoresInUseList.set(serverNumber[i], (serverCoresInUseList.get(serverNumber[i]) + temp_job.getNeededCoresPerNode().getValue()));
 //										serverMemoryList.set(serverNumber[i], (serverMemoryList.get(serverNumber[i]) - temp_job.getNeededMemory().getValue()));
-//										//server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.valueOf("RESERVED"));
+//										//server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.valueOf("RESERVED"));
 //										createActionRequest("POWER_ON", serverNumber[i], "");
 //									}
 //
@@ -1255,7 +1255,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 								jobList.remove(index); // remove the job from the temporary queue
 								
 								// Include the job into the running jobs list
-								temp_job.setStatus(JobStatusType.valueOf("RUNNING"));
+								temp_job.setStatus(JobStatus.valueOf("RUNNING"));
 								enqueue(temp_job);
 								
 								// Decrement the index, to continue to the next element in the queue
@@ -1334,7 +1334,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 							freeNodes = freeCores = 0;
 							freeMemory = 0;
 														
-							JobType temp_job = jobList.get(index); // Pop a job from queue
+							Job temp_job = jobList.get(index); // Pop a job from queue
 							boolean resourcesFound = true;
 							int nodes;
 							nodes = temp_job.getNumberOfNodes().getValue();
@@ -1430,30 +1430,30 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 							stopSearch = false;	
 							
 							// Include the optimal job into the running jobs list
-							JobType newJob = new JobType();
-							newJob.setStatus(JobStatusType.valueOf("RUNNING"));
+							Job newJob = new Job();
+							newJob.setStatus(JobStatus.valueOf("RUNNING"));
 							
-							JobTimeType newStart = new JobTimeType ();
+							JobTime newStart = new JobTime ();
 							newStart.setValue(getEpochTime());
 							newJob.setTimeOfStart(newStart);
 							
-							JobPriorityType newPriority = new JobPriorityType ();
+							JobPriority newPriority = new JobPriority ();
 							newPriority.setValue(0);							
 							newJob.setPriority(newPriority);
 														
-							NrOfCoresType newCores = new NrOfCoresType ();
+							NrOfCores newCores = new NrOfCores ();
 							newCores.setValue(OptJob.getCores());
 							newJob.setNeededCoresPerNode(newCores);
 							
-							MemoryUsageType newMemory = new MemoryUsageType ();
+							MemoryUsage newMemory = new MemoryUsage ();
 							newMemory.setValue(OptJob.getMemory());
 							newJob.setNeededMemory(newMemory);
 							
-							NrOfNodesType newNodes = new NrOfNodesType ();
+							NrOfNodes newNodes = new NrOfNodes ();
 							newNodes.setValue(OptJob.getNodes());
 							newJob.setNumberOfNodes(newNodes);
 							
-							JobTimeType newWall = new JobTimeType ();
+							JobTime newWall = new JobTime ();
 							newWall.setValue(OptJob.getWallTime());
 							newJob.setWallTime(newWall);
 							
@@ -1468,7 +1468,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 							
 //							for(int i = 0; i < OptJob.getNodes(); i++)
 //							{
-//								ServerType server = srvList.get(OptJob.getServerNumber(i));
+//								Server server = srvList.get(OptJob.getServerNumber(i));
 //								if (server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("OFF") || server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("STANDBY"))
 //								{
 //									generateStartJob = false;
@@ -1478,7 +1478,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 							// Generate actions that the server needs to do
 							for(int i = 0; i < OptJob.getNodes(); i++)
 							{
-								ServerType server = srvList.get(OptJob.getServerNumber(i));
+								Server server = srvList.get(OptJob.getServerNumber(i));
 								if(server.getNativeOperatingSystem().getNode().get(0).getJobRef() != null){
 									server.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().add(newJob);
 								}
@@ -1488,7 +1488,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 									server.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().add(newJob);
 								}
 
-								server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.valueOf("RUNNING"));
+								server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.valueOf("RUNNING"));
 								serverCoresInUseList.set(OptJob.getServerNumber(i), (serverCoresInUseList.get(OptJob.getServerNumber(i)) + newJob.getNeededCoresPerNode().getValue()));
 								serverMemoryList.set(OptJob.getServerNumber(i), (serverMemoryList.get(OptJob.getServerNumber(i)) - newJob.getNeededMemory().getValue()));
 								log.debug("Startup server: " + OptJob.getServerNumber(i));
@@ -1499,7 +1499,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 							// Generate actions that the server needs to do
 //							for(int i = 0; i < OptJob.getNodes(); i++)
 //							{
-//								ServerType server = srvList.get(OptJob.getServerNumber(i));
+//								Server server = srvList.get(OptJob.getServerNumber(i));
 //								if(server.getNativeOperatingSystem().getNode().get(0).getJobRef() != null){
 //									server.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().add(newJob);
 //								}
@@ -1511,7 +1511,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 //								//server.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().add(newJob);
 //								if(server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("IDLE") || server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("RUNNING"))
 //								{
-//									server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.valueOf("RUNNING"));
+//									server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.valueOf("RUNNING"));
 //									serverCoresInUseList.set(OptJob.getServerNumber(i), (serverCoresInUseList.get(OptJob.getServerNumber(i)) + newJob.getNeededCoresPerNode().getValue()));
 //									serverMemoryList.set(OptJob.getServerNumber(i), (serverMemoryList.get(OptJob.getServerNumber(i)) - newJob.getNeededMemory().getValue()));
 //									if(generateStartJob == true)
@@ -1527,7 +1527,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 //									//reservedList.set(OptJob.getServerNumber(i), true);
 //									serverCoresInUseList.set(OptJob.getServerNumber(i), (serverCoresInUseList.get(OptJob.getServerNumber(i)) + newJob.getNeededCoresPerNode().getValue()));
 //									serverMemoryList.set(OptJob.getServerNumber(i), (serverMemoryList.get(OptJob.getServerNumber(i)) - newJob.getNeededMemory().getValue()));
-//									//server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.valueOf("RESERVED"));
+//									//server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.valueOf("RESERVED"));
 //									createActionRequest("POWER_ON", OptJob.getServerNumber(i), "");
 //								}	
 //							}
@@ -1563,7 +1563,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		do 
 		{
 			log.debug("Popping a job from queue.");
-			JobType temp_job = jobList.get(0);
+			Job temp_job = jobList.get(0);
 			resourcesFound = true;
 			int nodes;
 			nodes = temp_job.getNumberOfNodes().getValue();
@@ -1591,7 +1591,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 				
 //				for(int i = 0; i < nodes; i++)
 //				{
-//					ServerType server = srvList.get(serverNumber[i]);
+//					Server server = srvList.get(serverNumber[i]);
 //					if (server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("OFF") || server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("STANDBY") || server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("HYBERNATED"))
 //					{
 //						generateStartJob = false;
@@ -1601,7 +1601,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 				// Generate actions that the server needs to do
 				for(int i = 0; i < nodes; i++)
 				{
-					ServerType server = srvList.get(serverNumber[i]);
+					Server server = srvList.get(serverNumber[i]);
 					if(server.getNativeOperatingSystem().getNode().get(0).getJobRef() != null){
 						server.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().add(temp_job);
 					}
@@ -1611,7 +1611,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 						server.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().add(temp_job);
 					}
 					
-					server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.valueOf("RUNNING"));
+					server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.valueOf("RUNNING"));
 					serverCoresInUseList.set(serverNumber[i], (serverCoresInUseList.get(serverNumber[i]) + temp_job.getNeededCoresPerNode().getValue()));
 					serverMemoryList.set(serverNumber[i], (serverMemoryList.get(serverNumber[i]) - temp_job.getNeededMemory().getValue()));
 
@@ -1622,7 +1622,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 //				// Generate actions that the server needs to do
 //				for(int i = 0; i < nodes; i++)
 //				{
-//					ServerType server = srvList.get(serverNumber[i]);
+//					Server server = srvList.get(serverNumber[i]);
 //					if(server.getNativeOperatingSystem().getNode().get(0).getJobRef() != null){
 //						server.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().add(temp_job);
 //					}
@@ -1634,7 +1634,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 //
 //					if(server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("IDLE") || server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("RUNNING"))
 //					{						
-//						server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.valueOf("RUNNING"));
+//						server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.valueOf("RUNNING"));
 //						serverCoresInUseList.set(serverNumber[i], (serverCoresInUseList.get(serverNumber[i]) + temp_job.getNeededCoresPerNode().getValue()));
 //						serverMemoryList.set(serverNumber[i], (serverMemoryList.get(serverNumber[i]) - temp_job.getNeededMemory().getValue()));
 //						if(generateStartJob == true)
@@ -1654,13 +1654,13 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 //						//reservedList.set(serverNumber[i], true);
 //						serverCoresInUseList.set(serverNumber[i], (serverCoresInUseList.get(serverNumber[i]) + temp_job.getNeededCoresPerNode().getValue()));
 //						serverMemoryList.set(serverNumber[i], (serverMemoryList.get(serverNumber[i]) - temp_job.getNeededMemory().getValue()));
-//						//server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.valueOf("RESERVED"));
+//						//server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.valueOf("RESERVED"));
 //						createActionRequest("POWER_ON", serverNumber[i], "");
 //					}	
 //				}
 
 				// Include the job into the running jobs list
-				temp_job.setStatus(JobStatusType.valueOf("RUNNING"));
+				temp_job.setStatus(JobStatus.valueOf("RUNNING"));
 				enqueue(temp_job);
 				
 				jobList.remove(0); // remove the job from the temporary queue
@@ -1696,7 +1696,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	public void createActionRequest(String actionType, int serverIndex, String jobID){
 		
 		// Get the name corresponding to the serverIndex
-		ServerType server = srvList.get(serverIndex);
+		Server server = srvList.get(serverIndex);
 		String serverName = server.getFrameworkID();
 						
 		//String myQuery = "//rackableServer";	
@@ -1704,10 +1704,10 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		//Iterator elements = context.iterate(myQuery);
 		
 				
-		for(DatacenterType datacenter : model.getSite().get(0).getDatacenter())
+		for(Datacenter datacenter : model.getSite().get(0).getDatacenter())
 		{
 			log.debug("Framework name: " + datacenter.getFrameworkCapabilities().get(0).getFrameworkName());
-			for(ServerType tempServer : datacenter.getRack().get(0).getRackableServer())
+			for(Server tempServer : datacenter.getRack().get(0).getRackableServer())
 			{
 				if(tempServer.getFrameworkID().matches(serverName))
 	        	{ 
@@ -1716,12 +1716,12 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	        		{       		
 		        		log.debug("Adding power on action");
 		        		
-		    			JAXBElement<PowerOnActionType>  pOn = (new ObjectFactory()).createPowerOn(new PowerOnActionType());
+		    			JAXBElement<PowerOnAction>  pOn = (new ObjectFactory()).createPowerOn(new PowerOnAction());
 		    			pOn.getValue().setNodeName(tempServer.getFrameworkID());
 		    			
-		    			//DatacenterType datacenter = Utils.getFirstDatacenter(model);
+		    			//Datacenter datacenter = Utils.getFirstDatacenter(model);
 		    			//String frameworkName = datacenter.getFrameworkCapabilities().get(0).getFrameworkName();	
-		    			FrameworkCapabilitiesType framework = (FrameworkCapabilitiesType) tempServer.getFrameworkRef();   			
+		    			FrameworkCapabilities framework = (FrameworkCapabilities) tempServer.getFrameworkRef();   			
 		    			String frameworkName = framework.getFrameworkName();
 		    			
 		    			pOn.getValue().setFrameworkName(frameworkName);  			
@@ -1733,10 +1733,10 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	        		{
 	        			log.debug("Adding a standby action");
 	        				        			
-	        			JAXBElement<StandByActionType>  stdBy = (new ObjectFactory()).createStandBy(new StandByActionType());
+	        			JAXBElement<StandByAction>  stdBy = (new ObjectFactory()).createStandBy(new StandByAction());
 	        			stdBy.getValue().setNodeName(tempServer.getFrameworkID());
 		    			
-		    			FrameworkCapabilitiesType framework = (FrameworkCapabilitiesType) tempServer.getFrameworkRef();   			
+		    			FrameworkCapabilities framework = (FrameworkCapabilities) tempServer.getFrameworkRef();   			
 		    			String frameworkName = framework.getFrameworkName();
 		    			
 		    			stdBy.getValue().setFrameworkName(frameworkName);			
@@ -1746,10 +1746,10 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	        		{
 	        			log.debug("Adding a power off action");
 	        			
-	        			JAXBElement<PowerOffActionType>  pOff = (new ObjectFactory()).createPowerOff(new PowerOffActionType());
+	        			JAXBElement<PowerOffAction>  pOff = (new ObjectFactory()).createPowerOff(new PowerOffAction());
 		    			pOff.getValue().setNodeName(tempServer.getFrameworkID());
 		    			
-		    			FrameworkCapabilitiesType framework = (FrameworkCapabilitiesType) tempServer.getFrameworkRef();   			
+		    			FrameworkCapabilities framework = (FrameworkCapabilities) tempServer.getFrameworkRef();   			
 		    			String frameworkName = framework.getFrameworkName();
 		    			
 		    			pOff.getValue().setFrameworkName(frameworkName);			
@@ -1764,14 +1764,14 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	        				log.debug("JobIdList has the jobId." + actionRequest.getActionList().getAction().size());
 		        			for(int i = 0; i < actionRequest.getActionList().getAction().size(); i++)
 		        			{
-		        				if(actionRequest.getActionList().getAction().get(i).getDeclaredType().getSimpleName().toString().matches("StartJobActionType"))
+		        				if(actionRequest.getActionList().getAction().get(i).getDeclaredType().getSimpleName().toString().matches("StartJobAction"))
 		        				{
 		        					Object obj = actionRequest.getActionList().getAction().get(i).getValue();
-		        					String actionJobId = ((StartJobActionType)obj).getJobID();	    
+		        					String actionJobId = ((StartJobAction)obj).getJobID();	    
 		        					if(jobID.matches(actionJobId))
 		        					{
 		        						// Add the server to the Start Job action
-		        						((StartJobActionType)obj).getNodeName().add(tempServer.getFrameworkID());
+		        						((StartJobAction)obj).getNodeName().add(tempServer.getFrameworkID());
 		        					}
 		        				}
 		        			}
@@ -1781,13 +1781,13 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	        			{
 	        				log.debug("Adding jobId to jobIdList.");
 	        				jobIdList.add(jobID);
-	        				JAXBElement<StartJobActionType>  startJob = (new ObjectFactory()).createStartJob(new StartJobActionType());
+	        				JAXBElement<StartJobAction>  startJob = (new ObjectFactory()).createStartJob(new StartJobAction());
 	        				startJob.getValue().getNodeName().add(tempServer.getFrameworkID());
 	        				startJob.getValue().setJobID(jobID);
 	        				
-	    	    			//DatacenterType datacenter = Utils.getFirstDatacenter(model);
+	    	    			//Datacenter datacenter = Utils.getFirstDatacenter(model);
 	    	    			//String frameworkName = datacenter.getFrameworkCapabilities().get(0).getFrameworkName();
-	    	    			FrameworkCapabilitiesType framework = (FrameworkCapabilitiesType) tempServer.getFrameworkRef();   			
+	    	    			FrameworkCapabilities framework = (FrameworkCapabilities) tempServer.getFrameworkRef();   			
 	    	    			String frameworkName = framework.getFrameworkName();	
 	    	    			startJob.getValue().setFrameworkName(frameworkName);			
 	    	    			actionList.getAction().add(startJob);
@@ -1810,7 +1810,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 *
 	 */	
 	
-	public void checkIdleServers(DatacenterType datacenter)
+	public void checkIdleServers(Datacenter datacenter)
 	{		
 		boolean shutDown;
 		long startTime = 0;
@@ -1861,7 +1861,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 											
 				for (int i = 0; i < srvList.size(); i++)
 				{
-					ServerType server = srvList.get(i);
+					Server server = srvList.get(i);
 					if(server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("IDLE"))
 					{				
 						if(shutDown == true)
@@ -1875,7 +1875,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 //								log.debug("Power Off is supported.");
 //							}
 							createActionRequest("STANDBY", i, "0");
-							server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.valueOf("STANDBY"));
+							server.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.valueOf("STANDBY"));
 							log.debug("Setting server to standby: " + i);
 						}					
 					}
@@ -1895,7 +1895,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		boolean available = false;
 		for (int i = 0; i < srvList.size(); i++)
 		{
-			ServerType server = srvList.get(i);
+			Server server = srvList.get(i);
 			if((server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("IDLE")) || (server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("OFF")) || (server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("STANDBY")) || (server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("HYBERNATED")))
 			{				
 				available = true;
@@ -1917,7 +1917,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 
 //		for (int i = 0; i < srvList.size(); i++)
 //		{
-//			//ServerType server = srvList.get(i);
+//			//Server server = srvList.get(i);
 //			// If the server has free cores it is considered free
 //			if((serverCoresInUseList.get(i) < serverCoresList.get(i)))
 //			{
@@ -1945,7 +1945,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		// Free cores: NumberOfCores - CoresInUse
 		for (int i = 0; i < srvList.size(); i++)
 		{
-			//ServerType server = srvList.get(i);
+			//Server server = srvList.get(i);
 			freeCores = freeCores + (serverCoresList.get(i) - serverCoresInUseList.get(i));
 			
 //			if((server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("IDLE")) || (server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("OFF")) || (server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("STANDBY")) || (server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("HYBERNATED")))
@@ -1968,7 +1968,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		// Check what resources are currently free
 		for (int i = 0; i < srvList.size(); i++)
 		{
-			//ServerType server = srvList.get(i);
+			//Server server = srvList.get(i);
 			if((serverCoresInUseList.get(i)< serverCoresList.get(i)))
 			{
 				freeMemory = freeMemory + serverMemoryList.get(i);
@@ -1988,7 +1988,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 //		// Check what resources are currently free
 //		for (int i = 0; i < srvList.size(); i++)
 //		{
-//			ServerType server = srvList.get(i);
+//			Server server = srvList.get(i);
 //			if((server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("IDLE")) || (server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("OFF")) || (server.getNativeOperatingSystem().getNode().get(0).getStatus().toString().matches("STANDBY")))
 //			{
 //				resourceArray[0] = resourceArray[0] + 1;
@@ -2017,7 +2017,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	
 	public long getEstimatedStartTime()
 	{	
-		JobType job = jobList.get(0); // Get the 1st job in the queue
+		Job job = jobList.get(0); // Get the 1st job in the queue
 		int numNodes = job.getNumberOfNodes().getValue();
 		int numCores = job.getNeededCoresPerNode().getValue();
 		int availableNodes = 0;
@@ -2026,7 +2026,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 		Vector<Long> compTime = new Vector<Long> ();
 		Vector<Long> serverCompTime = new Vector<Long> ();
 		long serverStartTime = 0;
-		List<JobType> tempJobList = new LinkedList<JobType>(); // List of jobs in the queue
+		List<Job> tempJobList = new LinkedList<Job>(); // List of jobs in the queue
 		
 		//1. check for idle servers
 		for(int i = 0; i < srvList.size(); i++)
@@ -2090,8 +2090,8 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 			for(int i = 0; i < srvList.size(); i++)
 			{				
 
-				ServerType server = srvList.get(i);
-				NodeStatusType serverStatus = server.getNativeOperatingSystem().getNode().get(0).getStatus();
+				Server server = srvList.get(i);
+				NodeStatus serverStatus = server.getNativeOperatingSystem().getNode().get(0).getStatus();
 				serverStartTime = 0;
 				log.debug("Server name: " +server.getFrameworkID() + " status: " +serverStatus.toString());
 				
@@ -2121,7 +2121,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 						while(jobIter.hasNext())
 						{						
 							//Get the jobs to a temporary list
-							JobType serverJob =  (JobType) jobIter.next();	
+							Job serverJob =  (Job) jobIter.next();	
 							boolean jobInserted = false;
 							double serverJobCompTime = 0;
 							
@@ -2142,7 +2142,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 								// smallest completion times going into the top
 								for(int j = 0; j < tempJobList.size(); j++)
 								{
-									JobType tempJob = tempJobList.get(j);
+									Job tempJob = tempJobList.get(j);
 									double tempCompTime = tempJob.getTimeOfStart().getValue() + tempJob.getWallTime().getValue();
 									if(serverJobCompTime < tempCompTime)
 									{
@@ -2161,7 +2161,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 						
 						for(int k = 0; k < tempJobList.size(); k++)
 						{
-							JobType tempJob = tempJobList.get(k);
+							Job tempJob = tempJobList.get(k);
 							log.debug("tempJob index: " + i + " cores: " + tempJob.getNeededCoresPerNode() + " comptime: " + (tempJob.getTimeOfStart().getValue()+tempJob.getWallTime().getValue()));
 
 						}
@@ -2170,7 +2170,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 						// to the amount of available cores
 						for(int k = 0; k < tempJobList.size(); k++)
 						{
-							JobType tempJob = tempJobList.get(k);
+							Job tempJob = tempJobList.get(k);
 							availableCores = availableCores + tempJob.getNeededCoresPerNode().getValue();
 							serverStartTime = serverStartTime + ((tempJob.getTimeOfStart().getValue()+tempJob.getWallTime().getValue()) - serverStartTime);
 							
@@ -2273,13 +2273,13 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	{
 		for(int i = 0; i < jobList.size(); i++)
 		{
-			JobType tempjob = jobList.get(i);
+			Job tempjob = jobList.get(i);
 			log.debug("JobList index: "+ i + " priority: "+ tempjob.getPriority().getValue() + " numNodes: " + tempjob.getNumberOfNodes().getValue() + " numCores: " +tempjob.getNeededCoresPerNode().getValue() + " memory " +tempjob.getNeededMemory().getValue() + " wallTime: " +tempjob.getWallTime().getValue() + " compTime: " +(tempjob.getTimeOfStart().getValue()+ tempjob.getWallTime().getValue()));
 		}
 		System.out.println("");
 		for(int i = 0; i < runningList.size(); i++)
 		{
-			JobType tempjob = runningList.get(i);
+			Job tempjob = runningList.get(i);
 			log.debug("Running Job index: "+ i + " priority: "+ tempjob.getPriority().getValue() + " numNodes: " + tempjob.getNumberOfNodes().getValue() + " numCores: " +tempjob.getNeededCoresPerNode().getValue() + " memory " +tempjob.getNeededMemory().getValue() + " wallTime: " +tempjob.getWallTime().getValue() + " jobID: " +tempjob.getId());			
 		}
 	}
@@ -2294,19 +2294,19 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	{
 		for(int i = 0; i < srvList.size(); i++)
 		{
-			ServerType tempServer = srvList.get(i);
+			Server tempServer = srvList.get(i);
 			String state = tempServer.getNativeOperatingSystem().getNode().get(0).getStatus().toString();					
 			int coresInUse = serverCoresInUseList.get(i);
 			double compTime = 0;
 			
 			log.debug("Server index: "+ i + " state: "+ state + " serverMemory: "+ serverMemoryList.get(i) + " coresInUse: " +coresInUse);
-			// Iteration over the JobType objects
+			// Iteration over the Job objects
 			try
 			{
 				Iterator<Object> jobIter = tempServer.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().iterator();
 				while(jobIter.hasNext())
 				{
-					JobType tempJob =  (JobType) jobIter.next();
+					Job tempJob =  (Job) jobIter.next();
 					compTime = tempJob.getTimeOfStart().getValue() + tempJob.getWallTime().getValue();
 					log.debug(" job ID: " +tempJob.getId());
 					log.debug(" completion time: " +compTime );				
@@ -2330,25 +2330,25 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	{
 		for(int i = 0; i < actionRequest.getActionList().getAction().size(); i++)
 		{
-			if(actionRequest.getActionList().getAction().get(i).getDeclaredType().getSimpleName().toString().matches("PowerOffActionType"))
+			if(actionRequest.getActionList().getAction().get(i).getDeclaredType().getSimpleName().toString().matches("PowerOffAction"))
 			{
 				Object element = actionRequest.getActionList().getAction().get(i).getValue();
-				log.debug("ActionList index: " +i +" Type: Power off NodeName: " +((PowerOffActionType)element).getNodeName() +" FrameworkName: " +((PowerOffActionType)element).getFrameworkName());			
+				log.debug("ActionList index: " +i +" Type: Power off NodeName: " +((PowerOffAction)element).getNodeName() +" FrameworkName: " +((PowerOffAction)element).getFrameworkName());			
 			}
-			else if(actionRequest.getActionList().getAction().get(i).getDeclaredType().getSimpleName().toString().matches("PowerOnActionType"))
+			else if(actionRequest.getActionList().getAction().get(i).getDeclaredType().getSimpleName().toString().matches("PowerOnAction"))
 			{
 				Object element = actionRequest.getActionList().getAction().get(i).getValue();
-				log.debug("ActionList index: " +i +" Type: Power on. NodeName: " +((PowerOnActionType)element).getNodeName());
+				log.debug("ActionList index: " +i +" Type: Power on. NodeName: " +((PowerOnAction)element).getNodeName());
 			}
-			else if(actionRequest.getActionList().getAction().get(i).getDeclaredType().getSimpleName().toString().matches("StandByActionType"))
+			else if(actionRequest.getActionList().getAction().get(i).getDeclaredType().getSimpleName().toString().matches("StandByAction"))
 			{
 				Object element = actionRequest.getActionList().getAction().get(i).getValue();
-				log.debug("ActionList index: " +i +" Type: Standby. NodeName: " +((StandByActionType)element).getNodeName());
+				log.debug("ActionList index: " +i +" Type: Standby. NodeName: " +((StandByAction)element).getNodeName());
 			}
-			else if(actionRequest.getActionList().getAction().get(i).getDeclaredType().getSimpleName().toString().matches("StartJobActionType"))
+			else if(actionRequest.getActionList().getAction().get(i).getDeclaredType().getSimpleName().toString().matches("StartJobAction"))
 			{
 				Object element = actionRequest.getActionList().getAction().get(i).getValue();	
-				log.debug("ActionList index: " +i +" Type: Start job. NodeName: " +((StartJobActionType)element).getNodeName() + " Job ID: " + ((StartJobActionType)element).getJobID());
+				log.debug("ActionList index: " +i +" Type: Start job. NodeName: " +((StartJobAction)element).getNodeName() + " Job ID: " + ((StartJobAction)element).getJobID());
 			}
 		}						
 	}
@@ -2359,9 +2359,9 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * 
 	 */
 	
-	public static int getNbCPU(ServerType server) {
+	public static int getNbCPU(Server server) {
 		int cpus=0;
-		for(MainboardType mainboard : server.getMainboard())
+		for(Mainboard mainboard : server.getMainboard())
 			cpus += mainboard.getCPU().size();
 		return cpus;
 	}
@@ -2372,11 +2372,11 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * 
 	 */
 	
-	public static int getNbCoresCPU(ServerType server) {
+	public static int getNbCoresCPU(Server server) {
 		int coresPerCPU=0;
-		for(MainboardType mainboard : server.getMainboard())
+		for(Mainboard mainboard : server.getMainboard())
 		{
-			CPUType cpu = mainboard.getCPU().get(0);
+			CPU cpu = mainboard.getCPU().get(0);
 			coresPerCPU = cpu.getCore().size();
 		}
 			
@@ -2388,36 +2388,36 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * Get the server in idle state (suppress every loads) 
 	 * 
 	 */
-	public static ServerType getServerIdle(ServerType server, IPowerCalculator powerCalculator) {
+	public static Server getServerIdle(Server server, IPowerCalculator powerCalculator) {
 	    
-	    	ServerType myServer = (ServerType) server.clone();
+	    	Server myServer = (Server) server.clone();
 	    	    	    
 	    	//zeroing the CPU loads, core loads, memory usage and HDD write/read rate
-	    	MainboardType mainboard = myServer.getMainboard().get(0);
+	    	Mainboard mainboard = myServer.getMainboard().get(0);
 	    	if(mainboard != null) {
 	    		
 	    		// Zero the memory usage
-	    		mainboard.setMemoryUsage(new MemoryUsageType (0.0));	    		
+	    		mainboard.setMemoryUsage(new MemoryUsage (0.0));	    		
 	    		// Zero the CPU loads, core loads
-	    		for(CPUType cpu : mainboard.getCPU()) {
-	    			cpu.setCpuUsage(new CpuUsageType(0.0) );
+	    		for(CPU cpu : mainboard.getCPU()) {
+	    			cpu.setCpuUsage(new CpuUsage(0.0) );
 	    			
-	    			for(CoreType core : cpu.getCore()) {
-	    				core.setCoreLoad(new CoreLoadType(0.0) );
+	    			for(Core core : cpu.getCore()) {
+	    				core.setCoreLoad(new CoreLoad(0.0) );
 	    			}    			
 	    		}  
 	    		// Zero the HDD write/read rate
-	    		for(HardDiskType hdd : mainboard.getHardDisk()) {
-	    			hdd.setReadRate(new IoRateType(0.0));
-	    			hdd.setWriteRate(new IoRateType(0.0));
+	    		for(HardDisk hdd : mainboard.getHardDisk()) {
+	    			hdd.setReadRate(new IoRate(0.0));
+	    			hdd.setWriteRate(new IoRate(0.0));
 	    		}
 	    	}
 	    		    		    	
 	    	//Zero the FAN actual RPM
-	    	if(myServer instanceof RackableServerType) {
-	    		RackableServerType myRackableServer = (RackableServerType) myServer;   		
-	    		for(FanType fan : myRackableServer.getFan()) {
-	    			fan.setActualRPM(new RPMType(0));
+	    	if(myServer instanceof RackableServer) {
+	    		RackableServer myRackableServer = (RackableServer) myServer;   		
+	    		for(Fan fan : myRackableServer.getFan()) {
+	    			fan.setActualRPM(new RPM(0));
 	    		}
 	    	}
 	    		    		    	
@@ -2428,10 +2428,10 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * Compute the power induced by one Job on a server
 	 * 
 	 */
-    public double computePowerForJob(ServerType server, JobType myJob, IPowerCalculator powerCalculator) {
+    public double computePowerForJob(Server server, Job myJob, IPowerCalculator powerCalculator) {
     	
-    	CoreLoadType coreLoad = new CoreLoadType ();
-    	MemoryUsageType memUsage = new MemoryUsageType();
+    	CoreLoad coreLoad = new CoreLoad ();
+    	MemoryUsage memUsage = new MemoryUsage();
 		memUsage.setValue(myJob.getNeededMemory().getValue());
 		
 		
@@ -2459,25 +2459,25 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	    	log.debug("Error with handling files...");
 	    }
     	   	
-    	MainboardType mainboard = server.getMainboard().get(0);
+    	Mainboard mainboard = server.getMainboard().get(0);
     	if(mainboard != null) {
     		
     		//1. Set memory usage
     		mainboard.setMemoryUsage(memUsage);
     		
     		//2. Set Hard disk read/write rate
-    		for(HardDiskType hdd : mainboard.getHardDisk()) {
-    			hdd.setReadRate(new IoRateType(hddReadRatepercentage * hdd.getMaxReadRate().getValue()));
-    			hdd.setWriteRate(new IoRateType(hddWriteRatepercentage * hdd.getMaxWriteRate().getValue()));
+    		for(HardDisk hdd : mainboard.getHardDisk()) {
+    			hdd.setReadRate(new IoRate(hddReadRatepercentage * hdd.getMaxReadRate().getValue()));
+    			hdd.setWriteRate(new IoRate(hddWriteRatepercentage * hdd.getMaxWriteRate().getValue()));
     		}
     	}
 				
 		//3. Set actual RPM caused by the job
-    	if(server instanceof RackableServerType) {
-    		RackableServerType myRackableServer = (RackableServerType) server;
+    	if(server instanceof RackableServer) {
+    		RackableServer myRackableServer = (RackableServer) server;
     		//log.debug("PSU Load: " +myRackableServer.getPSU().get(0).getLoad().getValue());
-    		for(FanType fan : myRackableServer.getFan()) {
-    			fan.setActualRPM(new RPMType((int)(fanRPMpercentage * fan.getMaxRPM().getValue())));
+    		for(Fan fan : myRackableServer.getFan()) {
+    			fan.setActualRPM(new RPM((int)(fanRPMpercentage * fan.getMaxRPM().getValue())));
     		}
     	}
     	    		
@@ -2545,10 +2545,10 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * Compute the idle power on a server
 	 * 
 	 */
-    public double computeIdlePower(ServerType server, IPowerCalculator powerCalculator) {
+    public double computeIdlePower(Server server, IPowerCalculator powerCalculator) {
     	
 		
-		ServerType tempServer = (ServerType) server.clone();
+		Server tempServer = (Server) server.clone();
 		double idlePower = 0.0;
 		
 		double fanRPMpercentage = 0.0;
@@ -2575,25 +2575,25 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	    	log.debug("Error with handling files...");
 	    }
     	   	
-//    	MainboardType mainboard = server.getMainboard().get(0);
+//    	Mainboard mainboard = server.getMainboard().get(0);
 //    	if(mainboard != null) {
 //    		
 //    		//1. Set memory usage
 //    		mainboard.setMemoryUsage(memUsage);
 //    		
 //    		//2. Set Hard disk read/write rate
-//    		for(HardDiskType hdd : mainboard.getHardDisk()) {
-//    			hdd.setReadRate(new IoRateType(hddReadRatepercentage * hdd.getMaxReadRate().getValue()));
-//    			hdd.setWriteRate(new IoRateType(hddWriteRatepercentage * hdd.getMaxWriteRate().getValue()));
+//    		for(HardDisk hdd : mainboard.getHardDisk()) {
+//    			hdd.setReadRate(new IoRate(hddReadRatepercentage * hdd.getMaxReadRate().getValue()));
+//    			hdd.setWriteRate(new IoRate(hddWriteRatepercentage * hdd.getMaxWriteRate().getValue()));
 //    		}
 //    	}
 				
 		//3. Set actual RPM caused by the job
-    	if(tempServer  instanceof RackableServerType) {
-    		RackableServerType myRackableServer = (RackableServerType) tempServer ;
+    	if(tempServer  instanceof RackableServer) {
+    		RackableServer myRackableServer = (RackableServer) tempServer ;
     		//log.debug("PSU Load: " +myRackableServer.getPSU().get(0).getLoad().getValue());
-    		for(FanType fan : myRackableServer.getFan()) {
-    			fan.setActualRPM(new RPMType((int)(fanRPMpercentage * fan.getMaxRPM().getValue())));
+    		for(Fan fan : myRackableServer.getFan()) {
+    			fan.setActualRPM(new RPM((int)(fanRPMpercentage * fan.getMaxRPM().getValue())));
     		}
     	}
     	tempServer.setMeasuredPower(null);				
@@ -2608,10 +2608,10 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * 
 	 */
     
-    public long getEstimatedWaitTime(DatacenterType datacenter, JobType myJob)
+    public long getEstimatedWaitTime(Datacenter datacenter, Job myJob)
     {
     	long estimatedWaitTime = 0;
-    	DatacenterType tempDC = (DatacenterType) datacenter.clone();
+    	Datacenter tempDC = (Datacenter) datacenter.clone();
     	long runningJobsRemainingTime = 0;
     	long queuedJobsTime = 0;
     	long totalCores = 0;
@@ -2654,18 +2654,18 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * 
 	 */
    
-    public long getRunningJobsRemainingTime(DatacenterType datacenter)
+    public long getRunningJobsRemainingTime(Datacenter datacenter)
     {
     	
-    	List<JobType> tempRunningList = new LinkedList<JobType>(); // temp List of running jobs
+    	List<Job> tempRunningList = new LinkedList<Job>(); // temp List of running jobs
     	long remainingTime = 0;
     	long jobRemainingTime = 0;
     	
     	//Form temporary list for the running jobs
-    	for(ServerType server : datacenter.getRack().get(0).getRackableServer()) {    		
+    	for(Server server : datacenter.getRack().get(0).getRackableServer()) {    		
     		if(server.getName().toString().matches("HPC_RESOURCE_MANAGEMENT")) {
-    			QueueType queue = server.getNativeOperatingSystem().getClusterManagement().get(0).getQueue();
-	    		for(JobType job: queue.getJobs()) {
+    			Queue queue = server.getNativeOperatingSystem().getClusterManagement().get(0).getQueue();
+	    		for(Job job: queue.getJobs()) {
 	    			if(job.getStatus().toString().matches("RUNNING")) {
 	    				tempRunningList.add(job);
 	    			}
@@ -2676,7 +2676,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
     	//Get the remaining wall time of the running jobs
     	for(int i = 0; i <  tempRunningList.size(); i++)
     	{
-    		JobType tempJob = tempRunningList.get(i);
+    		Job tempJob = tempRunningList.get(i);
     		jobRemainingTime = ((tempJob.getTimeOfStart().getValue() + tempJob.getWallTime().getValue()) - getEpochTime()) * tempJob.getNeededCoresPerNode().getValue() * tempJob.getNumberOfNodes().getValue();
     		remainingTime += jobRemainingTime;
     	}
@@ -2691,17 +2691,17 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * 
 	 */
     
-    public long getQueuedJobsTime(DatacenterType datacenter)
+    public long getQueuedJobsTime(Datacenter datacenter)
     {
-    	List<JobType> tempJobList = new LinkedList<JobType>(); // temp List of jobs in the queue
+    	List<Job> tempJobList = new LinkedList<Job>(); // temp List of jobs in the queue
     	long queuedTime = 0;
     	long jobTime = 0;
     	   	
     	//Form temporary list for the queued jobs
-    	for(ServerType server : datacenter.getRack().get(0).getRackableServer()) {    		
+    	for(Server server : datacenter.getRack().get(0).getRackableServer()) {    		
     		if(server.getName().toString().matches("HPC_RESOURCE_MANAGEMENT")) {
-    			QueueType queue = server.getNativeOperatingSystem().getClusterManagement().get(0).getQueue();
-	    		for(JobType job: queue.getJobs()) {
+    			Queue queue = server.getNativeOperatingSystem().getClusterManagement().get(0).getQueue();
+	    		for(Job job: queue.getJobs()) {
 	    			if(job.getStatus().toString().matches("QUEUED")) {
 	    				tempJobList.add(job);
 	    			}
@@ -2711,7 +2711,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
     	
     	//Get the wall time of the queued jobs
     	for(int i = 0; i <  tempJobList.size(); i++) {
-    		JobType tempJob = tempJobList.get(i);
+    		Job tempJob = tempJobList.get(i);
     		jobTime = tempJob.getWallTime().getValue() * tempJob.getNeededCoresPerNode().getValue() * tempJob.getNumberOfNodes().getValue();
     		queuedTime += jobTime;
     	}
@@ -2726,12 +2726,12 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * 
 	 */
     
-    public int getClusterTotalCores(DatacenterType datacenter)
+    public int getClusterTotalCores(Datacenter datacenter)
     {
     	int totalCores = 0;	
-    	for(ServerType server : datacenter.getRack().get(0).getRackableServer()) {   		
+    	for(Server server : datacenter.getRack().get(0).getRackableServer()) {   		
     		if(server.getName().toString().matches("HPC_COMPUTE_NODE")) {
-	    		for(CPUType cpu: server.getMainboard().get(0).getCPU()) {
+	    		for(CPU cpu: server.getMainboard().get(0).getCPU()) {
 	    			totalCores += cpu.getCore().size();		
 	    		}
     		}
@@ -2747,11 +2747,11 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * 
 	 */
     
-    public int getClusterNumServers(DatacenterType datacenter)
+    public int getClusterNumServers(Datacenter datacenter)
     {
-    	DatacenterType tempDC = (DatacenterType) datacenter.clone();
+    	Datacenter tempDC = (Datacenter) datacenter.clone();
     	int numServers = 0;		   	
-    	for(ServerType server : tempDC.getRack().get(0).getRackableServer()) { 		
+    	for(Server server : tempDC.getRack().get(0).getRackableServer()) { 		
     		if(server.getName().toString().matches("HPC_COMPUTE_NODE")){
     			numServers++;
     		}
@@ -2766,15 +2766,15 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * Get the queue size in the cluster
 	 * 
 	 */
-    public int getQueueSize(DatacenterType datacenter)
+    public int getQueueSize(Datacenter datacenter)
     {
-    	DatacenterType tempDC = (DatacenterType) datacenter.clone();
+    	Datacenter tempDC = (Datacenter) datacenter.clone();
     	int queueSize = 0;
     	
-    	for(ServerType server : tempDC.getRack().get(0).getRackableServer()) {    		
+    	for(Server server : tempDC.getRack().get(0).getRackableServer()) {    		
     		if(server.getName().toString().matches("HPC_RESOURCE_MANAGEMENT")) {
-    			QueueType queue = server.getNativeOperatingSystem().getClusterManagement().get(0).getQueue();
-	    		for(JobType job: queue.getJobs()) {
+    			Queue queue = server.getNativeOperatingSystem().getClusterManagement().get(0).getQueue();
+	    		for(Job job: queue.getJobs()) {
 	    			if(job.getStatus().toString().matches("QUEUED")) {
 	    				queueSize++;
 	    			}
@@ -2790,7 +2790,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * 
 	 */
     
-    public int getSmallestRank(String benchmarkName, FIT4GreenType model)
+    public int getSmallestRank(String benchmarkName, FIT4Green model)
     {
     	int smallestRank = 0;
     	int candidateRank = -1;
@@ -2798,9 +2798,9 @@ public class OptimizerEngineHPC extends OptimizerEngine{
     	//If the user has specified a benchmark
     	if(!benchmarkName.isEmpty())
     	{
-			for(DatacenterType datacenter : model.getSite().get(0).getDatacenter())
+			for(Datacenter datacenter : model.getSite().get(0).getDatacenter())
 			{
-				for(ApplicationBenchmarkType benchmark : datacenter.getApplicationBenchmark())
+				for(ApplicationBenchmark benchmark : datacenter.getApplicationBenchmark())
 				{
 					if(benchmark.getBenchmarkID().matches(benchmarkName))
 					{
@@ -2822,9 +2822,9 @@ public class OptimizerEngineHPC extends OptimizerEngine{
     		int dcSmallest = 0;
     		
     		// get the smallest rank value from all clusters
-			for(DatacenterType datacenter : model.getSite().get(0).getDatacenter())
+			for(Datacenter datacenter : model.getSite().get(0).getDatacenter())
 			{	    		
-				for(ApplicationBenchmarkType benchmark : datacenter.getApplicationBenchmark())
+				for(ApplicationBenchmark benchmark : datacenter.getApplicationBenchmark())
 				{
 					if(benchmark.getRank().getValue() < candidateRank || candidateRank == -1)
 					{
@@ -2849,14 +2849,14 @@ public class OptimizerEngineHPC extends OptimizerEngine{
 	 * 
 	 */
     
-    public int getDCRank(String benchmarkName, DatacenterType datacentre)
+    public int getDCRank(String benchmarkName, Datacenter datacentre)
     {
     	int dcRank = 0;
     	
     	//If the user has specified as benchmark
     	if(!benchmarkName.isEmpty())
     	{
-			for(ApplicationBenchmarkType benchmark : datacentre.getApplicationBenchmark())
+			for(ApplicationBenchmark benchmark : datacentre.getApplicationBenchmark())
 			{
 				if(benchmark.getBenchmarkID().matches(benchmarkName))
 				{
@@ -2869,7 +2869,7 @@ public class OptimizerEngineHPC extends OptimizerEngine{
     	{
     		int sum = 0;
     		int n = 0;
-			for(ApplicationBenchmarkType benchmark : datacentre.getApplicationBenchmark())
+			for(ApplicationBenchmark benchmark : datacentre.getApplicationBenchmark())
 			{
 				sum += benchmark.getRank().getValue();
 				n++;
@@ -2882,11 +2882,11 @@ public class OptimizerEngineHPC extends OptimizerEngine{
     }
 	
 	
-	public void setModelCopy(FIT4GreenType model)
+	public void setModelCopy(FIT4Green model)
 	{
 		this.model = model;
 	}
-	public FIT4GreenType getModelCopy()
+	public FIT4Green getModelCopy()
 	{
 		return this.model;
 	}

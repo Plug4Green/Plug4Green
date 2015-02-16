@@ -17,10 +17,10 @@ package f4g.optimizer.utils;
 import org.apache.log4j.Logger;
 import f4g.commons.core.Configuration;
 import f4g.commons.core.Constants;
-import f4g.schemas.java.actions.ActionRequestType;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.actions.ActionRequest;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
+import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.metamodel.ObjectFactory;
 import org.xml.sax.SAXException;
 
@@ -76,7 +76,7 @@ public class Recorder {
     }
 
 
-    public void recordModel(FIT4GreenType model) {
+    public void recordModel(FIT4Green model) {
 
         if (isRecording) {
 
@@ -84,7 +84,7 @@ public class Recorder {
 
             (new File(recorderDirectory)).mkdirs();
 
-            JAXBElement<FIT4GreenType> fIT4Green = (new ObjectFactory()).createFIT4Green(model);
+            JAXBElement<FIT4Green> fIT4Green = (new ObjectFactory()).createFIT4Green(model);
 
             saveToXML(fIT4Green,
                     getFileName(prefix),
@@ -96,13 +96,13 @@ public class Recorder {
 
     }
 
-    public void recordActionRequest(ActionRequestType actions) {
+    public void recordActionRequest(ActionRequest actions) {
 
         if (isRecording) {
 
             log.debug("recording Action Request...");
 
-            JAXBElement<ActionRequestType> fit4GreenActionRequest = (new f4g.schemas.java.actions.ObjectFactory()).createActionRequest(actions);
+            JAXBElement<ActionRequest> fit4GreenActionRequest = (new f4g.schemas.java.actions.ObjectFactory()).createActionRequest(actions);
 
             saveToXML(fit4GreenActionRequest,
                     getFileName("F4G Action Request"),
@@ -111,13 +111,13 @@ public class Recorder {
         }
     }
 
-    public void recordAllocationResponse(AllocationResponseType response) {
+    public void recordAllocationResponse(AllocationResponse response) {
 
         if (isRecording) {
 
             log.debug("recording Allocation Response...");
 
-            JAXBElement<AllocationResponseType> fit4GreenAllocationResponse =
+            JAXBElement<AllocationResponse> fit4GreenAllocationResponse =
                     (new f4g.schemas.java.allocation.ObjectFactory()).createAllocationResponse(response);
 
 
@@ -129,13 +129,13 @@ public class Recorder {
 
     }
 
-    public void recordAllocationRequest(AllocationRequestType request) {
+    public void recordAllocationRequest(AllocationRequest request) {
 
         if (isRecording) {
 
             log.debug("recording Allocation Request...");
 
-            JAXBElement<AllocationRequestType> fit4GreenAllocationRequest =
+            JAXBElement<AllocationRequest> fit4GreenAllocationRequest =
                     (new f4g.schemas.java.allocation.ObjectFactory()).createAllocationRequest(request);
 
 

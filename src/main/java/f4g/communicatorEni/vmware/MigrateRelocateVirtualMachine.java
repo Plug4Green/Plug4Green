@@ -33,8 +33,8 @@ import com.vmware.vim.VirtualMachineRelocateSpec;
 import com.vmware.vim.VirtualMachineConfigInfo;
 
 import f4g.communicatorEni.com.ComEniConstants; 
-import f4g.schemas.java.actions.LiveMigrateVMActionType;
-import f4g.schemas.java.actions.MoveVMActionType;
+import f4g.schemas.java.actions.LiveMigrateVMAction;
+import f4g.schemas.java.actions.MoveVMAction;
 
 /**
  * Migrate or Relocate virtual machines
@@ -48,8 +48,8 @@ public class MigrateRelocateVirtualMachine {
 	private static AppUtil appUtil_;
 	private OptionSpec[] optionalParameters_ = null;
 	private String[] actionArguments_ = null;
-	private MoveVMActionType moveAction_;
-	private LiveMigrateVMActionType migrateAction_;
+	private MoveVMAction moveAction_;
+	private LiveMigrateVMAction migrateAction_;
 	private int numCpus_ = -1;
 	 
 	/**
@@ -57,9 +57,9 @@ public class MigrateRelocateVirtualMachine {
 	 *  
 	 * @param actionArguments
 	 * @param actionMigrateOrRelocate
-	 * @param MoveVMActionType 
+	 * @param MoveVMAction 
 	 */
-	public MigrateRelocateVirtualMachine(String[] actionArguments, String actionMigrateOrRelocate, MoveVMActionType moveAction, LiveMigrateVMActionType migrateAction) {
+	public MigrateRelocateVirtualMachine(String[] actionArguments, String actionMigrateOrRelocate, MoveVMAction moveAction, LiveMigrateVMAction migrateAction) {
 		
 		optionalParameters_ = new OptionSpec[8];
 		optionalParameters_ = constructOptions();

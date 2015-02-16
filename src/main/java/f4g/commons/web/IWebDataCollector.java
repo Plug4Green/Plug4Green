@@ -19,7 +19,7 @@ import java.util.Date;
 
 import javax.xml.bind.JAXBElement;
 
-import f4g.schemas.java.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.AbstractBaseAction;
 
 /**
  * Interface for the web data collector.
@@ -28,8 +28,8 @@ import f4g.schemas.java.actions.AbstractBaseActionType;
  */
 public interface IWebDataCollector {
 
-	public ArrayList<JAXBElement<?extends AbstractBaseActionType>> getActionList();
-	public void addAction(JAXBElement<?extends AbstractBaseActionType> elem);
+	public ArrayList<JAXBElement<?extends AbstractBaseAction>> getActionList();
+	public void addAction(JAXBElement<?extends AbstractBaseAction> elem);
 	public void clearActions();
 	
 	public boolean isAutomatic();

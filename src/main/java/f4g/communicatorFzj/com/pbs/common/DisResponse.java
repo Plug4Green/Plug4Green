@@ -33,7 +33,7 @@ public class DisResponse {
 	
 	private int returnValue_;
 	private int aux_;
-	private ResponseType type_;
+	private Response type_;
 	
 	/**
 	 * Data structure holding the common Header of a DIS response  
@@ -43,7 +43,7 @@ public class DisResponse {
 	static class Header{
 		int returnValue;
 		int aux;
-		ResponseType type;
+		Response type;
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public class DisResponse {
 	 *
 	 * @author Daniel Brinkers
 	 */
-	static enum ResponseType{
+	static enum Response{
 		NULL,
 		QUEUE,
 		RDYTOCOM,
@@ -225,31 +225,31 @@ public class DisResponse {
 		header.aux = readInt(inputStream);
 		switch(readInt(inputStream)){
 		case 1:
-			header.type = ResponseType.NULL;
+			header.type = Response.NULL;
 			break;
 		case 2:
-			header.type = ResponseType.QUEUE;
+			header.type = Response.QUEUE;
 			break;
 		case 3:
-			header.type = ResponseType.RDYTOCOM;
+			header.type = Response.RDYTOCOM;
 			break;
 		case 4:
-			header.type = ResponseType.COMMIT;
+			header.type = Response.COMMIT;
 			break;
 		case 5:
-			header.type = ResponseType.SELECT;
+			header.type = Response.SELECT;
 			break;
 		case 6:
-			header.type = ResponseType.STATUS;
+			header.type = Response.STATUS;
 			break;
 		case 7:
-			header.type = ResponseType.TEXT;
+			header.type = Response.TEXT;
 			break;
 		case 8:
-			header.type = ResponseType.LOCATE;
+			header.type = Response.LOCATE;
 			break;
 		case 9:
-			header.type = ResponseType.RESCQUERY;
+			header.type = Response.RESCQUERY;
 			break;
 		}
 		return header;
@@ -286,14 +286,14 @@ public class DisResponse {
 	/**
 	 * @param type_ the type_ to set
 	 */
-	public void setType(ResponseType type_) {
+	public void setType(Response type_) {
 		this.type_ = type_;
 	}
 
 	/**
 	 * @return the type_
 	 */
-	public ResponseType getType() {
+	public Response getType() {
 		return type_;
 	}
 }

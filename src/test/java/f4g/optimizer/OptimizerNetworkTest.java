@@ -13,27 +13,27 @@ import org.junit.Test;
 
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.optimizer.cost_estimator.NetworkCost;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.NetworkNodeType;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.NetworkNode;
 import f4g.optimizer.utils.Utils;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
-import f4g.schemas.java.metamodel.CpuUsageType;
-import f4g.schemas.java.metamodel.IoRateType;
-import f4g.schemas.java.metamodel.NetworkUsageType;
-import f4g.schemas.java.metamodel.NrOfCpusType;
-import f4g.schemas.java.metamodel.RAMSizeType;
-import f4g.schemas.java.metamodel.StorageCapacityType;
-import f4g.schemas.java.actions.AbstractBaseActionType;
-import f4g.schemas.java.actions.MoveVMActionType;
-import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.MemoryUsage;
+import f4g.schemas.java.metamodel.CpuUsage;
+import f4g.schemas.java.metamodel.IoRate;
+import f4g.schemas.java.metamodel.NetworkUsage;
+import f4g.schemas.java.metamodel.NrOfCpus;
+import f4g.schemas.java.metamodel.RAMSize;
+import f4g.schemas.java.metamodel.StorageCapacity;
+import f4g.schemas.java.actions.AbstractBaseAction;
+import f4g.schemas.java.actions.MoveVMAction;
+import f4g.schemas.java.actions.PowerOffAction;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType;
 import f4g.schemas.java.constraints.optimizerconstraints.CapacityType;
-import f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoad;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
-import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
-import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.Load;
+import f4g.schemas.java.constraints.optimizerconstraints.Period;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
@@ -41,9 +41,9 @@ import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 
 public class OptimizerNetworkTest extends OptimizerTest {
     
-    FIT4GreenType model;
-    List<ServerType> allServers;
-    List<NetworkNodeType> allSwitches;
+    FIT4Green model;
+    List<Server> allServers;
+    List<NetworkNode> allSwitches;
         
     @Before
 	public void setUp() throws Exception {
@@ -51,7 +51,7 @@ public class OptimizerNetworkTest extends OptimizerTest {
 
 		SLAGenerator slaGenerator = new SLAGenerator();
 		
-		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
+		Period period = new Period(begin, end, null, null, new Load(null, null));
 		
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -69,7 +69,7 @@ public class OptimizerNetworkTest extends OptimizerTest {
 		fed.setBoundedPolicies(bpols);
 		
 		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				        slaGenerator.createVirtualMachineType(), policies, fed);
+				        slaGenerator.createVirtualMachine(), policies, fed);
 
     }
     
@@ -134,8 +134,8 @@ public class OptimizerNetworkTest extends OptimizerTest {
 		
 		VMTypeType.VMType type1 = new VMTypeType.VMType();
 		type1.setName("CPU_constraint");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(12), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(50), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
+		type1.setCapacity(new CapacityType(new NrOfCpus(1), new RAMSize(12), new StorageCapacity(1)));
+		type1.setExpectedLoad(new ExpectedLoad(new CpuUsage(50), new MemoryUsage(0), new IoRate(0), new NetworkUsage(0)));
 				
 		optimizer.getVmTypes().getVMType().add(type1);
 		
@@ -143,12 +143,12 @@ public class OptimizerNetworkTest extends OptimizerTest {
         // Network settings
         modelGenerator.setNB_SWITCHES(3);
         modelGenerator.setNB_ROUTERS(0);
-        ModelGenerator.defaultSwitchPowerIdle = new PowerType( 100.0 );
-        ModelGenerator.defaultSwitchPowerMax = new PowerType( 100.0 );
+        ModelGenerator.defaultSwitchPowerIdle = new Power( 100.0 );
+        ModelGenerator.defaultSwitchPowerMax = new Power( 100.0 );
 
 
         // Populate model
-		FIT4GreenType modelManyServersNoLoad = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green modelManyServersNoLoad = modelGenerator.createPopulatedFIT4Green();
         
         allServers = Utils.getAllServers(modelManyServersNoLoad);
         allSwitches = Utils.getAllNetworkDeviceNodes(modelManyServersNoLoad.getSite().get(0));
@@ -184,16 +184,16 @@ public class OptimizerNetworkTest extends OptimizerTest {
 			e.printStackTrace();
 		}
 		
-		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
+		List <MoveVMAction> moves = new ArrayList<MoveVMAction>();
+		List <PowerOffAction> powerOffs = new ArrayList<PowerOffAction>();
 
 
 		if(actionRequest!=null) {
-			for (JAXBElement<? extends AbstractBaseActionType> action : actionRequest.getActionList().getAction()){
-				if (action.getValue() instanceof MoveVMActionType) 
-					moves.add((MoveVMActionType)action.getValue());
-				if (action.getValue() instanceof PowerOffActionType) {
-                    PowerOffActionType a = (PowerOffActionType)action.getValue();
+			for (JAXBElement<? extends AbstractBaseAction> action : actionRequest.getActionList().getAction()){
+				if (action.getValue() instanceof MoveVMAction) 
+					moves.add((MoveVMAction)action.getValue());
+				if (action.getValue() instanceof PowerOffAction) {
+                    PowerOffAction a = (PowerOffAction)action.getValue();
                     System.out.println(">>>>>" + a.getNodeName() );
 					powerOffs.add(a);
                }

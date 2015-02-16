@@ -3,39 +3,39 @@ package f4g.powerCalculator.power;
 import org.apache.commons.jxpath.JXPathContext;
 
 import org.apache.log4j.Logger;
-import f4g.schemas.java.metamodel.CacheType;
-import f4g.schemas.java.metamodel.DimensionType;
-import f4g.schemas.java.metamodel.FanType;
-import f4g.schemas.java.metamodel.OperatingSystemTypeType;
-import f4g.schemas.java.metamodel.PSUType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.NASType;
-import f4g.schemas.java.metamodel.RPMType;
-import f4g.schemas.java.metamodel.RackType;
-import f4g.schemas.java.metamodel.LogicalUnitType;
-import f4g.schemas.java.metamodel.PSUType;
-import f4g.schemas.java.metamodel.NICType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.WaterCoolerType;
-import f4g.schemas.java.metamodel.NetworkNodeType;
-import f4g.schemas.java.metamodel.ControllerType;
-import f4g.schemas.java.metamodel.HardDiskType;
-import f4g.schemas.java.metamodel.SolidStateDiskType;
-import f4g.schemas.java.metamodel.RAIDDiskType;
+import f4g.schemas.java.metamodel.Cache;
+import f4g.schemas.java.metamodel.Dimension;
+import f4g.schemas.java.metamodel.Fan;
+import f4g.schemas.java.metamodel.OperatingSystemType;
+import f4g.schemas.java.metamodel.PSU;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.NAS;
+import f4g.schemas.java.metamodel.RPM;
+import f4g.schemas.java.metamodel.Rack;
+import f4g.schemas.java.metamodel.LogicalUnit;
+import f4g.schemas.java.metamodel.PSU;
+import f4g.schemas.java.metamodel.NIC;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.WaterCooler;
+import f4g.schemas.java.metamodel.NetworkNode;
+import f4g.schemas.java.metamodel.Controller;
+import f4g.schemas.java.metamodel.HardDisk;
+import f4g.schemas.java.metamodel.SolidStateDisk;
+import f4g.schemas.java.metamodel.RAIDDisk;
 import f4g.commons.com.util.PowerData;
 import f4g.powerCalculator.power.PoweredFan;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class PoweredNAS extends NASType implements PoweredComponent{
+public class PoweredNAS extends NAS implements PoweredComponent{
 
 	private boolean simulationFlag;
 	//private JXPathContext nasContext;
-	private NASType myNAS;
+	private NAS myNAS;
 	static Logger log = Logger.getLogger(PoweredNAS.class.getName()); //
 	
-	public PoweredNAS(NASType nas, boolean flag){
+	public PoweredNAS(NAS nas, boolean flag){
 		this.myNAS = nas;
 		this.simulationFlag=flag;
 		
@@ -67,7 +67,7 @@ public double computePowerIdle(){
 	    	 */
 	    	while(psuPowerIterator.hasNext())
 	    	{
-	    		PSUType myPSU = (PSUType)psuPowerIterator.next();
+	    		PSU myPSU = (PSU)psuPowerIterator.next();
 	    		if(myPSU.getMeasuredPower() == null ||myPSU.getMeasuredPower().getValue()<=0)
 	   	    	measuredPowerPSU = false;
 	    		if(myPSU.getLoad().getValue() > 0.0)	   	    	
@@ -114,13 +114,13 @@ public double computePowerIdle(){
 	    	    	while(controllerIterator.hasNext())
 	    	    	{
 	    	    		double contCurrentPower=0.0;
-	    	    		ControllerType myController = (ControllerType)controllerIterator.next();
+	    	    		Controller myController = (Controller)controllerIterator.next();
 	    	    		if(myController.getPowerIdle()!=null && myController.getPowerIdle().getValue()>0.0)
 	    	    		contCurrentPower=myController.getPowerIdle().getValue();
 	    	    		
 	    	    		log.debug("The idle power consumption of the NAS controller is "+contCurrentPower+ " Watts");  
 		    	    	
-	    	    		PowerType contCurrentPow = new PowerType();
+	    	    		Power contCurrentPow = new Power();
 	    	    		contCurrentPow.setValue(contCurrentPower);
 	    	    		myController.setComputedPower(contCurrentPow);
 	    	    		controllerPower=controllerPower+contCurrentPower;	    	    			    	    		             
@@ -139,11 +139,11 @@ public double computePowerIdle(){
 	    	        while(storagePowerIterator.hasNext())
 	    	        {
 	    	        	double storageCurrentPower=0.0;
-	    	        	HardDiskType myHardDisk = (HardDiskType)storagePowerIterator.next();
+	    	        	HardDisk myHardDisk = (HardDisk)storagePowerIterator.next();
 	    	        	if(myHardDisk.getPowerIdle()!=null && myHardDisk.getPowerIdle().getValue()>0.0)		    	    		
 	    	        	storageCurrentPower = myHardDisk.getPowerIdle().getValue();	    	      	    
 	    	            
-	    	      	    PowerType storageCurrentPow = new PowerType();
+	    	      	    Power storageCurrentPow = new Power();
 	    	      	    storageCurrentPow.setValue(storageCurrentPower);
 	    	            myHardDisk.setComputedPower(storageCurrentPow);
 	    	            hddPower = hddPower + storageCurrentPower; 
@@ -158,11 +158,11 @@ public double computePowerIdle(){
 	    	        while(storagePowerIterator.hasNext())
 	    	        {
 	    	        	double storageCurrentPower=0.0;
-	    	        	SolidStateDiskType mySolidStateDisk = (SolidStateDiskType)storagePowerIterator.next();	    	      	    
+	    	        	SolidStateDisk mySolidStateDisk = (SolidStateDisk)storagePowerIterator.next();	    	      	    
 	    	        	if(mySolidStateDisk.getPowerIdle()!=null && mySolidStateDisk.getPowerIdle().getValue()>0.0)    		
 		    	        storageCurrentPower = mySolidStateDisk.getPowerIdle().getValue();
 	    	            
-	    	            PowerType storageCurrentPow = new PowerType();
+	    	            Power storageCurrentPow = new Power();
 	    	      	    storageCurrentPow.setValue(storageCurrentPower);
 	    	            mySolidStateDisk.setComputedPower(storageCurrentPow);
 	    	            ssdPower = ssdPower + storageCurrentPower; 
@@ -185,14 +185,14 @@ public double computePowerIdle(){
 	    	    	while(fanIterator.hasNext())
 	    	    	{
 	    	    		double fanCurrentPower=0.0;
-	    	    		FanType myFan = (FanType)fanIterator.next();
+	    	    		Fan myFan = (Fan)fanIterator.next();
 	    	    		PoweredFan myPoweredFan = new PoweredFan(myFan.getActualRPM(),myFan.getDepth(),myFan.getMaxRPM(),myFan.getPowerMax(),myFan.getMeasuredPower(),this.simulationFlag);
 	    	    		    	    					
 	    	    		fanCurrentPower=myPoweredFan.computePower();
 	    	    		
 	    	    		log.debug("The power consumption of the NAS fan is "+fanCurrentPower+ " Watts");  
 		    	    	
-	    	    		PowerType fanCurrentPow = new PowerType();
+	    	    		Power fanCurrentPow = new Power();
 	    	    		fanCurrentPow.setValue(fanCurrentPower);
 	    	    		myFan.setComputedPower(fanCurrentPow);
 	    	    		fanPower=fanPower+fanCurrentPower;	    	    			    	    		             
@@ -216,14 +216,14 @@ public double computePowerIdle(){
 	    	    	while(raidDiskIterator.hasNext())
 	    	    	{
 	    	    		double raidDiskCurrentPower=0.0;
-	    	    		RAIDDiskType myRAIDDisk= (RAIDDiskType)raidDiskIterator.next();
+	    	    		RAIDDisk myRAIDDisk= (RAIDDisk)raidDiskIterator.next();
 	    	    		PoweredRAIDDisk myPoweredRAIDDisk= new PoweredRAIDDisk(myRAIDDisk);
 	    	    		    	    					
 	    	    		raidDiskCurrentPower=myPoweredRAIDDisk.computePowerIdle();
 	    	    		
 	    	    		log.debug("The power consumption of the NAS RAIDED Disk Unit is "+raidDiskCurrentPower+ " Watts");  
 		    	    	
-	    	    		PowerType raidDiskCurrentPow = new PowerType();
+	    	    		Power raidDiskCurrentPow = new Power();
 	    	    		raidDiskCurrentPow.setValue(raidDiskCurrentPower);
 	    	    		myRAIDDisk.setComputedPower(raidDiskCurrentPow);
 	    	    		raidDiskPower=raidDiskPower+raidDiskCurrentPower;	    	    			    	    		             
@@ -272,7 +272,7 @@ public double computePower(){
 	 */
 	while(psuPowerIterator.hasNext())
 	{
-		PSUType myPSU = (PSUType)psuPowerIterator.next();
+		PSU myPSU = (PSU)psuPowerIterator.next();
 		if(myPSU.getMeasuredPower() == null ||myPSU.getMeasuredPower().getValue()<=0)
 	    	measuredPowerPSU = false;
 		if(myPSU.getLoad().getValue() > 0.0)	   	    	
@@ -316,12 +316,12 @@ public double computePower(){
 	    	while(controllerIterator.hasNext())
 	    	{
 	    		double contCurrentPower=0.0;
-	    		ControllerType myController = (ControllerType)controllerIterator.next();
+	    		Controller myController = (Controller)controllerIterator.next();
 	    		PoweredCPU myPoweredCPU = new PoweredCPU(myController,getOperatingSystem(myController));		
 	    			    		
 	    		if (myPoweredCPU.getCpuUsage().getValue() > 0.0)	contCurrentPower = myPoweredCPU.computePower();
 	    		
-	    		PowerType contCurrentPow = new PowerType();
+	    		Power contCurrentPow = new Power();
 	    		contCurrentPow.setValue(contCurrentPower);
 	    		myController.setComputedPower(contCurrentPow);	   		
 	    		 		
@@ -343,11 +343,11 @@ public double computePower(){
 	        while(storagePowerIterator.hasNext())
 	        {
 	        	double storageCurrentPower=0.0;
-	        	HardDiskType myHardDisk = (HardDiskType)storagePowerIterator.next();
+	        	HardDisk myHardDisk = (HardDisk)storagePowerIterator.next();
 	        	if(myHardDisk.getPowerIdle()!=null && myHardDisk.getPowerIdle().getValue()>0.0)		    	    		
 	        	storageCurrentPower = myHardDisk.getPowerIdle().getValue();	    	      	    
 	            
-	      	    PowerType storageCurrentPow = new PowerType();
+	      	    Power storageCurrentPow = new Power();
 	      	    storageCurrentPow.setValue(storageCurrentPower);
 	            myHardDisk.setComputedPower(storageCurrentPow);
 	            hddPower = hddPower + storageCurrentPower; 
@@ -362,11 +362,11 @@ public double computePower(){
 	        while(storagePowerIterator.hasNext())
 	        {
 	        	double storageCurrentPower=0.0;
-	        	SolidStateDiskType mySolidStateDisk = (SolidStateDiskType)storagePowerIterator.next();	    	      	    
+	        	SolidStateDisk mySolidStateDisk = (SolidStateDisk)storagePowerIterator.next();	    	      	    
 	        	if(mySolidStateDisk.getPowerIdle()!=null && mySolidStateDisk.getPowerIdle().getValue()>0.0)    		
     	        storageCurrentPower = mySolidStateDisk.getPowerIdle().getValue();
 	            
-	            PowerType storageCurrentPow = new PowerType();
+	            Power storageCurrentPow = new Power();
 	      	    storageCurrentPow.setValue(storageCurrentPower);
 	            mySolidStateDisk.setComputedPower(storageCurrentPow);
 	            ssdPower = ssdPower + storageCurrentPower; 
@@ -389,14 +389,14 @@ public double computePower(){
 	    	while(fanIterator.hasNext())
 	    	{
 	    		double fanCurrentPower=0.0;
-	    		FanType myFan = (FanType)fanIterator.next();
+	    		Fan myFan = (Fan)fanIterator.next();
 	    		PoweredFan myPoweredFan = new PoweredFan(myFan.getActualRPM(),myFan.getDepth(),myFan.getMaxRPM(),myFan.getPowerMax(),myFan.getMeasuredPower(),this.simulationFlag);
 	    		    	    					
 	    		fanCurrentPower=myPoweredFan.computePower();
 	    		
 	    		log.debug("The power consumption of the NAS fan is "+fanCurrentPower+ " Watts");  
     	    	
-	    		PowerType fanCurrentPow = new PowerType();
+	    		Power fanCurrentPow = new Power();
 	    		fanCurrentPow.setValue(fanCurrentPower);
 	    		myFan.setComputedPower(fanCurrentPow);
 	    		fanPower=fanPower+fanCurrentPower;	    	    			    	    		             
@@ -417,11 +417,11 @@ public double computePower(){
 			
 	        while(cachePowerIterator.hasNext())
 	        {
-	      	  CacheType myCache = (CacheType)cachePowerIterator.next();
+	      	  Cache myCache = (Cache)cachePowerIterator.next();
 	      	  //TODO: In the future, implement the power consumption function for the Cache
 	          double cacheCurrentPower = 5.5;
 	          
-	          PowerType cacheCurrentPow = new PowerType();
+	          Power cacheCurrentPow = new Power();
 	          cacheCurrentPow.setValue(cacheCurrentPower);
 	          myCache.setComputedPower(cacheCurrentPow);
 	          totalCachePower = totalCachePower + cacheCurrentPower;
@@ -448,14 +448,14 @@ public double computePower(){
 	    	while(raidDiskIterator.hasNext())
 	    	{
 	    		double raidDiskCurrentPower=0.0;
-	    		RAIDDiskType myRAIDDisk= (RAIDDiskType)raidDiskIterator.next();
+	    		RAIDDisk myRAIDDisk= (RAIDDisk)raidDiskIterator.next();
 	    		PoweredRAIDDisk myPoweredRAIDDisk= new PoweredRAIDDisk(myRAIDDisk);
 	    		    	    					
 	    		raidDiskCurrentPower=myPoweredRAIDDisk.computePower();
 	    		
 	    		log.debug("The power consumption of the NAS RAIDED Disk Unit is "+raidDiskCurrentPower+ " Watts");  
     	    	
-	    		PowerType raidDiskCurrentPow = new PowerType();
+	    		Power raidDiskCurrentPow = new Power();
 	    		raidDiskCurrentPow.setValue(raidDiskCurrentPower);
 	    		myRAIDDisk.setComputedPower(raidDiskCurrentPow);
 	    		raidDiskPower=raidDiskPower+raidDiskCurrentPower;	    	    			    	    		             
@@ -502,10 +502,10 @@ private double computePSUPower(double nasPower, int countPSU, boolean measuredPo
 	
 	while(iterator.hasNext())
 	{
-		PowerType psuCurrentPower = new PowerType();
+		Power psuCurrentPower = new Power();
 		psuCurrentPower.setValue(0.0);
 		
-		PSUType myPSU = (PSUType)iterator.next();
+		PSU myPSU = (PSU)iterator.next();
 		
 		if(myPSU.getLoad().getValue()>0)
     	{		
@@ -556,11 +556,11 @@ private double NICPower(Object obj){
   while(nicPowerIterator.hasNext())
   	{
 	  double nicCurrentPower = 0.0;
-  		NICType myNIC = (NICType)nicPowerIterator.next();
+  		NIC myNIC = (NIC)nicPowerIterator.next();
   		PoweredNetworkNode myNetworkNode = new PoweredNetworkNode(myNIC);
   		nicCurrentPower = myNetworkNode.computePower(); 
   		
-  		PowerType nicCurrentPow = new PowerType();
+  		Power nicCurrentPow = new Power();
   		nicCurrentPow.setValue(nicCurrentPower);
   		myNIC.setComputedPower(nicCurrentPow);
   		totalNICPower = totalNICPower + nicCurrentPower; 
@@ -573,11 +573,11 @@ private double NICPower(Object obj){
  while(nicPowerIterator.hasNext())
  	{
 	    	double nicCurrentPower = 0.0;
- 		NICType myNIC = (NICType)nicPowerIterator.next();
+ 		NIC myNIC = (NIC)nicPowerIterator.next();
  		PoweredNetworkNode myNetworkNode = new PoweredNetworkNode(myNIC);
   		nicCurrentPower = myNetworkNode.computePower(); 
  		      		
- 		PowerType nicCurrentPow = new PowerType();
+ 		Power nicCurrentPow = new Power();
  		nicCurrentPow.setValue(nicCurrentPower);
  		myNIC.setComputedPower(nicCurrentPow);
  		totalNICPower = totalNICPower + nicCurrentPower; 
@@ -591,11 +591,11 @@ nicPowerIterator = context.iterate(nicQuery);
 while(nicPowerIterator.hasNext())
 	{
 	    	double nicCurrentPower = 0.0;
-		NICType myNIC = (NICType)nicPowerIterator.next();
+		NIC myNIC = (NIC)nicPowerIterator.next();
 		PoweredNetworkNode myNetworkNode = new PoweredNetworkNode(myNIC);
   		nicCurrentPower = myNetworkNode.computePower(); 
 		      		
-		PowerType nicCurrentPow = new PowerType();
+		Power nicCurrentPow = new Power();
 		nicCurrentPow.setValue(nicCurrentPower);
 		myNIC.setComputedPower(nicCurrentPow);
 		totalNICPower = totalNICPower + nicCurrentPower; 
@@ -619,10 +619,10 @@ private double NICIdlePower(Object obj){
   while(nicPowerIterator.hasNext())
   	{
 	    double nicCurrentPower = 0.0;
-  		NICType myNIC = (NICType)nicPowerIterator.next();
+  		NIC myNIC = (NIC)nicPowerIterator.next();
   		nicCurrentPower=myNIC.getPowerIdle().getValue();
   		      		
-  		PowerType nicCurrentPow = new PowerType();
+  		Power nicCurrentPow = new Power();
   		nicCurrentPow.setValue(nicCurrentPower);
   		myNIC.setComputedPower(nicCurrentPow);
   		totalNICPower = totalNICPower + nicCurrentPower; 
@@ -636,10 +636,10 @@ private double NICIdlePower(Object obj){
   while(nicPowerIterator.hasNext())
   	{
 	    double nicCurrentPower = 0.0;
-  		NICType myNIC = (NICType)nicPowerIterator.next();
+  		NIC myNIC = (NIC)nicPowerIterator.next();
   		nicCurrentPower=myNIC.getPowerIdle().getValue();
   		      		
-  		PowerType nicCurrentPow = new PowerType();
+  		Power nicCurrentPow = new Power();
   		nicCurrentPow.setValue(nicCurrentPower);
   		myNIC.setComputedPower(nicCurrentPow);
   		totalNICPower = totalNICPower + nicCurrentPower; 
@@ -653,10 +653,10 @@ private double NICIdlePower(Object obj){
  while(nicPowerIterator.hasNext())
  	{
 	    double nicCurrentPower = 0.0;
- 		NICType myNIC = (NICType)nicPowerIterator.next();
+ 		NIC myNIC = (NIC)nicPowerIterator.next();
  		nicCurrentPower=myNIC.getPowerIdle().getValue();
  		      		
- 		PowerType nicCurrentPow = new PowerType();
+ 		Power nicCurrentPow = new Power();
  		nicCurrentPow.setValue(nicCurrentPower);
  		myNIC.setComputedPower(nicCurrentPow);
  		totalNICPower = totalNICPower + nicCurrentPower; 
@@ -670,18 +670,18 @@ private double NICIdlePower(Object obj){
  * A function to return the operating system running on the server
  * 
  * @param obj:input object of type Server
- * @return OperatingSystemTypeType value containing information on the operating system
+ * @return OperatingSystemType value containing information on the operating system
  */
-private OperatingSystemTypeType getOperatingSystem(ControllerType obj){
+private OperatingSystemType getOperatingSystem(Controller obj){
 
 	if(obj.getNativeHypervisor() != null){
 		if(obj.getNativeHypervisor().getName() == null){
-			return OperatingSystemTypeType.LINUX;
+			return OperatingSystemType.LINUX;
 		}
 		return obj.getNativeHypervisor().getName();
 	} else {
 		if(obj.getNativeOperatingSystem().getName() == null){
-			return OperatingSystemTypeType.LINUX;
+			return OperatingSystemType.LINUX;
 		}
 		return obj.getNativeOperatingSystem().getName();
 	}

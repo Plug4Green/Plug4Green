@@ -40,7 +40,7 @@ public class DisRequest {
 	private boolean body_ = false;
 	private boolean header_ = false;
 	
-	public enum RequestType{
+	public enum Request{
 		CONNECT,
 		QUEUEJOB,
 		JOBCREDENTIAL,
@@ -120,7 +120,7 @@ public class DisRequest {
 	 *
 	 * @author Daniel Brinkers
 	 */
-	protected void addHeader(RequestType requestType) {
+	protected void addHeader(Request requestType) {
 		setHasHeader(true);
 		//type
 		addInt(2);

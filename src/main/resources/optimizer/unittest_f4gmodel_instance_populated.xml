@@ -95,7 +95,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id20000</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="TestFrameworkCapability">
                                 <name>none</name>
@@ -110,7 +110,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id20001</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                         </ns2:HostedHypervisor>
                     </ns2:NativeOperatingSystem>
@@ -208,7 +208,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id120000</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="TestFrameworkCapability">
                                 <name>none</name>
@@ -223,7 +223,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id120001</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                         </ns2:HostedHypervisor>
                     </ns2:NativeOperatingSystem>
@@ -321,7 +321,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id220000</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="TestFrameworkCapability">
                                 <name>none</name>
@@ -336,7 +336,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id220001</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                         </ns2:HostedHypervisor>
                     </ns2:NativeOperatingSystem>
@@ -434,7 +434,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id320000</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                         </ns2:HostedHypervisor>
                     </ns2:NativeOperatingSystem>
@@ -532,7 +532,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id420000</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                         </ns2:HostedHypervisor>
                     </ns2:NativeOperatingSystem>
@@ -630,7 +630,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id520000</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="TestFrameworkCapability">
                                 <name>none</name>
@@ -645,7 +645,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id520001</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="TestFrameworkCapability">
                                 <name>none</name>
@@ -660,7 +660,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id520002</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                         </ns2:HostedHypervisor>
                     </ns2:NativeOperatingSystem>
@@ -758,7 +758,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id620000</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="TestFrameworkCapability">
                                 <name>none</name>
@@ -773,7 +773,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id620001</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                         </ns2:HostedHypervisor>
                     </ns2:NativeOperatingSystem>
@@ -871,7 +871,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id720000</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="TestFrameworkCapability">
                                 <name>none</name>
@@ -886,7 +886,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id720001</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                         </ns2:HostedHypervisor>
                     </ns2:NativeOperatingSystem>
@@ -984,7 +984,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id820000</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="TestFrameworkCapability">
                                 <name>none</name>
@@ -999,7 +999,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id820001</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="TestFrameworkCapability">
                                 <name>none</name>
@@ -1014,7 +1014,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id820002</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                         </ns2:HostedHypervisor>
                     </ns2:NativeOperatingSystem>
@@ -1112,7 +1112,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id920000</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="TestFrameworkCapability">
                                 <name>none</name>
@@ -1127,7 +1127,7 @@
                                     <name>LINUX</name>
                                 </ns2:HostedOperatingSystem>
                                 <frameworkID>id920001</frameworkID>
-                                <cloudVmType>m1.small</cloudVmType>
+                                <cloudVm>m1.small</cloudVm>
                             </ns2:VirtualMachine>
                         </ns2:HostedHypervisor>
                     </ns2:NativeOperatingSystem>

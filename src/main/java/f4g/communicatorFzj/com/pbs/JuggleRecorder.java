@@ -37,15 +37,15 @@ import org.apache.commons.jxpath.JXPathContext;
 import org.apache.log4j.Logger;
 import f4g.commons.core.Configuration;
 import f4g.commons.core.Constants;
-import f4g.schemas.java.actions.ActionRequestType;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
+import f4g.schemas.java.actions.ActionRequest;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.FrameworkCapabilities;
 import f4g.schemas.java.metamodel.ObjectFactory;
-import f4g.schemas.java.metamodel.PSUType;
-import f4g.schemas.java.metamodel.RackableServerType;
-import f4g.schemas.java.metamodel.ServerType;
+import f4g.schemas.java.metamodel.PSU;
+import f4g.schemas.java.metamodel.RackableServer;
+import f4g.schemas.java.metamodel.Server;
 import org.xml.sax.SAXException;
 
 
@@ -76,13 +76,13 @@ public class JuggleRecorder {
 	}
 	
 	
-	public void recordModel(FIT4GreenType model){
+	public void recordModel(FIT4Green model){
 		
 		if(isRecording) {
 			
 			log.debug("recording Model...");
 			
-			JAXBElement<FIT4GreenType> fIT4Green = (new ObjectFactory()).createFIT4Green(model);
+			JAXBElement<FIT4Green> fIT4Green = (new ObjectFactory()).createFIT4Green(model);
 			
 			String fileName = getFileName("F4G Model");
 			
@@ -98,7 +98,7 @@ public class JuggleRecorder {
 		
 	}
 	
-public void saveParamsToFile(FIT4GreenType model, String fileName, String schemaPathName, String schemaPackage){
+public void saveParamsToFile(FIT4Green model, String fileName, String schemaPathName, String schemaPackage){
 		
 	URL schemaLocation = 
 		this.getClass().getClassLoader().getResource("schema/" + schemaPathName);
@@ -118,18 +118,18 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 		while (elements.hasNext())
 		{       	
 			Object element = elements.next();
-			String id = ((ServerType)element).getFrameworkID();
+			String id = ((Server)element).getFrameworkID();
 
-			FrameworkCapabilitiesType framweworkRef = 
-				(FrameworkCapabilitiesType)((ServerType)element).getFrameworkRef();			
+			FrameworkCapabilities framweworkRef = 
+				(FrameworkCapabilities)((Server)element).getFrameworkRef();			
 			
 			boolean correct_framework = false;
 			String myframeworkQuery = "//frameworkCapabilities";
 			JXPathContext context_rackableServer = JXPathContext.newContext(model);		
 			Iterator<?> fCapabilitiesIterator = context_rackableServer.iterate(myframeworkQuery);			
 			while (fCapabilitiesIterator.hasNext()){	        	
-	        	FrameworkCapabilitiesType fCapability = 
-	        		(FrameworkCapabilitiesType)fCapabilitiesIterator.next();
+	        	FrameworkCapabilities fCapability = 
+	        		(FrameworkCapabilities)fCapabilitiesIterator.next();
 	        	if (framweworkRef.getId().equals((fCapability.getId()))&&getName().equals(fCapability.getFrameworkName())) {	 
 	        		correct_framework = true;
 	        		break;
@@ -140,7 +140,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 			}
 
 			// The node is a worker node
-			if(((ServerType)element).getName().toString().matches("HPC_COMPUTE_NODE"))
+			if(((Server)element).getName().toString().matches("HPC_COMPUTE_NODE"))
 			{					
 				DecimalFormat df =
 					  (DecimalFormat)DecimalFormat.getInstance(Locale.GERMAN);
@@ -149,7 +149,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				
 				fw.write( id + "\n" );
 				
-				Double val = ((ServerType)element).getMeasuredPower().getValue();//.doubleValue();
+				Double val = ((Server)element).getMeasuredPower().getValue();//.doubleValue();
 				if(val!=null){
 					String s = df.format( val );
 					fw.write( s + "\n");
@@ -157,8 +157,8 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 
-				if(((ServerType)element).getComputedPower()!=null){
-					val = ((ServerType)element).getComputedPower().getValue();
+				if(((Server)element).getComputedPower()!=null){
+					val = ((Server)element).getComputedPower().getValue();
 					if(val!=null){
 						String s = df.format( val );
 						fw.write( s + "\n");
@@ -167,15 +167,15 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 						fw.write( 0 + "\n");
 				}				
 
-				if(((ServerType)element).getComputedPower()!=null){
+				if(((Server)element).getComputedPower()!=null){
 					
 				
-				val = ((ServerType)element).getMainboard().get(0).getPowerIdle().getValue();
+				val = ((Server)element).getMainboard().get(0).getPowerIdle().getValue();
 				String s = df.format( val );
 				fw.write( s + "\n");
 
-				if(((ServerType)element).getMainboard().get(0).getComputedPower()!=null){
-					val = ((ServerType)element).getMainboard().get(0).getComputedPower().getValue();
+				if(((Server)element).getMainboard().get(0).getComputedPower()!=null){
+					val = ((Server)element).getMainboard().get(0).getComputedPower().getValue();
 					if(val!=null){
 						s = df.format( val );
 						fw.write( s + "\n");
@@ -187,8 +187,8 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 					fw.write( 0 + "\n");
 				}
 
-				if(((ServerType)element).getMainboard().get(0).getCPU().get(0).getComputedPower()!=null){
-					val = ((ServerType)element).getMainboard().get(0).getCPU().get(0).getComputedPower().getValue();
+				if(((Server)element).getMainboard().get(0).getCPU().get(0).getComputedPower()!=null){
+					val = ((Server)element).getMainboard().get(0).getCPU().get(0).getComputedPower().getValue();
 					if(val!=null){
 						s = df.format( val );
 						fw.write( s + "\n");
@@ -200,7 +200,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 					fw.write( 0 + "\n");
 				
 
-				val = ((ServerType)element).getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue();
+				val = ((Server)element).getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -208,7 +208,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 				
-				val = ((ServerType)element).getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue();
+				val = ((Server)element).getMainboard().get(0).getCPU().get(0).getCore().get(1).getCoreLoad().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -216,7 +216,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 				
-				val = ((ServerType)element).getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue();
+				val = ((Server)element).getMainboard().get(0).getCPU().get(0).getCpuUsage().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -224,7 +224,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 
-				val = ((ServerType)element).getMainboard().get(0).getCPU().get(0).getCore().get(0).getFrequency().getValue();
+				val = ((Server)element).getMainboard().get(0).getCPU().get(0).getCore().get(0).getFrequency().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -232,7 +232,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 
-				val = ((ServerType)element).getMainboard().get(0).getCPU().get(0).getCore().get(0).getVoltage().getValue();
+				val = ((Server)element).getMainboard().get(0).getCPU().get(0).getCore().get(0).getVoltage().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -240,8 +240,8 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 
-				if(((ServerType)element).getMainboard().get(0).getCPU().get(1).getComputedPower()!=null){
-					val = ((ServerType)element).getMainboard().get(0).getCPU().get(1).getComputedPower().getValue();
+				if(((Server)element).getMainboard().get(0).getCPU().get(1).getComputedPower()!=null){
+					val = ((Server)element).getMainboard().get(0).getCPU().get(1).getComputedPower().getValue();
 					if(val!=null){
 						s = df.format( val );
 						fw.write( s + "\n");
@@ -252,7 +252,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 				
-				val = ((ServerType)element).getMainboard().get(0).getCPU().get(1).getCore().get(0).getCoreLoad().getValue();
+				val = ((Server)element).getMainboard().get(0).getCPU().get(1).getCore().get(0).getCoreLoad().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -260,7 +260,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 				
-				val = ((ServerType)element).getMainboard().get(0).getCPU().get(1).getCore().get(1).getCoreLoad().getValue();
+				val = ((Server)element).getMainboard().get(0).getCPU().get(1).getCore().get(1).getCoreLoad().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -268,7 +268,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 
-				val = ((ServerType)element).getMainboard().get(0).getCPU().get(1).getCpuUsage().getValue();
+				val = ((Server)element).getMainboard().get(0).getCPU().get(1).getCpuUsage().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -276,7 +276,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 
-				val = ((ServerType)element).getMainboard().get(0).getCPU().get(1).getCore().get(0).getFrequency().getValue();
+				val = ((Server)element).getMainboard().get(0).getCPU().get(1).getCore().get(0).getFrequency().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -284,7 +284,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 
-				val = ((ServerType)element).getMainboard().get(0).getCPU().get(1).getCore().get(0).getVoltage().getValue();
+				val = ((Server)element).getMainboard().get(0).getCPU().get(1).getCore().get(0).getVoltage().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -292,7 +292,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 
-				val = ((ServerType)element).getMainboard().get(0).getMemoryUsage().getValue();
+				val = ((Server)element).getMainboard().get(0).getMemoryUsage().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -300,11 +300,11 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 
-				int sticks = ((ServerType)element).getMainboard().get(0).getRAMStick().size();
+				int sticks = ((Server)element).getMainboard().get(0).getRAMStick().size();
 				double ramStickSum = 0.0;
 				for(int i=0;i<sticks;i++){
-					if(((ServerType)element).getMainboard().get(0).getRAMStick().get(i).getComputedPower()!=null){
-						val = ((ServerType)element).getMainboard().get(0).getRAMStick().get(i).getComputedPower().getValue();
+					if(((Server)element).getMainboard().get(0).getRAMStick().get(i).getComputedPower()!=null){
+						val = ((Server)element).getMainboard().get(0).getRAMStick().get(i).getComputedPower().getValue();
 						if(val!=null){
 							if(i<2){
 								s = df.format( val );
@@ -321,14 +321,14 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				s = df.format( ramStickSum );
 				fw.write( s + "\n");
 
-				context = JXPathContext.newContext((RackableServerType)element);
+				context = JXPathContext.newContext((RackableServer)element);
 				String psuQuery = "PSU";
 				@SuppressWarnings("rawtypes")
 				Iterator psuPowerIterator = context.iterate(psuQuery);
 				psuPowerIterator = context.iterate(psuQuery);    	
 				while(psuPowerIterator.hasNext())
 				{
-					PSUType myPSU = (PSUType)psuPowerIterator.next();
+					PSU myPSU = (PSU)psuPowerIterator.next();
 					if(myPSU.getComputedPower() == null || myPSU.getComputedPower().getValue() <= 0)
 						val = 0.0;
 					else
@@ -338,10 +338,10 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				s = df.format( val );
 				fw.write( s + "\n");
 
-				int actualRPM_values = ((RackableServerType)element).getFan().size();
+				int actualRPM_values = ((RackableServer)element).getFan().size();
 				int rpmSum = 0;
 				for(int i=0;i<actualRPM_values;i++){
-					int ival = ((RackableServerType)element).getFan().get(i).getActualRPM().getValue();
+					int ival = ((RackableServer)element).getFan().get(i).getActualRPM().getValue();
 					if(ival>0){
 						fw.write( ival + "\n");
 						rpmSum = rpmSum + ival;
@@ -354,8 +354,8 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 
 				double fanConsumptionSum = 0.0;
 				for(int i=0;i<actualRPM_values;i++){
-					if(((RackableServerType)element).getFan().get(i).getComputedPower()!=null){
-						val = ((RackableServerType)element).getFan().get(i).getComputedPower().getValue();
+					if(((RackableServer)element).getFan().get(i).getComputedPower()!=null){
+						val = ((RackableServer)element).getFan().get(i).getComputedPower().getValue();
 						if(val!=null){
 							s = df.format( val );
 							fw.write( s + "\n");
@@ -370,7 +370,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				s = df.format( fanConsumptionSum );
 				fw.write( s + "\n");
 
-				val = ((ServerType)element).getMainboard().get(0).getHardDisk().get(0).getReadRate().getValue();
+				val = ((Server)element).getMainboard().get(0).getHardDisk().get(0).getReadRate().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -378,7 +378,7 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 
-				val = ((ServerType)element).getMainboard().get(0).getHardDisk().get(0).getWriteRate().getValue();
+				val = ((Server)element).getMainboard().get(0).getHardDisk().get(0).getWriteRate().getValue();
 				if(val!=null){
 					s = df.format( val );
 					fw.write( s + "\n");
@@ -386,8 +386,8 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 				else
 					fw.write( 0 + "\n");
 
-				if(((ServerType)element).getMainboard().get(0).getHardDisk().get(0).getComputedPower()!=null){
-					val = ((ServerType)element).getMainboard().get(0).getHardDisk().get(0).getComputedPower().getValue();
+				if(((Server)element).getMainboard().get(0).getHardDisk().get(0).getComputedPower()!=null){
+					val = ((Server)element).getMainboard().get(0).getHardDisk().get(0).getComputedPower().getValue();
 					if(val!=null){
 						s = df.format( val );
 						fw.write( s + "\n");
@@ -412,13 +412,13 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 		
 	}
 	
-	public void recordActionRequest(ActionRequestType actions){
+	public void recordActionRequest(ActionRequest actions){
 		
 		if(isRecording) {
 			
 			log.debug("recording Action Request...");
 			
-			JAXBElement<ActionRequestType> fit4GreenActionRequest = (new f4g.schemas.java.actions.ObjectFactory()).createActionRequest(actions);
+			JAXBElement<ActionRequest> fit4GreenActionRequest = (new f4g.schemas.java.actions.ObjectFactory()).createActionRequest(actions);
 			
 			saveToXML(fit4GreenActionRequest, 
 					  getFileName("F4G Action Request"), 
@@ -427,13 +427,13 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 		}
 	}
 	
-	public void recordAllocationResponse(AllocationResponseType response){
+	public void recordAllocationResponse(AllocationResponse response){
 		
 		if(isRecording) {
 			
 			log.debug("recording Allocation Response...");
 			
-			JAXBElement<AllocationResponseType> fit4GreenAllocationResponse = 
+			JAXBElement<AllocationResponse> fit4GreenAllocationResponse = 
 				(new f4g.schemas.java.allocation.ObjectFactory()).createAllocationResponse(response);
 
 			
@@ -445,13 +445,13 @@ public void saveParamsToFile(FIT4GreenType model, String fileName, String schema
 			
 	}
 	
-	public void recordAllocationRequest(AllocationRequestType request){
+	public void recordAllocationRequest(AllocationRequest request){
 		
 		if(isRecording) {
 			
 			log.debug("recording Allocation Request...");
 			
-			JAXBElement<AllocationRequestType> fit4GreenAllocationRequest = 
+			JAXBElement<AllocationRequest> fit4GreenAllocationRequest = 
 				(new f4g.schemas.java.allocation.ObjectFactory()).createAllocationRequest(request);
 
 			

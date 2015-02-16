@@ -17,9 +17,9 @@
 //import f4g.optimizer.entropy.configuration.F4GNode;
 //import f4g.commons.optimizer.OptimizationObjective;
 //import f4g.commons.power.IPowerCalculator;
-//import f4g.schemas.java.metamodel.FIT4GreenType;
-//import f4g.schemas.java.metamodel.ServerStatusType;
-//import f4g.schemas.java.metamodel.ServerType;
+//import f4g.schemas.java.metamodel.FIT4Green;
+//import f4g.schemas.java.metamodel.ServerStatus;
+//import f4g.schemas.java.metamodel.Server;
 //import f4g.commons.util.StaticPowerCalculation;
 //
 //import com.google.common.base.Predicate;

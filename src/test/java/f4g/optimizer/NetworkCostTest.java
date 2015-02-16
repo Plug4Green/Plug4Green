@@ -8,21 +8,34 @@ import org.junit.Test;
 import f4g.optimizer.utils.Utils;
 import f4g.optimizer.cost_estimator.NetworkCost;
 import static javax.measure.unit.SI.*;
-import static org.junit.Assert.*;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.NetworkNodeType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
-import f4g.schemas.java.metamodel.StorageUsageType;
+
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.NetworkNode;
+import f4g.schemas.java.metamodel.NetworkPort;
+import f4g.schemas.java.metamodel.VirtualMachine;
+import f4g.schemas.java.metamodel.Site;
+import f4g.commons.optimizer.ICostEstimator;
+import f4g.commons.power.IPowerCalculator;
+import f4g.powerCalculator.power.PoweredNetworkNode;
+import f4g.commons.optimizer.OptimizationObjective;
+import f4g.optimizer.utils.Utils;
+import f4g.schemas.java.metamodel.NetworkPortBufferSize;
+import f4g.schemas.java.metamodel.BitErrorRate;
+import f4g.schemas.java.metamodel.PropagationDelay;
+import f4g.schemas.java.metamodel.NetworkTraffic;
+import f4g.schemas.java.metamodel.Link;
+import f4g.schemas.java.metamodel.Flow;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.MemoryUsage;
+import f4g.schemas.java.metamodel.StorageUsage;
 
 public class NetworkCostTest {
     
     NetworkCost networkCost;
-    FIT4GreenType model;
-    List<ServerType> allServers;
-    List<NetworkNodeType> allNetdevs;
+    FIT4Green model;
+    List<Server> allServers;
+    List<NetworkNode> allNetdevs;
     
     
     @Before
@@ -44,13 +57,13 @@ public class NetworkCostTest {
         // Network settings
         modelGenerator.setNB_SWITCHES(2);
         modelGenerator.setNB_ROUTERS(3);
-        ModelGenerator.defaultSwitchPowerIdle = new PowerType( 100.0 );
-        ModelGenerator.defaultSwitchPowerMax = new PowerType( 100.0 );
-        ModelGenerator.defaultRouterPowerIdle = new PowerType( 100.0 );
-        ModelGenerator.defaultRouterPowerMax = new PowerType( 100.0 );
+        ModelGenerator.defaultSwitchPowerIdle = new Power( 100.0 );
+        ModelGenerator.defaultSwitchPowerMax = new Power( 100.0 );
+        ModelGenerator.defaultRouterPowerIdle = new Power( 100.0 );
+        ModelGenerator.defaultRouterPowerMax = new Power( 100.0 );
        
         // Populate model
-        model = modelGenerator.createPopulatedFIT4GreenType();
+        model = modelGenerator.createPopulatedFIT4Green();
 
         allServers = Utils.getAllServers(model);
         allNetdevs = Utils.getAllNetworkDeviceNodes(model);
@@ -79,8 +92,8 @@ public class NetworkCostTest {
     @Test
     public void testSwitchConnections() {
 
-        NetworkNodeType srcNetNode = allServers.get(0).getMainboard().get(0).getEthernetNIC().get(0);
-        NetworkNodeType dstNetNode = allServers.get(1).getMainboard().get(0).getEthernetNIC().get(0);
+        NetworkNode srcNetNode = allServers.get(0).getMainboard().get(0).getEthernetNIC().get(0);
+        NetworkNode dstNetNode = allServers.get(1).getMainboard().get(0).getEthernetNIC().get(0);
 
         assertEquals(1, srcNetNode.getNetworkPort().size()); 
         assertEquals(1, dstNetNode.getNetworkPort().size());
@@ -98,21 +111,21 @@ public class NetworkCostTest {
     @Test
     public void testMoveCost() {
 
-        NetworkNodeType srcServer = allServers.get(0).getMainboard().get(0).getEthernetNIC().get(0);
-        NetworkNodeType dstServer = allServers.get(1).getMainboard().get(0).getEthernetNIC().get(0);
+        NetworkNode srcServer = allServers.get(0).getMainboard().get(0).getEthernetNIC().get(0);
+        NetworkNode dstServer = allServers.get(1).getMainboard().get(0).getEthernetNIC().get(0);
         double xfertime=0.0, energycost=0.0;
         
-        VirtualMachineType vm = new VirtualMachineType();
+        VirtualMachine vm = new VirtualMachine();
 
         // 1: VM size 0 -> no transfer, no energy 
-        vm.setActualStorageUsage( new StorageUsageType(0.0) );
-        vm.setActualMemoryUsage( new MemoryUsageType(0.0) );
+        vm.setActualStorageUsage( new StorageUsage(0.0) );
+        vm.setActualMemoryUsage( new MemoryUsage(0.0) );
         energycost = networkCost.moveEnergyCost(srcServer, dstServer, vm, model).doubleValue(JOULE);
         assertEquals(0.0 ,  energycost, 0.1);
 
         // 2
-        vm.setActualStorageUsage( new StorageUsageType(45.0) );
-        vm.setActualMemoryUsage( new MemoryUsageType(45.0) );
+        vm.setActualStorageUsage( new StorageUsage(45.0) );
+        vm.setActualMemoryUsage( new MemoryUsage(45.0) );
 
         xfertime = networkCost.moveDownTimeCost(srcServer, dstServer, vm, null).doubleValue(SECOND);
         assertTrue( xfertime > 134.0 );  
@@ -122,8 +135,8 @@ public class NetworkCostTest {
         assertTrue( energycost < 0.1 );
          
         // 3
-        vm.setActualStorageUsage( new StorageUsageType(1000000.0) );
-        vm.setActualMemoryUsage( new MemoryUsageType(1000000.0) );
+        vm.setActualStorageUsage( new StorageUsage(1000000.0) );
+        vm.setActualMemoryUsage( new MemoryUsage(1000000.0) );
 
         energycost = networkCost.moveEnergyCost(srcServer, dstServer, vm, model).doubleValue(JOULE);
         assertTrue( energycost > 0.3 );

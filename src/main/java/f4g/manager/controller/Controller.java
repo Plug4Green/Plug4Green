@@ -32,7 +32,7 @@ import f4g.commons.controller.IController;
 import f4g.commons.core.Configuration;
 import f4g.commons.core.Constants;
 import f4g.commons.core.IMain;
-import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.actions.ActionRequest;
 import f4g.commons.web.IWebDataCollector;
 import f4g.commons.web.WebDataCollector;
 import f4g.manager.couchDB.ConvertToJSON;
@@ -40,7 +40,7 @@ import f4g.manager.couchDB.DataBase;
 
 /**
  * The purpose of the Controller is to:
- * <li> handle a request for a set of actions, wrapped into an ActionRequestType object </li>
+ * <li> handle a request for a set of actions, wrapped into an ActionRequest object </li>
  * <li> group them based on the COM components which are the target receivers </li>
  * <li> define the best strategies for the sending of the requests </li>
  * <li> dispatch the request in the optimal way to the COM objects </li>
@@ -145,7 +145,7 @@ public class Controller implements IController {
 	 * @return true if successful, false otherwise
 	 */
 	@Override
-	public boolean executeActionList(ActionRequestType actionRequest) {
+	public boolean executeActionList(ActionRequest actionRequest) {
 		
 		// Cancel previous timer if still running
 		if (this.approvalTimer != null) {
@@ -196,7 +196,7 @@ public class Controller implements IController {
 			//Group actions by target Com
 			log.debug("Grouping actions by Com component...");
 
-			ActionRequestType.ActionList actionList = actionRequest.getActionList();
+			ActionRequest.ActionList actionList = actionRequest.getActionList();
 
 			HashMap groupedActions = new HashMap();
 			
@@ -245,7 +245,7 @@ public class Controller implements IController {
 	 * @param comName the target Com component
 	 * @param actions the set of actions
 	 */
-	private void dispatchActions(String comName, ArrayList actions, ActionRequestType actionRequest){
+	private void dispatchActions(String comName, ArrayList actions, ActionRequest actionRequest){
 		
 		log.debug("Dispatching " + actions.size() + " actions to Com component " + comName);
 		
@@ -255,7 +255,7 @@ public class Controller implements IController {
 			boolean res = com.executeActionList(actions);
 			if (res) {
 				// Store status of actions after handled by the Com
-				ActionRequestType.ActionList updatedActions = new ActionRequestType.ActionList(actions);
+				ActionRequest.ActionList updatedActions = new ActionRequest.ActionList(actions);
 				actionRequest.setActionList(updatedActions);
 			}
 		} else {
@@ -273,7 +273,7 @@ public class Controller implements IController {
 		return true;
 	}
 	
-	private void createActionsDocument (ActionRequestType actionRequest) {
+	private void createActionsDocument (ActionRequest actionRequest) {
 		
 		DataBase db = new DataBase();
 		db.setUrl(Configuration.get(Constants.DB_URL));
@@ -361,7 +361,7 @@ public class Controller implements IController {
 	 * 
 	 * @author Vasiliki Georgiadou
 	 */
-	private void scheduleApprovalTask(String comName, ArrayList actions, ActionRequestType actionRequest) {
+	private void scheduleApprovalTask(String comName, ArrayList actions, ActionRequest actionRequest) {
 		
 		// x (min) * 60 (sec) * 1000 (millisec)
 		long period = 5000; 
@@ -386,13 +386,13 @@ public class Controller implements IController {
 		private long startTime;
 		private String comName;
 		private ArrayList actions;
-		private ActionRequestType actionRequest;
+		private ActionRequest actionRequest;
 		
 		/**
 		 * @param comName
 		 * @param actions
 		 */
-		public ApprovalTask(String comName, ArrayList actions,ActionRequestType actionRequest) {
+		public ApprovalTask(String comName, ArrayList actions,ActionRequest actionRequest) {
 			this.comName = comName;
 			this.actions = actions;
 			this.actionRequest = actionRequest;

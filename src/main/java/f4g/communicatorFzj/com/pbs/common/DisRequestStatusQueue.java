@@ -35,7 +35,7 @@ public class DisRequestStatusQueue extends DisRequest {
 	
 	static DisRequest make(){
 		DisRequest disRequest = new DisRequestStatusQueue();
-		disRequest.addHeader(RequestType.STATUSQUEUE);
+		disRequest.addHeader(Request.STATUSQUEUE);
 		disRequest.addInt(0);
 		disRequest.addInt(0);
 		disRequest.addExtension();

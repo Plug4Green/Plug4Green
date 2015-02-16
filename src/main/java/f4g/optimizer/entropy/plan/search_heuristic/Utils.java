@@ -7,8 +7,8 @@
 //import java.util.List;
 //
 //import f4g.commons.optimizer.OptimizationObjective;
-//import f4g.schemas.java.metamodel.ServerStatusType;
-//import f4g.schemas.java.metamodel.ServerType;
+//import f4g.schemas.java.metamodel.ServerStatus;
+//import f4g.schemas.java.metamodel.Server;
 //
 //import choco.kernel.solver.variables.integer.IntDomainVar;
 //import entropy.configuration.Configuration;

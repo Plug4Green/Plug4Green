@@ -33,7 +33,7 @@ import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 /** 
  *  This class is the internal representation of a server blade used by the optimizer.
  */	
-public class OptimizerBladeServer extends BladeServerType implements IOptimizerServer {
+public class OptimizerBladeServer extends BladeServer implements IOptimizerServer {
 		
 	public Logger log;  
 	
@@ -42,10 +42,10 @@ public class OptimizerBladeServer extends BladeServerType implements IOptimizerS
 	/**
 	 * Server constructor for Cloud
 	 */
-	public OptimizerBladeServer(ServerType modelServer, VMTypeType myVMTypes) throws CreationImpossible{
+	public OptimizerBladeServer(Server modelServer, VMTypeType myVMTypes) throws CreationImpossible{
 		
 		log = Logger.getLogger(this.getClass().getName());		
-		optimizerServer = new OptimizerServer(modelServer, myVMTypes, (ServerType)this);
+		optimizerServer = new OptimizerServer(modelServer, myVMTypes, (Server)this);
 		
 	}
 	
@@ -53,10 +53,10 @@ public class OptimizerBladeServer extends BladeServerType implements IOptimizerS
 	 * Server constructor for traditional
 	 * if the first parameter is not null, it take these workloads. Otherwise it gets them from the model server.
 	 */
-	public OptimizerBladeServer(List<OptimizerWorkload> WLs, ServerType modelServer) throws CreationImpossible{
+	public OptimizerBladeServer(List<OptimizerWorkload> WLs, Server modelServer) throws CreationImpossible{
 
 		log = Logger.getLogger(this.getClass().getName());		
-		optimizerServer = new OptimizerServer(WLs, modelServer, (ServerType)this);
+		optimizerServer = new OptimizerServer(WLs, modelServer, (Server)this);
 	}
 	
 	/**
@@ -77,9 +77,9 @@ public class OptimizerBladeServer extends BladeServerType implements IOptimizerS
 	@Override public String                  getCandidateState()                              { return optimizerServer.getCandidateState();}
 	@Override public double                  getLoadRate(AggregatedUsage ref, AlgoType at)    { return optimizerServer.getLoadRate(      ref, at);}
 	@Override public void                    addVM(OptimizerWorkload WL, AlgoType at)         {        optimizerServer.addVM(            WL, at, this);}	
-	@Override public ServerStatusType        getServerStatus()                                { return this           .getStatus();}
-	@Override public void                    setServerStatus(ServerStatusType value)          {        this           .setStatus(        value);}
-              public List<MainboardType>     getServerMainboard()                             { return this           .getMainboard();}
+	@Override public ServerStatus        getServerStatus()                                { return this           .getStatus();}
+	@Override public void                    setServerStatus(ServerStatus value)          {        this           .setStatus(        value);}
+              public List<Mainboard>     getServerMainboard()                             { return this           .getMainboard();}
 //	          public double                  getNICMaxPower()                                 { return optimizerServer.getNICMaxPower(   this);}
 //              public double                  getNICIdlePower()                                {	return optimizerServer.getNICIdlePower(  this);}
 //              public double                  getIdlePower()                                   {	return optimizerServer.getIdlePower(     this);}

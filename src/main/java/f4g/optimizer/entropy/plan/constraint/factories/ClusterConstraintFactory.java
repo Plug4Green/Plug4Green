@@ -13,12 +13,12 @@ import org.btrplace.model.Model;
 import org.btrplace.model.VM;
 import org.btrplace.model.constraint.Fence;
 import org.btrplace.model.constraint.SatConstraint;
-import f4g.schemas.java.allocation.CloudVmAllocationType;
-import f4g.schemas.java.allocation.RequestType;
-import f4g.schemas.java.allocation.TraditionalVmAllocationType;
+import f4g.schemas.java.allocation.CloudVmAllocation;
+import f4g.schemas.java.allocation.Request;
+import f4g.schemas.java.allocation.TraditionalVmAllocation;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
-import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.FIT4Green;
 
 /**
  * Class containing everything relevant to cluster constraints
@@ -29,7 +29,7 @@ public class ClusterConstraintFactory extends ConstraintFactory {
 	 * Cluster definition
 	 */
 	private ClusterType clusters;
-	protected FIT4GreenType F4GModel;
+	protected FIT4Green F4GModel;
 
 	/**
 	 * Constructor needing an instance of the SLAReader and an entropy
@@ -129,15 +129,15 @@ public class ClusterConstraintFactory extends ConstraintFactory {
 	 * 
 	 * @author TS
 	 */
-	public List<SatConstraint> restrictPlacementToClusters(RequestType request, VM vm) {
+	public List<SatConstraint> restrictPlacementToClusters(Request request, VM vm) {
 
 		List<SatConstraint> v = new LinkedList<SatConstraint>();
 		
 		List<String> clusterList = new ArrayList<String>();
-		if(request instanceof CloudVmAllocationType) {
-			clusterList = ((CloudVmAllocationType)request).getClusterId();	
+		if(request instanceof CloudVmAllocation) {
+			clusterList = ((CloudVmAllocation)request).getClusterId();	
 		} else {
-			clusterList = ((TraditionalVmAllocationType)request).getClusterId();	
+			clusterList = ((TraditionalVmAllocation)request).getClusterId();	
 		}
 		
 		try {

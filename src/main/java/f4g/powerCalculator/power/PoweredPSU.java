@@ -1,9 +1,9 @@
 package f4g.powerCalculator.power;
 
-import f4g.schemas.java.metamodel.PSUType;
+import f4g.schemas.java.metamodel.PSU;
 import org.apache.log4j.Logger;
 
-public class PoweredPSU extends PSUType implements PoweredComponent{
+public class PoweredPSU extends PSU implements PoweredComponent{
 
 	double measuredPower=0.0;
 	double efficiency=0.0;

@@ -37,7 +37,7 @@ public class DisRequestAuth extends DisRequest {
 	
 	public static DisRequest make(int port) {
 		DisRequest disRequest = new DisRequestAuth();
-		disRequest.addHeader(RequestType.AUTHENUSER);
+		disRequest.addHeader(Request.AUTHENUSER);
 		disRequest.addInt(port);
 		disRequest.addExtension();
 		log.trace("Making DisRequestAuth: " +  disRequest.get());

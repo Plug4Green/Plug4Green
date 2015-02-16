@@ -15,10 +15,15 @@ import f4g.optimizer.utils.OptimizerWorkload.CreationImpossible;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.powerCalculator.power.PowerCalculator;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
-import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
-import f4g.schemas.java.allocation.CloudVmAllocationType;
+import f4g.schemas.java.actions.AbstractBaseAction;
+import f4g.schemas.java.actions.ActionRequest.ActionList;
+import f4g.schemas.java.actions.MoveVMAction;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.*;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
+import f4g.schemas.java.allocation.CloudVmAllocationResponse;
+import f4g.schemas.java.allocation.CloudVmAllocation;
 import f4g.schemas.java.allocation.ObjectFactory;
 import f4g.schemas.java.constraints.optimizerconstraints.*;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
@@ -56,12 +61,12 @@ public class IntegrationTest extends OptimizerTest {
 
         log = Logger.getLogger(this.getClass().getName());
 
-        List<LoadType> load = new LinkedList<LoadType>();
-        load.add(new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
+        List<Load> load = new LinkedList<Load>();
+        load.add(new Load(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 
-        PeriodType period = new PeriodType(
-                begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
+        Period period = new Period(
+                begin, end, null, null, new Load(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
         PolicyType.Policy pol = new Policy();
         pol.getPeriodVMThreshold().add(period);
@@ -72,7 +77,7 @@ public class IntegrationTest extends OptimizerTest {
         vmMargins = new PolicyType(polL);
         vmMargins.getPolicy().add(pol);
         optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(),
-                SLAGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, null));
+                SLAGenerator.createVirtualMachine(), vmMargins, makeSimpleFed(vmMargins, null));
 
     }
 
@@ -83,20 +88,20 @@ public class IntegrationTest extends OptimizerTest {
         modelGenerator.setCPU(2);
         modelGenerator.setCORE(6);
 
-        FrameworkCapabilitiesType frameworkCapabilitie = new FrameworkCapabilitiesType();
+        FrameworkCapabilities frameworkCapabilitie = new FrameworkCapabilities();
         frameworkCapabilitie.setFrameworkName("FM");
 
-        RackableServerType S0 = modelGenerator.createRandomServer(frameworkCapabilitie, 0);
-        S0.setStatus(ServerStatusType.OFF);
+        RackableServer S0 = modelGenerator.createRandomServer(frameworkCapabilitie, 0);
+        S0.setStatus(ServerStatus.OFF);
 
         //Creating a virtual machine
-        VirtualMachineType virtualMachine = new VirtualMachineType();
-        virtualMachine.setNumberOfCPUs(new NrOfCpusType(1));
-        virtualMachine.setActualCPUUsage(new CpuUsageType(0.2));
-        virtualMachine.setActualNetworkUsage(new NetworkUsageType(0.0));
-        virtualMachine.setActualStorageUsage(new StorageUsageType(0.0));
-        virtualMachine.setActualMemoryUsage(new MemoryUsageType(0.0));
-        virtualMachine.setActualDiskIORate(new IoRateType(0.0));
+        VirtualMachine virtualMachine = new VirtualMachine();
+        virtualMachine.setNumberOfCPUs(new NrOfCpus(1));
+        virtualMachine.setActualCPUUsage(new CpuUsage(0.2));
+        virtualMachine.setActualNetworkUsage(new NetworkUsage(0.0));
+        virtualMachine.setActualStorageUsage(new StorageUsage(0.0));
+        virtualMachine.setActualMemoryUsage(new MemoryUsage(0.0));
+        virtualMachine.setActualDiskIORate(new IoRate(0.0));
         virtualMachine.setFrameworkID("newVM");
 
 
@@ -139,21 +144,21 @@ public class IntegrationTest extends OptimizerTest {
         modelGenerator.setCORE(4); //4 cores
         modelGenerator.setVM_TYPE("small");
 
-        FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+        FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 
-        VMTypeType vmTypes = new VMTypeType();
+        VMTypeType vms = new VMTypeType();
 
         VMTypeType.VMType type1 = new VMTypeType.VMType();
         type1.setName("small");
-        type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(0)));
-        type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(100), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-        vmTypes.getVMType().add(type1);
+        type1.setCapacity(new CapacityType(new NrOfCpus(1), new RAMSize(1), new StorageCapacity(0)));
+        type1.setExpectedLoad(new ExpectedLoad(new CpuUsage(100), new MemoryUsage(0), new IoRate(0), new NetworkUsage(0)));
+        vms.getVMType().add(type1);
 
-        List<LoadType> load = new LinkedList<LoadType>();
-        load.add(new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
+        List<Load> load = new LinkedList<Load>();
+        load.add(new Load(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
-        PeriodType period = new PeriodType(
-                begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
+        Period period = new Period(
+                begin, end, null, null, new Load(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
         PolicyType.Policy pol = new Policy();
         pol.getPeriodVMThreshold().add(period);
@@ -166,42 +171,42 @@ public class IntegrationTest extends OptimizerTest {
 
         ArrayList<String> clusterId = new ArrayList<String>();
         clusterId.add("c1");
-        CloudVmAllocationType cloudAlloc = new CloudVmAllocationType(null, "i1", clusterId, "small", "u1", 0);
+        CloudVmAllocation cloudAlloc = new CloudVmAllocation(null, "i1", clusterId, "small", "u1", 0);
 
-        //Simulates a CloudVmAllocationType operation
-        JAXBElement<CloudVmAllocationType> operationType = (new ObjectFactory()).createCloudVmAllocation(cloudAlloc);
-        AllocationRequestType allocationRequest = new AllocationRequestType();
+        //Simulates a CloudVmAllocation operation
+        JAXBElement<CloudVmAllocation> operationType = (new ObjectFactory()).createCloudVmAllocation(cloudAlloc);
+        AllocationRequest allocationRequest = new AllocationRequest();
         allocationRequest.setRequest(operationType);
 
         //TEST 1
 
         //Create a new optimizer with the special power calculator
         OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new PowerCalculator(), new NetworkCost(),
-                vmTypes, myVmMargins, makeSimpleFed(myVmMargins, model));
+                vms, myVmMargins, makeSimpleFed(myVmMargins, model));
 
-        AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
+        AllocationResponse response = MyOptimizer.allocateResource(allocationRequest, model);
 
         //server xxx consumes less than the others.
-        assertEquals("id100000", ((CloudVmAllocationResponseType) response.getResponse().getValue()).getNodeId());
+        assertEquals("id100000", ((CloudVmAllocationResponse) response.getResponse().getValue()).getNodeId());
 
         //TEST 2
 
-        List<ServerType> servers = Utils.getAllServers(model);
+        List<Server> servers = Utils.getAllServers(model);
 
         //add a supplementary core to S0
-        CoreType core = new CoreType();
-        core.setFrequency(new FrequencyType(1));
-        core.setCoreLoad(new CoreLoadType(0.1));
-        core.setVoltage(new VoltageType(1.0));
-        core.setLastPstate(new NrOfPstatesType(0));
-        core.setTotalPstates(new NrOfPstatesType(0));
+        Core core = new Core();
+        core.setFrequency(new Frequency(1));
+        core.setCoreLoad(new CoreLoad(0.1));
+        core.setVoltage(new Voltage(1.0));
+        core.setLastPstate(new NrOfPstates(0));
+        core.setTotalPstates(new NrOfPstates(0));
         servers.get(0).getMainboard().get(0).getCPU().get(0).getCore().add(core);
 
 
-        AllocationResponseType response2 = MyOptimizer.allocateResource(allocationRequest, model);
+        AllocationResponse response2 = MyOptimizer.allocateResource(allocationRequest, model);
 
         //server xxx consumes less than the others.
-        assertEquals("id100000", ((CloudVmAllocationResponseType) response2.getResponse().getValue()).getNodeId());
+        assertEquals("id100000", ((CloudVmAllocationResponse) response2.getResponse().getValue()).getNodeId());
 
 
     }
@@ -220,7 +225,7 @@ public class IntegrationTest extends OptimizerTest {
         modelGenerator.CPU_VOLTAGE = 2;
 
       
-        FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+        FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 
         //TEST 1
         optimizer.setPowerCalculator(new PowerCalculator());
@@ -231,16 +236,16 @@ public class IntegrationTest extends OptimizerTest {
 
 
         //TEST 2
-        List<ServerType> servers = Utils.getAllServers(model);
+        List<Server> servers = Utils.getAllServers(model);
 
         //server 0 has less power usage
-        servers.get(0).getMainboard().get(0).setPowerMax(new PowerType(10));
+        servers.get(0).getMainboard().get(0).setPowerMax(new Power(10));
 
         optimizer.runGlobalOptimization(model);
       
         // going to the low power server
-        assertEquals("id100000", getMoves().get(0).getDestNodeController());
 
+        assertEquals("id100000", getMoves().get(0).getDestNodeController());
     }
 
     /**
@@ -250,7 +255,8 @@ public class IntegrationTest extends OptimizerTest {
     public void testHPSLA() {
 
         String sep = System.getProperty("file.separator");
-        FIT4GreenType model = modelGenerator.getModel("src/main/resources/optimizer" + sep + "unittest_f4gmodel_instance_ComHP_federated.xml");
+
+        FIT4Green model = modelGenerator.getModel("src/main/resources/optimizer" + sep + "unittest_f4gmodel_instance_ComHP_federated.xml");
 
         try {
             Date date = new Date();
@@ -273,17 +279,17 @@ public class IntegrationTest extends OptimizerTest {
         optimizer.setVmTypes(sla.getVMtypes());
 
 
-        AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.xlarge");
-        ((CloudVmAllocationType) allocationRequest.getRequest().getValue()).getClusterId().clear();
-        ((CloudVmAllocationType) allocationRequest.getRequest().getValue()).getClusterId().add("c1");
+        AllocationRequest allocationRequest = createAllocationRequestCloud("m1.xlarge");
+        ((CloudVmAllocation) allocationRequest.getRequest().getValue()).getClusterId().clear();
+        ((CloudVmAllocation) allocationRequest.getRequest().getValue()).getClusterId().add("c1");
 
 
         //TEST 1
-        AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
+        AllocationResponse response = optimizer.allocateResource(allocationRequest, model);
 
         assertNotNull(response);
         assertNotNull(response.getResponse());
-        assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
+        assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponse);
 
         //TEST 2
 
@@ -303,12 +309,12 @@ public class IntegrationTest extends OptimizerTest {
             e1.printStackTrace();
         }
 
-        List<ServerType> servers = Utils.getAllServers(model);
+        List<Server> servers = Utils.getAllServers(model);
         int maxVM = 9;
         for (int i = 0; i < maxVM; i++) {
-            VirtualMachineType VM = modelGenerator.createVirtualMachineType(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);
+            VirtualMachine VM = modelGenerator.createVirtualMachine(servers.get(0), model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0), 1);
             servers.get(0).getNativeHypervisor().getVirtualMachine().add(VM);
-            VM.setCloudVmType("m1.small");
+            VM.setCloudVm("m1.small");
             VM.setLastMigrationTimestamp(now);
             VM.setFrameworkID("VMa" + i);
         }

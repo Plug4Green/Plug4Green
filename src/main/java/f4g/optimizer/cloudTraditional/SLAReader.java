@@ -31,13 +31,13 @@ import javax.xml.validation.SchemaFactory;
 
 import org.apache.log4j.Logger;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
-import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType;
+import f4g.schemas.java.constraints.optimizerconstraints.Constraint;
 import f4g.schemas.java.constraints.optimizerconstraints.FIT4GreenOptimizerConstraint;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
-import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
-import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.Load;
+import f4g.schemas.java.constraints.optimizerconstraints.Period;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
-import f4g.schemas.java.constraints.optimizerconstraints.RepeatsType;
+import f4g.schemas.java.constraints.optimizerconstraints.Repeats;
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
 import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
@@ -149,7 +149,7 @@ public class SLAReader {
 	/**
 	 * get PC from a SLA file
 	 */
-	public ConstraintType getPCs() {
+	public Constraint getPCs() {
 		if (SLA != null)
 			if (SLA.getListOfPlacementConstraints() != null)
 			return SLA.getListOfPlacementConstraints();
@@ -264,11 +264,11 @@ public class SLAReader {
 	 * 
 	 * @author VG
 	 */
-	public static LoadType getVMSlotsThreshold (Date currentDate, List<PeriodType> periods) {
+	public static Load getVMSlotsThreshold (Date currentDate, List<Period> periods) {
 		
 		log.debug("Current date is: " + currentDate);
 		
-		LoadType load = new LoadType();
+		Load load = new Load();
 						
 		if (periods.size() == 0) {
 			log.warn("No periods found in policy");
@@ -314,16 +314,16 @@ public class SLAReader {
 					
 						String repeatString = periods.get(j).getRepeats().value();	
 					
-						if (repeatString.compareTo(RepeatsType.DAILY.toString()) == 0)  {
+						if (repeatString.compareTo(Repeats.DAILY.toString()) == 0)  {
 							calendar.add(GregorianCalendar.DAY_OF_MONTH,1);
 							currentStartDate = calendar.getTime();
-						} else if (repeatString.compareTo(RepeatsType.WEEKLY.toString()) == 0) {
+						} else if (repeatString.compareTo(Repeats.WEEKLY.toString()) == 0) {
 							calendar.add(GregorianCalendar.DAY_OF_MONTH,7);
 							currentStartDate = calendar.getTime();
-						} else if (repeatString.compareTo(RepeatsType.MONTHLY.toString()) == 0) {
+						} else if (repeatString.compareTo(Repeats.MONTHLY.toString()) == 0) {
 							calendar.add(GregorianCalendar.MONTH,1);
 							currentStartDate = calendar.getTime();
-						} else if (repeatString.compareTo(RepeatsType.YEARLY.toString()) == 0) {
+						} else if (repeatString.compareTo(Repeats.YEARLY.toString()) == 0) {
 							calendar.add(GregorianCalendar.YEAR,1);
 							currentStartDate = calendar.getTime();
 						} else {

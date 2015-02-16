@@ -42,7 +42,7 @@ public class OptimizerSLATest extends OptimizerTest {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
+		Period period = new Period(begin, end, null, null, new Load(null, null));
 		
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -60,7 +60,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		fed.setBoundedPolicies(bpols);
 		
 		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(),
-				SLAGenerator.createVirtualMachineType(), policies, fed);
+				SLAGenerator.createVirtualMachine(), policies, fed);
 	    
 		optimizer.setSla(SLAGenerator.createDefaultSLA());
 		optimizer.setOptiObjective(OptimizationObjective.Power);
@@ -81,9 +81,9 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		modelGenerator.setSTORAGE_SIZE(100);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(0));
 		optimizer.getSla().getSLA().get(0).getHardwareConstraints().setHDDCapacity(new HDDCapacity(100, 1));
 
 		optimizer.runGlobalOptimization(model);
@@ -102,7 +102,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		modelGenerator.setCORE(2);
 	
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 
 		//TEST 1: no Spare CPU
 		optimizer.runGlobalOptimization(model);
@@ -136,9 +136,9 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		modelGenerator.setCORE(1);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(50));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(50));
 		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxServerCPULoad(new MaxServerCPULoad(50, 1));
 
 		optimizer.runGlobalOptimization(model);
@@ -159,16 +159,16 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setCORE(4);
 		modelGenerator.setRAM_SIZE(560);
 		modelGenerator.setSTORAGE_SIZE(10000000);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 
 		// TEST 1 low VM consumption
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(1));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(1));
 		optimizer.runGlobalOptimization(model);
 
 		assertEquals(12, getMoves().size()); // everyone on the same server
 
 		// TEST 2 with overbooking setting = 1
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(100));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(100));
 		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
 		
 		optimizer.runGlobalOptimization(model);
@@ -193,13 +193,13 @@ public class OptimizerSLATest extends OptimizerTest {
 		// TEST 5 with overbooking setting = 2, mixed VMs
 		modelGenerator.setNB_SERVERS(4);
 		modelGenerator.setNB_VIRTUAL_MACHINES(4); // 16 VMs total
-		model = modelGenerator.createPopulatedFIT4GreenType();
+		model = modelGenerator.createPopulatedFIT4Green();
 
-		List<VirtualMachineType> vms = Utils.getAllVMs(model);
-		vms.get(0).setCloudVmType("m1.xlarge");
-		vms.get(1).setCloudVmType("m1.xlarge");
-		vms.get(2).setCloudVmType("m1.xlarge");
-		vms.get(3).setCloudVmType("m1.xlarge");
+		List<VirtualMachine> vms = Utils.getAllVMs(model);
+		vms.get(0).setCloudVm("m1.xlarge");
+		vms.get(1).setCloudVm("m1.xlarge");
+		vms.get(2).setCloudVm("m1.xlarge");
+		vms.get(3).setCloudVm("m1.xlarge");
 
 		optimizer.getSla().getSLA().get(0).getQoSConstraints().getMaxVirtualCPUPerCore().setValue((float) 2.0);
 
@@ -212,9 +212,9 @@ public class OptimizerSLATest extends OptimizerTest {
 	public void testMaxVMperServerGlobal() {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(0));
 		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVMperServer(new MaxVMperServer(1, 1));
 
 		optimizer.runGlobalOptimization(model);
@@ -227,10 +227,10 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		modelGenerator.setRAM_SIZE(100);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
-		optimizer.getVmTypes().getVMType().get(0).getCapacity().setVRam(new RAMSizeType(50));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(0));
+		optimizer.getVmTypes().getVMType().get(0).getCapacity().setVRam(new RAMSize(50));
 		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVRAMperPhyRAM(new MaxVRAMperPhyRAM((float)0.9, 1));
 
 		optimizer.runGlobalOptimization(model);
@@ -251,24 +251,24 @@ public class OptimizerSLATest extends OptimizerTest {
 			public boolean dispose() {return false;}
 
 			@Override
-			public Amount<Duration> moveDownTimeCost(NetworkNodeType fromServer,
-					NetworkNodeType toServer, VirtualMachineType VM,
-					FIT4GreenType model) {
+			public Amount<Duration> moveDownTimeCost(NetworkNode fromServer,
+					NetworkNode toServer, VirtualMachine VM,
+					FIT4Green model) {
 				return null;
 			}
 
 			@Override
-			public Amount<Energy> moveEnergyCost(NetworkNodeType fromServer,
-					NetworkNodeType toServer, VirtualMachineType VM,
-					FIT4GreenType model) {
+			public Amount<Energy> moveEnergyCost(NetworkNode fromServer,
+					NetworkNode toServer, VirtualMachine VM,
+					FIT4Green model) {
 				
 				return Amount.valueOf(1000, JOULE);
 			}
 
 			@Override
-			public Amount<Money> moveFinancialCost(NetworkNodeType fromServer,
-					NetworkNodeType toServer, VirtualMachineType VM,
-					FIT4GreenType model) {
+			public Amount<Money> moveFinancialCost(NetworkNode fromServer,
+					NetworkNode toServer, VirtualMachine VM,
+					FIT4Green model) {
 				return null;
 			}
 		}
@@ -276,9 +276,9 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(4);
 		modelGenerator.setNB_VIRTUAL_MACHINES(4); // 16 VMs total
 
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		optimizer.setCostEstimator(new MyNetworkCost());
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(0));
 		
 		// TEST 1: with payback time = 1 min		
 		optimizer.getPolicies().getPolicy().get(0).setVMMigrationPaybacktime(1);
@@ -305,14 +305,14 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 
 		try {			
 			DatatypeFactory factory = DatatypeFactory.newInstance();
 			XMLGregorianCalendar VMLastTimeMove = factory.newXMLGregorianCalendar((GregorianCalendar) GregorianCalendar.getInstance(TimeZone.getTimeZone("GMT")));
 			VMLastTimeMove.add(factory.newDuration(false, 0, 0, 0, 0, 4, 0)); // 4 Minutes negative Duration
-			List<VirtualMachineType> vms = Utils.getAllVMs(model);
-			for (VirtualMachineType vmt : vms){
+			List<VirtualMachine> vms = Utils.getAllVMs(model);
+			for (VirtualMachine vmt : vms){
 				vmt.setLastMigrationTimestamp(VMLastTimeMove);
 			}	
 
@@ -332,14 +332,14 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 
 		try {			
 			DatatypeFactory factory = DatatypeFactory.newInstance();
 			XMLGregorianCalendar LastTimeOnOff = factory.newXMLGregorianCalendar((GregorianCalendar) GregorianCalendar.getInstance(TimeZone.getTimeZone("GMT")));
 			LastTimeOnOff.add(factory.newDuration(false, 0, 0, 0, 0, 4, 0)); // 4 Minutes negative Duration
-			List<ServerType> ns = Utils.getAllServers(model);
-			for (ServerType n : ns){
+			List<Server> ns = Utils.getAllServers(model);
+			for (Server n : ns){
 				n.setLastOnOffTimestamp(LastTimeOnOff);
 			}	
 
@@ -495,10 +495,10 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		modelGenerator.setSTORAGE_SIZE(100);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		
 		class MyPowerCalculator extends MockPowerCalculator {
-			public PowerData computePowerServer(ServerType server) {
+			public PowerData computePowerServer(Server server) {
 				PowerData power = new PowerData();
 				power.setActualConsumption(1000.0  + 1.0 * server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getCoreLoad().getValue());
 								
@@ -508,7 +508,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		}
 		
 		optimizer.setPowerCalculator(new MyPowerCalculator());
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(100));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(100));
 		optimizer.getSla().getSLA().get(0).getEnergyConstraints().setMaxPowerServer(new MaxPowerServer(1100, 1));
 
 		optimizer.runGlobalOptimization(model);

@@ -268,7 +268,7 @@
                                 <actualMemoryUsage>3.926197052001953</actualMemoryUsage>
                                 <frameworkID>ENSV1HB9</frameworkID>
                                 <cloudVmImage>a</cloudVmImage>
-                                <cloudVmType>a</cloudVmType>
+                                <cloudVm>a</cloudVm>
                                 <lastMigrationTimestamp>2012-05-03T07:05:13.282Z</lastMigrationTimestamp>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="FIT4GREEN_Assago">
@@ -280,7 +280,7 @@
                                 <actualMemoryUsage>2.093242645263672</actualMemoryUsage>
                                 <frameworkID>ENSV1HIR</frameworkID>
                                 <cloudVmImage>a</cloudVmImage>
-                                <cloudVmType>a</cloudVmType>
+                                <cloudVm>a</cloudVm>
                                 <lastMigrationTimestamp>2012-05-03T07:05:14.219Z</lastMigrationTimestamp>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="FIT4GREEN_Assago">
@@ -292,7 +292,7 @@
                                 <actualMemoryUsage>1.9995460510253906</actualMemoryUsage>
                                 <frameworkID>ENSV1HXF</frameworkID>
                                 <cloudVmImage>a</cloudVmImage>
-                                <cloudVmType>a</cloudVmType>
+                                <cloudVm>a</cloudVm>
                                 <lastMigrationTimestamp>2012-05-03T07:05:15.172Z</lastMigrationTimestamp>
                             </ns2:VirtualMachine>
                         </ns2:NativeHypervisor>
@@ -551,7 +551,7 @@
                                 <actualMemoryUsage>7.9993896484375</actualMemoryUsage>
                                 <frameworkID>ENSV1HXE</frameworkID>
                                 <cloudVmImage>a</cloudVmImage>
-                                <cloudVmType>a</cloudVmType>
+                                <cloudVm>a</cloudVm>
                                 <lastMigrationTimestamp>2012-05-03T07:06:03.438Z</lastMigrationTimestamp>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="FIT4GREEN_Assago">
@@ -563,7 +563,7 @@
                                 <actualMemoryUsage>2.926544189453125</actualMemoryUsage>
                                 <frameworkID>ENSV19P6</frameworkID>
                                 <cloudVmImage>a</cloudVmImage>
-                                <cloudVmType>a</cloudVmType>
+                                <cloudVm>a</cloudVm>
                                 <lastMigrationTimestamp>2012-05-03T07:06:04.423Z</lastMigrationTimestamp>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="FIT4GREEN_Assago">
@@ -574,7 +574,7 @@
                                 <actualMemoryUsage>1.3202476501464844</actualMemoryUsage>
                                 <frameworkID>ENSV19P3</frameworkID>
                                 <cloudVmImage>a</cloudVmImage>
-                                <cloudVmType>a</cloudVmType>
+                                <cloudVm>a</cloudVm>
                                 <lastMigrationTimestamp>2012-05-03T07:06:05.470Z</lastMigrationTimestamp>
                             </ns2:VirtualMachine>
                             <ns2:VirtualMachine frameworkRef="FIT4GREEN_Assago">
@@ -584,7 +584,7 @@
                                 <actualStorageUsage>6.699719009920955</actualStorageUsage>
                                 <frameworkID>ENSV1ICF</frameworkID>
                                 <cloudVmImage>a</cloudVmImage>
-                                <cloudVmType>a</cloudVmType>
+                                <cloudVm>a</cloudVm>
                                 <lastMigrationTimestamp>2012-05-03T07:16:29.806Z</lastMigrationTimestamp>
                             </ns2:VirtualMachine>
                         </ns2:NativeHypervisor>

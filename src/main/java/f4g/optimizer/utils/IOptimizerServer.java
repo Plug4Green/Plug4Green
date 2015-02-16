@@ -18,8 +18,8 @@ import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.optimizer.utils.OptimizerServer.CandidateState;
 import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.metamodel.MainboardType;
-import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.schemas.java.metamodel.Mainboard;
+import f4g.schemas.java.metamodel.ServerStatus;
 import org.jvnet.jaxb2_commons.lang.CopyTo;
 
 /**
@@ -56,11 +56,11 @@ public interface IOptimizerServer extends Cloneable, CopyTo {
     
     public abstract PowerData getPower(IPowerCalculator powerCalculator);
     
-    public abstract ServerStatusType getServerStatus();
+    public abstract ServerStatus getServerStatus();
 
-    public abstract void setServerStatus(ServerStatusType value);
+    public abstract void setServerStatus(ServerStatus value);
 
-    public abstract List<MainboardType> getServerMainboard();
+    public abstract List<Mainboard> getServerMainboard();
     
     public abstract Object clone();
 

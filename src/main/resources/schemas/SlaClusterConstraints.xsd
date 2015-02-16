@@ -22,7 +22,7 @@
 				<xsd:element name="FIT4GreenServerGroup" minOccurs="0" type="opticon:ServerGroupType" />
 				<xsd:element name="ListOfSLA" type="opticon:SLAType" />
 				<xsd:element name="ListOfPolicies" type="opticon:PolicyType" />
-				<xsd:element name="ListOfPlacementConstraints" minOccurs="0" type="opticon:ConstraintType" />
+				<xsd:element name="ListOfPlacementConstraints" minOccurs="0" type="opticon:Constraint" />
 			</xsd:sequence>
 			<xsd:attributeGroup ref="types:TSAttr" />
 		</xsd:complexType>
@@ -36,7 +36,7 @@
 				<xsd:complexType>
 					<xsd:sequence>
 						<!-- Used to identify the appropriate virtual machine type: e.g. m1.small, 
-							or m1.medium. This can be mapped to the "cloudVmType" inside VirtualMachineType 
+							or m1.medium. This can be mapped to the "cloudVm" inside VirtualMachine 
 							of meta-model -->
 						<xsd:element name="name" type="xsd:string" minOccurs="1"
 							maxOccurs="1" />
@@ -48,7 +48,7 @@
 						<!--Used to predict the expected loads in terms of CPU, memory, hard 
 							disk of the corresponding VMtype. These values are specified based on some 
 							statistical data -->
-						<xsd:element name="expectedLoad" type="opticon:expectedLoadType"
+						<xsd:element name="expectedLoad" type="opticon:expectedLoad"
 							minOccurs="1" maxOccurs="1" />
 					</xsd:sequence>
 				</xsd:complexType>
@@ -57,26 +57,26 @@
 	</xsd:complexType>
 
 	<!-- Defining the Topology in the following -->
-	<xsd:complexType name="expectedLoadType">
+	<xsd:complexType name="expectedLoad">
 		<xsd:sequence>
-			<xsd:element name="vCpuLoad" type="f4g:CpuUsageType"
+			<xsd:element name="vCpuLoad" type="f4g:CpuUsage"
 				minOccurs="1" maxOccurs="1" />
-			<xsd:element name="vRamUsage" type="f4g:MemoryUsageType"
+			<xsd:element name="vRamUsage" type="f4g:MemoryUsage"
 				minOccurs="1" maxOccurs="1" />
-			<xsd:element name="vDiskLoad" type="f4g:IoRateType"
+			<xsd:element name="vDiskLoad" type="f4g:IoRate"
 				minOccurs="1" maxOccurs="1" />
-			<xsd:element name="vNetworkLoad" type="f4g:NetworkUsageType"
+			<xsd:element name="vNetworkLoad" type="f4g:NetworkUsage"
 				minOccurs="1" maxOccurs="1" />
 		</xsd:sequence>
 	</xsd:complexType>
 
 	<xsd:complexType name="capacityType">
 		<xsd:sequence>
-			<xsd:element name="vCpus" type="f4g:NrOfCpusType"
+			<xsd:element name="vCpus" type="f4g:NrOfCpus"
 				minOccurs="1" maxOccurs="1" />
-			<xsd:element name="vRam" type="f4g:RAMSizeType"
+			<xsd:element name="vRam" type="f4g:RAMSize"
 				minOccurs="1" maxOccurs="1" />
-			<xsd:element name="vHardDisk" type="f4g:StorageCapacityType"
+			<xsd:element name="vHardDisk" type="f4g:StorageCapacity"
 				minOccurs="1" maxOccurs="1" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -89,7 +89,7 @@
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="Name" type="xsd:string" />
-						<xsd:element name="NodeController" type="opticon:nodeControllerType" />
+						<xsd:element name="NodeController" type="opticon:nodeController" />
 						<xsd:element name="BoundedSLAs" type="opticon:boundedSLAsType" />
 						<xsd:element name="BoundedPolicies" type="opticon:boundedPoliciesType">
 						</xsd:element>
@@ -118,7 +118,7 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="boundedPlacementConstraintType">
+	<xsd:complexType name="boundedPlacementConstraint">
 		<xsd:sequence>
 			<xsd:element name="PlacementConstraint" maxOccurs="unbounded">
 				<xsd:complexType>
@@ -126,7 +126,7 @@
 						<xsd:annotation>
 							<xsd:appinfo>
 								<jaxb:property>
-									<jaxb:baseType name="ConstraintType.PlacementConstraint" />
+									<jaxb:baseType name="Constraint.PlacementConstraint" />
 								</jaxb:property>
 							</xsd:appinfo>
 						</xsd:annotation>
@@ -137,7 +137,7 @@
 	</xsd:complexType>
 
 	<!--NodeController type containing references to nodes -->
-	<xsd:complexType name="nodeControllerType">
+	<xsd:complexType name="nodeController">
 		<xsd:sequence>
 			<xsd:element name="NodeName" type="xsd:string" maxOccurs="unbounded" />
 		</xsd:sequence>
@@ -198,10 +198,10 @@
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="Name" type="xsd:string" />
-						<xsd:element name="NodeController" type="opticon:nodeControllerType" />
+						<xsd:element name="NodeController" type="opticon:nodeController" />
 						<xsd:element name="BoundedSLAs" type="opticon:boundedSLAsType" />
 						<xsd:element name="BoundedPlacementConstraints"
-							type="opticon:boundedPlacementConstraintType">
+							type="opticon:boundedPlacementConstraint">
 						</xsd:element>
 					</xsd:sequence>
 				</xsd:complexType>
@@ -442,7 +442,7 @@
 				<xsd:complexType>
 					<xsd:sequence>
 						<!-- Dynamic load pattern regarding VMs slots threshold -->
-						<xsd:element name="PeriodVMThreshold" type="opticon:PeriodType"
+						<xsd:element name="PeriodVMThreshold" type="opticon:Period"
 							minOccurs="0" maxOccurs="unbounded" />
 
 						<!-- Minimum amount of minutes between each VM move -->
@@ -463,7 +463,7 @@
 
 	<!-- ****************** Load Pattern ********************* -->
 
-	<xsd:simpleType name="RepeatsType">
+	<xsd:simpleType name="Repeats">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="DAILY" />
 			<xsd:enumeration value="WEEKLY" />
@@ -496,7 +496,7 @@
 		</xsd:simpleContent>
 	</xsd:complexType>
 
-	<xsd:complexType name="LoadType">
+	<xsd:complexType name="Load">
 		<xsd:sequence>
 			<xsd:element name="spareCPUs" type="opticon:spareCPUs"
 				minOccurs="0" maxOccurs="1" />
@@ -505,7 +505,7 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="PeriodType">
+	<xsd:complexType name="Period">
 		<xsd:sequence>
 			<!--based on ISO 8601 for date, time and duration format -->
 			<!-- dateTime: YYYY-MM-DDTHH:MM:SSZ example: 2011-05-04T11:51:36Z -->
@@ -516,9 +516,9 @@
 			<!--duration: PnYnMnDTnHnMnS example: P1DT2H30M or PT26H30M or PT26,5H -->
 			<xsd:element name="Duration" type="xsd:duration"
 				minOccurs="0" maxOccurs="1" />
-			<xsd:element name="Repeats" type="opticon:RepeatsType"
+			<xsd:element name="Repeats" type="opticon:Repeats"
 				minOccurs="0" maxOccurs="1" />
-			<xsd:element name="Load" type="opticon:LoadType"
+			<xsd:element name="Load" type="opticon:Load"
 				minOccurs="1" maxOccurs="1" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -639,7 +639,7 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 
-	<xsd:complexType name="ConstraintType">
+	<xsd:complexType name="Constraint">
 		<xsd:sequence>
 			<xsd:element name="PlacementConstraint" maxOccurs="unbounded">
 				<xsd:complexType>

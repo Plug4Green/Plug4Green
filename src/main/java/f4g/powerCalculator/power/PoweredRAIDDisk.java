@@ -5,19 +5,19 @@ import java.util.Vector;
 
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.log4j.Logger;
-import f4g.schemas.java.metamodel.IoRateType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.HardDiskType;
-import f4g.schemas.java.metamodel.RAIDDiskType;
+import f4g.schemas.java.metamodel.IoRate;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.HardDisk;
+import f4g.schemas.java.metamodel.RAIDDisk;
 
-public class PoweredRAIDDisk extends RAIDDiskType implements PoweredComponent{
+public class PoweredRAIDDisk extends RAIDDisk implements PoweredComponent{
 		
 	private int totalHdd = 0;
 	private double avgPower;
-	private RAIDDiskType myRAIDDisk;
+	private RAIDDisk myRAIDDisk;
 	static Logger log = Logger.getLogger(PoweredRAIDDisk.class.getName()); 
 	
-	public PoweredRAIDDisk(RAIDDiskType lobj){
+	public PoweredRAIDDisk(RAIDDisk lobj){
 		this.myRAIDDisk = lobj;
 	}
 	
@@ -35,7 +35,7 @@ public class PoweredRAIDDisk extends RAIDDiskType implements PoweredComponent{
 		Iterator iterator = context.iterate(myQuery);
 		while(iterator.hasNext())
 		{	
-			HardDiskType hdd = (HardDiskType)iterator.next();
+			HardDisk hdd = (HardDisk)iterator.next();
 			avgPower = avgPower + hdd.getPowerIdle().getValue();
 			n = n + 1;
 		}
@@ -80,11 +80,11 @@ public class PoweredRAIDDisk extends RAIDDiskType implements PoweredComponent{
 		}else{
 
 			int hddReadCount=0, hddWriteCount=0;
-			IoRateType maxReadRate = new IoRateType();
-			IoRateType maxWriteRate = new IoRateType();
-			IoRateType readSize = new IoRateType();
+			IoRate maxReadRate = new IoRate();
+			IoRate maxWriteRate = new IoRate();
+			IoRate readSize = new IoRate();
 			readSize.setValue(myRAIDDisk.getReadRate().getValue()/myRAIDDisk.getNumberOfReadOps().getValue());		
-			IoRateType writeSize = new IoRateType();
+			IoRate writeSize = new IoRate();
 			writeSize.setValue(myRAIDDisk.getWriteRate().getValue()/myRAIDDisk.getNumberOfWriteOps().getValue());
 			
 			if (readSize.getValue() == 0.0 && writeSize.getValue() == 0.0){
@@ -95,14 +95,14 @@ public class PoweredRAIDDisk extends RAIDDiskType implements PoweredComponent{
 				while(iterator.hasNext())
 				{	
 					double powerHDD=0.0;
-					HardDiskType hdd = (HardDiskType)iterator.next();
+					HardDisk hdd = (HardDisk)iterator.next();
 					maxReadRate.setValue(hdd.getMaxReadRate().getValue());
 					maxWriteRate.setValue(hdd.getMaxWriteRate().getValue());
 					PoweredHardDiskDrive poweredHDD = new PoweredHardDiskDrive(readSize,maxReadRate, writeSize, maxWriteRate, hdd.getPowerIdle());
 					poweredHDD.setLUNFlag(true);
 					powerHDD=poweredHDD.computePower();
 					//Set the computed power to the hard disk class
-					PowerType HDDPower=new PowerType();
+					Power HDDPower=new Power();
 					HDDPower.setValue(powerHDD);
 					hdd.setComputedPower(HDDPower);
 					
@@ -117,9 +117,9 @@ public class PoweredRAIDDisk extends RAIDDiskType implements PoweredComponent{
 				if (hddReadCount > totalHdd ) hddReadCount = totalHdd;
 				if (hddWriteCount > totalHdd ) hddWriteCount = totalHdd;
 
-				IoRateType curReadWriteRate = new IoRateType();
+				IoRate curReadWriteRate = new IoRate();
 				curReadWriteRate.setValue(0.0);
-				PowerType idlePow = new PowerType();
+				Power idlePow = new Power();
 				idlePow.setValue(avgPower);
 		
 				// The idle power is computed in case the number of read and write hdd is zero
@@ -159,11 +159,11 @@ public class PoweredRAIDDisk extends RAIDDiskType implements PoweredComponent{
 
 		while(itr.hasNext())
 		{
-			HardDiskType hdd = (HardDiskType)itr.next();
+			HardDisk hdd = (HardDisk)itr.next();
 			hddPower = hdd.getPowerIdle().getValue();
 			
 			//Set the computed power to the hard disk class
-			PowerType HDDPower=new PowerType();
+			Power HDDPower=new Power();
 			HDDPower.setValue(hddPower);
 			hdd.setComputedPower(HDDPower);
 			

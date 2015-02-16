@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.VirtualMachine;
 
 /**
  * this class is a tool to gather resources and make operations on them.
@@ -69,9 +69,9 @@ public class AggregatedUsage {
 	}
 	
 	/**
-	 * construct a AggregatedUsage from a VirtualMachineType
+	 * construct a AggregatedUsage from a VirtualMachine
 	 */
-	public static <T extends VirtualMachineType> AggregatedUsage getAggregatedUsage(T VM){
+	public static <T extends VirtualMachine> AggregatedUsage getAggregatedUsage(T VM){
 		
 		AggregatedUsage aggregatedUsage = new AggregatedUsage();
 	
@@ -103,14 +103,14 @@ public class AggregatedUsage {
 	}
 	
 	/**
-	 * construct a AggregatedUsage from a list of VirtualMachineType
+	 * construct a AggregatedUsage from a list of VirtualMachine
 	 */
-	public static AggregatedUsage getAggregatedUsage(List<? extends VirtualMachineType> workloads){
+	public static AggregatedUsage getAggregatedUsage(List<? extends VirtualMachine> workloads){
 		
 		AggregatedUsage aggregatedUsage = new AggregatedUsage();
 
 		double CPUUsageSum = 0;
-		for (VirtualMachineType VM : workloads) {
+		for (VirtualMachine VM : workloads) {
 						
 			AggregatedUsage VMU = getAggregatedUsage(VM);
 			

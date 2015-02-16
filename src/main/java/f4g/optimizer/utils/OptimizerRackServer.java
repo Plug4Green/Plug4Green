@@ -33,12 +33,12 @@ import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
 /** 
  *  This class is the internal representation of a rackable server used by the optimizer.
  */	
-public class OptimizerRackServer extends RackableServerType implements IOptimizerServer {
+public class OptimizerRackServer extends RackableServer implements IOptimizerServer {
 		
 	public Logger log;  	
 	OptimizerServer optimizerServer;
 	
-	public void InitOptimizerRackServer(RackableServerType modelServer){
+	public void InitOptimizerRackServer(RackableServer modelServer){
 		log = Logger.getLogger(this.getClass().getName());		
 		getPSU().addAll(modelServer.getPSU());
 		getFan().addAll(modelServer.getFan());
@@ -47,10 +47,10 @@ public class OptimizerRackServer extends RackableServerType implements IOptimize
 	/**
 	 * Server constructor for Cloud
 	 */
-	public OptimizerRackServer(RackableServerType modelServer, VMTypeType myVMTypes) throws CreationImpossible{
+	public OptimizerRackServer(RackableServer modelServer, VMTypeType myVMTypes) throws CreationImpossible{
 		
 		InitOptimizerRackServer(modelServer);
-		optimizerServer = new OptimizerServer(modelServer, myVMTypes, (ServerType)this);
+		optimizerServer = new OptimizerServer(modelServer, myVMTypes, (Server)this);
 		
 	}
 	
@@ -58,10 +58,10 @@ public class OptimizerRackServer extends RackableServerType implements IOptimize
 	 * Server constructor for traditional
 	 * if the first parameter is not null, it take these workloads. Otherwise it gets them from the model server.
 	 */
-	public OptimizerRackServer(List<OptimizerWorkload> WLs, RackableServerType modelServer) throws CreationImpossible{
+	public OptimizerRackServer(List<OptimizerWorkload> WLs, RackableServer modelServer) throws CreationImpossible{
 
 		InitOptimizerRackServer(modelServer);	
-		optimizerServer = new OptimizerServer(WLs, modelServer, (ServerType)this);
+		optimizerServer = new OptimizerServer(WLs, modelServer, (Server)this);
 	}
 	
 	/**
@@ -82,9 +82,9 @@ public class OptimizerRackServer extends RackableServerType implements IOptimize
 	@Override public String                  getCandidateState()                              { return optimizerServer.getCandidateState();}
 	@Override public double                  getLoadRate(AggregatedUsage ref, AlgoType at)    { return optimizerServer.getLoadRate(      ref, at);}
 	@Override public void                    addVM(OptimizerWorkload WL, AlgoType at)         {        optimizerServer.addVM(            WL, at, this);}
-	@Override public ServerStatusType        getServerStatus()                                { return this           .getStatus();}
-	@Override public void                    setServerStatus(ServerStatusType value)          {        this           .setStatus(        value);}
-	@Override public List<MainboardType>     getServerMainboard()                             { return this           .getMainboard();}
+	@Override public ServerStatus        getServerStatus()                                { return this           .getStatus();}
+	@Override public void                    setServerStatus(ServerStatus value)          {        this           .setStatus(        value);}
+	@Override public List<Mainboard>     getServerMainboard()                             { return this           .getMainboard();}
 //	          public double                  getNICMaxPower()                                 { return optimizerServer.getNICMaxPower(   this);}
 //              public double                  getNICIdlePower()                                {	return optimizerServer.getNICIdlePower(this);}
 //              public double                  getIdlePower()                                   {	return optimizerServer.getIdlePower(this);}

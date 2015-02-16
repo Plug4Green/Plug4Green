@@ -50,10 +50,10 @@ public class Utils {
 	static Logger log = Logger.getLogger(Utils.class.getName()); 
  
 
-	public static DatacenterType getFirstDatacenter(FIT4GreenType model) {
+	public static Datacenter getFirstDatacenter(FIT4Green model) {
 		if(model != null)
 			try {
-				return (DatacenterType)JXPathContext.newContext(model).getValue("site[1]/datacenter[1]", DatacenterType.class);
+				return (Datacenter)JXPathContext.newContext(model).getValue("site[1]/datacenter[1]", Datacenter.class);
 			} catch (JXPathNotFoundException e) {
 				return null;
 			}				
@@ -62,16 +62,16 @@ public class Utils {
 		
 	}
 	
-	public static DatacenterType getServerDatacenter(ServerType server, FIT4GreenType model) {
+	public static Datacenter getServerDatacenter(Server server, FIT4Green model) {
 		
 		return getServerDatacenterbyName(server.getFrameworkID(), model);
 	}
 	
-	public static DatacenterType getServerDatacenterbyName(String server, FIT4GreenType model) {
+	public static Datacenter getServerDatacenterbyName(String server, FIT4Green model) {
 		
-		for(SiteType site : model.getSite()) {
-			for(DatacenterType dc : site.getDatacenter()) {
-				for(ServerType myServer : getAllServers(site)) {
+		for(Site site : model.getSite()) {
+			for(Datacenter dc : site.getDatacenter()) {
+				for(Server myServer : getAllServers(site)) {
 					if (myServer.getFrameworkID().equals(server)) {
 						return dc;
 					}
@@ -82,10 +82,10 @@ public class Utils {
 		return null;
 	}
 	
-	public static SiteType getServerSite(ServerType server, FIT4GreenType model) {
+	public static Site getServerSite(Server server, FIT4Green model) {
 		
-		for(SiteType site : model.getSite()) {
-			for(ServerType myServer : getAllServers(site)) {
+		for(Site site : model.getSite()) {
+			for(Server myServer : getAllServers(site)) {
 				if (myServer.getFrameworkID().equals(server.getFrameworkID())) {
 					return site;
 				}
@@ -95,10 +95,10 @@ public class Utils {
 		return null;
 	}
 		
-	public static SiteType getNetworkNodeSite(NetworkNodeType node, FIT4GreenType model) {
+	public static Site getNetworkNodeSite(NetworkNode node, FIT4Green model) {
 				
-		for(SiteType site : model.getSite()) {
-			for(NetworkNodeType myNode : getAllNetworkNodes(site)) {
+		for(Site site : model.getSite()) {
+			for(NetworkNode myNode : getAllNetworkNodes(site)) {
 				if (myNode.getFrameworkID().equals(node.getFrameworkID())) {
 					return site;
 				}
@@ -109,11 +109,11 @@ public class Utils {
     }
     
     
-	public static List<DatacenterType> getAllDatacenters(FIT4GreenType model) {
-		List<DatacenterType> DCs = new ArrayList<DatacenterType>();
+	public static List<Datacenter> getAllDatacenters(FIT4Green model) {
+		List<Datacenter> DCs = new ArrayList<Datacenter>();
 		
-		for(SiteType s : model.getSite()) {
-			for(DatacenterType dc : s.getDatacenter()) {
+		for(Site s : model.getSite()) {
+			for(Datacenter dc : s.getDatacenter()) {
 				DCs.add(dc);
 			}
 		}
@@ -121,114 +121,114 @@ public class Utils {
 		
 	}
 	
-	public static long getMemory(ServerType server) {
+	public static long getMemory(Server server) {
 		int memory=0;
-		for(MainboardType mainboard : server.getMainboard())
-	    	for(RAMStickType RAMStick : mainboard.getRAMStick())
+		for(Mainboard mainboard : server.getMainboard())
+	    	for(RAMStick RAMStick : mainboard.getRAMStick())
 	    		memory += RAMStick.getSize().getValue();
 		return memory;
 	}
 	
-//	public static int getDiskIO(ServerType server) {
+//	public static int getDiskIO(Server server) {
 //		int diskIO=0;
-//		for(MainboardType mainboard : server.getMainboard())
-//	    	for(RAMStickType RAMStick : mainboard.getHardDisk().get(0).get)
+//		for(Mainboard mainboard : server.getMainboard())
+//	    	for(RAMStick RAMStick : mainboard.getHardDisk().get(0).get)
 //	    		diskIO += RAMStick.getSize();
 //		return diskIO;
 //	}
 
-	public static  double getStorage(ServerType server) {
+	public static  double getStorage(Server server) {
 		int storage = 0;
-		for(StorageUnitType storageUnit : getAllStorages(server))
+		for(StorageUnit storageUnit : getAllStorages(server))
 	   		storage += storageUnit.getStorageCapacity().getValue();
 		return storage;
 	}
 	
-	public static  double getNetworkBandwich(ServerType server) {
+	public static  double getNetworkBandwich(Server server) {
 		double bandwidth = 0;
-		for(NICType NIC : getAllNIC(server))
+		for(NIC NIC : getAllNIC(server))
 			bandwidth += NIC.getProcessingBandwidth().getValue();
 		return bandwidth;
 	}
 	
-	public static int getNbCores(ServerType server) {
+	public static int getNbCores(Server server) {
 		int cores=0;
-		for(MainboardType mainboard : server.getMainboard())
-	    	for(CPUType CPU : mainboard.getCPU())
+		for(Mainboard mainboard : server.getMainboard())
+	    	for(CPU CPU : mainboard.getCPU())
 	    		cores += CPU.getCore().size();
 		return cores;
 	}
 	
-	public static List<StorageUnitType> getAllStorages(ServerType server){
+	public static List<StorageUnit> getAllStorages(Server server){
 		
-		List<StorageUnitType> storage = new ArrayList<StorageUnitType>();
+		List<StorageUnit> storage = new ArrayList<StorageUnit>();
 		
-		for(MainboardType mainboard : server.getMainboard()){
-	    	for(StorageUnitType HD : mainboard.getHardDisk())
+		for(Mainboard mainboard : server.getMainboard()){
+	    	for(StorageUnit HD : mainboard.getHardDisk())
 	    		storage.add(HD);
-	    	for(StorageUnitType SSD : mainboard.getSolidStateDisk())
+	    	for(StorageUnit SSD : mainboard.getSolidStateDisk())
 	    		storage.add(SSD);
-	    	for(RAIDType raid : mainboard.getHardwareRAID())
-	    		for(StorageUnitType HD : raid.getHardDisk())
+	    	for(RAID raid : mainboard.getHardwareRAID())
+	    		for(StorageUnit HD : raid.getHardDisk())
 		    		storage.add(HD);	    		
 		}		
 		return storage;
 	}
 	
 	
-	public static List<NICType> getAllNIC(ServerType server){
+	public static List<NIC> getAllNIC(Server server){
 		
-		List<NICType> NICs = new ArrayList<NICType>();
+		List<NIC> NICs = new ArrayList<NIC>();
 		
-		for(MainboardType mainboard : server.getMainboard()){
-	    	for(NICType NIC : mainboard.getEthernetNIC())
+		for(Mainboard mainboard : server.getMainboard()){
+	    	for(NIC NIC : mainboard.getEthernetNIC())
 	    		NICs.add(NIC);
-	    	for(NICType NIC : mainboard.getFiberchannelNIC())
+	    	for(NIC NIC : mainboard.getFiberchannelNIC())
 	    		NICs.add(NIC);
 		}
 
 		return NICs;
 	}
 	
-	public static List<VirtualMachineType> getVMs(ServerType server){
-		if(server.getStatus() == ServerStatusType.ON) {
+	public static List<VirtualMachine> getVMs(Server server){
+		if(server.getStatus() == ServerStatus.ON) {
 			if(server.getNativeHypervisor() != null)
 				return server.getNativeHypervisor().getVirtualMachine(); 
 			else if (server.getNativeOperatingSystem() != null && server.getNativeOperatingSystem().getHostedHypervisor().size() != 0)
 				return server.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 			else 
-				return new ArrayList<VirtualMachineType>();
+				return new ArrayList<VirtualMachine>();
 		} else
-			return new ArrayList<VirtualMachineType>();
+			return new ArrayList<VirtualMachine>();
 		
 	}
 	
-	public static List<VirtualMachineType> getAllVMs(DatacenterType dc){
-		List<VirtualMachineType> vms = new ArrayList<VirtualMachineType>();
-		for(ServerType s : getAllServers(dc)) {
+	public static List<VirtualMachine> getAllVMs(Datacenter dc){
+		List<VirtualMachine> vms = new ArrayList<VirtualMachine>();
+		for(Server s : getAllServers(dc)) {
 				vms.addAll(getVMs(s));
 		}
 		return vms;
 	}
 	
-	public static List<VirtualMachineType> getAllVMs(SiteType s){
-		List<VirtualMachineType> vms = new ArrayList<VirtualMachineType>();
-		for(DatacenterType dc : s.getDatacenter()) {
+	public static List<VirtualMachine> getAllVMs(Site s){
+		List<VirtualMachine> vms = new ArrayList<VirtualMachine>();
+		for(Datacenter dc : s.getDatacenter()) {
 				vms.addAll(getAllVMs(dc));
 		}
 		return vms;
 	}
 	
-	public static List<VirtualMachineType> getAllVMs(FIT4GreenType f){
-		List<VirtualMachineType> vms = new ArrayList<VirtualMachineType>();
-		for(SiteType s : f.getSite()) {
+	public static List<VirtualMachine> getAllVMs(FIT4Green f){
+		List<VirtualMachine> vms = new ArrayList<VirtualMachine>();
+		for(Site s : f.getSite()) {
 				vms.addAll(getAllVMs(s));
 		}
 		return vms;
 	}
-	public static List<FanType> getAllFans(ServerType server){
+	public static List<Fan> getAllFans(Server server){
 		
-		List<FanType> fans = new ArrayList<FanType>();
+		List<Fan> fans = new ArrayList<Fan>();
 		
 		//FIXME finish
 		
@@ -237,9 +237,9 @@ public class Utils {
 		
 	}
 	
-	public static List<BoxNetworkType> getAllBoxNetwork(DatacenterType datacenter){
+	public static List<BoxNetwork> getAllBoxNetwork(Datacenter datacenter){
 		
-		List<BoxNetworkType> boxNetworks = new ArrayList<BoxNetworkType>();
+		List<BoxNetwork> boxNetworks = new ArrayList<BoxNetwork>();
 		
 		boxNetworks.addAll(datacenter.getBoxRouter());
 		boxNetworks.addAll(datacenter.getBoxSwitch());
@@ -251,9 +251,9 @@ public class Utils {
 	/**
 	 * retrieve all servers
 	 */
-	public static List<ServerType> getAllServers(FIT4GreenType f4g) {
-		List<ServerType> servers = new ArrayList<ServerType>();
-		for(SiteType s : f4g.getSite()){
+	public static List<Server> getAllServers(FIT4Green f4g) {
+		List<Server> servers = new ArrayList<Server>();
+		for(Site s : f4g.getSite()){
 			servers.addAll(getAllServers(s));
 		}
 		return servers;
@@ -263,9 +263,9 @@ public class Utils {
 	/**
 	 * retrieve all servers in a site
 	 */
-	public static List<ServerType> getAllServers(SiteType site) {
-		List<ServerType> servers = new ArrayList<ServerType>();
-		for(DatacenterType dc : site.getDatacenter()){
+	public static List<Server> getAllServers(Site site) {
+		List<Server> servers = new ArrayList<Server>();
+		for(Datacenter dc : site.getDatacenter()){
 			servers.addAll(getAllServers(dc));
 		}
 		return servers;
@@ -274,16 +274,16 @@ public class Utils {
 	/**
 	 * retrieve all servers in a datacenter
 	 */
-	public static List<ServerType> getAllServers(DatacenterType datacenter) {
-		List<ServerType> servers = new ArrayList<ServerType>();
+	public static List<Server> getAllServers(Datacenter datacenter) {
+		List<Server> servers = new ArrayList<Server>();
 		//log.debug("adding " + datacenter.getTowerServer().size() + " TowerServer");
 		servers.addAll(datacenter.getTowerServer());
 		
-		for(RackType rack : datacenter.getRack()){
+		for(Rack rack : datacenter.getRack()){
 			//log.debug("adding " + rack.getRackableServer().size() + " RackableServer");
 			servers.addAll(rack.getRackableServer());
 
-			for(EnclosureType enclosure : rack.getEnclosure()){
+			for(Enclosure enclosure : rack.getEnclosure()){
 				//log.debug("adding " + enclosure.getBladeServer().size() + " BladeServer");
 				servers.addAll(enclosure.getBladeServer());
 			}
@@ -292,12 +292,12 @@ public class Utils {
 	}
 	
 	
-	public static ArrayList<CoreType> getAllCores(MainboardType mainboard){
+	public static ArrayList<Core> getAllCores(Mainboard mainboard){
 		
-		ArrayList<CoreType> cores = new ArrayList<CoreType>();
+		ArrayList<Core> cores = new ArrayList<Core>();
 		
-		for(CPUType CPU : mainboard.getCPU())
-			for(CoreType core : CPU.getCore())
+		for(CPU CPU : mainboard.getCPU())
+			for(Core core : CPU.getCore())
 				cores.add(core);							
 				
 		return cores;
@@ -306,36 +306,36 @@ public class Utils {
 
 	/**
 	 * retrieve all optimizer servers in a datacenter for Cloud
-	 * @param vmTypes 
+	 * @param vms 
 	 * 
 	 */
-	public static ArrayList<IOptimizerServer> getAllOptimizerServersCloud(DatacenterType datacenter, VMTypeType vmTypes) {
+	public static ArrayList<IOptimizerServer> getAllOptimizerServersCloud(Datacenter datacenter, VMTypeType vms) {
 		ArrayList<IOptimizerServer> servers = new ArrayList<IOptimizerServer>();
 
 		//creating optimizer servers from towers, rackables and blades
-		for(TowerServerType tower : datacenter.getTowerServer()) {
+		for(TowerServer tower : datacenter.getTowerServer()) {
 			try {
-				if(tower.getName() == ServerRoleType.CLOUD_NODE_CONTROLLER)
-					servers.add(new OptimizerTowerServer(tower, vmTypes));
+				if(tower.getName() == ServerRole.CLOUD_NODE_CONTROLLER)
+					servers.add(new OptimizerTowerServer(tower, vms));
 			} catch (CreationImpossible e) {
 				log.warn("Creation of an optimizer server impossible for server " + tower.getFrameworkID());
 			}
 		}
 					
-		for(RackType rack : datacenter.getRack()) {
-			for(RackableServerType rackable : rack.getRackableServer()) {
+		for(Rack rack : datacenter.getRack()) {
+			for(RackableServer rackable : rack.getRackableServer()) {
 				try {
-					if(rackable.getName() == ServerRoleType.CLOUD_NODE_CONTROLLER)
-						servers.add(new OptimizerRackServer(rackable, vmTypes));
+					if(rackable.getName() == ServerRole.CLOUD_NODE_CONTROLLER)
+						servers.add(new OptimizerRackServer(rackable, vms));
 				} catch (CreationImpossible e) {
 					log.warn("Creation of an optimizer server impossible for server " + rackable.getFrameworkID());
 				}
 			}
-			for(EnclosureType enclosure : rack.getEnclosure()) {
-				for(BladeServerType blade : enclosure.getBladeServer()) {
+			for(Enclosure enclosure : rack.getEnclosure()) {
+				for(BladeServer blade : enclosure.getBladeServer()) {
 					try {
-						if(blade.getName() == ServerRoleType.CLOUD_NODE_CONTROLLER)
-							servers.add(new OptimizerBladeServer(blade, vmTypes));
+						if(blade.getName() == ServerRole.CLOUD_NODE_CONTROLLER)
+							servers.add(new OptimizerBladeServer(blade, vms));
 					} catch (CreationImpossible e) {
 						log.warn("Creation of an optimizer server impossible for server " + blade.getFrameworkID());
 					}
@@ -350,11 +350,11 @@ public class Utils {
 	 * retrieve all optimizer servers in a datacenter for Tradi
 	 * 
 	 */
-	public static ArrayList<IOptimizerServer> getAllOptimizerServersTradi(DatacenterType datacenter) {
+	public static ArrayList<IOptimizerServer> getAllOptimizerServersTradi(Datacenter datacenter) {
 		ArrayList<IOptimizerServer> servers = new ArrayList<IOptimizerServer>();
 
 		//creating optimizer servers from towers, rackables and blades
-		for(TowerServerType tower : datacenter.getTowerServer()) {
+		for(TowerServer tower : datacenter.getTowerServer()) {
 			try {
 				servers.add(new OptimizerTowerServer(null, tower));
 			} catch (CreationImpossible e) {
@@ -362,16 +362,16 @@ public class Utils {
 			}
 		}
 			
-		for(RackType rack : datacenter.getRack()) {
-			for(RackableServerType rackable : rack.getRackableServer()) {
+		for(Rack rack : datacenter.getRack()) {
+			for(RackableServer rackable : rack.getRackableServer()) {
 				try {
 					servers.add(new OptimizerRackServer(null, rackable));
 				} catch (CreationImpossible e) {
 					log.warn("Creation of an optimizer server impossible for server " + rackable.getFrameworkID());
 				}
 			}
-			for(EnclosureType enclosure : rack.getEnclosure()) {
-				for(BladeServerType blade : enclosure.getBladeServer()) {
+			for(Enclosure enclosure : rack.getEnclosure()) {
+				for(BladeServer blade : enclosure.getBladeServer()) {
 					try {
 						servers.add(new OptimizerBladeServer(null, blade));
 					} catch (CreationImpossible e) {
@@ -390,10 +390,10 @@ public class Utils {
 	 * retrieve all network nodes in a site
 	 * 
 	 */
-	public static List<NetworkNodeType> getAllNetworkNodes(SiteType site) {
+	public static List<NetworkNode> getAllNetworkNodes(Site site) {
     
-		List<NetworkNodeType> nodes = new ArrayList<NetworkNodeType>();
-		for(DatacenterType dc : site.getDatacenter()){
+		List<NetworkNode> nodes = new ArrayList<NetworkNode>();
+		for(Datacenter dc : site.getDatacenter()){
 			nodes.addAll(getAllNetworkNodes(dc));
 		}
 		return nodes;
@@ -405,33 +405,33 @@ public class Utils {
 	 * retrieve all network nodes in a datacenter
 	 * 
 	 */
-	public static List<NetworkNodeType> getAllNetworkNodes(DatacenterType datacenter) {
+	public static List<NetworkNode> getAllNetworkNodes(Datacenter datacenter) {
 		
-		ArrayList<NetworkNodeType> networkNodes = new ArrayList<NetworkNodeType>();
+		ArrayList<NetworkNode> networkNodes = new ArrayList<NetworkNode>();
 		
 		//add NICs from all servers
-		for(ServerType server : Utils.getAllServers(datacenter))
-			for(MainboardType mainboard : server.getMainboard()) {
-				for(NICType NIC : mainboard.getEthernetNIC())
+		for(Server server : Utils.getAllServers(datacenter))
+			for(Mainboard mainboard : server.getMainboard()) {
+				for(NIC NIC : mainboard.getEthernetNIC())
 					networkNodes.add(NIC);
-				for(NICType NIC : mainboard.getFiberchannelNIC())
+				for(NIC NIC : mainboard.getFiberchannelNIC())
 					networkNodes.add(NIC);
 			}
 				
 		//add Racked Network
-		for(RackType rack : datacenter.getRack())
+		for(Rack rack : datacenter.getRack())
 			networkNodes.addAll(rack.getRackableRouter());
 		
 		//add Racked Network
-		for(RackType rack : datacenter.getRack())
+		for(Rack rack : datacenter.getRack())
 			networkNodes.addAll(rack.getRackableSwitch());
 		
 		//add NICs for enclosures
-		for(RackType rack : datacenter.getRack())
-			for(EnclosureType enclosure : rack.getEnclosure()) {
-				for(NICType NIC : enclosure.getEthernetNIC())
+		for(Rack rack : datacenter.getRack())
+			for(Enclosure enclosure : rack.getEnclosure()) {
+				for(NIC NIC : enclosure.getEthernetNIC())
 					networkNodes.add(NIC);
-				for(NICType NIC : enclosure.getFiberchannelNIC())
+				for(NIC NIC : enclosure.getFiberchannelNIC())
 					networkNodes.add(NIC);
 			}
 				
@@ -449,11 +449,11 @@ public class Utils {
 	/* 
 	 * Add a VM to the server, simulating every load increases
 	 */
-	public static void addVM(final OptimizerWorkload WL, final ServerType server, final AlgoType algoType){
+	public static void addVM(final OptimizerWorkload WL, final Server server, final AlgoType algoType){
 
-		ServerType toServer = server;
+		Server toServer = server;
 		
-		List<VirtualMachineType> VMs = getVMs(toServer);
+		List<VirtualMachine> VMs = getVMs(toServer);
 		
 		VMs.add(WL);
 		
@@ -462,14 +462,14 @@ public class Utils {
 		log.debug("addVM: percentageCores=" + percentageCores);
 		
 		//for now, only first mainboard is treated
-		MainboardType myMainboard = toServer.getMainboard().get(0);
+		Mainboard myMainboard = toServer.getMainboard().get(0);
 		
 		//get all cores in mainboard
-		ArrayList<CoreType> cores = Utils.getAllCores(myMainboard);
+		ArrayList<Core> cores = Utils.getAllCores(myMainboard);
 				
 		//get only the not loaded ones
-		Collection<CoreType> freeCores = Collections2.filter( cores, new Predicate<CoreType>() { 
-	        @Override public boolean apply(CoreType core) { return core.getCoreLoad() != null &&
+		Collection<Core> freeCores = Collections2.filter( cores, new Predicate<Core>() { 
+	        @Override public boolean apply(Core core) { return core.getCoreLoad() != null &&
 	        	                                                   core.getCoreLoad().getValue() <=  1 - percentageCores; }               
 	    });		
 
@@ -477,17 +477,17 @@ public class Utils {
 		if(freeCores.size() >= nbAskedCores)
 		{
 			//take first cores
-			Iterator<CoreType> corestoFill = Iterators.limit(freeCores.iterator(), nbAskedCores);
+			Iterator<Core> corestoFill = Iterators.limit(freeCores.iterator(), nbAskedCores);
 						
 			while(corestoFill.hasNext()) { 
 				log.debug("core");
-				CoreType core = corestoFill.next();
-				core.setCoreLoad(new CoreLoadType(core.getCoreLoad().getValue() + percentageCores));
+				Core core = corestoFill.next();
+				core.setCoreLoad(new CoreLoad(core.getCoreLoad().getValue() + percentageCores));
 			} 
 			
 			//increase core load
-//			Collections2.transform(corestoFill, new Function<CoreType, CoreType>(){
-//	            @Override public CoreType apply(final CoreType input){
+//			Collections2.transform(corestoFill, new Function<Core, Core>(){
+//	            @Override public Core apply(final Core input){
 //	            	log.debug("increase core");
 //	            	input.setCoreLoad(input.getCoreLoad() + percentageCores);
 //	            	
@@ -499,14 +499,14 @@ public class Utils {
 		
 		//increment the memory usage on the mainboard
 		if(myMainboard.getMemoryUsage() != null)
-			myMainboard.setMemoryUsage(new MemoryUsageType(myMainboard.getMemoryUsage().getValue() + WL.getActualMemoryUsage().getValue()));
+			myMainboard.setMemoryUsage(new MemoryUsage(myMainboard.getMemoryUsage().getValue() + WL.getActualMemoryUsage().getValue()));
 
 		// commented because 1. disk usage as no real impact on energy consumption 2. these is no disk usage field in HD.
-//		List<StorageUnitType> storages = Utils.getAllStorages(toServer);
+//		List<StorageUnit> storages = Utils.getAllStorages(toServer);
 //		
 //		//get the disks big enough
-//		List<StorageUnitType> freeDisks = (List<StorageUnitType>) Collections2.filter( storages, new Predicate<StorageUnitType>() { 
-//	        @Override public boolean apply(StorageUnitType storage) { return storage.getStorageCapacity() <=  WL.getActualStorageUsage(); }               
+//		List<StorageUnit> freeDisks = (List<StorageUnit>) Collections2.filter( storages, new Predicate<StorageUnit>() { 
+//	        @Override public boolean apply(StorageUnit storage) { return storage.getStorageCapacity() <=  WL.getActualStorageUsage(); }               
 //	    });		
 //		
 //		//increment first disk size
@@ -551,11 +551,11 @@ public class Utils {
 	 * finds a workload name by its ID
 	 * 
 	 */
-	public static VirtualMachineType findVirtualMachineByName(List<VirtualMachineType> VMs, final String frameworkID) {
+	public static VirtualMachine findVirtualMachineByName(List<VirtualMachine> VMs, final String frameworkID) {
 		
-		Iterator<VirtualMachineType> it = VMs.iterator();
-		Predicate<VirtualMachineType> isID = new Predicate<VirtualMachineType>() {
-	        @Override public boolean apply(VirtualMachineType s) {
+		Iterator<VirtualMachine> it = VMs.iterator();
+		Predicate<VirtualMachine> isID = new Predicate<VirtualMachine>() {
+	        @Override public boolean apply(VirtualMachine s) {
 	            return s.getFrameworkID().equals(frameworkID);
 	        }               
 	    };
@@ -563,7 +563,7 @@ public class Utils {
 		return Iterators.find(it, isID);		
 	}
 	
-	public static VirtualMachineType findVirtualMachineByName(FIT4GreenType model, final String frameworkID) {
+	public static VirtualMachine findVirtualMachineByName(FIT4Green model, final String frameworkID) {
 		return findVirtualMachineByName(Utils.getAllVMs(model), frameworkID);
 	}
 	
@@ -599,9 +599,9 @@ public class Utils {
     /**
      * retrieve all network devices
      */
-    public static List<NetworkNodeType> getAllNetworkDeviceNodes(FIT4GreenType f4g) {
-        List<NetworkNodeType> nodes = new ArrayList<NetworkNodeType>();
-        for(SiteType s : f4g.getSite()){
+    public static List<NetworkNode> getAllNetworkDeviceNodes(FIT4Green f4g) {
+        List<NetworkNode> nodes = new ArrayList<NetworkNode>();
+        for(Site s : f4g.getSite()){
             nodes.addAll(getAllNetworkDeviceNodes(s));
         }
         return nodes;
@@ -613,10 +613,10 @@ public class Utils {
      *
      * @author rlent
      */
-    public static List<NetworkNodeType> getAllNetworkDeviceNodes(SiteType site) {
+    public static List<NetworkNode> getAllNetworkDeviceNodes(Site site) {
         
-        List<NetworkNodeType> nodes = new ArrayList<NetworkNodeType>();
-        for(DatacenterType dc : site.getDatacenter()){
+        List<NetworkNode> nodes = new ArrayList<NetworkNode>();
+        for(Datacenter dc : site.getDatacenter()){
             nodes.addAll(getAllNetworkDeviceNodes(dc));
         }
         return nodes;
@@ -629,16 +629,16 @@ public class Utils {
      *
      * @author rlent
      */
-    public static List<NetworkNodeType> getAllNetworkDeviceNodes(DatacenterType datacenter) {
+    public static List<NetworkNode> getAllNetworkDeviceNodes(Datacenter datacenter) {
         
-        ArrayList<NetworkNodeType> networkNodes = new ArrayList<NetworkNodeType>();
+        ArrayList<NetworkNode> networkNodes = new ArrayList<NetworkNode>();
         
         // add Racked Network
-        for(RackType rack : datacenter.getRack())
+        for(Rack rack : datacenter.getRack())
             networkNodes.addAll(rack.getRackableRouter());
         
         // add Racked Network
-        for(RackType rack : datacenter.getRack())
+        for(Rack rack : datacenter.getRack())
             networkNodes.addAll(rack.getRackableSwitch());
         
         // add BoxRouters
@@ -651,11 +651,11 @@ public class Utils {
     }
     
     
-    public static SiteType getNetworkSite(NetworkNodeType netdev, FIT4GreenType model) {
+    public static Site getNetworkSite(NetworkNode netdev, FIT4Green model) {
         
-        for(SiteType site : model.getSite()) {
+        for(Site site : model.getSite()) {
             
-            for(NetworkNodeType mynetdev : getAllNetworkDeviceNodes(site))
+            for(NetworkNode mynetdev : getAllNetworkDeviceNodes(site))
                 if (mynetdev.getFrameworkID().equals(netdev.getFrameworkID()))
                     return site;
             
@@ -664,16 +664,16 @@ public class Utils {
         return null;
     }
     
-    public static List<NetworkNodeType> getAttachedSwitches(ServerType server, FIT4GreenType model) {
+    public static List<NetworkNode> getAttachedSwitches(Server server, FIT4Green model) {
         
-        ArrayList<NetworkNodeType> swlist = new ArrayList<NetworkNodeType>();
+        ArrayList<NetworkNode> swlist = new ArrayList<NetworkNode>();
         
-        for(MainboardType mainboard : server.getMainboard()) {
-            for (NICType nic : mainboard.getEthernetNIC()) {
-                for (NetworkPortType port : nic.getNetworkPort()) {
+        for(Mainboard mainboard : server.getMainboard()) {
+            for (NIC nic : mainboard.getEthernetNIC()) {
+                for (NetworkPort port : nic.getNetworkPort()) {
                     try {
                         String swid = (String) port.getNetworkPortRef();
-                        NetworkNodeType sw = findNetworkNodeByName(model, swid);
+                        NetworkNode sw = findNetworkNodeByName(model, swid);
                         swlist.add(sw);
                     }
                     catch (NoSuchElementException e) {
@@ -690,11 +690,11 @@ public class Utils {
 	 * finds a network device by ID
 	 * 
 	 */
-	public static NetworkNodeType findNetworkNodeByName(FIT4GreenType f4g, final String frameWorkID) {
+	public static NetworkNode findNetworkNodeByName(FIT4Green f4g, final String frameWorkID) {
 		
-		Iterator<NetworkNodeType> it = Utils.getAllNetworkDeviceNodes(f4g).iterator();
-		Predicate<NetworkNodeType> isID = new Predicate<NetworkNodeType>() {
-	        @Override public boolean apply(NetworkNodeType s) {
+		Iterator<NetworkNode> it = Utils.getAllNetworkDeviceNodes(f4g).iterator();
+		Predicate<NetworkNode> isID = new Predicate<NetworkNode>() {
+	        @Override public boolean apply(NetworkNode s) {
 	            return s.getFrameworkID().equals(frameWorkID);
 	        }               
 	    };
@@ -710,11 +710,11 @@ public class Utils {
 	 * finds a server name by its ID
 	 * throws NoSuchElementException if not found
 	 */
-	public static ServerType findServerByName(FIT4GreenType f4g, final String frameWorkID) throws NoSuchElementException{
+	public static Server findServerByName(FIT4Green f4g, final String frameWorkID) throws NoSuchElementException{
 		
-		Iterator<ServerType> it = Utils.getAllServers(f4g).iterator();
-		Predicate<ServerType> isID = new Predicate<ServerType>() {
-	        @Override public boolean apply(ServerType s) {
+		Iterator<Server> it = Utils.getAllServers(f4g).iterator();
+		Predicate<Server> isID = new Predicate<Server>() {
+	        @Override public boolean apply(Server s) {
 	            return s.getFrameworkID().equals(frameWorkID);
 	        }               
 	    };
@@ -727,8 +727,8 @@ public class Utils {
 	 * get the servers in a cluster
 	 * 
 	 */
-	public static List<ServerType> getNodesInCluster(Cluster c, FIT4GreenType model) {
-		List<ServerType> servers = new ArrayList<ServerType>();
+	public static List<Server> getNodesInCluster(Cluster c, FIT4Green model) {
+		List<Server> servers = new ArrayList<Server>();
 		for (String nodeName : c.getNodeController().getNodeName()) {
 			try {
 				servers.add(Utils.findServerByName(model, nodeName));
@@ -791,8 +791,8 @@ public class Utils {
 //		return vms;
 //	}
 //	
-	public static List<ServerType> getAllServersInFederation(FederationType fed, final FIT4GreenType f4g) {
-		List<ServerType> serversInFed = new ArrayList<ServerType>();
+	public static List<Server> getAllServersInFederation(FederationType fed, final FIT4Green f4g) {
+		List<Server> serversInFed = new ArrayList<Server>();
 		for (BoundedClustersType.Cluster bc : fed.getBoundedCluster().getCluster()) {
 			ClusterType.Cluster c = bc.getIdref();
 			serversInFed.addAll(getServersInCluster(c, f4g));
@@ -801,12 +801,12 @@ public class Utils {
 		
 	}
 	
-	public static List<ServerType> getServersInCluster(ClusterType.Cluster cluster, final FIT4GreenType f4g) {
-		List<ServerType> serversInCluster = new ArrayList<ServerType>();
+	public static List<Server> getServersInCluster(ClusterType.Cluster cluster, final FIT4Green f4g) {
+		List<Server> serversInCluster = new ArrayList<Server>();
 
 		for (String name : cluster.getNodeController().getNodeName()) {
 			try {
-				ServerType s = Utils.findServerByName(f4g, name);
+				Server s = Utils.findServerByName(f4g, name);
 				serversInCluster.add(s);
 			} catch (NoSuchElementException e) {
 				log.warn("Server " + name + " from cluster " + cluster.getName() + " not found");
@@ -816,9 +816,9 @@ public class Utils {
 		return serversInCluster;
 	}
 	
-	public static boolean isOffServers(FIT4GreenType f4g) {
-		for(ServerType s : getAllServers(f4g)) {
-			if(s.getStatus() == ServerStatusType.OFF) {
+	public static boolean isOffServers(FIT4Green f4g) {
+		for(Server s : getAllServers(f4g)) {
+			if(s.getStatus() == ServerStatus.OFF) {
 				return true;
 			}
 		}
@@ -827,11 +827,11 @@ public class Utils {
 	}
 	
 	//TODO simplified versions of accessors
-	public static FrequencyType getCPUFrequency(ServerType server) {
+	public static Frequency getCPUFrequency(Server server) {
 		return server.getMainboard().get(0).getCPU().get(0).getCore().get(0).getFrequency();
 	}
 	
-	public static Optional<FrequencyType> getGPUFrequency(ServerType server) {
+	public static Optional<Frequency> getGPUFrequency(Server server) {
 		if(server.getMainboard().get(0).getGPU() != null) {
 			return Optional.of(server.getMainboard().get(0).getGPU().get(0).getCoreFrequency());
 		} else {
@@ -840,11 +840,11 @@ public class Utils {
 		
 	}
 	
-	public static StorageCapacityType getHDDCapacty(ServerType server) {
+	public static StorageCapacity getHDDCapacty(Server server) {
 		return server.getMainboard().get(0).getHardDisk().get(0).getStorageCapacity();
 	}
 	
-	public static Optional<RAIDLevelType> getRAIDLevel(ServerType server) {
+	public static Optional<RAIDLevel> getRAIDLevel(Server server) {
 		if(server.getMainboard().get(0).getHardwareRAID().get(0) != null) {
 			return Optional.of(server.getMainboard().get(0).getHardwareRAID().get(0).getLevel());
 		} else {
@@ -852,7 +852,7 @@ public class Utils {
 		}
 	}
 	
-	public static Optional<BandwidthType> getBandwidth(ServerType server) {
+	public static Optional<Bandwidth> getBandwidth(Server server) {
 		if(server.getMainboard().get(0).getEthernetNIC().get(0).getProcessingBandwidth() != null) {
 			return Optional.of(server.getMainboard().get(0).getEthernetNIC().get(0).getProcessingBandwidth());
 		} else {

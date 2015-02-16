@@ -31,8 +31,8 @@
 //import f4g.schemas.java.constraints.optimizerconstraints.Spread;
 //import f4g.schemas.java.constraints.optimizerconstraints.VMGroup;
 //import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
-//import f4g.schemas.java.metamodel.FIT4GreenType;
-//import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint;
+//import f4g.schemas.java.metamodel.FIT4Green;
+//import f4g.schemas.java.constraints.optimizerconstraints.Constraint.PlacementConstraint;
 //
 //import org.btrplace.model.Node;
 //import org.btrplace.model.VM;
@@ -48,7 +48,7 @@
 //	private Mapping src;
 //	private ServerGroupType sg;
 //
-//	public PlacementConstraintFactory(Mapping src, FIT4GreenType model,
+//	public PlacementConstraintFactory(Mapping src, FIT4Green model,
 //			ServerGroupType serverGroup) {
 //		Logger.getLogger(this.getClass().getName());
 //		v = new LinkedList<SatConstraint>();
@@ -188,7 +188,7 @@
 //				}
 //
 //				// get all bounded SLAs and add constraints to vjob
-//				for (f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraintType.PlacementConstraint s : serverG
+//				for (f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraint.PlacementConstraint s : serverG
 //						.getBoundedPlacementConstraints()
 //						.getPlacementConstraint()) {
 //					if (vms.size() > 0 && nodes.size() > 0)
