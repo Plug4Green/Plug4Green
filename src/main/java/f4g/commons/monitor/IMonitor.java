@@ -5,10 +5,10 @@ import java.util.HashMap;
 import f4g.commons.com.ICom;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.com.util.PowerData;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.FrameworkStatusType;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.FrameworkStatus;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
 
 /**
  * 
@@ -30,7 +30,7 @@ public interface IMonitor {
 	 * @return a ResourceAllocationResponse object containing the results of the allocation
 	 * request
 	 */
-	public AllocationResponseType allocateResource(AllocationRequestType allocationRequest);
+	public AllocationResponse allocateResource(AllocationRequest allocationRequest);
 	
 	/**
 	 * Method for requesting a global optimization to the Optimizer.
@@ -75,7 +75,7 @@ public interface IMonitor {
 	 * Allows to get a deep copy of the f4g model
 	 * @return the object representation of the f4g model
 	 */
-	public FIT4GreenType getModelCopy();
+	public FIT4Green getModelCopy();
 	
 	/**
 	 * Allows to get a deep copy of the subset of the f4g model related to a com
@@ -119,6 +119,6 @@ public interface IMonitor {
 	 */
 	public PowerData getComputedPower();
 	
-	public void setFrameworkStatus (String frameworkName, FrameworkStatusType status);
+	public void setFrameworkStatus (String frameworkName, FrameworkStatus status);
 
 }

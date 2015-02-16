@@ -38,41 +38,41 @@ import f4g.schemas.java.NonNegativeInteger;
 import f4g.schemas.java.NonPositiveInteger;
 import f4g.schemas.java.PositiveInteger;
 import f4g.schemas.java.UnsignedLong;
-import f4g.schemas.java.actions.ActionRequestType;
-import f4g.schemas.java.actions.ActionRequestType.ActionList;
-import f4g.schemas.java.actions.LiveMigrateVMActionType;
-import f4g.schemas.java.actions.MoveVMActionType;
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.actions.StandByActionType;
-import f4g.schemas.java.actions.StartJobActionType;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
-import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
-import f4g.schemas.java.allocation.CloudVmAllocationType;
-import f4g.schemas.java.allocation.HpcClusterAllocationResponseType;
-import f4g.schemas.java.allocation.HpcClusterAllocationType;
-import f4g.schemas.java.allocation.TraditionalVmAllocationResponseType;
-import f4g.schemas.java.allocation.TraditionalVmAllocationType;
-import f4g.schemas.java.commontypes.ActionResultCodeType;
-import f4g.schemas.java.commontypes.ActionResultDescriptionType;
-import f4g.schemas.java.commontypes.JobIDType;
-import f4g.schemas.java.commontypes.MinutesType;
-import f4g.schemas.java.commontypes.NodeType10;
-import f4g.schemas.java.commontypes.OperatorType;
-import f4g.schemas.java.commontypes.ProcessorFrequencyType;
-import f4g.schemas.java.commontypes.ReasonType;
-import f4g.schemas.java.commontypes.RequestDateTimeType;
-import f4g.schemas.java.commontypes.SecondsType;
-import f4g.schemas.java.commontypes.TimeperiodType;
-import f4g.schemas.java.commontypes.VersionType;
-import f4g.schemas.java.commontypes.VirtualMachineDumpType;
-import f4g.schemas.java.commontypes.VirtualMachineIDType;
+import f4g.schemas.java.actions.ActionRequest;
+import f4g.schemas.java.actions.ActionRequest.ActionList;
+import f4g.schemas.java.actions.LiveMigrateVMAction;
+import f4g.schemas.java.actions.MoveVMAction;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.actions.StandByAction;
+import f4g.schemas.java.actions.StartJobAction;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
+import f4g.schemas.java.allocation.CloudVmAllocationResponse;
+import f4g.schemas.java.allocation.CloudVmAllocation;
+import f4g.schemas.java.allocation.HpcClusterAllocationResponse;
+import f4g.schemas.java.allocation.HpcClusterAllocation;
+import f4g.schemas.java.allocation.TraditionalVmAllocationResponse;
+import f4g.schemas.java.allocation.TraditionalVmAllocation;
+import f4g.schemas.java.commontypes.ActionResultCode;
+import f4g.schemas.java.commontypes.ActionResultDescription;
+import f4g.schemas.java.commontypes.JobID;
+import f4g.schemas.java.commontypes.Minutes;
+import f4g.schemas.java.commontypes.Node10;
+import f4g.schemas.java.commontypes.Operator;
+import f4g.schemas.java.commontypes.ProcessorFrequency;
+import f4g.schemas.java.commontypes.Reason;
+import f4g.schemas.java.commontypes.RequestDateTime;
+import f4g.schemas.java.commontypes.Seconds;
+import f4g.schemas.java.commontypes.Timeperiod;
+import f4g.schemas.java.commontypes.Version;
+import f4g.schemas.java.commontypes.VirtualMachineDump;
+import f4g.schemas.java.commontypes.VirtualMachineID;
 import f4g.schemas.java.constraints.optimizerconstraints.Ban;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType.Cluster;
-import f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraintType;
-import f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraintType.PlacementConstraint;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraint;
+import f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraint.PlacementConstraint;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType.Policy;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedSLAsType;
@@ -80,10 +80,10 @@ import f4g.schemas.java.constraints.optimizerconstraints.BoundedSLAsType.SLA;
 import f4g.schemas.java.constraints.optimizerconstraints.Capacity;
 import f4g.schemas.java.constraints.optimizerconstraints.CapacityType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
-import f4g.schemas.java.constraints.optimizerconstraints.ConstraintType;
+import f4g.schemas.java.constraints.optimizerconstraints.Constraint;
 import f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType;
 import f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType.MaxPowerServer;
-import f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoad;
 import f4g.schemas.java.constraints.optimizerconstraints.FIT4GreenOptimizerConstraint;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
 import f4g.schemas.java.constraints.optimizerconstraints.Fence;
@@ -96,10 +96,10 @@ import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType
 import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.NbOfCores;
 import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.NbOfGPUCores;
 import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.RAIDLevel;
-import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.Load;
 import f4g.schemas.java.constraints.optimizerconstraints.Lonely;
-import f4g.schemas.java.constraints.optimizerconstraints.NodeControllerType;
-import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.NodeController;
+import f4g.schemas.java.constraints.optimizerconstraints.Period;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.Bandwidth;
@@ -124,12 +124,12 @@ import f4g.schemas.java.constraints.optimizerconstraints.Spread;
 import f4g.schemas.java.constraints.optimizerconstraints.VMGroup;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType.VMType;
-import f4g.schemas.java.constraints.placement.DCType;
-import f4g.schemas.java.constraints.placement.FIT4GreenConstraintType;
+import f4g.schemas.java.constraints.placement.DC;
+import f4g.schemas.java.constraints.placement.FIT4GreenConstraint;
 import f4g.schemas.java.constraints.placement.OneOf;
-import f4g.schemas.java.constraints.placement.TSType;
-import f4g.schemas.java.loadpatterns.LoadPatternType;
-import f4g.schemas.java.loadpatterns.LoadPatternsType;
+import f4g.schemas.java.constraints.placement.TS;
+import f4g.schemas.java.loadpatterns.LoadPattern;
+import f4g.schemas.java.loadpatterns.LoadPatterns;
 import f4g.schemas.java.metamodel.*;
 
 
@@ -182,100 +182,100 @@ public class PowerCalculatorTraverser {
 
 		
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.ATMType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.ATM)
 		 */
 		@Override
-		public void visit(ATMType aBean) {
+		public void visit(ATM aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BladeServerType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BladeServer)
 		 */
 		@Override
-		public void visit(BladeServerType aBean) {
-			visit((ServerType)aBean);
+		public void visit(BladeServer aBean) {
+			visit((Server)aBean);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BoxNetworkType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BoxNetwork)
 		 */
 		@Override
-		public void visit(BoxNetworkType aBean) {
+		public void visit(BoxNetwork aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BoxRouterType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BoxRouter)
 		 */
 		@Override
-		public void visit(BoxRouterType aBean) {
+		public void visit(BoxRouter aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BoxSwitchType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BoxSwitch)
 		 */
 		@Override
-		public void visit(BoxSwitchType aBean) {
+		public void visit(BoxSwitch aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CPUType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CPU)
 		 */
 		@Override
-		public void visit(CPUType aBean) {
+		public void visit(CPU aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CacheType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Cache)
 		 */
 		@Override
-		public void visit(CacheType aBean) {
+		public void visit(Cache aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.ClusterManagementType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.ClusterManagement)
 		 */
 		@Override
-		public void visit(ClusterManagementType aBean) {
+		public void visit(ClusterManagement aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CoolingSystemType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CoolingSystem)
 		 */
 		@Override
-		public void visit(CoolingSystemType aBean) {
+		public void visit(CoolingSystem aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CoreType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Core)
 		 */
 		@Override
-		public void visit(CoreType aBean) {
+		public void visit(Core aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.DatacenterType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Datacenter)
 		 */
 		@Override
-		public void visit(DatacenterType aBean) {
+		public void visit(Datacenter aBean) {
 			setPower(0.0);
 			
 		}
@@ -292,345 +292,345 @@ public class PowerCalculatorTraverser {
 
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.EnclosureType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Enclosure)
 		 */
 		@Override
-		public void visit(EnclosureType aBean) {
+		public void visit(Enclosure aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.EthernetType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Ethernet)
 		 */
 		@Override
-		public void visit(EthernetType aBean) {
+		public void visit(Ethernet aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FIT4GreenType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FIT4Green)
 		 */
 		@Override
-		public void visit(FIT4GreenType aBean) {
+		public void visit(FIT4Green aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FanType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Fan)
 		 */
 		@Override
-		public void visit(FanType aBean) {
+		public void visit(Fan aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FileSystemType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FileSystem)
 		 */
 		@Override
-		public void visit(FileSystemType aBean) {
+		public void visit(FileSystem aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FlowType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Flow)
 		 */
 		@Override
-		public void visit(FlowType aBean) {
+		public void visit(Flow aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FrameworkCapabilitiesType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FrameworkCapabilities)
 		 */
 		@Override
-		public void visit(FrameworkCapabilitiesType aBean) {
+		public void visit(FrameworkCapabilities aBean) {
 			setPower(0.0);
 			
 		}
 
 		
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.HardDiskType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.HardDisk)
 		 */
 		@Override
-		public void visit(HardDiskType aBean) {
+		public void visit(HardDisk aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.HardwareRAIDType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.HardwareRAID)
 		 */
 		@Override
-		public void visit(HardwareRAIDType aBean) {
+		public void visit(HardwareRAID aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.HostedHypervisorType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.HostedHypervisor)
 		 */
 		@Override
-		public void visit(HostedHypervisorType aBean) {
+		public void visit(HostedHypervisor aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.HostedOperatingSystemType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.HostedOperatingSystem)
 		 */
 		@Override
-		public void visit(HostedOperatingSystemType aBean) {
+		public void visit(HostedOperatingSystem aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.JobActionsType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.JobActions)
 		 */
 		@Override
-		public void visit(JobActionsType aBean) {
+		public void visit(JobActions aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.JobType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Job)
 		 */
 		@Override
-		public void visit(JobType aBean) {
+		public void visit(Job aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.LinkType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Link)
 		 */
 		@Override
-		public void visit(LinkType aBean) {
+		public void visit(Link aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.MainboardType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Mainboard)
 		 */
 		@Override
-		public void visit(MainboardType aBean) {
+		public void visit(Mainboard aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NICType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NIC)
 		 */
 		@Override
-		public void visit(NICType aBean) {
+		public void visit(NIC aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NativeHypervisorType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NativeHypervisor)
 		 */
 		@Override
-		public void visit(NativeHypervisorType aBean) {
+		public void visit(NativeHypervisor aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NativeOperatingSystemType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NativeOperatingSystem)
 		 */
 		@Override
-		public void visit(NativeOperatingSystemType aBean) {
+		public void visit(NativeOperatingSystem aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkLoadType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkLoad)
 		 */
 		@Override
-		public void visit(NetworkLoadType aBean) {
+		public void visit(NetworkLoad aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkNodeType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkNode)
 		 */
 		@Override
-		public void visit(NetworkNodeType aBean) {
+		public void visit(NetworkNode aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkPortType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkPort)
 		 */
 		@Override
-		public void visit(NetworkPortType aBean) {
+		public void visit(NetworkPort aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NodeType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Node)
 		 */
 		@Override
-		public void visit(NodeType aBean) {
+		public void visit(Node aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.OperatingSystemType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.OperatingSystem)
 		 */
 		@Override
-		public void visit(OperatingSystemType aBean) {
+		public void visit(OperatingSystem aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.OpticalFDDIType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.OpticalFDDI)
 		 */
 		@Override
-		public void visit(OpticalFDDIType aBean) {
+		public void visit(OpticalFDDI aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PDUType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PDU)
 		 */
 		@Override
-		public void visit(PDUType aBean) {
+		public void visit(PDU aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PSUType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PSU)
 		 */
 		@Override
-		public void visit(PSUType aBean) {
+		public void visit(PSU aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.QueueType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Queue)
 		 */
 		@Override
-		public void visit(QueueType aBean) {
+		public void visit(Queue aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RAIDType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RAID)
 		 */
 		@Override
-		public void visit(RAIDType aBean) {
+		public void visit(RAID aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RAMStickType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RAMStick)
 		 */
 		@Override
-		public void visit(RAMStickType aBean) {
+		public void visit(RAMStick aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RackType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Rack)
 		 */
 		@Override
-		public void visit(RackType aBean) {
+		public void visit(Rack aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RackableNetworkType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RackableNetwork)
 		 */
 		@Override
-		public void visit(RackableNetworkType aBean) {
+		public void visit(RackableNetwork aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RackableRouterType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RackableRouter)
 		 */
 		@Override
-		public void visit(RackableRouterType aBean) {
+		public void visit(RackableRouter aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RackableServerType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RackableServer)
 		 */
 		@Override
-		public void visit(RackableServerType aBean) {
-			visit((ServerType)aBean);
+		public void visit(RackableServer aBean) {
+			visit((Server)aBean);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RackableSwitchType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RackableSwitch)
 		 */
 		@Override
-		public void visit(RackableSwitchType aBean) {
+		public void visit(RackableSwitch aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RoleType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Role)
 		 */
 		@Override
-		public void visit(RoleType aBean) {
+		public void visit(Role aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SANType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SAN)
 		 */
 		@Override
-		public void visit(SANType aBean) {
+		public void visit(SAN aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SerialPPPType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SerialPPP)
 		 */
 		@Override
-		public void visit(SerialPPPType aBean) {
+		public void visit(SerialPPP aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.ServerType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Server)
 		 */
 		@Override
-		public void visit(ServerType aBean) {
-			if(aBean.getStatus() == ServerStatusType.ON) {
+		public void visit(Server aBean) {
+			if(aBean.getStatus() == ServerStatus.ON) {
 				setPower(10.0);	
 			}
 			else
@@ -638,181 +638,181 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SiteType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Site)
 		 */
 		@Override
-		public void visit(SiteType aBean) {
+		public void visit(Site aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SoftwareApplicationType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SoftwareApplication)
 		 */
 		@Override
-		public void visit(SoftwareApplicationType aBean) {
+		public void visit(SoftwareApplication aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SoftwareNetworkType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SoftwareNetwork)
 		 */
 		@Override
-		public void visit(SoftwareNetworkType aBean) {
+		public void visit(SoftwareNetwork aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SoftwareRAIDType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SoftwareRAID)
 		 */
 		@Override
-		public void visit(SoftwareRAIDType aBean) {
+		public void visit(SoftwareRAID aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SolidStateDiskType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SolidStateDisk)
 		 */
 		@Override
-		public void visit(SolidStateDiskType aBean) {
+		public void visit(SolidStateDisk aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.StorageUnitType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.StorageUnit)
 		 */
 		@Override
-		public void visit(StorageUnitType aBean) {
+		public void visit(StorageUnit aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.TowerServerType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.TowerServer)
 		 */
 		@Override
-		public void visit(TowerServerType aBean) {
-			visit((ServerType)aBean);
+		public void visit(TowerServer aBean) {
+			visit((Server)aBean);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.TunnelType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Tunnel)
 		 */
 		@Override
-		public void visit(TunnelType aBean) {
+		public void visit(Tunnel aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.VMActionsType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.VMActions)
 		 */
 		@Override
-		public void visit(VMActionsType aBean) {
+		public void visit(VMActions aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.VPNType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.VPN)
 		 */
 		@Override
-		public void visit(VPNType aBean) {
+		public void visit(VPN aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.VirtualMachineType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.VirtualMachine)
 		 */
 		@Override
-		public void visit(VirtualMachineType aBean) {
+		public void visit(VirtualMachine aBean) {
 			setPower(1.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.WaterCoolerType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.WaterCooler)
 		 */
 		@Override
-		public void visit(WaterCoolerType aBean) {
+		public void visit(WaterCooler aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BandwidthType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Bandwidth)
 		 */
 		@Override
-		public void visit(BandwidthType aBean) {
+		public void visit(Bandwidth aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BitErrorRateType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BitErrorRate)
 		 */
 		@Override
-		public void visit(BitErrorRateType aBean) {
+		public void visit(BitErrorRate aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CUEType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CUE)
 		 */
 		@Override
-		public void visit(CUEType aBean) {
+		public void visit(CUE aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CacheLevelType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CacheLevel)
 		 */
 		@Override
-		public void visit(CacheLevelType aBean) {
+		public void visit(CacheLevel aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CoreLoadType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CoreLoad)
 		 */
 		@Override
-		public void visit(CoreLoadType aBean) {
+		public void visit(CoreLoad aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CpuUsageType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.CpuUsage)
 		 */
 		@Override
-		public void visit(CpuUsageType aBean) {
+		public void visit(CpuUsage aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.DimensionType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Dimension)
 		 */
 		@Override
-		public void visit(DimensionType aBean) {
+		public void visit(Dimension aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.EfficiencyType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Efficiency)
 		 */
 		@Override
-		public void visit(EfficiencyType aBean) {
+		public void visit(Efficiency aBean) {
 			setPower(0.0);
 			
 		}
@@ -827,338 +827,338 @@ public class PowerCalculatorTraverser {
 //		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FileSystemFragmentationType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FileSystemFragmentation)
 		 */
 		@Override
-		public void visit(FileSystemFragmentationType aBean) {
+		public void visit(FileSystemFragmentation aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FileSystemSpaceType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FileSystemSpace)
 		 */
 		@Override
-		public void visit(FileSystemSpaceType aBean) {
+		public void visit(FileSystemSpace aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.FrequencyType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Frequency)
 		 */
 		@Override
-		public void visit(FrequencyType aBean) {
+		public void visit(Frequency aBean) {
 			setPower(0.0);
 			
 		}
 
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.IntPercentType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.IntPercent)
 		 */
 		@Override
-		public void visit(IntPercentType aBean) {
+		public void visit(IntPercent aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.IoRateType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.IoRate)
 		 */
 		@Override
-		public void visit(IoRateType aBean) {
+		public void visit(IoRate aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.JobLimitType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.JobLimit)
 		 */
 		@Override
-		public void visit(JobLimitType aBean) {
+		public void visit(JobLimit aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.JobPriorityType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.JobPriority)
 		 */
 		@Override
-		public void visit(JobPriorityType aBean) {
+		public void visit(JobPriority aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.JobTimeType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.JobTime)
 		 */
 		@Override
-		public void visit(JobTimeType aBean) {
+		public void visit(JobTime aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.LUNType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.LUN)
 		 */
 		@Override
-		public void visit(LUNType aBean) {
+		public void visit(LUN aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.LithographyType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Lithography)
 		 */
 		@Override
-		public void visit(LithographyType aBean) {
+		public void visit(Lithography aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.LocationType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Location)
 		 */
 		@Override
-		public void visit(LocationType aBean) {
+		public void visit(Location aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.LogicalUnitType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.LogicalUnit)
 		 */
 		@Override
-		public void visit(LogicalUnitType aBean) {
+		public void visit(LogicalUnit aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.MemoryUsageType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.MemoryUsage)
 		 */
 		@Override
-		public void visit(MemoryUsageType aBean) {
+		public void visit(MemoryUsage aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkPortBufferOccupancyType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkPortBufferOccupancy)
 		 */
 		@Override
-		public void visit(NetworkPortBufferOccupancyType aBean) {
+		public void visit(NetworkPortBufferOccupancy aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkPortBufferSizeType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkPortBufferSize)
 		 */
 		@Override
-		public void visit(NetworkPortBufferSizeType aBean) {
+		public void visit(NetworkPortBufferSize aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkTrafficType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkTraffic)
 		 */
 		@Override
-		public void visit(NetworkTrafficType aBean) {
+		public void visit(NetworkTraffic aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkUsageType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NetworkUsage)
 		 */
 		@Override
-		public void visit(NetworkUsageType aBean) {
+		public void visit(NetworkUsage aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfCoresType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfCores)
 		 */
 		@Override
-		public void visit(NrOfCoresType aBean) {
+		public void visit(NrOfCores aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfCpusType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfCpus)
 		 */
 		@Override
-		public void visit(NrOfCpusType aBean) {
-			setPower(0.0);
-			
-		}
-
-		
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfLinksType)
-		 */
-		@Override
-		public void visit(NrOfLinksType aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfNodesType)
-		 */
-		@Override
-		public void visit(NrOfNodesType aBean) {
+		public void visit(NrOfCpus aBean) {
 			setPower(0.0);
 			
 		}
 
 		
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfPlugsType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfLinks)
 		 */
 		@Override
-		public void visit(NrOfPlugsType aBean) {
+		public void visit(NrOfLinks aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfPortsType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfNodes)
 		 */
 		@Override
-		public void visit(NrOfPortsType aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfPstatesType)
-		 */
-		@Override
-		public void visit(NrOfPstatesType aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfTransistorsType)
-		 */
-		@Override
-		public void visit(NrOfTransistorsType aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PSULoadType)
-		 */
-		@Override
-		public void visit(PSULoadType aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PUEType)
-		 */
-		@Override
-		public void visit(PUEType aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PowerType)
-		 */
-		@Override
-		public void visit(PowerType aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PropagationDelayType)
-		 */
-		@Override
-		public void visit(PropagationDelayType aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.QueuePriorityType)
-		 */
-		@Override
-		public void visit(QueuePriorityType aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RAIDLevelType)
-		 */
-		@Override
-		public void visit(RAIDLevelType aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RAMSizeType)
-		 */
-		@Override
-		public void visit(RAMSizeType aBean) {
-			setPower(0.0);
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RPMType)
-		 */
-		@Override
-		public void visit(RPMType aBean) {
+		public void visit(NrOfNodes aBean) {
 			setPower(0.0);
 			
 		}
 
 		
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.StorageCapacityType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfPlugs)
 		 */
 		@Override
-		public void visit(StorageCapacityType aBean) {
+		public void visit(NrOfPlugs aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.StorageUsageType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfPorts)
 		 */
 		@Override
-		public void visit(StorageUsageType aBean) {
+		public void visit(NrOfPorts aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SwitchFabricType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfPstates)
 		 */
 		@Override
-		public void visit(SwitchFabricType aBean) {
+		public void visit(NrOfPstates aBean) {
+			setPower(0.0);
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NrOfTransistors)
+		 */
+		@Override
+		public void visit(NrOfTransistors aBean) {
+			setPower(0.0);
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PSULoad)
+		 */
+		@Override
+		public void visit(PSULoad aBean) {
+			setPower(0.0);
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PUE)
+		 */
+		@Override
+		public void visit(PUE aBean) {
+			setPower(0.0);
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Power)
+		 */
+		@Override
+		public void visit(Power aBean) {
+			setPower(0.0);
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.PropagationDelay)
+		 */
+		@Override
+		public void visit(PropagationDelay aBean) {
+			setPower(0.0);
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.QueuePriority)
+		 */
+		@Override
+		public void visit(QueuePriority aBean) {
+			setPower(0.0);
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RAIDLevel)
+		 */
+		@Override
+		public void visit(RAIDLevel aBean) {
+			setPower(0.0);
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RAMSize)
+		 */
+		@Override
+		public void visit(RAMSize aBean) {
+			setPower(0.0);
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RPM)
+		 */
+		@Override
+		public void visit(RPM aBean) {
+			setPower(0.0);
+			
+		}
+
+		
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.StorageCapacity)
+		 */
+		@Override
+		public void visit(StorageCapacity aBean) {
+			setPower(0.0);
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.StorageUsage)
+		 */
+		@Override
+		public void visit(StorageUsage aBean) {
+			setPower(0.0);
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.SwitchFabric)
+		 */
+		@Override
+		public void visit(SwitchFabric aBean) {
 			setPower(0.0);
 			
 		}
 
 			/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.VoltageType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Voltage)
 		 */
 		@Override
-		public void visit(VoltageType aBean) {
+		public void visit(Voltage aBean) {
 			setPower(0.0);
 			
 		}
@@ -1166,108 +1166,108 @@ public class PowerCalculatorTraverser {
 
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.OPType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.OP)
 		 */
 		@Override
-		public void visit(OPType aBean) {
+		public void visit(OP aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.StripSizeType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.StripSize)
 		 */
 		@Override
-		public void visit(StripSizeType aBean) {
+		public void visit(StripSize aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NodeActionsType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NodeActions)
 		 */
 		@Override
-		public void visit(NodeActionsType aBean) {
+		public void visit(NodeActions aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.ApplicationBenchmarkType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.ApplicationBenchmark)
 		 */
 		@Override
-		public void visit(ApplicationBenchmarkType aBean) {
+		public void visit(ApplicationBenchmark aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.IntAppRankType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.IntAppRank)
 		 */
 		@Override
-		public void visit(IntAppRankType aBean) {
+		public void visit(IntAppRank aBean) {
 			setPower(0.0);
 			
 		}
 
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.GPUType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.GPU)
 		 */
 		@Override
-		public void visit(GPUType aBean) {
+		public void visit(GPU aBean) {
 			setPower(0.0);
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BlockSizeType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.BlockSize)
 		 */
 		@Override
-		public void visit(BlockSizeType aBean) {
+		public void visit(BlockSize aBean) {
 			setPower(0.0);			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.ControllerType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Controller)
 		 */
 		@Override
-		public void visit(ControllerType aBean) {
+		public void visit(Controller aBean) {
 			setPower(0.0);			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.HitRatioType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.HitRatio)
 		 */
 		@Override
-		public void visit(HitRatioType aBean) {
-			setPower(0.0);			
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.LogicalVolumeType)
-		 */
-		@Override
-		public void visit(LogicalVolumeType aBean) {
+		public void visit(HitRatio aBean) {
 			setPower(0.0);			
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NASType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.LogicalVolume)
 		 */
 		@Override
-		public void visit(NASType aBean) {
+		public void visit(LogicalVolume aBean) {
 			setPower(0.0);			
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RAIDDiskType)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.NAS)
 		 */
 		@Override
-		public void visit(RAIDDiskType aBean) {
+		public void visit(NAS aBean) {
+			setPower(0.0);			
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RAIDDisk)
+		 */
+		@Override
+		public void visit(RAIDDisk aBean) {
 			setPower(0.0);			
 			
 		}
@@ -1390,16 +1390,16 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.ActionRequestType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.ActionRequest)
 		 */
 		@Override
-		public void visit(ActionRequestType aBean) {
+		public void visit(ActionRequest aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.ActionRequestType.ActionList)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.ActionRequest.ActionList)
 		 */
 		@Override
 		public void visit(ActionList aBean) {
@@ -1408,253 +1408,253 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.LiveMigrateVMActionType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.LiveMigrateVMAction)
 		 */
 		@Override
-		public void visit(LiveMigrateVMActionType aBean) {
+		public void visit(LiveMigrateVMAction aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.MoveVMActionType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.MoveVMAction)
 		 */
 		@Override
-		public void visit(MoveVMActionType aBean) {
+		public void visit(MoveVMAction aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.PowerOffActionType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.PowerOffAction)
 		 */
 		@Override
-		public void visit(PowerOffActionType aBean) {
+		public void visit(PowerOffAction aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.PowerOnActionType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.PowerOnAction)
 		 */
 		@Override
-		public void visit(PowerOnActionType aBean) {
+		public void visit(PowerOnAction aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.StandByActionType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.StandByAction)
 		 */
 		@Override
-		public void visit(StandByActionType aBean) {
+		public void visit(StandByAction aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.StartJobActionType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.actions.StartJobAction)
 		 */
 		@Override
-		public void visit(StartJobActionType aBean) {
+		public void visit(StartJobAction aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.AllocationRequestType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.AllocationRequest)
 		 */
 		@Override
-		public void visit(AllocationRequestType aBean) {
+		public void visit(AllocationRequest aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.AllocationResponseType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.AllocationResponse)
 		 */
 		@Override
-		public void visit(AllocationResponseType aBean) {
+		public void visit(AllocationResponse aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.CloudVmAllocationResponseType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.CloudVmAllocationResponse)
 		 */
 		@Override
-		public void visit(CloudVmAllocationResponseType aBean) {
+		public void visit(CloudVmAllocationResponse aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.CloudVmAllocationType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.CloudVmAllocation)
 		 */
 		@Override
-		public void visit(CloudVmAllocationType aBean) {
+		public void visit(CloudVmAllocation aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.HpcClusterAllocationResponseType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.HpcClusterAllocationResponse)
 		 */
 		@Override
-		public void visit(HpcClusterAllocationResponseType aBean) {
+		public void visit(HpcClusterAllocationResponse aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.HpcClusterAllocationType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.HpcClusterAllocation)
 		 */
 		@Override
-		public void visit(HpcClusterAllocationType aBean) {
+		public void visit(HpcClusterAllocation aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.TraditionalVmAllocationResponseType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.TraditionalVmAllocationResponse)
 		 */
 		@Override
-		public void visit(TraditionalVmAllocationResponseType aBean) {
+		public void visit(TraditionalVmAllocationResponse aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.TraditionalVmAllocationType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.TraditionalVmAllocation)
 		 */
 		@Override
-		public void visit(TraditionalVmAllocationType aBean) {
+		public void visit(TraditionalVmAllocation aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.ActionResultCodeType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.ActionResultCode)
 		 */
 		@Override
-		public void visit(ActionResultCodeType aBean) {
+		public void visit(ActionResultCode aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.ActionResultDescriptionType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.ActionResultDescription)
 		 */
 		@Override
-		public void visit(ActionResultDescriptionType aBean) {
+		public void visit(ActionResultDescription aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.JobIDType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.JobID)
 		 */
 		@Override
-		public void visit(JobIDType aBean) {
+		public void visit(JobID aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.MinutesType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.Minutes)
 		 */
 		@Override
-		public void visit(MinutesType aBean) {
+		public void visit(Minutes aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.NodeType10)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.Node10)
 		 */
 		@Override
-		public void visit(NodeType10 aBean) {
+		public void visit(Node10 aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.OperatorType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.Operator)
 		 */
 		@Override
-		public void visit(OperatorType aBean) {
+		public void visit(Operator aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.ProcessorFrequencyType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.ProcessorFrequency)
 		 */
 		@Override
-		public void visit(ProcessorFrequencyType aBean) {
+		public void visit(ProcessorFrequency aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.ReasonType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.Reason)
 		 */
 		@Override
-		public void visit(ReasonType aBean) {
+		public void visit(Reason aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.RequestDateTimeType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.RequestDateTime)
 		 */
 		@Override
-		public void visit(RequestDateTimeType aBean) {
+		public void visit(RequestDateTime aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.SecondsType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.Seconds)
 		 */
 		@Override
-		public void visit(SecondsType aBean) {
+		public void visit(Seconds aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.TimeperiodType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.Timeperiod)
 		 */
 		@Override
-		public void visit(TimeperiodType aBean) {
+		public void visit(Timeperiod aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.VersionType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.Version)
 		 */
 		@Override
-		public void visit(VersionType aBean) {
+		public void visit(Version aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.VirtualMachineDumpType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.VirtualMachineDump)
 		 */
 		@Override
-		public void visit(VirtualMachineDumpType aBean) {
+		public void visit(VirtualMachineDump aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.VirtualMachineIDType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.commontypes.VirtualMachineID)
 		 */
 		@Override
-		public void visit(VirtualMachineIDType aBean) {
+		public void visit(VirtualMachineID aBean) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -1697,16 +1697,16 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraintType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraint)
 		 */
 		@Override
-		public void visit(BoundedPlacementConstraintType aBean) {
+		public void visit(BoundedPlacementConstraint aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraintType.PlacementConstraint)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.BoundedPlacementConstraint.PlacementConstraint)
 		 */
 		@Override
 		public void visit(PlacementConstraint aBean) {
@@ -1798,20 +1798,20 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.ConstraintType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Constraint)
 		 */
 		@Override
-		public void visit(ConstraintType aBean) {
+		public void visit(Constraint aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Constraint.PlacementConstraint)
 		 */
 		@Override
 		public void visit(
-				f4g.schemas.java.constraints.optimizerconstraints.ConstraintType.PlacementConstraint aBean) {
+				f4g.schemas.java.constraints.optimizerconstraints.Constraint.PlacementConstraint aBean) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -1835,10 +1835,10 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoadType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoad)
 		 */
 		@Override
-		public void visit(ExpectedLoadType aBean) {
+		public void visit(ExpectedLoad aBean) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -1952,10 +1952,10 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.LoadType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Load)
 		 */
 		@Override
-		public void visit(LoadType aBean) {
+		public void visit(Load aBean) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -1970,19 +1970,19 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.NodeControllerType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.NodeController)
 		 */
 		@Override
-		public void visit(NodeControllerType aBean) {
+		public void visit(NodeController aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.PeriodType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.Period)
 		 */
 		@Override
-		public void visit(PeriodType aBean) {
+		public void visit(Period aBean) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -2232,29 +2232,29 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.ConstraintType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.Constraint)
 		 */
 		@Override
 		public void visit(
-				f4g.schemas.java.constraints.placement.ConstraintType aBean) {
+				f4g.schemas.java.constraints.placement.Constraint aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.DCType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.DC)
 		 */
 		@Override
-		public void visit(DCType aBean) {
+		public void visit(DC aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.FIT4GreenConstraintType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.FIT4GreenConstraint)
 		 */
 		@Override
-		public void visit(FIT4GreenConstraintType aBean) {
+		public void visit(FIT4GreenConstraint aBean) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -2343,10 +2343,10 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.TSType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.placement.TS)
 		 */
 		@Override
-		public void visit(TSType aBean) {
+		public void visit(TS aBean) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -2361,46 +2361,46 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.DCType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.DC)
 		 */
 		@Override
-		public void visit(f4g.schemas.java.loadpatterns.DCType aBean) {
+		public void visit(f4g.schemas.java.loadpatterns.DC aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.LoadPatternType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.LoadPattern)
 		 */
 		@Override
-		public void visit(LoadPatternType aBean) {
+		public void visit(LoadPattern aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.LoadPatternsType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.LoadPatterns)
 		 */
 		@Override
-		public void visit(LoadPatternsType aBean) {
+		public void visit(LoadPatterns aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.LoadType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.Load)
 		 */
 		@Override
-		public void visit(f4g.schemas.java.loadpatterns.LoadType aBean) {
+		public void visit(f4g.schemas.java.loadpatterns.Load aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.PeriodType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.Period)
 		 */
 		@Override
-		public void visit(f4g.schemas.java.loadpatterns.PeriodType aBean) {
+		public void visit(f4g.schemas.java.loadpatterns.Period aBean) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -2465,10 +2465,10 @@ public class PowerCalculatorTraverser {
 	
 	public static void main(String[] args) {
 		
-		SiteType site = new SiteType();
+		Site site = new Site();
 		
-		DatacenterType dataCenter1 = new DatacenterType();
-		DatacenterType dataCenter2 = new DatacenterType();
+		Datacenter dataCenter1 = new Datacenter();
+		Datacenter dataCenter2 = new Datacenter();
 		site.getDatacenter().add(dataCenter1);
 		site.getDatacenter().add(dataCenter2);
 	

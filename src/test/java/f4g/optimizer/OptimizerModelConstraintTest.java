@@ -5,13 +5,13 @@ import java.util.List;
 
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.utils.Utils;
-import f4g.schemas.java.metamodel.DatacenterType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.ServerRoleType;
-import f4g.schemas.java.metamodel.ServerStatusType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
-import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.metamodel.Datacenter;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.ServerRole;
+import f4g.schemas.java.metamodel.ServerStatus;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.constraints.optimizerconstraints.Load;
+import f4g.schemas.java.constraints.optimizerconstraints.Period;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
 import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
@@ -38,8 +38,8 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		
 		SLAGenerator slaGenerator = new SLAGenerator();
 		
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
+		Period period = new Period(
+				begin, end, null, null, new Load(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -52,7 +52,7 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 
 		
 		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				        slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, null));
+				        slaGenerator.createVirtualMachine(), vmMargins, makeSimpleFed(vmMargins, null));
 	    
 				
 	}
@@ -77,9 +77,9 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(3);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();				
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();				
 		
-		DatacenterType DC = Utils.getFirstDatacenter(model);
+		Datacenter DC = Utils.getFirstDatacenter(model);
 		
 		//test 1: without cloud controllers
 		optimizer.runGlobalOptimization(model);
@@ -89,11 +89,11 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		
 	
 		//test 2: with cloud controllers"		
-		model = modelGenerator.createPopulatedFIT4GreenType();	
+		model = modelGenerator.createPopulatedFIT4Green();	
 		DC = Utils.getFirstDatacenter(model);
 		
-		DC.getRack().get(0).getRackableServer().get(0).setName(ServerRoleType.CLOUD_CONTROLLER);
-		DC.getRack().get(0).getRackableServer().get(1).setName(ServerRoleType.CLOUD_CONTROLLER);
+		DC.getRack().get(0).getRackableServer().get(0).setName(ServerRole.CLOUD_CONTROLLER);
+		DC.getRack().get(0).getRackableServer().get(1).setName(ServerRole.CLOUD_CONTROLLER);
 		
 		optimizer.runGlobalOptimization(model);
 		
@@ -114,7 +114,7 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green2Sites();
 							
 		//TEST 1 - power off capability
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getNode().setPowerOff(false);
@@ -125,8 +125,8 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		assertEquals(0, getPowerOffs().size());
 				
 		//TEST 2 - power on capability
-		for(ServerType s : Utils.getAllServers(model)) {
-			s.setStatus(ServerStatusType.OFF);
+		for(Server s : Utils.getAllServers(model)) {
+			s.setStatus(ServerStatus.OFF);
 			s.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
 		}
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getNode().setPowerOn(false);
@@ -151,17 +151,17 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2); 
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		
-		List<ServerType> servers = Utils.getAllServers(model.getSite().get(0).getDatacenter().get(0));
+		List<Server> servers = Utils.getAllServers(model.getSite().get(0).getDatacenter().get(0));
 			
-		servers.get(0).setStatus(ServerStatusType.POWERING_OFF);
+		servers.get(0).setStatus(ServerStatus.POWERING_OFF);
 				
 		optimizer.runGlobalOptimization(model);
 		
 		assertEquals(0, getMoves().size());
 		
-		servers.get(0).setStatus(ServerStatusType.POWERING_ON);
+		servers.get(0).setStatus(ServerStatus.POWERING_ON);
 		
 		optimizer.runGlobalOptimization(model);
 		

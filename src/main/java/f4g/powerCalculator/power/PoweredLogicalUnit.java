@@ -3,23 +3,23 @@ package f4g.powerCalculator.power;
 import java.util.Iterator;
 
 import org.apache.commons.jxpath.JXPathContext;
-import f4g.schemas.java.metamodel.IoRateType;
-import f4g.schemas.java.metamodel.PSUType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.SANType;
-import f4g.schemas.java.metamodel.HardDiskType;
-import f4g.schemas.java.metamodel.LogicalUnitType;
+import f4g.schemas.java.metamodel.IoRate;
+import f4g.schemas.java.metamodel.PSU;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.SAN;
+import f4g.schemas.java.metamodel.HardDisk;
+import f4g.schemas.java.metamodel.LogicalUnit;
 import org.apache.log4j.Logger;
 
-public class PoweredLogicalUnit extends LogicalUnitType implements PoweredComponent{
+public class PoweredLogicalUnit extends LogicalUnit implements PoweredComponent{
 	
 	private JXPathContext context;
 	private int totalHdd = 0;
 	private double avgPower;
-	private LogicalUnitType lut;
+	private LogicalUnit lut;
 	static Logger log = Logger.getLogger(PoweredLogicalUnit.class.getName()); 
 	
-	public PoweredLogicalUnit(LogicalUnitType lobj){
+	public PoweredLogicalUnit(LogicalUnit lobj){
 		this.lut = lobj;
 	}
 	
@@ -39,7 +39,7 @@ public class PoweredLogicalUnit extends LogicalUnitType implements PoweredCompon
 		Iterator iterator = context.iterate(myQuery);
 		while(iterator.hasNext())
 		{	
-			HardDiskType hdd = (HardDiskType)iterator.next();
+			HardDisk hdd = (HardDisk)iterator.next();
 			avgPower = avgPower + hdd.getPowerIdle().getValue();
 			n = n + 1;
 		}
@@ -84,11 +84,11 @@ public class PoweredLogicalUnit extends LogicalUnitType implements PoweredCompon
 		}else{
 
 			int hddReadCount=0, hddWriteCount=0;
-			IoRateType maxReadRate = new IoRateType();
-			IoRateType maxWriteRate = new IoRateType();
-			IoRateType readSize = new IoRateType();
+			IoRate maxReadRate = new IoRate();
+			IoRate maxWriteRate = new IoRate();
+			IoRate readSize = new IoRate();
 			readSize.setValue(lut.getReadRate().getValue()/lut.getNumOfReadOP().getValue());		
-			IoRateType writeSize = new IoRateType();
+			IoRate writeSize = new IoRate();
 			writeSize.setValue(lut.getWriteRate().getValue()/lut.getNumOfWriteOP().getValue());
 			
 			if (readSize.getValue() == 0.0 && writeSize.getValue() == 0.0){
@@ -99,14 +99,14 @@ public class PoweredLogicalUnit extends LogicalUnitType implements PoweredCompon
 				while(iterator.hasNext())
 				{	
 					double powerHDD=0.0;
-					HardDiskType hdd = (HardDiskType)iterator.next();
+					HardDisk hdd = (HardDisk)iterator.next();
 					maxReadRate.setValue(hdd.getMaxReadRate().getValue());
 					maxWriteRate.setValue(hdd.getMaxWriteRate().getValue());
 					PoweredHardDiskDrive poweredHDD = new PoweredHardDiskDrive(readSize,maxReadRate, writeSize, maxWriteRate, hdd.getPowerIdle());
 					poweredHDD.setLUNFlag(true);
 					powerHDD=poweredHDD.computePower();
 					//Set the computed power to the hard disk class
-					PowerType HDDPower=new PowerType();
+					Power HDDPower=new Power();
 					HDDPower.setValue(powerHDD);
 					hdd.setComputedPower(HDDPower);
 					
@@ -121,9 +121,9 @@ public class PoweredLogicalUnit extends LogicalUnitType implements PoweredCompon
 				if (hddReadCount > totalHdd ) hddReadCount = totalHdd;
 				if (hddWriteCount > totalHdd ) hddWriteCount = totalHdd;
 
-				IoRateType curReadWriteRate = new IoRateType();
+				IoRate curReadWriteRate = new IoRate();
 				curReadWriteRate.setValue(0.0);
-				PowerType idlePow = new PowerType();
+				Power idlePow = new Power();
 				idlePow.setValue(avgPower);
 		
 				//read rate is zero, only the idle power is enough
@@ -162,11 +162,11 @@ public class PoweredLogicalUnit extends LogicalUnitType implements PoweredCompon
 
 		while(itr.hasNext())
 		{
-			HardDiskType hdd = (HardDiskType)itr.next();
+			HardDisk hdd = (HardDisk)itr.next();
 			powerHDD = hdd.getPowerIdle().getValue();
 			
 			//Set the computed power to the hard disk class
-			PowerType HDDPower=new PowerType();
+			Power HDDPower=new Power();
 			HDDPower.setValue(powerHDD);
 			hdd.setComputedPower(HDDPower);
 			

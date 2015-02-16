@@ -18,9 +18,9 @@
 		</xs:appinfo>
 	</xs:annotation>
 	
-	<xs:element name="ActionRequest" type="ActionRequestType"/>
+	<xs:element name="ActionRequest" type="ActionRequest"/>
 	
-	<xs:complexType name="ActionRequestType">
+	<xs:complexType name="ActionRequest">
 		<xs:sequence>
 			<xs:element name="Datetime" type="xs:dateTime" minOccurs="0">
 				<xs:annotation>
@@ -40,13 +40,13 @@
 				</xs:annotation>
 			</xs:element>
 			<!--set by the Optimizer-->
-			<xs:element name="ComputedPowerBefore" type="f4g:PowerType" minOccurs="0">
+			<xs:element name="ComputedPowerBefore" type="f4g:Power" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>Computed power before optimization</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<!--set by the Optimizer-->
-			<xs:element name="ComputedPowerAfter" type="f4g:PowerType" minOccurs="0">
+			<xs:element name="ComputedPowerAfter" type="f4g:Power" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>Computed power after optimization</xs:documentation>
 				</xs:annotation>
@@ -64,9 +64,9 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="PowerOnActionType">
+	<xs:complexType name="PowerOnAction">
 		<xs:complexContent>
-			<xs:extension base="AbstractBaseActionType">
+			<xs:extension base="AbstractBaseAction">
 				<xs:annotation>
 					<xs:documentation>Power On Action Type</xs:documentation>
 				</xs:annotation>
@@ -76,9 +76,9 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="PowerOffActionType">
+	<xs:complexType name="PowerOffAction">
 		<xs:complexContent>
-			<xs:extension base="AbstractBaseActionType">
+			<xs:extension base="AbstractBaseAction">
 				<xs:annotation>
 					<xs:documentation>Power Off Action Type</xs:documentation>
 				</xs:annotation>
@@ -88,9 +88,9 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="StandByActionType">
+	<xs:complexType name="StandByAction">
 		<xs:complexContent>
-			<xs:extension base="AbstractBaseActionType">
+			<xs:extension base="AbstractBaseAction">
 				<xs:annotation>
 					<xs:documentation>Stand By Action Type</xs:documentation>
 				</xs:annotation>
@@ -100,12 +100,12 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="StartJobActionType">
+	<xs:complexType name="StartJobAction">
 		<xs:annotation>
 			<xs:documentation>Start Job Action Type</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="AbstractBaseActionType">
+			<xs:extension base="AbstractBaseAction">
 				<xs:sequence>
 					<xs:element name="JobID" type="xs:string"/>
 					<xs:element name="NodeName" type ="xs:string" minOccurs="1" maxOccurs="unbounded"/>
@@ -113,12 +113,12 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="MoveVMActionType">
+	<xs:complexType name="MoveVMAction">
 		<xs:annotation>
 			<xs:documentation>Move a Virtual Machine Action Type (cold migration, including inter-/intra- data centre)</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="AbstractBaseActionType">
+			<xs:extension base="AbstractBaseAction">
 				<xs:sequence>
 					<xs:element name="VirtualMachine" type="xs:string"/>
 					<xs:element name="SourceNodeController" type="xs:string"/> 
@@ -127,12 +127,12 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="LiveMigrateVMActionType">
+	<xs:complexType name="LiveMigrateVMAction">
 		<xs:annotation>
 			<xs:documentation>Live Migrate a Virtual Machine Action Type (hot migration, including inter-/intra- data centre)</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="AbstractBaseActionType">
+			<xs:extension base="AbstractBaseAction">
 				<xs:sequence>
 					<xs:element name="VirtualMachine" type="xs:string"/>
 					<xs:element name="SourceNodeController" type="xs:string"/> 
@@ -141,7 +141,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="AbstractBaseActionType" abstract="true">
+	<xs:complexType name="AbstractBaseAction" abstract="true">
 		<xs:sequence>
 			<xs:element name="ID" type="xs:string"/>
 			<xs:element name="FrameworkName" type="xs:string"/>
@@ -150,12 +150,12 @@
 		</xs:sequence>
 	</xs:complexType>
 	<!--TODO: consider reducing the number of action types since it seems that some actions have the same action signature-->
-	<xs:element name="Action" type="AbstractBaseActionType"/>
-	<xs:element name="PowerOn" type="PowerOnActionType" substitutionGroup="Action"/>
-	<xs:element name="PowerOff" type="PowerOffActionType" substitutionGroup="Action"/>
-	<xs:element name="StandBy" type="StandByActionType" substitutionGroup="Action"/>
-	<xs:element name="StartJob" type="StartJobActionType" substitutionGroup="Action"/>
-	<xs:element name="MoveVM" type="MoveVMActionType" substitutionGroup="Action"/>
-	<xs:element name="LiveMigrateVM" type="LiveMigrateVMActionType" substitutionGroup="Action"/>
+	<xs:element name="Action" type="AbstractBaseAction"/>
+	<xs:element name="PowerOn" type="PowerOnAction" substitutionGroup="Action"/>
+	<xs:element name="PowerOff" type="PowerOffAction" substitutionGroup="Action"/>
+	<xs:element name="StandBy" type="StandByAction" substitutionGroup="Action"/>
+	<xs:element name="StartJob" type="StartJobAction" substitutionGroup="Action"/>
+	<xs:element name="MoveVM" type="MoveVMAction" substitutionGroup="Action"/>
+	<xs:element name="LiveMigrateVM" type="LiveMigrateVMAction" substitutionGroup="Action"/>
 	
 </xs:schema>

@@ -20,23 +20,23 @@ import org.apache.log4j.Logger;
 import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
-import f4g.schemas.java.metamodel.CpuUsageType;
-import f4g.schemas.java.metamodel.HostedHypervisorType;
-import f4g.schemas.java.metamodel.IoRateType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
-import f4g.schemas.java.metamodel.NativeHypervisorType;
-import f4g.schemas.java.metamodel.NetworkUsageType;
-import f4g.schemas.java.metamodel.NrOfCpusType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.StorageUsageType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
-import f4g.schemas.java.actions.AbstractBaseActionType;
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.actions.LiveMigrateVMActionType;
-import f4g.schemas.java.actions.MoveVMActionType;
-import f4g.schemas.java.actions.StandByActionType;
-import f4g.schemas.java.actions.StartJobActionType;
+import f4g.schemas.java.metamodel.CpuUsage;
+import f4g.schemas.java.metamodel.HostedHypervisor;
+import f4g.schemas.java.metamodel.IoRate;
+import f4g.schemas.java.metamodel.MemoryUsage;
+import f4g.schemas.java.metamodel.NativeHypervisor;
+import f4g.schemas.java.metamodel.NetworkUsage;
+import f4g.schemas.java.metamodel.NrOfCpus;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.StorageUsage;
+import f4g.schemas.java.metamodel.VirtualMachine;
+import f4g.schemas.java.actions.AbstractBaseAction;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.actions.LiveMigrateVMAction;
+import f4g.schemas.java.actions.MoveVMAction;
+import f4g.schemas.java.actions.StandByAction;
+import f4g.schemas.java.actions.StartJobAction;
 
 public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 	static Logger log = Logger.getLogger(AbstractCom.class.getName()); //
@@ -145,13 +145,13 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 	public boolean executeActionList(ArrayList actionList) {
 
 		log.debug(this.comName + ": executing action list...");
-		JAXBElement<? extends AbstractBaseActionType> elem;
+		JAXBElement<? extends AbstractBaseAction> elem;
 		Iterator iter = actionList.iterator();
 		boolean result = true;
 		try {
 			while (iter.hasNext()) {
 
-				elem = (JAXBElement<? extends AbstractBaseActionType>) iter
+				elem = (JAXBElement<? extends AbstractBaseAction>) iter
 						.next();
 
 				Object action = elem.getValue();
@@ -159,29 +159,29 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 
 				boolean actionResult = false;
 				try {
-					if (action.getClass().equals(PowerOffActionType.class)) {
-						actionResult = this.powerOff((PowerOffActionType) action);
-					} else if (action.getClass().equals(PowerOnActionType.class)) {
-						actionResult = this.powerOn((PowerOnActionType) action);
-					} else if (action.getClass().equals(LiveMigrateVMActionType.class)) {
-						actionResult = this.liveMigrate((LiveMigrateVMActionType) action);
-					} else if (action.getClass().equals(MoveVMActionType.class)) {
-						actionResult = this.moveVm((MoveVMActionType) action);
-					} else if (action.getClass().equals(StartJobActionType.class)) {
-						actionResult = this.startJob((StartJobActionType) action);
-					} else if (action.getClass().equals(StandByActionType.class)) {
-						actionResult = this.standBy((StandByActionType) action);
+					if (action.getClass().equals(PowerOffAction.class)) {
+						actionResult = this.powerOff((PowerOffAction) action);
+					} else if (action.getClass().equals(PowerOnAction.class)) {
+						actionResult = this.powerOn((PowerOnAction) action);
+					} else if (action.getClass().equals(LiveMigrateVMAction.class)) {
+						actionResult = this.liveMigrate((LiveMigrateVMAction) action);
+					} else if (action.getClass().equals(MoveVMAction.class)) {
+						actionResult = this.moveVm((MoveVMAction) action);
+					} else if (action.getClass().equals(StartJobAction.class)) {
+						actionResult = this.startJob((StartJobAction) action);
+					} else if (action.getClass().equals(StandByAction.class)) {
+						actionResult = this.standBy((StandByAction) action);
 					} else {
 						log.error("Invalid action");
 					}
 					
-					((AbstractBaseActionType)action).setForwarded(actionResult);
+					((AbstractBaseAction)action).setForwarded(actionResult);
 					if(actionResult){
 						try {
 							TimeZone gmt = TimeZone.getTimeZone("GMT");
 							GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance(gmt);
-							((AbstractBaseActionType)action).setForwardedAt(DatatypeFactory.newInstance().newXMLGregorianCalendar(gc));
-							log.debug("Setting forwarderAt to " + ((AbstractBaseActionType)action).getForwardedAt());
+							((AbstractBaseAction)action).setForwardedAt(DatatypeFactory.newInstance().newXMLGregorianCalendar(gc));
+							log.debug("Setting forwarderAt to " + ((AbstractBaseAction)action).getForwardedAt());
 						} catch (DatatypeConfigurationException e) {
 							log.error("Error in setting 'forwardedAt' datetime");
 							log.error(e);
@@ -251,7 +251,7 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 					} else if (operation.getType().equals(ComOperation.TYPE_ADD) || 
 							operation.getType().equals(ComOperation.TYPE_REMOVE)) {
 						// Code for adding virtual machines
-						if (obj instanceof ServerType) {
+						if (obj instanceof Server) {
 							String expr = operation.getExpression();
 							String[] values = operation.getValue().split(" ");
 
@@ -264,16 +264,16 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 								if (operation.getType().equals(
 										ComOperation.TYPE_ADD)) {
 									
-									VirtualMachineType vm = fillVmData(values);
+									VirtualMachine vm = fillVmData(values);
 
-									vm.setFrameworkRef(((ServerType) obj).getFrameworkRef());
-									((ServerType) obj)
+									vm.setFrameworkRef(((Server) obj).getFrameworkRef());
+									((Server) obj)
 											.getNativeOperatingSystem()
 											.getHostedHypervisor().get(0)
 											.getVirtualMachine().add(vm);
-									vm.setFrameworkRef(((ServerType) obj).getFrameworkRef());
+									vm.setFrameworkRef(((Server) obj).getFrameworkRef());
 								} else {
-									removeVirtualMachine(((ServerType) obj)
+									removeVirtualMachine(((Server) obj)
 											.getNativeOperatingSystem()
 											.getHostedHypervisor().get(0)
 											.getVirtualMachine(), values[0]);
@@ -283,13 +283,13 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 								if (operation.getType().equals(
 										ComOperation.TYPE_ADD)) {
 									
-									VirtualMachineType vm = fillVmData(values);
+									VirtualMachine vm = fillVmData(values);
 
-									vm.setFrameworkRef(((ServerType) obj).getFrameworkRef());
-									((ServerType) obj).getNativeHypervisor()
+									vm.setFrameworkRef(((Server) obj).getFrameworkRef());
+									((Server) obj).getNativeHypervisor()
 											.getVirtualMachine().add(vm);
 								} else {
-									removeVirtualMachine(((ServerType) obj)
+									removeVirtualMachine(((Server) obj)
 											.getNativeHypervisor()
 											.getVirtualMachine(), values[0]);
 								}
@@ -333,10 +333,10 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 	@Override
 	public abstract void run();
 
-	private boolean removeVirtualMachine(List<VirtualMachineType> vmList,
+	private boolean removeVirtualMachine(List<VirtualMachine> vmList,
 			String id) {
 		for (int i = 0; i < vmList.size(); i++) {
-			VirtualMachineType vm = vmList.get(i);
+			VirtualMachine vm = vmList.get(i);
 			if (vm.getFrameworkID().equals(id)) {
 				vmList.remove(i);
 				log.debug("VM removed!");
@@ -347,16 +347,16 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 		return false;
 	}
 	
-	private VirtualMachineType fillVmData(String[] values){
-		VirtualMachineType vm = new VirtualMachineType();
+	private VirtualMachine fillVmData(String[] values){
+		VirtualMachine vm = new VirtualMachine();
 		vm.setFrameworkID(values[0]);
 		vm.setCloudVmImage(values[1]);
-		vm.setCloudVmType(values[2]);
+		vm.setCloudVm(values[2]);
 		
 		//HINT! Here we add by convention in 4th position the number of CPUs
 		//assuming that they are passed in the xpath query
 		if(values.length > 3){
-			NrOfCpusType nOfCpus = new NrOfCpusType();
+			NrOfCpus nOfCpus = new NrOfCpus();
 			nOfCpus.setValue(Integer.valueOf(values[3]));
 			vm.setNumberOfCPUs(nOfCpus);
 		}
@@ -367,23 +367,23 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 		}
 		
 		//TODO: to be verified if they must be set as mandatory in the model (so that they are created automatically)
-//		CpuUsageType cpuUsage = new CpuUsageType();
+//		CpuUsage cpuUsage = new CpuUsage();
 //		cpuUsage.setValue(0.0);
 //		vm.setActualCPUUsage(cpuUsage);
 //		
-//		IoRateType ioRate = new IoRateType();
+//		IoRate ioRate = new IoRate();
 //		ioRate.setValue(0.0);
 //		vm.setActualDiskIORate(ioRate);
 //		
-//		MemoryUsageType memoryUsage = new MemoryUsageType();
+//		MemoryUsage memoryUsage = new MemoryUsage();
 //		memoryUsage.setValue(0.0);
 //		vm.setActualMemoryUsage(memoryUsage);
 //		
-//		NetworkUsageType networkUsage = new NetworkUsageType();
+//		NetworkUsage networkUsage = new NetworkUsage();
 //		networkUsage.setValue(0.0);
 //		vm.setActualNetworkUsage(networkUsage);
 //		
-//		StorageUsageType storageUsage = new StorageUsageType();
+//		StorageUsage storageUsage = new StorageUsage();
 //		storageUsage.setValue(0.0);
 //		vm.setActualStorageUsage(storageUsage);
 		

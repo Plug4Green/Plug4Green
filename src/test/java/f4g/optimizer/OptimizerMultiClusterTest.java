@@ -23,30 +23,30 @@ import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
-import f4g.schemas.java.metamodel.CpuUsageType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.IoRateType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
-import f4g.schemas.java.metamodel.NetworkUsageType;
-import f4g.schemas.java.metamodel.NrOfCpusType;
-import f4g.schemas.java.metamodel.RAMSizeType;
-import f4g.schemas.java.metamodel.ServerStatusType;
-import f4g.schemas.java.metamodel.StorageCapacityType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
-import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
-import f4g.schemas.java.allocation.CloudVmAllocationType;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
+import f4g.schemas.java.metamodel.CpuUsage;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.IoRate;
+import f4g.schemas.java.metamodel.MemoryUsage;
+import f4g.schemas.java.metamodel.NetworkUsage;
+import f4g.schemas.java.metamodel.NrOfCpus;
+import f4g.schemas.java.metamodel.RAMSize;
+import f4g.schemas.java.metamodel.ServerStatus;
+import f4g.schemas.java.metamodel.StorageCapacity;
+import f4g.schemas.java.metamodel.VirtualMachine;
+import f4g.schemas.java.allocation.CloudVmAllocationResponse;
+import f4g.schemas.java.allocation.CloudVmAllocation;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedSLAsType;
 import f4g.schemas.java.constraints.optimizerconstraints.CapacityType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
-import f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoadType;
+import f4g.schemas.java.constraints.optimizerconstraints.ExpectedLoad;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
-import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
-import f4g.schemas.java.constraints.optimizerconstraints.NodeControllerType;
-import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.Load;
+import f4g.schemas.java.constraints.optimizerconstraints.NodeController;
+import f4g.schemas.java.constraints.optimizerconstraints.Period;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType;
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
@@ -74,7 +74,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
+		Period period = new Period(begin, end, null, null, new Load(null, null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -93,7 +93,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 		
 		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
-				        SLAGenerator.createVirtualMachineType(), vmMargins, fed);
+				        SLAGenerator.createVirtualMachine(), vmMargins, fed);
 		
 		optimizer.setSla(SLAGenerator.createDefaultSLA());
 		optimizer.setClusters(createDefaultCluster(2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
@@ -131,7 +131,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 				bPolicies = new BoundedPoliciesType();
 				bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy.get(0)));	
 			}
-			cluster.add(new Cluster("c" + c, new NodeControllerType(nodeName) , bSlas, bPolicies, "c" + c));
+			cluster.add(new Cluster("c" + c, new NodeController(nodeName) , bSlas, bPolicies, "c" + c));
 		}
 		return new ClusterType(cluster);
 	}
@@ -144,20 +144,20 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green2DC();
 					
 		optimizer.setClusters(createMultiCluster(1, 2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		//TEST 1
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");	
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().clear();
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
-		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
+		AllocationRequest allocationRequest = createAllocationRequestCloud("m1.small");	
+		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().clear();
+		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
+		AllocationResponse response = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response);
 		assertNotNull(response.getResponse());
-		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
+		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponse);
 				
-		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
+		CloudVmAllocationResponse VMAllocResponse = (CloudVmAllocationResponse) response.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
 		assertEquals("id1000000", VMAllocResponse.getNodeId());
@@ -165,17 +165,17 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 		//TEST 2
 		
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().clear();
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c0");
+		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().clear();
+		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
+		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().add("c0");
 		
-		AllocationResponseType response2 = optimizer.allocateResource(allocationRequest, model);
+		AllocationResponse response2 = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response);
 		assertNotNull(response.getResponse());
-		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
+		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponse);
 				
-		CloudVmAllocationResponseType VMAllocResponse2 = (CloudVmAllocationResponseType) response2.getResponse().getValue();
+		CloudVmAllocationResponse VMAllocResponse2 = (CloudVmAllocationResponse) response2.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
 		assertEquals("id0", VMAllocResponse2.getNodeId());
@@ -193,7 +193,7 @@ public void testPowerOnOffClusters() {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();			
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green2DC();			
 	
 		optimizer.setClusters(createMultiCluster(2, 2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		optimizer.runGlobalOptimization(model);
@@ -214,7 +214,7 @@ public void testPowerOnOffClusters() {
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(1); 
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green2DC();
 
 		optimizer.setClusters(createMultiCluster(2, 2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		BoundedClustersType bcls = new BoundedClustersType();
@@ -225,7 +225,7 @@ public void testPowerOnOffClusters() {
 			cl.getBoundedPolicies().getPolicy().get(0).getIdref().getPeriodVMThreshold().get(0).getLoad().setSpareCPUs(new SpareCPUs(1, UnitType.ABSOLUTE));
 		}
 		
-		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(new SpareCPUs(3, UnitType.ABSOLUTE), null));
+		Period period = new Period(begin, end, null, null, new Load(new SpareCPUs(3, UnitType.ABSOLUTE), null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -249,7 +249,7 @@ public void testPowerOnOffClusters() {
 		
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2DC();				
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green2DC();				
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		model.getSite().get(0).getDatacenter().get(1).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		
@@ -275,7 +275,7 @@ public void testPowerOnOffClusters() {
 		
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();				
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green2Sites();				
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		
@@ -310,7 +310,7 @@ public void testPowerOnOffClusters() {
 		//optimizer according to CO2
 		optimizer.setOptiObjective(OptimizationObjective.CO2);
 		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();				
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green2Sites();				
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		
@@ -342,7 +342,7 @@ public void testPowerOnOffClusters() {
 		
 		modelGenerator.setNB_SERVERS(1);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();				
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green2Sites();				
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		model.getSite().get(1).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);
 		
@@ -382,24 +382,24 @@ public void testPowerOnOffClusters() {
 		optimizer.getClusters().getCluster().get(0).getNodeController().getNodeName().add("id100000");
 		optimizer.getClusters().getCluster().get(1).getNodeController().getNodeName().clear();
 		optimizer.getClusters().getCluster().get(1).getNodeController().getNodeName().add("id200000");
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
-		model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1).setStatus(ServerStatusType.OFF);
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
+		model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1).setStatus(ServerStatus.OFF);
 
 		
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().clear();
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c0");
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
+		AllocationRequest allocationRequest = createAllocationRequestCloud("m1.small");
+		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().clear();
+		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().add("c0");
+		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
 		
 		//TEST 1
 		
-		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
+		AllocationResponse response = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response);
 		assertNotNull(response.getResponse());
-		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
+		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponse);
 				
-		CloudVmAllocationResponseType VMAllocResponse = (CloudVmAllocationResponseType) response.getResponse().getValue();
+		CloudVmAllocationResponse VMAllocResponse = (CloudVmAllocationResponse) response.getResponse().getValue();
 		
 		//New VM should be allocated on first server		
 		assertEquals("id100000", VMAllocResponse.getNodeId());
@@ -416,9 +416,9 @@ public void testPowerOnOffClusters() {
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);	
 		modelGenerator.setCORE(6);
 		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 				
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(100));	
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(100));	
 		optimizer.setClusters(createMultiCluster(1, 2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		optimizer.getClusters().getCluster().get(0).getNodeController().getNodeName().clear();
 		optimizer.getClusters().getCluster().get(0).getNodeController().getNodeName().add("id100000");
@@ -426,18 +426,18 @@ public void testPowerOnOffClusters() {
 		optimizer.getClusters().getCluster().get(1).getNodeController().getNodeName().add("id200000");
 		
 		//TEST 1 two clusters, free space		
-		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().clear();
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
-		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c0");
+		AllocationRequest allocationRequest = createAllocationRequestCloud("m1.small");
+		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().clear();
+		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
+		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().add("c0");
 
-		AllocationResponseType response = optimizer.allocateResource(allocationRequest, model);
+		AllocationResponse response = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response);
 		assertNotNull(response.getResponse());
-		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
+		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponse);
 				
-		CloudVmAllocationResponseType VMAllocResponse2 = (CloudVmAllocationResponseType) response.getResponse().getValue();
+		CloudVmAllocationResponse VMAllocResponse2 = (CloudVmAllocationResponse) response.getResponse().getValue();
 		
 		//New VM should be allocated on first cluster		
 		assertEquals("id100000", VMAllocResponse2.getNodeId());
@@ -447,13 +447,13 @@ public void testPowerOnOffClusters() {
 		//clearing c0
 		model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
 		//c1 full
-		optimizer.getVmTypes().getVMType().get(0).getCapacity().setVCpus(new NrOfCpusType(6));
+		optimizer.getVmTypes().getVMType().get(0).getCapacity().setVCpus(new NrOfCpus(6));
 		response = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response.getResponse());
-		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
+		assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponse);
 				
-		VMAllocResponse2 = (CloudVmAllocationResponseType) response.getResponse().getValue();
+		VMAllocResponse2 = (CloudVmAllocationResponse) response.getResponse().getValue();
 		
 		//New VM should be allocated on second cluster		
 		assertEquals("id200000", VMAllocResponse2.getNodeId());
@@ -475,17 +475,17 @@ public void testPowerOnOffClusters() {
 		modelGenerator.setCORE(1); 
 		modelGenerator.setRAM_SIZE(24);
 		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 				
 		modelGenerator.setVM_TYPE("m1.small");
 	
-		VMTypeType vmTypes = new VMTypeType();
+		VMTypeType vms = new VMTypeType();
 		VMTypeType.VMType type1 = new VMTypeType.VMType();
 		type1.setName("m1.small");
-		type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-		type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(10), new MemoryUsageType(1), new IoRateType(0), new NetworkUsageType(0)));
-		vmTypes.getVMType().add(type1);
-		optimizer.setVmTypes(vmTypes);
+		type1.setCapacity(new CapacityType(new NrOfCpus(1), new RAMSize(1), new StorageCapacity(1)));
+		type1.setExpectedLoad(new ExpectedLoad(new CpuUsage(10), new MemoryUsage(1), new IoRate(0), new NetworkUsage(0)));
+		vms.getVMType().add(type1);
+		optimizer.setVmTypes(vms);
 		
 		SLAType slas = SLAGenerator.createDefaultSLA();
 		SLAType.SLA sla = new SLAType.SLA();
@@ -517,13 +517,13 @@ public void testPowerOnOffClusters() {
 		nodeName.add("id300000");
 		nodeName.add("id400000");
 		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
-		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "idc1"));
+		cluster.add(new Cluster("c1", new NodeController(nodeName) , bSlas, bPolicies, "idc1"));
 		nodeName = new ArrayList<String>();
 		nodeName.add("id500000");
 		nodeName.add("id600000");
 		nodeName.add("id700000");
 		nodeName.add("id800000");
-		cluster.add(new Cluster("c2", new NodeControllerType(nodeName) , bSlas2, bPolicies, "idc2"));
+		cluster.add(new Cluster("c2", new NodeController(nodeName) , bSlas2, bPolicies, "idc2"));
 		ClusterType clusters = new ClusterType(cluster);
 			
 		FederationType fed = new FederationType();
@@ -536,8 +536,8 @@ public void testPowerOnOffClusters() {
 		optimizer.setFederation(fed);
 		optimizer.setClusters(clusters);
 
-		PeriodType period = new PeriodType(
-				begin, end, null, null, new LoadType(null, null));
+		Period period = new Period(
+				begin, end, null, null, new Load(null, null));
 
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -551,8 +551,8 @@ public void testPowerOnOffClusters() {
 		optimizer.setPolicies(myVMMargins);
 		
 		//transferring VMs
-		List<VirtualMachineType> VMs0 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(0).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
-		List<VirtualMachineType> VMs4 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(4).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
+		List<VirtualMachine> VMs0 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(0).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
+		List<VirtualMachine> VMs4 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(4).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 		VMs0.addAll(VMs4);
 		VMs4.clear();
 		
@@ -574,7 +574,7 @@ public void testPowerOnOffClusters() {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 			
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green2Sites();
 					
 		//TEST 1 - with Move capability
 		model.getSite().get(0).getDatacenter().get(0).getFrameworkCapabilities().get(0).getVm().setInterMoveVM(true);

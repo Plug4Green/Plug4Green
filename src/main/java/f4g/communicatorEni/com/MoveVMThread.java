@@ -15,7 +15,7 @@
 package f4g.communicatorEni.com;
 
 import org.apache.log4j.Logger;
-import f4g.schemas.java.actions.MoveVMActionType;
+import f4g.schemas.java.actions.MoveVMAction;
 
 import f4g.communicatorEni.vmware.MigrateRelocateVirtualMachine;
 
@@ -30,10 +30,10 @@ public class MoveVMThread extends Thread{
 	
 	int numCpus_ = -1;
 	String[] actionArguments = new String[16];
-	MoveVMActionType action_;
+	MoveVMAction action_;
 	MigrateRelocateVirtualMachine migrateRelocateVirtualMachine_;
 	
-	public MoveVMThread(String url, String userName, String password, MoveVMActionType action){				
+	public MoveVMThread(String url, String userName, String password, MoveVMAction action){				
 		actionArguments[0] = "--" + ComEniConstants.URL; 
 		actionArguments[1] = url;
 		actionArguments[2] = "--" + ComEniConstants.USER_NAME;

@@ -1,11 +1,11 @@
 package f4g.commons.com;
 
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.actions.LiveMigrateVMActionType;
-import f4g.schemas.java.actions.MoveVMActionType;
-import f4g.schemas.java.actions.StartJobActionType;
-import f4g.schemas.java.actions.StandByActionType;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.actions.LiveMigrateVMAction;
+import f4g.schemas.java.actions.MoveVMAction;
+import f4g.schemas.java.actions.StartJobAction;
+import f4g.schemas.java.actions.StandByAction;
 
 /**
  * Interface representing all the possible operations allowed on a Com component
@@ -17,16 +17,16 @@ import f4g.schemas.java.actions.StandByActionType;
  */
 public interface IComOperationSet {
 
-	boolean powerOn(PowerOnActionType action);
+	boolean powerOn(PowerOnAction action);
 	
-	boolean powerOff(PowerOffActionType action);
+	boolean powerOff(PowerOffAction action);
 	
-	boolean liveMigrate(LiveMigrateVMActionType action);
+	boolean liveMigrate(LiveMigrateVMAction action);
 	
-	boolean moveVm(MoveVMActionType action);
+	boolean moveVm(MoveVMAction action);
 	
-	boolean startJob(StartJobActionType action);
+	boolean startJob(StartJobAction action);
 	
-	boolean standBy(StandByActionType action);
+	boolean standBy(StandByAction action);
 	
 }

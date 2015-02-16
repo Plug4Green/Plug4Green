@@ -17,13 +17,13 @@ package f4g.optimizer.utils;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import f4g.schemas.java.metamodel.CpuUsageType;
-import f4g.schemas.java.metamodel.IoRateType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
-import f4g.schemas.java.metamodel.NetworkUsageType;
-import f4g.schemas.java.metamodel.NrOfCpusType;
-import f4g.schemas.java.metamodel.StorageUsageType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.CpuUsage;
+import f4g.schemas.java.metamodel.IoRate;
+import f4g.schemas.java.metamodel.MemoryUsage;
+import f4g.schemas.java.metamodel.NetworkUsage;
+import f4g.schemas.java.metamodel.NrOfCpus;
+import f4g.schemas.java.metamodel.StorageUsage;
+import f4g.schemas.java.metamodel.VirtualMachine;
 import f4g.schemas.java.allocation.*;
 import f4g.schemas.java.*;
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
@@ -36,7 +36,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 /**
  * Optimizer internal representation for a workload
  */
-public class OptimizerWorkload extends VirtualMachineType implements Cloneable, CopyTo{
+public class OptimizerWorkload extends VirtualMachine implements Cloneable, CopyTo{
 	
 	public Logger log;  
 	
@@ -46,9 +46,9 @@ public class OptimizerWorkload extends VirtualMachineType implements Cloneable, 
 	public class CreationImpossible extends Exception {}
 	
 	/**
-	 * Making a Workload from a VirtualMachineType from model (Traditional)
+	 * Making a Workload from a VirtualMachine from model (Traditional)
 	 */
-	public OptimizerWorkload(VirtualMachineType VM) throws CreationImpossible{
+	public OptimizerWorkload(VirtualMachine VM) throws CreationImpossible{
 		
 		log = Logger.getLogger(OptimizerWorkload.class.getName()); 
 		
@@ -94,28 +94,28 @@ public class OptimizerWorkload extends VirtualMachineType implements Cloneable, 
 	    actualNetworkUsage = VM.getActualNetworkUsage();
 	    hostedOperatingSystem = VM.getHostedOperatingSystem();
 	    cloudVmImage = VM.getCloudVmImage();
-	    cloudVmType = VM.getCloudVmType();
+	    cloudVm = VM.getCloudVmType();
 	   
 	}
 	
 	/**
-	 * Making a Workload from a VirtualMachineType from model (Traditional)
+	 * Making a Workload from a VirtualMachine from model (Traditional)
 	 */
-	public OptimizerWorkload(TraditionalVmAllocationType allocation, String frameWorkID) {
+	public OptimizerWorkload(TraditionalVmAllocation allocation, String frameWorkID) {
 
 		setFrameworkID(frameWorkID);
-		if(allocation.getNumberOfCPUs() != null ) setNumberOfCPUs(new NrOfCpusType(allocation.getNumberOfCPUs())); //in a VM, the number of CPU is in fact the number of cores
-		else setNumberOfCPUs(new NrOfCpusType(0)); 
-		if( allocation.getMemoryUsage() != null)  setActualMemoryUsage(new MemoryUsageType(allocation.getMemoryUsage())); 
-		else setActualMemoryUsage(new MemoryUsageType(0));			
-		if( allocation.getStorageUsage() != null) setActualStorageUsage(new StorageUsageType(allocation.getStorageUsage()));
-		else setActualStorageUsage(new StorageUsageType(0));
-		if( allocation.getCPUUsage() != null)     setActualCPUUsage(new CpuUsageType(allocation.getCPUUsage()));	
-		else setActualCPUUsage(new CpuUsageType(0));	
-		if( allocation.getNetworkUsage() != null) setActualNetworkUsage(new NetworkUsageType(allocation.getNetworkUsage()));	
-		else setActualNetworkUsage(new NetworkUsageType(0));			
-		if( allocation.getDiskIORate() != null)   setActualDiskIORate(new IoRateType(allocation.getDiskIORate()));
-		else setActualDiskIORate(new IoRateType(0));
+		if(allocation.getNumberOfCPUs() != null ) setNumberOfCPUs(new NrOfCpus(allocation.getNumberOfCPUs())); //in a VM, the number of CPU is in fact the number of cores
+		else setNumberOfCPUs(new NrOfCpus(0)); 
+		if( allocation.getMemoryUsage() != null)  setActualMemoryUsage(new MemoryUsage(allocation.getMemoryUsage())); 
+		else setActualMemoryUsage(new MemoryUsage(0));			
+		if( allocation.getStorageUsage() != null) setActualStorageUsage(new StorageUsage(allocation.getStorageUsage()));
+		else setActualStorageUsage(new StorageUsage(0));
+		if( allocation.getCPUUsage() != null)     setActualCPUUsage(new CpuUsage(allocation.getCPUUsage()));	
+		else setActualCPUUsage(new CpuUsage(0));	
+		if( allocation.getNetworkUsage() != null) setActualNetworkUsage(new NetworkUsage(allocation.getNetworkUsage()));	
+		else setActualNetworkUsage(new NetworkUsage(0));			
+		if( allocation.getDiskIORate() != null)   setActualDiskIORate(new IoRate(allocation.getDiskIORate()));
+		else setActualDiskIORate(new IoRate(0));
 	}
 	
 	/**
@@ -125,11 +125,11 @@ public class OptimizerWorkload extends VirtualMachineType implements Cloneable, 
 
 		setFrameworkID(frameWorkID);
 		setNumberOfCPUs(VM.getCapacity().getVCpus());
-		setActualMemoryUsage(new MemoryUsageType(VM.getCapacity().getVRam().getValue())); //TODO fix
-		setActualStorageUsage(new StorageUsageType((double)VM.getCapacity().getVHardDisk().getValue())); //TODO fix or delete
+		setActualMemoryUsage(new MemoryUsage(VM.getCapacity().getVRam().getValue())); //TODO fix
+		setActualStorageUsage(new StorageUsage((double)VM.getCapacity().getVHardDisk().getValue())); //TODO fix or delete
 		setActualCPUUsage(VM.getExpectedLoad().getVCpuLoad()); 
-        setActualNetworkUsage(new NetworkUsageType(0.0)); 
-        setActualDiskIORate(new IoRateType(0.0));
+        setActualNetworkUsage(new NetworkUsage(0.0)); 
+        setActualDiskIORate(new IoRate(0.0));
 	}
 			
 

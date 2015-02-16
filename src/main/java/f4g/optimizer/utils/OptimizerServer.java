@@ -67,16 +67,16 @@ public class OptimizerServer {
 		this.workloads = workloads;
 	}
  
-	public void InitOptimizerServer(final ServerType modelServer, ServerType toServer) throws CreationImpossible{
+	public void InitOptimizerServer(final Server modelServer, Server toServer) throws CreationImpossible{
 		
 		log = Logger.getLogger(this.getClass().getName());
 		
 		candidateState = CandidateState.NOT_ASSIGNED;
 		
 	    
-	    List<MainboardType> mainboards = modelServer.getMainboard();
-	    MainboardType firstMainboard = null;
-	    CPUType firstCPU = null;
+	    List<Mainboard> mainboards = modelServer.getMainboard();
+	    Mainboard firstMainboard = null;
+	    CPU firstCPU = null;
 	    	    
 	    //log.debug("mainboards.size():" + mainboards.size());
 	    //check validity
@@ -114,25 +114,25 @@ public class OptimizerServer {
 	/**
 	 * Server constructor for Cloud
 	 */
-	public OptimizerServer(final ServerType modelServer, final VMTypeType myVMTypes, ServerType toServer) throws CreationImpossible{
+	public OptimizerServer(final Server modelServer, final VMTypeType myVMTypes, Server toServer) throws CreationImpossible{
 
 		InitOptimizerServer(modelServer, toServer);
 		
 	    workloads = new ArrayList<OptimizerWorkload>();
 	    
 	    int i=0;
-		for(VirtualMachineType VM : getVMs(toServer)) { //getAllOptimizerWorkload
+		for(VirtualMachine VM : getVMs(toServer)) { //getAllOptimizerWorkload
 			//TODO: for now, the VM ids in the server 1000 are of the form 11001,11002...
 						
 			try {
 				
-				VMTypeType.VMType SLA_VM = Util.findVMByName(VM.getCloudVmType(), myVMTypes);
+				VMTypeType.VMType SLA_VM = Util.findVMByName(VM.getCloudVm(), myVMTypes);
 				OptimizerWorkload optimizerWorkload = new OptimizerWorkload(SLA_VM, VM.getFrameworkID());
 				workloads.add(optimizerWorkload); 
 				i++;
 				
 			} catch (NoSuchElementException e) {
-				log.warn("VM type \"" + VM.getCloudVmType() + "\" not found in SLA, not taken into account");
+				log.warn("VM type \"" + VM.getCloudVm() + "\" not found in SLA, not taken into account");
 			}
 			
 		}
@@ -143,7 +143,7 @@ public class OptimizerServer {
 	 * Server constructor for traditional
 	 * if the first parameter is not null, it take these workloads. Otherwise it gets them from the model server.
 	 */
-	public OptimizerServer(final List<OptimizerWorkload> WLs, final ServerType modelServer, ServerType toServer) throws CreationImpossible{
+	public OptimizerServer(final List<OptimizerWorkload> WLs, final Server modelServer, Server toServer) throws CreationImpossible{
 
 		InitOptimizerServer(modelServer, toServer);
 		
@@ -160,35 +160,35 @@ public class OptimizerServer {
 	public OptimizerServer() {
 	}
 
-//	public double getNICMaxPower(ServerType toServer) {
+//	public double getNICMaxPower(Server toServer) {
 //		double nic_maxPower = 0;
-//		for(MainboardType myMainboard : toServer.getMainboard())
-//	    	for(NICType nic : myMainboard.getNIC())
+//		for(Mainboard myMainboard : toServer.getMainboard())
+//	    	for(NIC nic : myMainboard.getNIC())
 //	    		nic_maxPower = nic.getPowerMax().getValue();
 //		return nic_maxPower;
 //	}
 //
 //
-//	public double getNICIdlePower(ServerType toServer) {
+//	public double getNICIdlePower(Server toServer) {
 //		double nic_idlePower = 0;
-//		for(MainboardType myMainboard : toServer.getMainboard())
-//	    	for(NICType nic : myMainboard.getNIC())
+//		for(Mainboard myMainboard : toServer.getMainboard())
+//	    	for(NIC nic : myMainboard.getNIC())
 //	    		nic_idlePower = nic.getPowerIdle().getValue();
 //		return nic_idlePower;
 //	}
 //
 //
-//	public double getIdlePower(ServerType toServer) {
+//	public double getIdlePower(Server toServer) {
 //		double mp_idlePower = 0; 
-//    	for(MainboardType myMainboard : toServer.getMainboard())
+//    	for(Mainboard myMainboard : toServer.getMainboard())
 //    		mp_idlePower += myMainboard.getPowerIdle().getValue();
 //    	return mp_idlePower;
 //	}
 //
 //
-//	public int getMaxPower(ServerType toServer) {
+//	public int getMaxPower(Server toServer) {
 //		int mp_maxPower = 0;
-//    	for(MainboardType myMainboard : toServer.getMainboard())
+//    	for(Mainboard myMainboard : toServer.getMainboard())
 //    		mp_maxPower += myMainboard.getPowerMax().getValue();
 //    	return mp_maxPower;
 //	}
@@ -197,10 +197,10 @@ public class OptimizerServer {
 	/* (non-Javadoc)
 	 * @see f4g.optimizer.IOptimizerServer#getNbCores()
 	 */
-	public int getNbCores(ServerType toServer) {
+	public int getNbCores(Server toServer) {
 		int nr_cores = 0;
-	    for(MainboardType myMainboard : toServer.getMainboard())	
-	    	for(CPUType CPU : myMainboard.getCPU())
+	    for(Mainboard myMainboard : toServer.getMainboard())	
+	    	for(CPU CPU : myMainboard.getCPU())
 	    		nr_cores += CPU.getCore().size();
 	    return nr_cores;
 	}
@@ -209,9 +209,9 @@ public class OptimizerServer {
 	/* (non-Javadoc)
 	 * @see f4g.optimizer.IOptimizerServer#getNbCPU()
 	 */
-	public int getNbCPU(ServerType toServer) {
+	public int getNbCPU(Server toServer) {
 		int nr_cpu = 0;
-	    for(MainboardType myMainboard : toServer.getMainboard())
+	    for(Mainboard myMainboard : toServer.getMainboard())
 	    	nr_cpu += myMainboard.getCPU().size();
 	    return nr_cpu;
 	}	
@@ -219,10 +219,10 @@ public class OptimizerServer {
 	/* (non-Javadoc)
 	 * @see f4g.optimizer.IOptimizerServer#getMemory()
 	 */
-	public long getMemory(ServerType toServer) {
+	public long getMemory(Server toServer) {
 		int memory=0;
-		for(MainboardType myMainboard : toServer.getMainboard())
-	    	for(RAMStickType RAMStick : myMainboard.getRAMStick())
+		for(Mainboard myMainboard : toServer.getMainboard())
+	    	for(RAMStick RAMStick : myMainboard.getRAMStick())
 	    		memory += RAMStick.getSize().getValue();
 		return memory;
 	}
@@ -230,29 +230,29 @@ public class OptimizerServer {
 	/* (non-Javadoc)
 	 * @see f4g.optimizer.IOptimizerServer#getStorage()
 	 */
-	public double getStorage(ServerType server) {
+	public double getStorage(Server server) {
 		double storage = 0;
-		for(StorageUnitType storageUnit : Utils.getAllStorages(server))
+		for(StorageUnit storageUnit : Utils.getAllStorages(server))
 	   		storage += storageUnit.getStorageCapacity().getValue();
 		return storage;
 	}
 	
 	
-	public double getNICBandwidth(ServerType server) {
+	public double getNICBandwidth(Server server) {
 		double bandwidth = 0;
-		for(NICType nic : Utils.getAllNIC(server))
+		for(NIC nic : Utils.getAllNIC(server))
 			bandwidth += nic.getProcessingBandwidth().getValue();
 		return bandwidth;
 	}
 	
 		
-	public List<OptimizerWorkload> getAllOptimizerWorkload(ServerType server){
+	public List<OptimizerWorkload> getAllOptimizerWorkload(Server server){
 		
 		List<OptimizerWorkload> optimizerWorkloads = new ArrayList<OptimizerWorkload>();
 		
 
 		if(server.getNativeHypervisor() != null){
-			for(VirtualMachineType VM : server.getNativeHypervisor().getVirtualMachine()) {
+			for(VirtualMachine VM : server.getNativeHypervisor().getVirtualMachine()) {
 				try {
 					optimizerWorkloads.add(new OptimizerWorkload(VM));
 				} catch (OptimizerWorkload.CreationImpossible e) {
@@ -262,8 +262,8 @@ public class OptimizerServer {
 		}
 			
 		if(server.getNativeOperatingSystem() != null) {
-			for(HostedHypervisorType hostedHypervisor : server.getNativeOperatingSystem().getHostedHypervisor()) {
-				for(VirtualMachineType VM : hostedHypervisor.getVirtualMachine()) { 
+			for(HostedHypervisor hostedHypervisor : server.getNativeOperatingSystem().getHostedHypervisor()) {
+				for(VirtualMachine VM : hostedHypervisor.getVirtualMachine()) { 
 					try {
 						optimizerWorkloads.add(new OptimizerWorkload(VM));
 					} catch (OptimizerWorkload.CreationImpossible e) {
@@ -276,7 +276,7 @@ public class OptimizerServer {
 		return optimizerWorkloads;
 	}
 	
-	public PowerData getPower(IPowerCalculator powerCalculator, ServerType server){
+	public PowerData getPower(IPowerCalculator powerCalculator, Server server){
 		return powerCalculator.computePowerServer(server);
 	}
 	
@@ -300,14 +300,14 @@ public class OptimizerServer {
 	}
 	
 	//returns the VMs of the server (no copying)
-	List<VirtualMachineType> getVMs(ServerType server){
+	List<VirtualMachine> getVMs(Server server){
 		
 		if(server.getNativeHypervisor() != null)
 			return server.getNativeHypervisor().getVirtualMachine(); 
 		else if (server.getNativeOperatingSystem() != null && server.getNativeOperatingSystem().getHostedHypervisor().size() != 0)
 			return server.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 		else 
-			return new ArrayList<VirtualMachineType>();
+			return new ArrayList<VirtualMachine>();
 	}
 	
 	
@@ -315,17 +315,17 @@ public class OptimizerServer {
 	 * adds a VM to a server, simulating the increase of every loads
 	 * WARNING: workloads field is NOT updated
 	 */
-	public void addVM(final OptimizerWorkload WL, final AlgoType algoType, ServerType toServer){
+	public void addVM(final OptimizerWorkload WL, final AlgoType algoType, Server toServer){
 
 		Utils.addVM(WL, toServer, algoType);
 		
 	}
 		
-    public ServerStatusType getStatus(ServerType server){
+    public ServerStatus getStatus(Server server){
     	return server.getStatus();
     }
 
-    public void setStatus(ServerStatusType value, ServerType server) {
+    public void setStatus(ServerStatus value, Server server) {
     	server.setStatus(value);
     }
     

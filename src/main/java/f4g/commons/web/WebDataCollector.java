@@ -20,7 +20,7 @@ import java.util.Date;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.log4j.Logger;
-import f4g.schemas.java.actions.AbstractBaseActionType;
+import f4g.schemas.java.actions.AbstractBaseAction;
 
 /**
  * Collects data to be retrieved by the web UI.
@@ -33,8 +33,8 @@ public class WebDataCollector implements IWebDataCollector{
 
 	private static IWebDataCollector me = null;
 	
-	private ArrayList<JAXBElement<? extends AbstractBaseActionType>> actionList = 
-		new ArrayList<JAXBElement<? extends AbstractBaseActionType>>();
+	private ArrayList<JAXBElement<? extends AbstractBaseAction>> actionList = 
+		new ArrayList<JAXBElement<? extends AbstractBaseAction>>();
 
 	private boolean automatic;
 	
@@ -58,7 +58,7 @@ public class WebDataCollector implements IWebDataCollector{
 	}
 
 	@Override
-	public synchronized void addAction(JAXBElement<? extends AbstractBaseActionType> elem) {
+	public synchronized void addAction(JAXBElement<? extends AbstractBaseAction> elem) {
 		actionList.add(elem);
 		setLastUpdateTimestamp(new Date());			
 	}
@@ -73,7 +73,7 @@ public class WebDataCollector implements IWebDataCollector{
 	}
 
 	@Override
-	public ArrayList<JAXBElement<? extends AbstractBaseActionType>> getActionList() {
+	public ArrayList<JAXBElement<? extends AbstractBaseAction>> getActionList() {
 		log.debug("Returning list of actions");
 		return actionList;
 	}

@@ -63,34 +63,34 @@ import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
 import f4g.powerCalculator.power.PowerCalculator;
-import f4g.schemas.java.actions.AbstractBaseActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.actions.StandByActionType;
-import f4g.schemas.java.actions.StartJobActionType;
-import f4g.schemas.java.metamodel.CPUType;
-import f4g.schemas.java.metamodel.CoreLoadType;
-import f4g.schemas.java.metamodel.CoreType;
-import f4g.schemas.java.metamodel.CpuUsageType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.FrameworkStatusType;
-import f4g.schemas.java.metamodel.FrequencyType;
+import f4g.schemas.java.actions.AbstractBaseAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.actions.StandByAction;
+import f4g.schemas.java.actions.StartJobAction;
+import f4g.schemas.java.metamodel.CPU;
+import f4g.schemas.java.metamodel.CoreLoad;
+import f4g.schemas.java.metamodel.Core;
+import f4g.schemas.java.metamodel.CpuUsage;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.FrameworkStatus;
+import f4g.schemas.java.metamodel.Frequency;
 import f4g.schemas.java.IDREFS;
-import f4g.schemas.java.metamodel.IoRateType;
-import f4g.schemas.java.metamodel.JobPriorityType;
-import f4g.schemas.java.metamodel.JobPropOfNodesType;
-import f4g.schemas.java.metamodel.JobStatusType;
-import f4g.schemas.java.metamodel.JobTimeType;
-import f4g.schemas.java.metamodel.JobType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
-import f4g.schemas.java.metamodel.NodeStatusType;
-import f4g.schemas.java.metamodel.NrOfCoresType;
-import f4g.schemas.java.metamodel.NrOfNodesType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.RPMType;
-import f4g.schemas.java.metamodel.RackableServerType;
-import f4g.schemas.java.metamodel.ServerStatusType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.VoltageType;
+import f4g.schemas.java.metamodel.IoRate;
+import f4g.schemas.java.metamodel.JobPriority;
+import f4g.schemas.java.metamodel.JobPropOfNodes;
+import f4g.schemas.java.metamodel.JobStatus;
+import f4g.schemas.java.metamodel.JobTime;
+import f4g.schemas.java.metamodel.Job;
+import f4g.schemas.java.metamodel.MemoryUsage;
+import f4g.schemas.java.metamodel.NodeStatus;
+import f4g.schemas.java.metamodel.NrOfCores;
+import f4g.schemas.java.metamodel.NrOfNodes;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.RPM;
+import f4g.schemas.java.metamodel.RackableServer;
+import f4g.schemas.java.metamodel.ServerStatus;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.Voltage;
 
 /**
  * Implementation of the ICom interface for the Torque /PBS adaption scenario at 
@@ -505,7 +505,7 @@ public class ComPBS implements ICom, Runnable {
 			if(RECORDING){				
 				JuggleRecorder recorder = new JuggleRecorder(getName());
 				getRmKey();
-				FIT4GreenType modelCopyUpdated = getMonitor().getModelCopy();
+				FIT4Green modelCopyUpdated = getMonitor().getModelCopy();
 				PowerCalculator powerCalculator = new PowerCalculator();
 				powerCalculator.computePowerFIT4Green(modelCopyUpdated);
 				recorder.recordModel(modelCopyUpdated);				
@@ -558,10 +558,10 @@ public class ComPBS implements ICom, Runnable {
 			Object element = elements.next();
 
 			// The node is a worker node
-			if(((ServerType)element).getName().toString().matches("HPC_COMPUTE_NODE"))
+			if(((Server)element).getName().toString().matches("HPC_COMPUTE_NODE"))
 			{		
-				String id = ((ServerType)element).getFrameworkID();
-				NodeStatusType nodeStatusType = ((ServerType)element).getNativeOperatingSystem().getNode().get(0).getStatus();
+				String id = ((Server)element).getFrameworkID();
+				NodeStatus nodeStatusType = ((Server)element).getNativeOperatingSystem().getNode().get(0).getStatus();
 				NodeInfo.State state = NodeInfo.State.RESERVED;
 				switch(nodeStatusType){
 				case BUSY:
@@ -612,42 +612,42 @@ public class ComPBS implements ICom, Runnable {
 			changed = true;	
 			NodeInfo.State current_state = nodeInfo.getState();
 			nodeInfo.setState(nodeInfoNew.getState());				
-			NodeStatusType type = NodeStatusType.RESERVED;
-			ServerStatusType stype = ServerStatusType.ON;
+			NodeStatus type = NodeStatus.RESERVED;
+			ServerStatus stype = ServerStatus.ON;
 			switch(nodeInfo.getState()){
 			case BUSY:
-				type = NodeStatusType.BUSY;
-				stype = ServerStatusType.ON;
+				type = NodeStatus.BUSY;
+				stype = ServerStatus.ON;
 				break;
 			case DOWN:
 				if(!current_state.equals(NodeInfo.State.OFF)){
-					type = NodeStatusType.STANDBY;
-					stype = ServerStatusType.STANDBY;
+					type = NodeStatus.STANDBY;
+					stype = ServerStatus.STANDBY;
 				}									
 				break;
 			case IDLE:
-				type = NodeStatusType.IDLE;
-				stype = ServerStatusType.ON;
+				type = NodeStatus.IDLE;
+				stype = ServerStatus.ON;
 				break;
 			case OFF:
-				type = NodeStatusType.OFF;
-				stype = ServerStatusType.OFF;
+				type = NodeStatus.OFF;
+				stype = ServerStatus.OFF;
 				break;
 			case RESERVED:
 				log.debug("Set node to RESERVED");
-				stype = ServerStatusType.ON;
+				stype = ServerStatus.ON;
 				break;
 			case RUNNING:
-				type = NodeStatusType.RUNNING;
-				stype = ServerStatusType.ON;
+				type = NodeStatus.RUNNING;
+				stype = ServerStatus.ON;
 				break;
 			case STANDBY:
-				type = NodeStatusType.STANDBY;
-				stype = ServerStatusType.STANDBY;
+				type = NodeStatus.STANDBY;
+				stype = ServerStatus.STANDBY;
 				break;
 			case HYBERNATED:
-				type = NodeStatusType.HYBERNATED;
-				stype = ServerStatusType.STANDBY;
+				type = NodeStatus.HYBERNATED;
+				stype = ServerStatus.STANDBY;
 				break;
 			}			
 			operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/status", type));
@@ -656,8 +656,8 @@ public class ComPBS implements ICom, Runnable {
 		else{			
 			if(getNodeInfoMap().get(nodeInfoNew.getId()).getState().equals(NodeInfo.State.IDLE)
 					&& !getUsedNodes().contains(nodeInfoNew.getId())){				
-				operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/status", NodeStatusType.IDLE));
-				operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/status", ServerStatusType.ON));
+				operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/status", NodeStatus.IDLE));
+				operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/status", ServerStatus.ON));
 				operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/coresInUse", String.valueOf(0)));
 				if(USE_POWERSAVE_GOV && !USE_ACPI_STANDBY && nodeInfo.getGovernor().equals(NodeInfo.Governor.POWERSAVE) ){
 					changed = false;
@@ -667,8 +667,8 @@ public class ComPBS implements ICom, Runnable {
 				}
 			}
 			//			if(getNodeInfoMap().get(nodeInfoNew.getId()).getState().equals(NodeInfo.State.STANDBY)){
-			//				operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/status", NodeStatusType.STANDBY));
-			//				operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/status", ServerStatusType.STANDBY));
+			//				operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/status", NodeStatus.STANDBY));
+			//				operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/status", ServerStatus.STANDBY));
 			//			}
 
 		}
@@ -750,7 +750,7 @@ public class ComPBS implements ICom, Runnable {
 					Thread.sleep(2 * 1000);					
 				}
 			} catch (InterruptedException e) {
-				getMonitor().setFrameworkStatus(getName(), FrameworkStatusType.STOPPED);
+				getMonitor().setFrameworkStatus(getName(), FrameworkStatus.STOPPED);
 				error_counter++;
 				e.printStackTrace();				
 			}
@@ -780,13 +780,13 @@ public class ComPBS implements ICom, Runnable {
 		block_update = true;
 		log.info("Com " + getName() + " block updates");
 		while (iterator.hasNext()) {
-			JAXBElement<? extends AbstractBaseActionType> elem;
-			elem = (JAXBElement<? extends AbstractBaseActionType>) iterator.next();
+			JAXBElement<? extends AbstractBaseAction> elem;
+			elem = (JAXBElement<? extends AbstractBaseAction>) iterator.next();
 			Object action = elem.getValue();
 			action = elem.getValue().getClass().cast(action);
 
-			if (StandByActionType.class.isInstance(action)) {
-				String node = ((StandByActionType) action).getNodeName();
+			if (StandByAction.class.isInstance(action)) {
+				String node = ((StandByAction) action).getNodeName();
 				if(USE_POWERSAVE_GOV){
 					if(POWERSAVE_GOV_CMD.equals("")|| PERFORMANCE_GOV_CMD.equals("")){
 						log.info("Powersave or Performance Governor command not set in properties file");
@@ -801,26 +801,26 @@ public class ComPBS implements ICom, Runnable {
 					}					
 				}
 				if(USE_ACPI_STANDBY){
-					if(!standBy((StandByActionType) action)){
-						log.info("Standby action on " + ((StandByActionType) action).getNodeName() + " was not successful");
+					if(!standBy((StandByAction) action)){
+						log.info("Standby action on " + ((StandByAction) action).getNodeName() + " was not successful");
 					}
 					else{
-						log.info("Standby action on " + ((StandByActionType) action).getNodeName() + " successfully executed");
+						log.info("Standby action on " + ((StandByAction) action).getNodeName() + " successfully executed");
 					}
 				}				
-			} else if (PowerOnActionType.class.isInstance(action)) {
-				if(!powerOn((PowerOnActionType) action)){
-					log.info("Wake up action on " + ((PowerOnActionType) action).getNodeName() + " was not successful");
+			} else if (PowerOnAction.class.isInstance(action)) {
+				if(!powerOn((PowerOnAction) action)){
+					log.info("Wake up action on " + ((PowerOnAction) action).getNodeName() + " was not successful");
 				}
 				else{
-					log.info("Wake up action on " + ((PowerOnActionType) action).getNodeName() + " successfully executed");
+					log.info("Wake up action on " + ((PowerOnAction) action).getNodeName() + " successfully executed");
 				}	
-			} else if (StartJobActionType.class.isInstance(action)) {
-				if(!startJob((StartJobActionType) action)){
-					log.info("Start job action of " + ((StartJobActionType) action).getJobID() + " was not successful");
+			} else if (StartJobAction.class.isInstance(action)) {
+				if(!startJob((StartJobAction) action)){
+					log.info("Start job action of " + ((StartJobAction) action).getJobID() + " was not successful");
 				}
 				else{
-					log.info("Start job action of " + ((StartJobActionType) action).getJobID() + " successfully executed");
+					log.info("Start job action of " + ((StartJobAction) action).getJobID() + " successfully executed");
 				}	
 			} 
 		}
@@ -840,12 +840,12 @@ public class ComPBS implements ICom, Runnable {
 	 * 
 	 * Starts a new job by sending an appropriate request to the proxy
 	 * 
-	 * @param action - The StartJobActionType object holds information about 
+	 * @param action - The StartJobAction object holds information about 
 	 * the job id and the nodes to be used
 	 * 
 	 * @author Andre Giesler
 	 */
-	private boolean startJob(StartJobActionType action) {
+	private boolean startJob(StartJobAction action) {
 		if(ACTIONS_OFF){
 			action.setForwarded(false);
 			return false;
@@ -862,7 +862,7 @@ public class ComPBS implements ICom, Runnable {
 			if(getNodeInfoMap().get(node) != null && getNodeInfoMap().get(node).getState() == NodeInfo.State.STANDBY
 					|| getNodeInfoMap().get(node).getState() == NodeInfo.State.OFF){
 				wakeupSuccessMap.put(node, false);				
-				PowerOnActionType act = new PowerOnActionType();
+				PowerOnAction act = new PowerOnAction();
 				act.setFrameworkName(node);
 				act.setNodeName(node);
 				log.info("Start wake up thread on node " + node + " for job " + action.getJobID());				
@@ -974,8 +974,8 @@ public class ComPBS implements ICom, Runnable {
 						getNodeInfoMap().get(s).setNumOfUsedCores(param_cores[j]);
 						getNodeInfoMap().get(s).getJobRefs().add(id);
 						ComOperationCollector operation = new ComOperationCollector();
-						operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/status", NodeStatusType.RUNNING));
-						operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/status", ServerStatusType.ON));					
+						operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/status", NodeStatus.RUNNING));
+						operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/status", ServerStatus.ON));					
 						operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/coresInUse", String.valueOf(param_cores[j])));
 						getMonitor().simpleUpdateNode(host2Key(s), operation);
 						getMonitor().updateNode(getName() + "_" + s, this);
@@ -1079,12 +1079,12 @@ public class ComPBS implements ICom, Runnable {
 	 * 
 	 * Activates a node which was set to sleep status before
 	 * 
-	 * @param action - The PowerOnActionType object holds information about 
+	 * @param action - The PowerOnAction object holds information about 
 	 * the node that should be powered on.
 	 * 
 	 * @author Andre Giesler
 	 */
-	private boolean powerOn(PowerOnActionType action) {
+	private boolean powerOn(PowerOnAction action) {
 		if(ACTIONS_OFF){
 			action.setForwarded(false);
 			return false;
@@ -1125,8 +1125,8 @@ public class ComPBS implements ICom, Runnable {
 					}
 					getNodeInfoMap().get(action.getNodeName()).setState(NodeInfo.State.IDLE);
 					ComOperationCollector operation = new ComOperationCollector();
-					operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/status", NodeStatusType.IDLE));
-					operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/status", ServerStatusType.ON));
+					operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/status", NodeStatus.IDLE));
+					operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/status", ServerStatus.ON));
 					getMonitor().simpleUpdateNode(host2Key(node), operation);
 				}	
 				else{
@@ -1267,12 +1267,12 @@ public class ComPBS implements ICom, Runnable {
 	 * 
 	 * Sets a node to sleep modus
 	 * 
-	 * @param action - The PowerOffActionType object holds information about 
+	 * @param action - The PowerOffAction object holds information about 
 	 * the node that should be powered off.
 	 * 
 	 * @author Andre Giesler
 	 */
-	private boolean standBy(StandByActionType action) {
+	private boolean standBy(StandByAction action) {
 		if(ACTIONS_OFF){
 			action.setForwarded(false);
 			return false;
@@ -1313,8 +1313,8 @@ public class ComPBS implements ICom, Runnable {
 					}
 					getNodeInfoMap().get(action.getNodeName()).setState(NodeInfo.State.STANDBY);
 					ComOperationCollector operation = new ComOperationCollector();
-					operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/status", NodeStatusType.STANDBY));
-					operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/status", ServerStatusType.STANDBY));
+					operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/nativeOperatingSystem/node[1]/status", NodeStatus.STANDBY));
+					operation.add(new ComOperation(ComOperation.TYPE_UPDATE, "/status", ServerStatus.STANDBY));
 					getMonitor().simpleUpdateNode(host2Key(node), operation);
 				}	
 				else{
@@ -1340,7 +1340,7 @@ public class ComPBS implements ICom, Runnable {
 	 * 
 	 * Sets a node to sleep modus
 	 * 
-	 * @param action - The PowerOffActionType object holds information about 
+	 * @param action - The PowerOffAction object holds information about 
 	 * the node that should be powered off.
 	 * 
 	 * @author Andre Giesler
@@ -1395,7 +1395,7 @@ public class ComPBS implements ICom, Runnable {
 	 * 
 	 * Sets a node to sleep modus
 	 * 
-	 * @param action - The PowerOffActionType object holds information about 
+	 * @param action - The PowerOffAction object holds information about 
 	 * the node that should be powered off.
 	 * 
 	 * @author Andre Giesler
@@ -1451,10 +1451,10 @@ public class ComPBS implements ICom, Runnable {
 	@Override
 	public boolean executeUpdate(String arg0, Object arg1) {
 		if(arg0 == getRmKey()){
-			executeJobUpdate((ServerType)arg1);
+			executeJobUpdate((Server)arg1);
 		}
 		else{
-			executeNodeUpdate((ServerType)arg1);
+			executeNodeUpdate((Server)arg1);
 		}
 		return false;
 	}
@@ -1465,24 +1465,24 @@ public class ComPBS implements ICom, Runnable {
 	 * 
 	 * @param serverType
 	 */
-	private synchronized void executeNodeUpdate(ServerType serverType) {
+	private synchronized void executeNodeUpdate(Server serverType) {
 		NodeInfo nodeInfo = getNodeInfoMap().get(serverType.getFrameworkID());
 
-		RackableServerType rServer = (RackableServerType)serverType;
+		RackableServer rServer = (RackableServer)serverType;
 
-		if(rServer.getStatus().equals(ServerStatusType.OFF)){
-			rServer.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.OFF);
+		if(rServer.getStatus().equals(ServerStatus.OFF)){
+			rServer.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.OFF);
 			nodeInfo.setState(NodeInfo.State.OFF);
 		}
 
-		PowerType pt = new PowerType(getPowerPerNodeMap().get(nodeInfo.getId()));
+		Power pt = new Power(getPowerPerNodeMap().get(nodeInfo.getId()));
 		rServer.setMeasuredPower(pt);
 
 		if(nodeInfo.getJobRefs() != null && nodeInfo.getJobRefs().size()>0){		
 			if(rServer.getNativeOperatingSystem().getNode().get(0).getJobRef() != null){
 				try {
 					rServer.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().clear();
-					rServer.getNativeOperatingSystem().getNode().get(0).setCoresInUse(new NrOfCoresType(0));
+					rServer.getNativeOperatingSystem().getNode().get(0).setCoresInUse(new NrOfCores(0));
 				} catch (UnsupportedOperationException e) {
 					log.error(e.getMessage());
 				}
@@ -1491,7 +1491,7 @@ public class ComPBS implements ICom, Runnable {
 			else{
 				IDREFS idrefs = new IDREFS();
 				rServer.getNativeOperatingSystem().getNode().get(0).setJobRef(idrefs);
-				rServer.getNativeOperatingSystem().getNode().get(0).setCoresInUse(new NrOfCoresType(0));
+				rServer.getNativeOperatingSystem().getNode().get(0).setCoresInUse(new NrOfCores(0));
 			}
 
 			int nr_of_used_cores = 0;
@@ -1502,11 +1502,11 @@ public class ComPBS implements ICom, Runnable {
 				if(!id.startsWith("_")){
 					id = "_" + id;
 				}
-				RackableServerType rmKeyServer = (RackableServerType)getMonitor().getMonitoredObjectsCopy(getName()).get(getRmKey());			
-				Iterator<JobType> jobTypeIter = rmKeyServer.getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs().iterator();				
+				RackableServer rmKeyServer = (RackableServer)getMonitor().getMonitoredObjectsCopy(getName()).get(getRmKey());			
+				Iterator<Job> jobTypeIter = rmKeyServer.getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs().iterator();				
 				while(jobTypeIter.hasNext())
 				{
-					JobType tempJob =  (JobType) jobTypeIter.next();
+					Job tempJob =  (Job) jobTypeIter.next();
 					if(rServer.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().contains(tempJob)){
 						continue;
 					}
@@ -1517,7 +1517,7 @@ public class ComPBS implements ICom, Runnable {
 						continue;
 					}
 				}
-				rServer.getNativeOperatingSystem().getNode().get(0).setCoresInUse(new NrOfCoresType(nr_of_used_cores));				
+				rServer.getNativeOperatingSystem().getNode().get(0).setCoresInUse(new NrOfCores(nr_of_used_cores));				
 			}
 			log.info("Set Nr of used cores at node " + nodeInfo.getId() + " to: " + nr_of_used_cores);
 			if(nr_of_used_cores==0){
@@ -1529,8 +1529,8 @@ public class ComPBS implements ICom, Runnable {
 			if(rServer.getNativeOperatingSystem().getNode().get(0).getJobRef()!=null){
 				rServer.getNativeOperatingSystem().getNode().get(0).getJobRef().getValue().clear();	
 				rServer.getNativeOperatingSystem().getNode().get(0).setJobRef(null);
-				//rServer.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatusType.IDLE);
-				rServer.getNativeOperatingSystem().getNode().get(0).setCoresInUse(new NrOfCoresType(0));
+				//rServer.getNativeOperatingSystem().getNode().get(0).setStatus(NodeStatus.IDLE);
+				rServer.getNativeOperatingSystem().getNode().get(0).setCoresInUse(new NrOfCores(0));
 				log.debug("Nulled IDREFS at node " + nodeInfo.getId());
 			}
 		}
@@ -1557,46 +1557,46 @@ public class ComPBS implements ICom, Runnable {
 							index++;
 							double core = (core_logical_1 + core_logical_2)/2;
 							log.debug("CPU" + i +  " Hyperthreaded CORE" + j + " Usage: " + core);
-							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j).setCoreLoad(new CoreLoadType(core));
-							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j + threading_indexer/HYPERTHREADED_CORES).setCoreLoad(new CoreLoadType(0.0));
+							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j).setCoreLoad(new CoreLoad(core));
+							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j + threading_indexer/HYPERTHREADED_CORES).setCoreLoad(new CoreLoad(0.0));
 							cpu += core;
 							double core_freq = frequency_values[index_freq++];
 							log.debug("CPU" + i +  " Hyperthreaded CORE" + j + " frequency: " + core_freq);
-							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j).setFrequency(new FrequencyType(core_freq));	
-							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j + threading_indexer/HYPERTHREADED_CORES).setFrequency(new FrequencyType(0.0));
+							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j).setFrequency(new Frequency(core_freq));	
+							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j + threading_indexer/HYPERTHREADED_CORES).setFrequency(new Frequency(0.0));
 						}
 					}
 					else{
 						for (int j = 0; j < nr_of_cores; j++) {					
 							double core = usage_values[index++];
 							log.debug("CPU" + i +  "CORE" + j + " Usage: " + core);
-							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j).setCoreLoad(new CoreLoadType(core));
+							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j).setCoreLoad(new CoreLoad(core));
 							cpu += core;
 							double core_freq = frequency_values[index_freq++];
 							log.debug("CPU" + i +  "CORE" + j + " frequency: " + core_freq);
-							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j).setFrequency(new FrequencyType(core_freq));
+							rServer.getMainboard().get(0).getCPU().get(i).getCore().get(j).setFrequency(new Frequency(core_freq));
 						}
 					}
 
 					cpu = cpu / nr_of_cores;
 					log.debug("CPU" + i + " Usage: " + cpu);
-					rServer.getMainboard().get(0).getCPU().get(i).setCpuUsage(new CpuUsageType(cpu));
+					rServer.getMainboard().get(0).getCPU().get(i).setCpuUsage(new CpuUsage(cpu));
 				}
 				log.info("All CPU Usage: " + nodeInfo.getCpuUsage());
-				rServer.getNativeOperatingSystem().getNode().get(0).setActualCPUUsage(new CpuUsageType(nodeInfo.getCpuUsage()));
+				rServer.getNativeOperatingSystem().getNode().get(0).setActualCPUUsage(new CpuUsage(nodeInfo.getCpuUsage()));
 			}			
 
 			//update core voltage
 			double[] voltage_val = getCoreVoltagePerNodeMap().get(nodeInfo.getId());
 			if(voltage_val!=null){			
-				ListIterator<CPUType> cpu_it = rServer.getMainboard().get(0).getCPU().listIterator();
+				ListIterator<CPU> cpu_it = rServer.getMainboard().get(0).getCPU().listIterator();
 				while(cpu_it.hasNext()){
 					int i = 0;
-					CPUType cpuType = cpu_it.next();
-					ListIterator<CoreType> core_it = cpuType.getCore().listIterator();
+					CPU cpuType = cpu_it.next();
+					ListIterator<Core> core_it = cpuType.getCore().listIterator();
 					while(core_it.hasNext()){
-						CoreType coreType = core_it.next();
-						coreType.setVoltage(new VoltageType(voltage_val[i]));
+						Core coreType = core_it.next();
+						coreType.setVoltage(new Voltage(voltage_val[i]));
 					}
 					i++;
 				}
@@ -1612,8 +1612,8 @@ public class ComPBS implements ICom, Runnable {
 				ramStickSum += ramStickSize;			
 			}
 
-			rServer.getMainboard().get(0).setMemoryUsage(new MemoryUsageType(ramStickSum - mem_free_usage_val));
-			rServer.getNativeOperatingSystem().setSystemRAMBaseUsage(new MemoryUsageType(ramStickSum - mem_free_usage_val));
+			rServer.getMainboard().get(0).setMemoryUsage(new MemoryUsage(ramStickSum - mem_free_usage_val));
+			rServer.getNativeOperatingSystem().setSystemRAMBaseUsage(new MemoryUsage(ramStickSum - mem_free_usage_val));
 
 			//update fan's actual RPMs
 			int[] actualRPM_values = getFanActualRPMPerNodeMap().get(nodeInfo.getId());
@@ -1622,7 +1622,7 @@ public class ComPBS implements ICom, Runnable {
 				for(int i=0;i<rpm_list_length;i++){
 					int fan = actualRPM_values[i];
 					log.info("Fan Nr." + i + " actual RPM: " + fan);
-					rServer.getFan().get(i).setActualRPM(new RPMType(fan));
+					rServer.getFan().get(i).setActualRPM(new RPM(fan));
 				}
 			}
 
@@ -1631,8 +1631,8 @@ public class ComPBS implements ICom, Runnable {
 			log.info("Read rate: " + readrate_val);
 			double writerate_val = getStorageUnitWriteRatePerNodeMap().get(nodeInfo.getId());
 			log.info("Write rate: " + writerate_val);
-			rServer.getMainboard().get(0).getHardDisk().get(0).setReadRate(new IoRateType(readrate_val));
-			rServer.getMainboard().get(0).getHardDisk().get(0).setWriteRate(new IoRateType(writerate_val));
+			rServer.getMainboard().get(0).getHardDisk().get(0).setReadRate(new IoRate(readrate_val));
+			rServer.getMainboard().get(0).getHardDisk().get(0).setWriteRate(new IoRate(writerate_val));
 		}
 	}
 
@@ -1643,12 +1643,12 @@ public class ComPBS implements ICom, Runnable {
 	 *
 	 * @author Daniel Brinkers
 	 */
-	private synchronized void executeJobUpdate(ServerType serverType) {
+	private synchronized void executeJobUpdate(Server serverType) {
 		//Getting running jobs from queue
-		Iterator<JobType> iterator = serverType.getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs().iterator();
-		List<JobType> jobTypeList = serverType.getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs();
+		Iterator<Job> iterator = serverType.getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs().iterator();
+		List<Job> jobTypeList = serverType.getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs();
 		while(iterator.hasNext()){
-			JobType jobType = iterator.next();
+			Job jobType = iterator.next();
 			String key = jobType.getFrameworkID();
 
 			//Updating changed jobs
@@ -1657,14 +1657,14 @@ public class ComPBS implements ICom, Runnable {
 				JobInfo jobInfo = getJobInfoMap().get(jobInfoNew.getId());
 				JobInfo.State old_state = jobInfo.getState();
 				jobInfo.setState(jobInfoNew.getState());
-				JobStatusType jobStatusType = JobStatusType.QUEUED;
+				JobStatus jobStatusType = JobStatus.QUEUED;
 				switch(jobInfo.getState()){
 				case QUEUED:
-					jobStatusType = JobStatusType.QUEUED;
+					jobStatusType = JobStatus.QUEUED;
 					jobInfo.setState(JobInfo.State.QUEUED);
 					break;
 				case RUNNING:
-					jobStatusType = JobStatusType.RUNNING;
+					jobStatusType = JobStatus.RUNNING;
 					jobInfo.setState(JobInfo.State.RUNNING);
 					break;
 				}
@@ -1676,7 +1676,7 @@ public class ComPBS implements ICom, Runnable {
 				//mm update? - not included in mm?
 
 				jobInfo.setStartTime(jobInfoNew.getStartTime());
-				jobType.setTimeOfStart(new JobTimeType(jobInfoNew.getStartTime()));
+				jobType.setTimeOfStart(new JobTime(jobInfoNew.getStartTime()));
 				log.info("Job state of " + key + " changed from " + old_state + " to " + jobInfo.getState() );
 			}
 			else if(getJobInfoMap().containsKey(key)){
@@ -1707,27 +1707,27 @@ public class ComPBS implements ICom, Runnable {
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
-			JobType jobType = new JobType();
+			Job jobType = new Job();
 			jobType.setFrameworkID(jobInfo.getId());
 			log.info("Adding new job " + jobInfo.getId() + " to jobList");
 			jobType.setFrameworkRef(serverType.getFrameworkRef());
 			jobType.setId(jobInfo.getId());
-			jobType.setNeededCoresPerNode(new NrOfCoresType(jobInfo.getnCores()));
-			jobType.setNeededCPUSpeed(new FrequencyType(0));
-			jobType.setNeededMemory(new MemoryUsageType(jobInfo.getMemory()/1024));
-			jobType.setNumberOfNodes(new NrOfNodesType(jobInfo.getnNodes()));
-			jobType.setPriority(new JobPriorityType(jobInfo.getPriority()));
+			jobType.setNeededCoresPerNode(new NrOfCores(jobInfo.getnCores()));
+			jobType.setNeededCPUSpeed(new Frequency(0));
+			jobType.setNeededMemory(new MemoryUsage(jobInfo.getMemory()/1024));
+			jobType.setNumberOfNodes(new NrOfNodes(jobInfo.getnNodes()));
+			jobType.setPriority(new JobPriority(jobInfo.getPriority()));
 			log.info("Priority " + jobInfo.getPriority());
 			jobType.getPropertiesOfNodes().clear();
-			jobType.getPropertiesOfNodes().add(JobPropOfNodesType.TO_BE_REVISED);
+			jobType.getPropertiesOfNodes().add(JobPropOfNodes.TO_BE_REVISED);
 
 			switch(jobInfo.getState()){
 			case QUEUED:
-				jobType.setStatus(JobStatusType.QUEUED);
+				jobType.setStatus(JobStatus.QUEUED);
 				jobInfo.setState(JobInfo.State.QUEUED);
 				break;
 			case RUNNING:
-				jobType.setStatus(JobStatusType.RUNNING);
+				jobType.setStatus(JobStatus.RUNNING);
 				jobInfo.setState(JobInfo.State.RUNNING);
 				break;
 			}
@@ -1736,19 +1736,19 @@ public class ComPBS implements ICom, Runnable {
 				jobInfo.setStartTime(0);
 			}
 			log.info("Start time " + jobInfo.getStartTime());
-			jobType.setTimeOfStart(new JobTimeType(jobInfo.getStartTime()));
+			jobType.setTimeOfStart(new JobTime(jobInfo.getStartTime()));
 
 			if(jobInfo.getSubmitTime()<0){
 				jobInfo.setSubmitTime(0);
 			}
 			log.info("Submission time " + jobInfo.getSubmitTime());
-			jobType.setTimeOfSubmission(new JobTimeType(jobInfo.getSubmitTime()));
+			jobType.setTimeOfSubmission(new JobTime(jobInfo.getSubmitTime()));
 
 			if(jobInfo.getWallTime()<0){
 				jobInfo.setWallTime(0);
 			}
 			log.info("Wall time " + jobInfo.getWallTime());
-			jobType.setWallTime(new JobTimeType(jobInfo.getWallTime()));
+			jobType.setWallTime(new JobTime(jobInfo.getWallTime()));
 
 			jobTypeList.add(jobType);
 		}
@@ -1756,7 +1756,7 @@ public class ComPBS implements ICom, Runnable {
 		iterator = serverType.getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs().iterator();
 		jobTypeList = serverType.getNativeOperatingSystem().getClusterManagement().get(0).getQueue().getJobs();
 		while(iterator.hasNext()){
-			JobType jobType = iterator.next();
+			Job jobType = iterator.next();
 			String key = jobType.getFrameworkID();
 			log.debug(key + " is monitored");
 		}
@@ -1971,11 +1971,11 @@ public class ComPBS implements ICom, Runnable {
 					setRmKey(key);
 			}
 
-			getMonitor().setFrameworkStatus(getName(), FrameworkStatusType.STARTING);
+			getMonitor().setFrameworkStatus(getName(), FrameworkStatus.STARTING);
 
 			startUpdate();
 
-			getMonitor().setFrameworkStatus(getName(), FrameworkStatusType.RUNNING);
+			getMonitor().setFrameworkStatus(getName(), FrameworkStatus.RUNNING);
 
 			return true;
 
@@ -2005,7 +2005,7 @@ public class ComPBS implements ICom, Runnable {
 	public boolean stopUpdate() {
 		log.info("Trying to interrupt update thread...");
 		getThread().interrupt();
-		getMonitor().setFrameworkStatus(getName(), FrameworkStatusType.STOPPED);
+		getMonitor().setFrameworkStatus(getName(), FrameworkStatus.STOPPED);
 		log.info("Update thread successfully stopped");
 		return false;
 	}
@@ -2246,11 +2246,11 @@ public class ComPBS implements ICom, Runnable {
 //	}
 
 	class WakeUpWorker extends Thread{
-		PowerOnActionType action;
+		PowerOnAction action;
 		String name;
 		HashMap<String, Boolean> wakeupSuccessMap;
 
-		public WakeUpWorker(ThreadGroup group, String name, PowerOnActionType action, HashMap<String, Boolean> wakeupSuccessMap)
+		public WakeUpWorker(ThreadGroup group, String name, PowerOnAction action, HashMap<String, Boolean> wakeupSuccessMap)
 		{
 			super(group, name);
 			this.action = action;
@@ -2272,11 +2272,11 @@ public class ComPBS implements ICom, Runnable {
 	}
 
 	class SetStandbyWorker extends Thread{
-		StandByActionType action;
+		StandByAction action;
 		String name;
 		HashMap<String, Boolean> standbySuccessMap;
 
-		public SetStandbyWorker(ThreadGroup group, String name, StandByActionType action, HashMap<String, Boolean> standbySuccessMap)
+		public SetStandbyWorker(ThreadGroup group, String name, StandByAction action, HashMap<String, Boolean> standbySuccessMap)
 		{
 			super(group, name);
 			this.action = action;

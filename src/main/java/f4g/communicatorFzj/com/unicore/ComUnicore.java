@@ -32,10 +32,10 @@ import org.apache.log4j.Logger;
 import f4g.commons.com.ICom;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
-import f4g.schemas.java.allocation.HpcClusterAllocationResponseType;
-import f4g.schemas.java.allocation.HpcClusterAllocationType;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
+import f4g.schemas.java.allocation.HpcClusterAllocationResponse;
+import f4g.schemas.java.allocation.HpcClusterAllocation;
 
 /**
  * Implementation of the ICom interface for the Unicore F4G communication
@@ -65,10 +65,10 @@ public class ComUnicore implements ICom   {
 	protected String generateHPCAllocRequest(int nr_of_nodes, int needed_cores, 
 			int needed_mem,  long walltime, boolean energy_aware, 
 			long latest_finish,	String suitable_clusters, String benchmark_id){
-		AllocationRequestType request = new AllocationRequestType();
+		AllocationRequest request = new AllocationRequest();
 
 		//Creates a request
-		HpcClusterAllocationType hpcRequest = new HpcClusterAllocationType();
+		HpcClusterAllocation hpcRequest = new HpcClusterAllocation();
 		hpcRequest.setNumberOfNodes(nr_of_nodes);
 		log.info("HPC Alloc Request: NrofNodes " + nr_of_nodes);
 		hpcRequest.setNeededCoresPerNode(needed_cores);
@@ -90,9 +90,9 @@ public class ComUnicore implements ICom   {
 
 		request.setRequest((allocationFactory.createHpcClusterAllocation(hpcRequest)));
 
-		AllocationResponseType response = getMonitor().allocateResource(request);
+		AllocationResponse response = getMonitor().allocateResource(request);
 
-		HpcClusterAllocationResponseType hpcResponse = (HpcClusterAllocationResponseType)response.getResponse().getValue();
+		HpcClusterAllocationResponse hpcResponse = (HpcClusterAllocationResponse)response.getResponse().getValue();
 
 		log.info("Selected cluster ID: " + hpcResponse.getClusterId()); 
 		

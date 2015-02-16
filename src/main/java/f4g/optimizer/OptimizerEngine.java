@@ -29,20 +29,20 @@ import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.metamodel.DatacenterType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.ServerStatusType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
-import f4g.schemas.java.actions.AbstractBaseActionType;
-import f4g.schemas.java.actions.ActionRequestType;
-import f4g.schemas.java.actions.LiveMigrateVMActionType;
-import f4g.schemas.java.actions.MoveVMActionType;
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
+import f4g.schemas.java.metamodel.Datacenter;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.ServerStatus;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.VirtualMachine;
+import f4g.schemas.java.actions.AbstractBaseAction;
+import f4g.schemas.java.actions.ActionRequest;
+import f4g.schemas.java.actions.LiveMigrateVMAction;
+import f4g.schemas.java.actions.MoveVMAction;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
 
 
 import com.google.common.base.Predicate;
@@ -63,7 +63,7 @@ import static javax.measure.unit.SI.*;
  */
 public abstract class OptimizerEngine implements Runnable  {
 
-	private FIT4GreenType globalOptimizationRequest;
+	private FIT4Green globalOptimizationRequest;
 	private Thread engineThread;
 	
 	public Logger log;  
@@ -116,7 +116,7 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * @param allocationRequest Data structure describing the resource allocation request 
 	 * @return A data structure representing the result of the allocation
 	 */
-	public abstract AllocationResponseType allocateResource(AllocationRequestType allocationRequest, FIT4GreenType model);
+	public abstract AllocationResponse allocateResource(AllocationRequest allocationRequest, FIT4Green model);
 	
 	/**
 	 * Handles a request for a global optimization
@@ -124,7 +124,7 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * @param model the f4g model
 	 * @return true if successful, false otherwise
 	 */
-	public void performGlobalOptimization(FIT4GreenType model) {
+	public void performGlobalOptimization(FIT4Green model) {
 		
 		log.debug("OptimizerEngine: performGlobalOptimization: starting global optimization thread run.");
 		
@@ -160,7 +160,7 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * @param model the f4g model
 	 * @return the f4g model
 	 */
-	public abstract void runGlobalOptimization(FIT4GreenType model);
+	public abstract void runGlobalOptimization(FIT4Green model);
 	
 
 
@@ -168,40 +168,40 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * performs the moves in a data center
 	 * 
 	 */
-	protected FIT4GreenType performMoves(List<AbstractBaseActionType> moves, FIT4GreenType federation) {
+	protected FIT4Green performMoves(List<AbstractBaseAction> moves, FIT4Green federation) {
 
 		Cloner cloner = new Cloner();
-		FIT4GreenType newfederation = cloner.deepClone(federation);
+		FIT4Green newfederation = cloner.deepClone(federation);
 		
-		for (AbstractBaseActionType move : moves){
+		for (AbstractBaseAction move : moves){
 			String source = "";
 			String dest = "";
 			String virtualMachine = "";
 			
-			if (move instanceof MoveVMActionType) {
-				source = ((MoveVMActionType)move).getSourceNodeController();	
-				dest = ((MoveVMActionType)move).getDestNodeController();
-				virtualMachine = ((MoveVMActionType)move).getVirtualMachine();
-			} else if (move instanceof LiveMigrateVMActionType) {
-				source = ((LiveMigrateVMActionType)move).getSourceNodeController();	
-				dest = ((LiveMigrateVMActionType)move).getDestNodeController();
-				virtualMachine = ((LiveMigrateVMActionType)move).getVirtualMachine();
+			if (move instanceof MoveVMAction) {
+				source = ((MoveVMAction)move).getSourceNodeController();	
+				dest = ((MoveVMAction)move).getDestNodeController();
+				virtualMachine = ((MoveVMAction)move).getVirtualMachine();
+			} else if (move instanceof LiveMigrateVMAction) {
+				source = ((LiveMigrateVMAction)move).getSourceNodeController();	
+				dest = ((LiveMigrateVMAction)move).getDestNodeController();
+				virtualMachine = ((LiveMigrateVMAction)move).getVirtualMachine();
 			}	
 			
-			ServerType oldServer = Utils.findServerByName(newfederation, source);
-			ServerType newServer = Utils.findServerByName(newfederation, dest);
+			Server oldServer = Utils.findServerByName(newfederation, source);
+			Server newServer = Utils.findServerByName(newfederation, dest);
 			
-			VirtualMachineType VM = Utils.findVirtualMachineByName(Utils.getVMs(oldServer), virtualMachine);
+			VirtualMachine VM = Utils.findVirtualMachineByName(Utils.getVMs(oldServer), virtualMachine);
 					
 			//remove the VM from source server
-			List<VirtualMachineType> oldServerVMs = getVMList(oldServer);
+			List<VirtualMachine> oldServerVMs = getVMList(oldServer);
 			if(oldServerVMs != null)
 				oldServerVMs.remove(VM);
 			else
 				log.error("performMoves: No hypervisor found in the source server!");
 
 			//add VM in the destination server
-			List<VirtualMachineType> newServerVMs = getVMList(newServer);
+			List<VirtualMachine> newServerVMs = getVMList(newServer);
 			if(newServerVMs != null)
 				newServerVMs.add(VM);
 			else
@@ -212,7 +212,7 @@ public abstract class OptimizerEngine implements Runnable  {
 	
 	}
 	
-	protected FIT4GreenType performOnOffs(List<PowerOnActionType> ons, List<PowerOffActionType> offs, FIT4GreenType federation){
+	protected FIT4Green performOnOffs(List<PowerOnAction> ons, List<PowerOffAction> offs, FIT4Green federation){
 		return performOffs(offs, performOns(ons, federation));
 	}
 	
@@ -222,15 +222,15 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * performs the switchs on in a data center
 	 * 
 	 */
-	protected FIT4GreenType performOns(List<PowerOnActionType> ons, FIT4GreenType federation) {
+	protected FIT4Green performOns(List<PowerOnAction> ons, FIT4Green federation) {
 
 		Cloner cloner=new Cloner();
-		FIT4GreenType newFederation = cloner.deepClone(federation);
+		FIT4Green newFederation = cloner.deepClone(federation);
 		
-		for (PowerOnActionType on : ons){
+		for (PowerOnAction on : ons){
 			
-			ServerType server = Utils.findServerByName(newFederation, on.getNodeName());
-			server.setStatus(ServerStatusType.ON);
+			Server server = Utils.findServerByName(newFederation, on.getNodeName());
+			server.setStatus(ServerStatus.ON);
 		}
 		return newFederation;
 	}
@@ -240,15 +240,15 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * performs the switchs off in a data center
 	 * 
 	 */
-	protected FIT4GreenType performOffs(List<PowerOffActionType> offs, FIT4GreenType federation) {
+	protected FIT4Green performOffs(List<PowerOffAction> offs, FIT4Green federation) {
 
 		Cloner cloner=new Cloner();
-		FIT4GreenType newFederation = cloner.deepClone(federation);
+		FIT4Green newFederation = cloner.deepClone(federation);
 		
-		for (PowerOffActionType off : offs){
+		for (PowerOffAction off : offs){
 			
-			ServerType server = Utils.findServerByName(newFederation, off.getNodeName());
-			server.setStatus(ServerStatusType.OFF);
+			Server server = Utils.findServerByName(newFederation, off.getNodeName());
+			server.setStatus(ServerStatus.OFF);
 		}
 		return newFederation;
 	}
@@ -258,21 +258,21 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * create an action list from switchs on, off and moves.
 	 * 
 	 */
-	ActionRequestType.ActionList createActionList(List<PowerOnActionType> ons, List<PowerOffActionType> offs, List<MoveVMActionType> moves){
+	ActionRequest.ActionList createActionList(List<PowerOnAction> ons, List<PowerOffAction> offs, List<MoveVMAction> moves){
 		//Create action list
-		ActionRequestType.ActionList actionList = new ActionRequestType.ActionList();
+		ActionRequest.ActionList actionList = new ActionRequest.ActionList();
 		actionList.getAction();
 		
 		f4g.schemas.java.actions.ObjectFactory actionFactory = new f4g.schemas.java.actions.ObjectFactory();
 		
 		
-		for (PowerOffActionType off : offs)
+		for (PowerOffAction off : offs)
 			actionList.getAction().add(actionFactory.createPowerOff(off));
 		
-		for (PowerOnActionType on : ons)
+		for (PowerOnAction on : ons)
 			actionList.getAction().add(actionFactory.createPowerOn(on));
 		
-		for (MoveVMActionType move : moves)
+		for (MoveVMAction move : moves)
 			actionList.getAction().add(actionFactory.createMoveVM(move));
 		
 		return actionList;
@@ -283,7 +283,7 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * returns the first list or VMs available in the server.
 	 * //TODO fix: how to determine where to add the VM?
 	 */
-	public static List<VirtualMachineType> getVMList(ServerType server){
+	public static List<VirtualMachine> getVMList(Server server){
 			
 		if (server.getNativeHypervisor() != null)
 			return server.getNativeHypervisor().getVirtualMachine();
@@ -300,11 +300,11 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * finds a server name by its ID
 	 * 
 	 */
-	protected ServerType findServerByName(DatacenterType datacenter, final String frameWorkID) {
+	protected Server findServerByName(Datacenter datacenter, final String frameWorkID) {
 		
-		Iterator<ServerType> it = Utils.getAllServers(datacenter).iterator();
-		Predicate<ServerType> isID = new Predicate<ServerType>() {
-	        @Override public boolean apply(ServerType s) {
+		Iterator<Server> it = Utils.getAllServers(datacenter).iterator();
+		Predicate<Server> isID = new Predicate<Server>() {
+	        @Override public boolean apply(Server s) {
 	            return s.getFrameworkID().equals(frameWorkID);
 	        }               
 	    };
@@ -317,10 +317,10 @@ public abstract class OptimizerEngine implements Runnable  {
 	/**
 	 * fills an action request.
 	 */
-	protected ActionRequestType getActionRequest(ActionRequestType.ActionList actionList, FIT4GreenType fedBefore, FIT4GreenType fedAfter) {
+	protected ActionRequest getActionRequest(ActionRequest.ActionList actionList, FIT4Green fedBefore, FIT4Green fedAfter) {
 		
 		//Create action requests
-		ActionRequestType actionRequest = new ActionRequestType();
+		ActionRequest actionRequest = new ActionRequest();
 		
 		double powerBefore = powerCalculator.computePowerFIT4Green(fedBefore).getActualConsumption();
 		double powerAfter = powerCalculator.computePowerFIT4Green(fedAfter).getActualConsumption();
@@ -331,8 +331,8 @@ public abstract class OptimizerEngine implements Runnable  {
 			GregorianCalendar gcal = (GregorianCalendar) GregorianCalendar.getInstance();
 			actionRequest.setDatetime(DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal));
 			actionRequest.setActionList(actionList);
-			actionRequest.setComputedPowerBefore(new PowerType(powerBefore));
-			actionRequest.setComputedPowerAfter(new PowerType(powerAfter));
+			actionRequest.setComputedPowerBefore(new Power(powerBefore));
+			actionRequest.setComputedPowerAfter(new Power(powerAfter));
 		} catch (DatatypeConfigurationException e) {
 			log.debug("Error in date");
 		}

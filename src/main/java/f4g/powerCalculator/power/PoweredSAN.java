@@ -2,26 +2,26 @@ package f4g.powerCalculator.power;
 
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.log4j.Logger;
-import f4g.schemas.java.metamodel.FanType;
-import f4g.schemas.java.metamodel.PSUType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.SANType;
-import f4g.schemas.java.metamodel.RackType;
-import f4g.schemas.java.metamodel.LogicalUnitType;
-import f4g.schemas.java.metamodel.NICType;
-import f4g.schemas.java.metamodel.WaterCoolerType;
-import f4g.schemas.java.metamodel.NetworkNodeType;
+import f4g.schemas.java.metamodel.Fan;
+import f4g.schemas.java.metamodel.PSU;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.SAN;
+import f4g.schemas.java.metamodel.Rack;
+import f4g.schemas.java.metamodel.LogicalUnit;
+import f4g.schemas.java.metamodel.NIC;
+import f4g.schemas.java.metamodel.WaterCooler;
+import f4g.schemas.java.metamodel.NetworkNode;
 
 import java.util.Iterator;
 
-public class PoweredSAN extends SANType implements PoweredComponent{
+public class PoweredSAN extends SAN implements PoweredComponent{
 
 	private boolean simulationFlag;
 	private JXPathContext sanContext;
-	private SANType mySAN;
+	private SAN mySAN;
 	static Logger log = Logger.getLogger(PoweredSAN.class.getName()); //
 	
-	public PoweredSAN(SANType san, boolean flag){
+	public PoweredSAN(SAN san, boolean flag){
 		this.mySAN = san;
 		this.simulationFlag=flag;
 		
@@ -57,7 +57,7 @@ public void setContext(JXPathContext ctxt){
     	 */
     	while(psuPowerIterator.hasNext())
     	{
-    		PSUType myPSU = (PSUType)psuPowerIterator.next();
+    		PSU myPSU = (PSU)psuPowerIterator.next();
     	    if(myPSU.getMeasuredPower() == null ||myPSU.getMeasuredPower().getValue()<=0)
     	    	measuredPowerPSU = false;
     	    if(myPSU.getLoad().getValue() > 0.0)
@@ -77,12 +77,12 @@ public void setContext(JXPathContext ctxt){
     		// compute the power of all logical units
     		while(iterator.hasNext())
     		{	
-    			LogicalUnitType	lut = (LogicalUnitType)iterator.next();
+    			LogicalUnit	lut = (LogicalUnit)iterator.next();
     			PoweredLogicalUnit plu = new PoweredLogicalUnit(lut);
     			plu.setContext(JXPathContext.newContext(lut));
     			double powerLUN = plu.computePowerIdle();
     			//Set the computed power to the hard disk class
-				PowerType LUNPower=new PowerType();
+				Power LUNPower=new Power();
 				LUNPower.setValue(powerLUN);
 				lut.setComputedPower(LUNPower);
 				powerSAN=powerSAN+powerLUN;
@@ -124,7 +124,7 @@ public void setContext(JXPathContext ctxt){
     	 */
     	while(psuPowerIterator.hasNext())
     	{
-    		PSUType myPSU = (PSUType)psuPowerIterator.next();
+    		PSU myPSU = (PSU)psuPowerIterator.next();
     	    if(myPSU.getMeasuredPower() == null ||myPSU.getMeasuredPower().getValue()<=0)
     	    	measuredPowerPSU = false;
     	    if(myPSU.getLoad().getValue() > 0.0)
@@ -160,12 +160,12 @@ public void setContext(JXPathContext ctxt){
 		// compute the power of all attached hard drives
 		while(iterator.hasNext())
 		{	
-			LogicalUnitType	lut = (LogicalUnitType)iterator.next();
+			LogicalUnit	lut = (LogicalUnit)iterator.next();
 			PoweredLogicalUnit plu = new PoweredLogicalUnit (lut);
 			plu.setContext(JXPathContext.newContext(lut));
 			double powerLUN = plu.computePower();
 			//Set the computed power to the hard disk class
-			PowerType LUNPower=new PowerType();
+			Power LUNPower=new Power();
 			LUNPower.setValue(powerLUN);
 			lut.setComputedPower(LUNPower);
 			power=power+powerLUN;
@@ -187,7 +187,7 @@ public void setContext(JXPathContext ctxt){
 		// compute the power of all attached hard drives
 		while(iterator.hasNext())
 		{	
-			NetworkNodeType	nnt = (NetworkNodeType)iterator.next();
+			NetworkNode	nnt = (NetworkNode)iterator.next();
 			PoweredNetworkNode nic = new PoweredNetworkNode (nnt);
 			power = nic.getPowerIdle().getValue() + power;
 		}
@@ -197,7 +197,7 @@ public void setContext(JXPathContext ctxt){
 		// compute the power of all attached hard drives
 		while(iterator.hasNext())
 		{				
-			NetworkNodeType	nnt = (NetworkNodeType)iterator.next();
+			NetworkNode	nnt = (NetworkNode)iterator.next();
 			PoweredNetworkNode nic = new PoweredNetworkNode (nnt);
 			power = nic.getPowerIdle().getValue() + power;
 		}
@@ -217,7 +217,7 @@ public void setContext(JXPathContext ctxt){
 		// compute the power of all attached hard drives
 		while(iterator.hasNext())
 		{				
-			NetworkNodeType	nnt = (NetworkNodeType)iterator.next();
+			NetworkNode	nnt = (NetworkNode)iterator.next();
 			PoweredNetworkNode nic = new PoweredNetworkNode (nnt);	
 			power = nic.computePower() + power;
 		}
@@ -227,7 +227,7 @@ public void setContext(JXPathContext ctxt){
 		// compute the power of all attached hard drives
 		while(iterator.hasNext())
 		{				
-			NetworkNodeType	nnt = (NetworkNodeType)iterator.next();
+			NetworkNode	nnt = (NetworkNode)iterator.next();
 			PoweredNetworkNode nic = new PoweredNetworkNode (nnt);
 			power = nic.computePower() + power;
 		}
@@ -255,7 +255,7 @@ public void setContext(JXPathContext ctxt){
 		Iterator fanPowerIterator = context.iterate(fanQuery);
 		while(fanPowerIterator.hasNext())
         {		   	
-           FanType myFan = (FanType)fanPowerIterator.next();
+           Fan myFan = (Fan)fanPowerIterator.next();
            PoweredFan myPoweredFan = new PoweredFan(myFan.getActualRPM(),myFan.getDepth(),myFan.getMaxRPM(),myFan.getPowerMax(),myFan.getMeasuredPower(),this.simulationFlag);
            
            double fanCurrentPower = myPoweredFan.computePower();   		   		           
@@ -274,7 +274,7 @@ public void setContext(JXPathContext ctxt){
 		
 		while(waterCoolerPowerIterator.hasNext())
         {		   	
-		   WaterCoolerType myWaterCooler = (WaterCoolerType)waterCoolerPowerIterator.next();	
+		   WaterCooler myWaterCooler = (WaterCooler)waterCoolerPowerIterator.next();	
            double waterCoolerCurrentPower = 0.0;           
            waterCoolerPower = waterCoolerPower + waterCoolerCurrentPower; 
            log.debug("The power consumption of the Water Cooler is "+waterCoolerCurrentPower+ " Watts");           
@@ -300,7 +300,7 @@ public void setContext(JXPathContext ctxt){
 		
     	while(iterator.hasNext())
     	{
-    		PSUType psuType = (PSUType)iterator.next();
+    		PSU psuType = (PSU)iterator.next();
     		PoweredPSU myPSU = new PoweredPSU(psuType.getMeasuredPower().getValue(), psuType.getEfficiency().getValue());
 
 			if(!simulationFlag && measuredPowerPSU) power = myPSU.computePower() + power;

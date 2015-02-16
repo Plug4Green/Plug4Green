@@ -2,20 +2,20 @@ package f4g.powerCalculator.power;
 import org.apache.log4j.Logger;
 
 import f4g.powerCalculator.power.PoweredComponent;
-import f4g.schemas.java.metamodel.FanType;
-import f4g.schemas.java.metamodel.RPMType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.DimensionType;
+import f4g.schemas.java.metamodel.Fan;
+import f4g.schemas.java.metamodel.RPM;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.Dimension;
 
 
 // Repository Implementation
 
-public class PoweredFan extends FanType implements PoweredComponent{	
+public class PoweredFan extends Fan implements PoweredComponent{	
 	
 	static Logger log = Logger.getLogger(PoweredFan.class.getName()); 
 	private boolean simulationFlag;
 	
-	public PoweredFan(RPMType actualRPM, DimensionType depth, RPMType maxRPM, PowerType maxPower, PowerType measuredPower, boolean flag){
+	public PoweredFan(RPM actualRPM, Dimension depth, RPM maxRPM, Power maxPower, Power measuredPower, boolean flag){
 		this.maxRPM = maxRPM;
 		this.actualRPM = actualRPM;		
 		this.depth = depth;

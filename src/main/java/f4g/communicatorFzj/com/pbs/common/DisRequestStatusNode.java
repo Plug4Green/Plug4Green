@@ -34,7 +34,7 @@ public class DisRequestStatusNode extends DisRequest {
 	 */
 	public static DisRequest make() {
 		DisRequest req = new DisRequestStatusNode();
-		req.addHeader(RequestType.STATUSNODE);
+		req.addHeader(Request.STATUSNODE);
 		req.addInt(0);
 		req.addInt(0);
 		req.addExtension();

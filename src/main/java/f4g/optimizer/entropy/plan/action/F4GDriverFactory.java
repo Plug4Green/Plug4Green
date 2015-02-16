@@ -10,13 +10,13 @@ import org.btrplace.plan.event.MigrateVM;
 import org.btrplace.plan.event.ShutdownNode;
 import f4g.commons.controller.IController;
 import f4g.optimizer.entropy.NamingService;
-import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.FIT4Green;
 
 public class F4GDriverFactory {
 	
 	
 	IController controller;
-	FIT4GreenType model;
+	FIT4Green model;
 	NamingService<Node> nodeNames;
 	NamingService<VM> vmNames;
 	
@@ -25,7 +25,7 @@ public class F4GDriverFactory {
 	 * @param clusters 
 	 * @param properties The properties used to create the factory
 	 */
-	public F4GDriverFactory(IController controller, FIT4GreenType model, NamingService<Node> nodeNames, NamingService<VM> vmNames) {
+	public F4GDriverFactory(IController controller, FIT4Green model, NamingService<Node> nodeNames, NamingService<VM> vmNames) {
 		this.controller = controller;
 		this.model = model;
 		this.nodeNames = nodeNames;

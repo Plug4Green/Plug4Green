@@ -6,19 +6,19 @@ import java.util.Iterator;
 import java.util.Map;
 
 import f4g.powerCalculator.power.PoweredComponent;
-import f4g.schemas.java.metamodel.CPUArchitectureType;
-import f4g.schemas.java.metamodel.CPUType;
-import f4g.schemas.java.metamodel.CoreType;
-import f4g.schemas.java.metamodel.CoreLoadType;
-import f4g.schemas.java.metamodel.FrequencyType;
-import f4g.schemas.java.metamodel.NrOfTransistorsType;
-import f4g.schemas.java.metamodel.OperatingSystemTypeType;
+import f4g.schemas.java.metamodel.CPUArchitecture;
+import f4g.schemas.java.metamodel.CPU;
+import f4g.schemas.java.metamodel.Core;
+import f4g.schemas.java.metamodel.CoreLoad;
+import f4g.schemas.java.metamodel.Frequency;
+import f4g.schemas.java.metamodel.NrOfTransistors;
+import f4g.schemas.java.metamodel.OperatingSystemType;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.log4j.Logger;
 
 // Repository Implmentation
 
-public class PoweredCPU extends CPUType implements PoweredComponent{	
+public class PoweredCPU extends CPU implements PoweredComponent{	
 	
 	static Logger log; 
 	double totalCPUPower;			
@@ -30,10 +30,10 @@ public class PoweredCPU extends CPUType implements PoweredComponent{
 
 	JXPathContext context2;
 	String coreQuery = null;
-	CPUType myCPU;
-	OperatingSystemTypeType operatingSystem;
+	CPU myCPU;
+	OperatingSystemType operatingSystem;
 	
-	public PoweredCPU(CPUType cpu,OperatingSystemTypeType operatingSystem){
+	public PoweredCPU(CPU cpu,OperatingSystemType operatingSystem){
 	
 		this.transistorNumber = cpu.getTransistorNumber();
 		/**
@@ -61,7 +61,7 @@ public class PoweredCPU extends CPUType implements PoweredComponent{
 		
 		while(coreIterator.hasNext()){
 			
-			CoreType myCore = (CoreType)coreIterator.next();					  
+			Core myCore = (Core)coreIterator.next();					  
 				
 			//Monitoring System provides information on the load
 			if(myCore.getCoreLoad() != null && myCore.getCoreLoad().getValue()>0)
@@ -101,7 +101,7 @@ public class PoweredCPU extends CPUType implements PoweredComponent{
 			    		    
 			    // this loop iterates all cores within a processor
 			    while (coreIterator.hasNext()){
-			    	CoreType myCore = (CoreType)coreIterator.next();
+			    	Core myCore = (Core)coreIterator.next();
 			    	PoweredCore myPoweredCore = new PoweredCore(numberOfCores, myCore.getFrequency(), myCore.getFrequencyMin(), myCore.getFrequencyMax(), myCore.getVoltage(),myCPU.getArchitecture(),operatingSystem, myCore.getCoreLoad(), myCore.getTotalPstates(), transistorNumber, myCPU.isDVFS(), this.computeLoadedCore(myCPU));
 			    	
 			    	/**
@@ -112,7 +112,7 @@ public class PoweredCPU extends CPUType implements PoweredComponent{
 			    		
 			    		if (!coreLoadInformation){			    			
 			    			//consider the cpu load as core load
-			    			CoreLoadType clt = new CoreLoadType();
+			    			CoreLoad clt = new CoreLoad();
 			    			clt.setValue(this.myCPU.getCpuUsage().getValue());
 			    			myPoweredCore.setCoreLoad(clt);
 			    		}
@@ -136,14 +136,14 @@ public class PoweredCPU extends CPUType implements PoweredComponent{
 	 * @param myCPU
 	 * @return
 	 */
-	public int computeLoadedCore(CPUType myCPU){
+	public int computeLoadedCore(CPU myCPU){
 		JXPathContext ctxt = JXPathContext.newContext(myCPU);
 	    coreQuery = "core";
 	    int c=0;
 	    Iterator localIterator = ctxt.iterate(coreQuery);
 	    
 	    while (localIterator.hasNext()){
-	    	CoreType myCore = (CoreType)localIterator.next();
+	    	Core myCore = (Core)localIterator.next();
 	    	if (myCore.getCoreLoad()!= null && myCore.getCoreLoad().getValue() > 0.0) 
 	    		c = c + 1;
 	    }

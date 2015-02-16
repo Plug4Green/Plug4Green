@@ -54,10 +54,10 @@ public class PrintTraverser {
 	
 	public static void main(String[] args) {
 		
-		SiteType site = new SiteType();
+		Site site = new Site();
 		
-		DatacenterType dataCenter1 = new DatacenterType();
-		DatacenterType dataCenter2 = new DatacenterType();
+		Datacenter dataCenter1 = new Datacenter();
+		Datacenter dataCenter2 = new Datacenter();
 		site.getDatacenter().add(dataCenter1);
 		site.getDatacenter().add(dataCenter2);
 	

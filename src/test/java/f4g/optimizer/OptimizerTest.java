@@ -23,10 +23,10 @@ import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.actions.*;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.CloudVmAllocationType;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.CloudVmAllocation;
 import f4g.schemas.java.allocation.ObjectFactory;
-import f4g.schemas.java.allocation.TraditionalVmAllocationType;
+import f4g.schemas.java.allocation.TraditionalVmAllocation;
 import f4g.schemas.java.constraints.optimizerconstraints.*;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
@@ -55,7 +55,7 @@ public class OptimizerTest extends TestCase {
 	public Logger log;  
 	
 	//this actionRequest is filled by the MockController after being called. 
-	protected ActionRequestType actionRequest = null;
+	protected ActionRequest actionRequest = null;
 	protected final Semaphore actionRequestAvailable = new Semaphore(10);
 	
 	/**
@@ -80,25 +80,25 @@ public class OptimizerTest extends TestCase {
 	protected class MockController implements IController{
 
 		@Override
-		public boolean executeActionList(ActionRequestType myActionRequest) {
+		public boolean executeActionList(ActionRequest myActionRequest) {
 			actionRequest = myActionRequest;
 			actionRequestAvailable.release();
-			for (JAXBElement<? extends AbstractBaseActionType> action : myActionRequest.getActionList().getAction()){
+			for (JAXBElement<? extends AbstractBaseAction> action : myActionRequest.getActionList().getAction()){
 
-				if (action.getValue() instanceof PowerOnActionType) {
-					PowerOnActionType on = (PowerOnActionType)action.getValue();
+				if (action.getValue() instanceof PowerOnAction) {
+					PowerOnAction on = (PowerOnAction)action.getValue();
 					log.debug("executeActionList: power ON on :" + on.getNodeName());
 				}
-				if (action.getValue() instanceof PowerOffActionType) {
-					PowerOffActionType off = (PowerOffActionType)action.getValue();
+				if (action.getValue() instanceof PowerOffAction) {
+					PowerOffAction off = (PowerOffAction)action.getValue();
 					log.debug("executeActionList: power OFF on :" + off.getNodeName());
 				}
-				if (action.getValue() instanceof MoveVMActionType) {
-					MoveVMActionType move = (MoveVMActionType)action.getValue();
+				if (action.getValue() instanceof MoveVMAction) {
+					MoveVMAction move = (MoveVMAction)action.getValue();
 					log.debug("executeActionList: move VM " + move.getVirtualMachine() + " from " + move.getSourceNodeController() + " to " + move.getDestNodeController());
 				}
-				if (action.getValue() instanceof LiveMigrateVMActionType) {
-					LiveMigrateVMActionType move = (LiveMigrateVMActionType)action.getValue();
+				if (action.getValue() instanceof LiveMigrateVMAction) {
+					LiveMigrateVMAction move = (LiveMigrateVMAction)action.getValue();
 					log.debug("executeActionList: live migrate VM " + move.getVirtualMachine() + " from " + move.getSourceNodeController() + " to " + move.getDestNodeController());
 				}
 
@@ -143,7 +143,7 @@ public class OptimizerTest extends TestCase {
 
 		PowerCalculatorTraverser traverser = new PowerCalculatorTraverser();
 		
-		@Override public PowerData computePowerFIT4Green(FIT4GreenType model) {
+		@Override public PowerData computePowerFIT4Green(FIT4Green model) {
 			return traverser.calculatePower(model);
 		}
 		
@@ -152,67 +152,67 @@ public class OptimizerTest extends TestCase {
 		}
 
 
-		@Override public PowerData computePowerCPU(CPUType cpu,
-				OperatingSystemTypeType operatingSystem) {
+		@Override public PowerData computePowerCPU(CPU cpu,
+				OperatingSystemType operatingSystem) {
 			return traverser.calculatePower(cpu);
 		}
 
 
-		@Override public PowerData computePowerDatacenter(DatacenterType datacenter) {
+		@Override public PowerData computePowerDatacenter(Datacenter datacenter) {
 			return traverser.calculatePower(datacenter);
 		}
 
-		@Override public PowerData computePowerFAN(FanType fan) {
+		@Override public PowerData computePowerFAN(Fan fan) {
 			return traverser.calculatePower(fan);
 		}
 
 		
-		@Override public PowerData computePowerHardDisk(HardDiskType hardDisk) {
+		@Override public PowerData computePowerHardDisk(HardDisk hardDisk) {
 			return traverser.calculatePower(hardDisk);
 		}
 
-		@Override public PowerData computePowerMainboard(MainboardType mainboard,
-				OperatingSystemTypeType operatingSystem) {
+		@Override public PowerData computePowerMainboard(Mainboard mainboard,
+				OperatingSystemType operatingSystem) {
 			return traverser.calculatePower(mainboard);
 		}
 
-		@Override public PowerData computePowerMainboardRAMs(MainboardType mainboard) {
+		@Override public PowerData computePowerMainboardRAMs(Mainboard mainboard) {
 			return traverser.calculatePower(mainboard);
 		}
 
-		@Override public PowerData computePowerRAID(RAIDType raid) {
+		@Override public PowerData computePowerRAID(RAID raid) {
 			return traverser.calculatePower(raid);
 		}
 
-		@Override public PowerData computePowerRack(RackType rack) {
+		@Override public PowerData computePowerRack(Rack rack) {
 			return traverser.calculatePower(rack);
 		}
 
-		@Override public PowerData computePowerServer(ServerType server) {
+		@Override public PowerData computePowerServer(Server server) {
 			return traverser.calculatePower(server);
 		}
 
-		@Override public PowerData computePowerSite(SiteType site) {
+		@Override public PowerData computePowerSite(Site site) {
 			return traverser.calculatePower(site);
 		}
 
-		@Override public PowerData computePowerSolidStateDisk(SolidStateDiskType ssdisk) {
+		@Override public PowerData computePowerSolidStateDisk(SolidStateDisk ssdisk) {
 			return traverser.calculatePower(ssdisk);
 		}
 
 		@Override
-		public PowerData computePowerCore(CoreType myCore, CPUType cpu,
-				OperatingSystemTypeType operatingSystem) {
+		public PowerData computePowerCore(Core myCore, CPU cpu,
+				OperatingSystemType operatingSystem) {
 			return traverser.calculatePower(myCore);
 		}
 
 		@Override
-		public PowerData computePowerSAN(RackType obj) {
+		public PowerData computePowerSAN(Rack obj) {
 			return traverser.calculatePower(obj);
 		}
 
 		@Override
-		public PowerData computePowerIdleSAN(RackType obj) {
+		public PowerData computePowerIdleSAN(Rack obj) {
 			return traverser.calculatePower(obj);
 		}
 
@@ -229,12 +229,12 @@ public class OptimizerTest extends TestCase {
 		}
 
 		@Override
-		public PowerData computePowerIdleNAS(NASType obj) {
+		public PowerData computePowerIdleNAS(NAS obj) {
 			return traverser.calculatePower(obj);
 		}
 
 		@Override
-		public PowerData computePowerNAS(NASType obj) {
+		public PowerData computePowerNAS(NAS obj) {
 			return traverser.calculatePower(obj);
 		}
 	}
@@ -253,25 +253,25 @@ public class OptimizerTest extends TestCase {
 		}
 
 		@Override
-		public Amount<Duration> moveDownTimeCost(NetworkNodeType fromServer,
-				NetworkNodeType toServer, VirtualMachineType VM,
-				FIT4GreenType model) {
+		public Amount<Duration> moveDownTimeCost(NetworkNode fromServer,
+				NetworkNode toServer, VirtualMachine VM,
+				FIT4Green model) {
 			return null;
 		}
 
 		@Override
-		public Amount<Energy> moveEnergyCost(NetworkNodeType fromServer,
-				NetworkNodeType toServer, VirtualMachineType VM,
-				FIT4GreenType model) {
+		public Amount<Energy> moveEnergyCost(NetworkNode fromServer,
+				NetworkNode toServer, VirtualMachine VM,
+				FIT4Green model) {
 			
 			return Amount.valueOf(100, JOULE);
 		}
 
 
 		@Override
-		public Amount<Money> moveFinancialCost(NetworkNodeType fromServer,
-				NetworkNodeType toServer, VirtualMachineType VM,
-				FIT4GreenType model) {
+		public Amount<Money> moveFinancialCost(NetworkNode fromServer,
+				NetworkNode toServer, VirtualMachine VM,
+				FIT4Green model) {
 			return null;
 		}
 		
@@ -319,18 +319,18 @@ public class OptimizerTest extends TestCase {
 	/**
 	 * helper function
 	 */
-	protected AllocationRequestType createAllocationRequestCloud(String VMType) {
+	protected AllocationRequest createAllocationRequestCloud(String VMType) {
 		
-		AllocationRequestType request = new AllocationRequestType();
+		AllocationRequest request = new AllocationRequest();
 		
-		CloudVmAllocationType alloc = new CloudVmAllocationType();
-		alloc.setVmType(VMType);
+		CloudVmAllocation alloc = new CloudVmAllocation();
+		alloc.setVm(VMType);
 		alloc.setImageId("");
 		alloc.getClusterId().add("c1");
 		
 		
-		//Simulates a CloudVmAllocationType operation
-		JAXBElement<CloudVmAllocationType>  operationType = (new ObjectFactory()).createCloudVmAllocation(alloc);
+		//Simulates a CloudVmAllocation operation
+		JAXBElement<CloudVmAllocation>  operationType = (new ObjectFactory()).createCloudVmAllocation(alloc);
 	
 		request.setRequest(operationType);
 		
@@ -340,11 +340,11 @@ public class OptimizerTest extends TestCase {
 	/**
 	 * helper function
 	 */
-	protected AllocationRequestType createAllocationRequestTrad() {
+	protected AllocationRequest createAllocationRequestTrad() {
 		
-		AllocationRequestType request = new AllocationRequestType();
+		AllocationRequest request = new AllocationRequest();
 		
-		TraditionalVmAllocationType alloc = new TraditionalVmAllocationType();
+		TraditionalVmAllocation alloc = new TraditionalVmAllocation();
 		//cloudAlloc.
 		alloc.getClusterId().add("c1");
 		alloc.setNumberOfCPUs(1);
@@ -356,8 +356,8 @@ public class OptimizerTest extends TestCase {
 		
 		
 		
-		//Simulates a CloudVmAllocationType operation
-		JAXBElement<TraditionalVmAllocationType>  operationType = (new ObjectFactory()).createTraditionalVmAllocation(alloc);
+		//Simulates a CloudVmAllocation operation
+		JAXBElement<TraditionalVmAllocation>  operationType = (new ObjectFactory()).createTraditionalVmAllocation(alloc);
 	
 		request.setRequest(operationType);
 		
@@ -385,12 +385,12 @@ public class OptimizerTest extends TestCase {
 		}
 		
 		
-		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "id"));
+		cluster.add(new Cluster("c1", new NodeController(nodeName) , bSlas, bPolicies, "id"));
 		return new ClusterType(cluster);
 	}
 	
 
-	protected FederationType makeSimpleFed(PolicyType policies, FIT4GreenType f4g) {
+	protected FederationType makeSimpleFed(PolicyType policies, FIT4Green f4g) {
 				
 		FederationType fed = new FederationType();
 		BoundedPoliciesType.Policy bpol = new BoundedPoliciesType.Policy(policies.getPolicy().get(0));
@@ -403,9 +403,9 @@ public class OptimizerTest extends TestCase {
 	
 			BoundedClustersType bcls = new BoundedClustersType();
 			ClusterType.Cluster c = new ClusterType.Cluster();
-			c.setNodeController(new NodeControllerType());
+			c.setNodeController(new NodeController());
 			c.setName("c1");
-			for(ServerType s : Utils.getAllServers(f4g)) {
+			for(Server s : Utils.getAllServers(f4g)) {
 			    c.getNodeController().getNodeName().add(s.getFrameworkID());
 			}
 			BoundedClustersType.Cluster bcl = new BoundedClustersType.Cluster();
@@ -418,70 +418,70 @@ public class OptimizerTest extends TestCase {
 
 	}
 	
-	List <MoveVMActionType> getMoves() {
+	List <MoveVMAction> getMoves() {
 		try {
 			actionRequestAvailable.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		ActionRequestType.ActionList response = actionRequest.getActionList();
+		ActionRequest.ActionList response = actionRequest.getActionList();
 		
-		List <MoveVMActionType> moves = new ArrayList<MoveVMActionType>();
+		List <MoveVMAction> moves = new ArrayList<MoveVMAction>();
 			
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof MoveVMActionType) 
-				moves.add((MoveVMActionType)action.getValue());
+		for (JAXBElement<? extends AbstractBaseAction> action : response.getAction()){
+			if (action.getValue() instanceof MoveVMAction) 
+				moves.add((MoveVMAction)action.getValue());
 		}
 		return moves;
 	}
 	
-	List <LiveMigrateVMActionType> getLiveMigrate() {
+	List <LiveMigrateVMAction> getLiveMigrate() {
 		try {
 			actionRequestAvailable.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		ActionRequestType.ActionList response = actionRequest.getActionList();
+		ActionRequest.ActionList response = actionRequest.getActionList();
 		
-		List <LiveMigrateVMActionType> moves = new ArrayList<LiveMigrateVMActionType>();
+		List <LiveMigrateVMAction> moves = new ArrayList<LiveMigrateVMAction>();
 			
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof LiveMigrateVMActionType) 
-				moves.add((LiveMigrateVMActionType)action.getValue());
+		for (JAXBElement<? extends AbstractBaseAction> action : response.getAction()){
+			if (action.getValue() instanceof LiveMigrateVMAction) 
+				moves.add((LiveMigrateVMAction)action.getValue());
 		}
 		return moves;
 	}
 	
-	List <PowerOffActionType> getPowerOffs() {
+	List <PowerOffAction> getPowerOffs() {
 		try {
 			actionRequestAvailable.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		ActionRequestType.ActionList response = actionRequest.getActionList();
+		ActionRequest.ActionList response = actionRequest.getActionList();
 		
-		List <PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
+		List <PowerOffAction> powerOffs = new ArrayList<PowerOffAction>();
 		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof PowerOffActionType) 
-				powerOffs.add((PowerOffActionType)action.getValue());
+		for (JAXBElement<? extends AbstractBaseAction> action : response.getAction()){
+			if (action.getValue() instanceof PowerOffAction) 
+				powerOffs.add((PowerOffAction)action.getValue());
 		}
 		return powerOffs;
 	}
 	
-	List <PowerOnActionType> getPowerOns() {
+	List <PowerOnAction> getPowerOns() {
 		try {
 			actionRequestAvailable.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		ActionRequestType.ActionList response = actionRequest.getActionList();
+		ActionRequest.ActionList response = actionRequest.getActionList();
 		
-		List <PowerOnActionType> powerOns = new ArrayList<PowerOnActionType>();
+		List <PowerOnAction> powerOns = new ArrayList<PowerOnAction>();
 		
-		for (JAXBElement<? extends AbstractBaseActionType> action : response.getAction()){
-			if (action.getValue() instanceof PowerOnActionType) 
-				powerOns.add((PowerOnActionType)action.getValue());
+		for (JAXBElement<? extends AbstractBaseAction> action : response.getAction()){
+			if (action.getValue() instanceof PowerOnAction) 
+				powerOns.add((PowerOnAction)action.getValue());
 		}
 		return powerOns;
 	}

@@ -56,8 +56,8 @@ import com.vmware.vim25.ToolsUnavailable;
 
 
 import f4g.commons.com.ComEniConstants; 
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.actions.PowerOnAction;
 
 
 
@@ -84,8 +84,8 @@ public class PowerOps {
 	private String powerAction_ = null;
 	private OptionSpec[] optionalParameters_ = null;
 	
-	private PowerOffActionType powerOffAction_;
-	private PowerOnActionType powerOnAction_;
+	private PowerOffAction powerOffAction_;
+	private PowerOnAction powerOnAction_;
 
 	/**
 	 * Constructor that initializes the action with the corresponding arguments.
@@ -93,7 +93,7 @@ public class PowerOps {
 	 * @param actionArguments
 	 * @param powerAction
 	 */
-	public PowerOps(String[] actionArguments, String powerAction, PowerOffActionType powerOffAction, PowerOnActionType powerOnAction) {
+	public PowerOps(String[] actionArguments, String powerAction, PowerOffAction powerOffAction, PowerOnAction powerOnAction) {
 		try {
 			optionalParameters_ = new OptionSpec[8];
 			optionalParameters_ = constructOptions();

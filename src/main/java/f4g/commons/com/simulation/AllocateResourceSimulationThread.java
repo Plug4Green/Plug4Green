@@ -7,13 +7,13 @@ import javax.xml.bind.JAXBElement;
 import org.apache.log4j.Logger;
 import f4g.commons.com.ICom;
 import f4g.commons.monitor.IMonitor;
-import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
+import f4g.schemas.java.allocation.CloudVmAllocationResponse;
 import f4g.schemas.java.allocation.ObjectFactory;
-import f4g.schemas.java.allocation.CloudVmAllocationType;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
-import f4g.schemas.java.allocation.RequestType;
-import f4g.schemas.java.allocation.ResponseType;
+import f4g.schemas.java.allocation.CloudVmAllocation;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
+import f4g.schemas.java.allocation.Request;
+import f4g.schemas.java.allocation.Response;
 
 public class AllocateResourceSimulationThread extends GenericSimulationThread{
 	static Logger log = Logger.getLogger(AllocateResourceSimulationThread.class.getName()); // 
@@ -21,7 +21,7 @@ public class AllocateResourceSimulationThread extends GenericSimulationThread{
 	IMonitor monitor = null;
 	Random random = new Random();
 	
-	String[] vmTypes = new String[]{"m1.small", "m1.medium", "m1.large"};
+	String[] vms = new String[]{"m1.small", "m1.medium", "m1.large"};
 	
 	public AllocateResourceSimulationThread(ICom comObject, long interval, IMonitor monitor) {
 		super(comObject, interval);
@@ -42,29 +42,29 @@ public class AllocateResourceSimulationThread extends GenericSimulationThread{
 		}
 
 		while(state != STATE_STOPPED){
-			AllocationRequestType request = new AllocationRequestType();
-			//Simulates a CloudVmAllocationType operation
-			JAXBElement<CloudVmAllocationType>  operationType = (new ObjectFactory()).createCloudVmAllocation(new CloudVmAllocationType());
-			CloudVmAllocationType operation = new CloudVmAllocationType();
+			AllocationRequest request = new AllocationRequest();
+			//Simulates a CloudVmAllocation operation
+			JAXBElement<CloudVmAllocation>  operationType = (new ObjectFactory()).createCloudVmAllocation(new CloudVmAllocation());
+			CloudVmAllocation operation = new CloudVmAllocation();
 			operation.getClusterId().add(String.valueOf(Math.abs(random.nextInt(50000))));
 			operation.setImageId(String.valueOf(Math.abs(random.nextInt(50000))));
 			operation.setUserId("user"+String.valueOf(Math.abs(random.nextInt(50000))));
-			operation.setVmType(vmTypes[random.nextInt(3)]);
+			operation.setVm(vms[random.nextInt(3)]);
 			operationType.setValue(operation);
 			request.setRequest(operationType);
 			
-			AllocationResponseType response = monitor.allocateResource(request);
+			AllocationResponse response = monitor.allocateResource(request);
 			
 			if(response != null &&
 			   response.getResponse() != null){
 				
-				CloudVmAllocationResponseType operationResponse = (CloudVmAllocationResponseType)response.getResponse().getValue();
+				CloudVmAllocationResponse operationResponse = (CloudVmAllocationResponse)response.getResponse().getValue();
 				
 				log.debug("ResourceAllocationResponse: " );
 				log.debug("	ClusterID: " + operationResponse.getClusterId());
 				log.debug("	ImageId: " + operationResponse.getImageId());
 				log.debug("	UserId: " + operationResponse.getUserId());
-				log.debug("	VmType: " + operationResponse.getVmType());
+				log.debug("	VmType: " + operationResponse.getVm());
 				log.debug("	NodeId: " + operationResponse.getNodeId());
 				
 			}

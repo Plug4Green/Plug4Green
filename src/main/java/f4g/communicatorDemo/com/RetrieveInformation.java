@@ -31,7 +31,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.apache.log4j.Logger;
-import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.commons.util.Util;
 
 /**
@@ -47,7 +47,7 @@ public class RetrieveInformation {
 	private String exampleDataCenter_ = null;
 	private boolean isConnected_ = false;
 	
-	FIT4GreenType datacenterExample_ = null;
+	FIT4Green datacenterExample_ = null;
 	
 	public boolean init(){
 		try {
@@ -178,7 +178,7 @@ public class RetrieveInformation {
 			// objects composed of classes from the "f4gschema" package.
 			poElement = (JAXBElement<?>) u.unmarshal(isModel);
 			
-			datacenterExample_ = (FIT4GreenType) poElement.getValue();
+			datacenterExample_ = (FIT4Green) poElement.getValue();
 			
 
 		} catch (JAXBException je) {

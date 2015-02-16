@@ -4,9 +4,9 @@ package f4g.commons.optimizer;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Energy;
 
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.NetworkNodeType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.NetworkNode;
+import f4g.schemas.java.metamodel.VirtualMachine;
 import org.jscience.physics.amount.*;
 import org.jscience.economics.money.*;
 
@@ -24,7 +24,7 @@ public interface ICostEstimator {
 	 * @param the origin server, the destination server, the VM to move, the complete model
 	 * @return the energy
 	 */
-	public Amount<Energy> moveEnergyCost(NetworkNodeType fromServer, NetworkNodeType toServer, VirtualMachineType VM, FIT4GreenType model);
+	public Amount<Energy> moveEnergyCost(NetworkNode fromServer, NetworkNode toServer, VirtualMachine VM, FIT4Green model);
 
 	/**
 	 * Calculates the financial cost of moving a VM from one server to another
@@ -32,7 +32,7 @@ public interface ICostEstimator {
 	 * @param the origin server, the destination server, the VM to move, the complete model
 	 * @return the money amount
 	 */
-	public Amount<Money> moveFinancialCost(NetworkNodeType fromServer, NetworkNodeType toServer, VirtualMachineType VM, FIT4GreenType model);
+	public Amount<Money> moveFinancialCost(NetworkNode fromServer, NetworkNode toServer, VirtualMachine VM, FIT4Green model);
 	
 	
 	/**
@@ -41,7 +41,7 @@ public interface ICostEstimator {
 	 * @param the origin server, the destination server, the VM to move, the complete model
 	 * @return the duration
 	 */
-	public Amount<Duration> moveDownTimeCost(NetworkNodeType fromServer, NetworkNodeType toServer, VirtualMachineType VM, FIT4GreenType model);
+	public Amount<Duration> moveDownTimeCost(NetworkNode fromServer, NetworkNode toServer, VirtualMachine VM, FIT4Green model);
 
 	
 	/**

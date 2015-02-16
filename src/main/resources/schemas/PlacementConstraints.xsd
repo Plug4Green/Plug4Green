@@ -149,7 +149,7 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 	
-	<xsd:element name="FIT4GreenConstraint" type="FIT4GreenConstraintType" />
+	<xsd:element name="FIT4GreenConstraint" type="FIT4GreenConstraint" />
 	
 	<xsd:attributeGroup name="DCAttr">
 		<xsd:attribute name="version" type="xsd:float" use="required" />
@@ -157,33 +157,33 @@
 	</xsd:attributeGroup>
 	
 	<xsd:attributeGroup name="TSAttr">
-		<xsd:attribute name="style" type="f4g:DCComputingStyleType" use="required" />
-	        	<xsd:attribute name="scenario" type="f4g:ScenarioType" use="required" />
-	        	<xsd:attribute name="location" type="f4g:LocationType" use="required" />
+		<xsd:attribute name="style" type="f4g:DCComputingStyle" use="required" />
+	        	<xsd:attribute name="scenario" type="f4g:Scenario" use="required" />
+	        	<xsd:attribute name="location" type="f4g:Location" use="required" />
 	</xsd:attributeGroup>
 		
-	<xsd:complexType name="FIT4GreenConstraintType">
+	<xsd:complexType name="FIT4GreenConstraint">
 		<xsd:sequence>
-			<xsd:element name="DataCentre" type="DCType" />
+			<xsd:element name="DataCentre" type="DC" />
 		</xsd:sequence>
 		<xsd:attributeGroup ref="DCAttr" />
 	</xsd:complexType>
 
-	<xsd:complexType name="DCType">
+	<xsd:complexType name="DC">
 		<xsd:sequence>
-			<xsd:element name="TargetSys" type="TSType" />
+			<xsd:element name="TargetSys" type="TS" />
 		</xsd:sequence>
 		<xsd:attributeGroup ref="TSAttr" />
 	</xsd:complexType>
 	
-	<xsd:complexType name="TSType">
+	<xsd:complexType name="TS">
 		<xsd:sequence>
-			<xsd:element name="Constraint" type="ConstraintType" />
+			<xsd:element name="Constraint" type="Constraint" />
 		</xsd:sequence>
 		<xsd:attribute name="id" type="xsd:ID" use="required" />
 	</xsd:complexType>
 	
-	<xsd:complexType name="ConstraintType">
+	<xsd:complexType name="Constraint">
 		<xsd:sequence>		
 			<xsd:element name="Ban" type="Ban" minOccurs="0"
 						maxOccurs="unbounded" /> 			

@@ -35,12 +35,12 @@ import org.btrplace.model.constraint.SatConstraint;
 import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.utils.Utils;
-import f4g.schemas.java.metamodel.DatacenterType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
-import f4g.schemas.java.metamodel.ServerStatusType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.Datacenter;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.FrameworkCapabilities;
+import f4g.schemas.java.metamodel.ServerStatus;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.VirtualMachine;
 
 
 
@@ -50,13 +50,13 @@ import f4g.schemas.java.metamodel.VirtualMachineType;
  */
 public class ModelConstraintFactory extends ConstraintFactory {
     
-	protected FIT4GreenType F4GModel;
+	protected FIT4Green F4GModel;
 
 	/**
 	 * Constructor needing an instance of the SLAReader and an entropy
 	 * configuration element.
 	 */
-	public ModelConstraintFactory(Model model, FIT4GreenType F4GModel) {
+	public ModelConstraintFactory(Model model, FIT4Green F4GModel) {
 		super(model);
 		log = Logger.getLogger(this.getClass().getName()); 
 		this.F4GModel = F4GModel;
@@ -66,14 +66,14 @@ public class ModelConstraintFactory extends ConstraintFactory {
 	public List<SatConstraint> getModelConstraints() {
 		
 		List<SatConstraint> vs = new ArrayList<SatConstraint>();
-		vs.addAll(getNodeTypeConstraints());
+		vs.addAll(getNodeConstraints());
 		vs.addAll(getFrameworkCapabilitiesConstraints());
 	
 		return vs;
 		
 	}
 	
-	public List<SatConstraint> getNodeTypeConstraints() {
+	public List<SatConstraint> getNodeConstraints() {
 		List<SatConstraint> v = new ArrayList<SatConstraint>();
 		
 		Set<VM> vms = new HashSet<VM>();
@@ -82,7 +82,7 @@ public class ModelConstraintFactory extends ConstraintFactory {
 		Set<Node> offlines = new HashSet<Node>();
 		Set<Node> empties = new HashSet<Node>();
 		
-		for(ServerType s : Utils.getAllServers(F4GModel)) {
+		for(Server s : Utils.getAllServers(F4GModel)) {
 	
 			Node n = nodeNames.getElement(s.getFrameworkID());
 			if(n!=null)	 {
@@ -107,10 +107,10 @@ public class ModelConstraintFactory extends ConstraintFactory {
 			}
 			
 			//Entropy sees the nodes in transition as offline and mustn't switch them on.
-			if(s.getStatus() == ServerStatusType.POWERING_OFF) {
+			if(s.getStatus() == ServerStatus.POWERING_OFF) {
 				offlines.add(n);
 			}
-			if(s.getStatus() == ServerStatusType.POWERING_ON) {
+			if(s.getStatus() == ServerStatus.POWERING_ON) {
 				onlines.add(n);
 				empties.add(n);
 			}
@@ -133,13 +133,13 @@ public class ModelConstraintFactory extends ConstraintFactory {
 	public List<SatConstraint> getFrameworkCapabilitiesConstraints() {
 		List<SatConstraint> v = new LinkedList<SatConstraint>();
 		int i = 0;
-		List<DatacenterType> dcs = Utils.getAllDatacenters(F4GModel);
-		for(DatacenterType dc : dcs) {
+		List<Datacenter> dcs = Utils.getAllDatacenters(F4GModel);
+		for(Datacenter dc : dcs) {
 			i++;
 			
 			//Get all VMs of the DC
 			Set<VM> vms = new HashSet<VM>();
-			for(VirtualMachineType vm : Utils.getAllVMs(dc)) {
+			for(VirtualMachine vm : Utils.getAllVMs(dc)) {
 				VM myVM = vmNames.getElement(vm.getFrameworkID());
 				if(myVM != null) {
 					vms.add(myVM);
@@ -148,7 +148,7 @@ public class ModelConstraintFactory extends ConstraintFactory {
 						
 			//get all nodes of the DC
 			Set<Node> nodes = new HashSet<Node>();
-			for(ServerType s : Utils.getAllServers(dc)) {
+			for(Server s : Utils.getAllServers(dc)) {
 				Node n = nodeNames.getElement(s.getFrameworkID());
 				if(n!=null){
 					nodes.add(n);
@@ -156,7 +156,7 @@ public class ModelConstraintFactory extends ConstraintFactory {
 				
 			}
 			
-			for(FrameworkCapabilitiesType fc : dc.getFrameworkCapabilities()) {
+			for(FrameworkCapabilities fc : dc.getFrameworkCapabilities()) {
 				
 				if (fc.getVm() != null) {
 					//for CP point of view, live migrate and moveVM are considered the same

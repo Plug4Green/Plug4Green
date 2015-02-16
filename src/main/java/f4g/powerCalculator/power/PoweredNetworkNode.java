@@ -7,12 +7,12 @@ import javax.measure.quantity.Power;
 import f4g.powerCalculator.power.PoweredComponent;
 
 import org.apache.log4j.Logger;
-import f4g.schemas.java.metamodel.NetworkPortType;
-import f4g.schemas.java.metamodel.NetworkNodeStatusType;
+import f4g.schemas.java.metamodel.NetworkPort;
+import f4g.schemas.java.metamodel.NetworkNodeStatus;
 import org.apache.log4j.Logger;
-import f4g.schemas.java.metamodel.BoxNetworkType;
-import f4g.schemas.java.metamodel.NetworkNodeType;
-import f4g.schemas.java.metamodel.NetworkNodeStatusType;
+import f4g.schemas.java.metamodel.BoxNetwork;
+import f4g.schemas.java.metamodel.NetworkNode;
+import f4g.schemas.java.metamodel.NetworkNodeStatus;
 
 import org.jscience.physics.amount.*;
 import org.jscience.physics.model.*;
@@ -27,9 +27,9 @@ import static javax.measure.unit.SI.*;
  *
  */
 
-public class PoweredNetworkNode extends NetworkNodeType implements PoweredComponent{	
+public class PoweredNetworkNode extends NetworkNode implements PoweredComponent{	
 	
-    NetworkNodeType node;
+    NetworkNode node;
 	private boolean simulationFlag;
     //	private JXPathContext netContext;
     
@@ -37,19 +37,19 @@ public class PoweredNetworkNode extends NetworkNodeType implements PoweredCompon
 	 * PoweredNetworkNode constructor
 	 * 
 	 */
-    public PoweredNetworkNode(NetworkNodeType n)
+    public PoweredNetworkNode(NetworkNode n)
     {  
         this.node = n;
 		this.simulationFlag = true;       
     }
     
-    public PoweredNetworkNode(NetworkNodeType n, boolean flag)
+    public PoweredNetworkNode(NetworkNode n, boolean flag)
     {  
         this.node = n;
 		this.simulationFlag = flag;        
     }
     
-    //    public PoweredNetworkNode(JXPathContext ctx, NetworkNodeType n, boolean flag)
+    //    public PoweredNetworkNode(JXPathContext ctx, NetworkNode n, boolean flag)
     //    {  
     //        this.node = n;
     //        this.netContext = ctx;
@@ -70,13 +70,13 @@ public class PoweredNetworkNode extends NetworkNodeType implements PoweredCompon
 		
 		Amount<Power> networkNodePower = Amount.valueOf(0.0, WATT);
         
-        if( node.getStatus() == NetworkNodeStatusType.ON ) {
+        if( node.getStatus() == NetworkNodeStatus.ON ) {
             
             double totalPps = 0;
             
-            Iterator<NetworkPortType> itr = node.getNetworkPort().iterator();
+            Iterator<NetworkPort> itr = node.getNetworkPort().iterator();
             while(itr.hasNext()) {
-                NetworkPortType port = itr.next();
+                NetworkPort port = itr.next();
                 double Ti = 0.0;
                 double To = 0.0;
                 if(port.getTrafficIn() != null) Ti = port.getTrafficIn().getValue();

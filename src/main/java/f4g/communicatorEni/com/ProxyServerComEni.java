@@ -31,11 +31,11 @@ import org.apache.log4j.Logger;
 import f4g.communicatorEni.com.TraditionalDataSend;
 import f4g.commons.monitor.IMonitor;
 import f4g.commons.com.Icom;
-import f4g.schemas.java.allocation.TraditionalVmAllocationResponseType;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
+import f4g.schemas.java.allocation.TraditionalVmAllocationResponse;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
 import f4g.schemas.java.allocation.ObjectFactory;
-import f4g.schemas.java.allocation.TraditionalVmAllocationType;
+import f4g.schemas.java.allocation.TraditionalVmAllocation;
 
 
 /**
@@ -109,14 +109,14 @@ public class ProxyServerComEni implements Runnable{
 	
 	@Override
 	public void run(){		
-		TraditionalVmAllocationResponseType operationResponse = null;
+		TraditionalVmAllocationResponse operationResponse = null;
 		ServerSocket serverSocket = null;
 		Socket socket = null;
 		ObjectInputStream objectInputStream = null;
-		AllocationRequestType request = null;
-		TraditionalVmAllocationType operation = null;
+		AllocationRequest request = null;
+		TraditionalVmAllocation operation = null;
 		TraditionalDataSend receivedData = null;
-		AllocationResponseType response = null;
+		AllocationResponse response = null;
 		boolean isRunning = true;
 
 		try {
@@ -139,10 +139,10 @@ public class ProxyServerComEni implements Runnable{
 				objectInputStream = new ObjectInputStream(socket.getInputStream());
 
 				// Send allocation request to fit4green				
-				request = new AllocationRequestType();				
-				JAXBElement<TraditionalVmAllocationType>  operationType = (new ObjectFactory()).createTraditionalVmAllocation(new TraditionalVmAllocationType());
+				request = new AllocationRequest();				
+				JAXBElement<TraditionalVmAllocation>  operationType = (new ObjectFactory()).createTraditionalVmAllocation(new TraditionalVmAllocation());
 
-				operation = new TraditionalVmAllocationType();
+				operation = new TraditionalVmAllocation();
 				log.debug("Waiting data");
 				receivedData = (TraditionalDataSend)objectInputStream.readObject();				
 				if("allocate".equals(receivedData.getOperation()) == true){
@@ -173,7 +173,7 @@ public class ProxyServerComEni implements Runnable{
 
 				if(response != null &&
 						response.getResponse() != null){
-					operationResponse = (TraditionalVmAllocationResponseType)response.getResponse().getValue();
+					operationResponse = (TraditionalVmAllocationResponse)response.getResponse().getValue();
 					log.debug("ResourceAllocationResponse: " + operationResponse.getNodeId());
 					// Creating response
 					ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());

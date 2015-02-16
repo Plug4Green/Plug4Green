@@ -1,12 +1,12 @@
 package f4g.commons.controller;
 
-import f4g.schemas.java.actions.ActionRequestType;
+import f4g.schemas.java.actions.ActionRequest;
 
 /**
  * Interface to be implemented by the Controller component.
  * 
  * The purpose of the Controller is to:
- * <li> handle a request for a set of actions wrapped into an ActionRequestType object </li>
+ * <li> handle a request for a set of actions wrapped into an ActionRequest object </li>
  * <li> group them based on the COMcomponents which are the target receivers </li>
  * <li> define the best strategies for the sending of the requests </li>
  * <li> dispatch the request in the optimal way to the COM objects </li>
@@ -28,7 +28,7 @@ public interface IController {
 	 * @param actionRequest
 	 * @return true if successful, false otherwise
 	 */
-	boolean executeActionList(ActionRequestType actionRequest);
+	boolean executeActionList(ActionRequest actionRequest);
 	
 	/**
 	 * Called by the core component responsible for starting up and shutting down the FIT4Green plug-in. 

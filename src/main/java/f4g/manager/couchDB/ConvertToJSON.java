@@ -29,8 +29,8 @@ import net.sf.json.JSON;
 import net.sf.json.xml.XMLSerializer;
 
 import f4g.commons.core.Constants;
-import f4g.schemas.java.actions.ActionRequestType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
+import f4g.schemas.java.actions.ActionRequest;
+import f4g.schemas.java.metamodel.FIT4Green;
 import org.xml.sax.SAXException;
 
 /**
@@ -47,7 +47,7 @@ public class ConvertToJSON {
 	 * @param actions	The action request type
 	 * @return			JSON as string
 	 */
-	public String convert (ActionRequestType actions) {
+	public String convert (ActionRequest actions) {
 		
 		String result = null;
 		
@@ -103,7 +103,7 @@ public class ConvertToJSON {
 	 * @param model		The FIT4Green type
 	 * @return			JSON as string
 	 */
-	public String convert (FIT4GreenType model) {
+	public String convert (FIT4Green model) {
 		
 		String result = null;
 		

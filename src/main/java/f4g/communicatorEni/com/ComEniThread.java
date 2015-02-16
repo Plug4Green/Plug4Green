@@ -28,10 +28,10 @@ import org.apache.log4j.Logger;
 import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
-import f4g.schemas.java.metamodel.FrameworkStatusType;
-import f4g.schemas.java.metamodel.ServerStatusType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.FrameworkStatus;
+import f4g.schemas.java.metamodel.ServerStatus;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.VirtualMachine;
 
 
 import f4g.communicatorEni.vmware.PerformanceInformation;
@@ -100,7 +100,7 @@ public class ComEniThread extends Thread{
 	 *
 	 * @author jclegea
 	 */
-	public void setStatus(FrameworkStatusType status){				
+	public void setStatus(FrameworkStatus status){				
 		comEniStatus_ = status.value();
 		log.debug("STATUS " + comEni_.comName + ": " + comEniStatus_);
 		monitor_.setFrameworkStatus(comEni_.comName, status);		
@@ -139,11 +139,11 @@ public class ComEniThread extends Thread{
 					// if it is the first running put state to Starting					
 					if(ComEniConstants.STOPPED.equals(comEniStatus_) == true && ComEniConstants.STARTING.equals(comEniStatus_) != true){						
 						// update the status in the model
-						setStatus(FrameworkStatusType.STARTING);												
+						setStatus(FrameworkStatus.STARTING);												
 					}
 					else if(ComEniConstants.RUNNING.equals(comEniStatus_) != true){
 						// state of comEni Running
-						setStatus(FrameworkStatusType.RUNNING);
+						setStatus(FrameworkStatus.RUNNING);
 					}
 					
 					isRetrieved = retrieveInformation();
@@ -157,7 +157,7 @@ public class ComEniThread extends Thread{
 						log.debug("connection with vSphere Web Service not possible.");
 						retryCount++;
 						if(retryCount >= maxRetries && ComEniConstants.STOPPED.equals(comEniStatus_) != true){
-							setStatus(FrameworkStatusType.STOPPED);						
+							setStatus(FrameworkStatus.STOPPED);						
 						}
 						Thread.sleep(monitorInterval);
 				}
@@ -210,20 +210,20 @@ public class ComEniThread extends Thread{
 	throws Exception{
 		String key;		
 		HashMap serverList;
-		ServerType serverType = new ServerType();
-		VirtualMachineType serverVirtualMachine;
-		List<VirtualMachineType> virtualMachineList;
+		Server serverType = new Server();
+		VirtualMachine serverVirtualMachine;
+		List<VirtualMachine> virtualMachineList;
 		
 		try{
 			actualHostList.clear();		
 			key = comEni_.comName + "_" + hostsInformation_.getHostName(hostIndex);
 			serverList = monitor_.getMonitoredObjectsCopy(comEni_.comName);		
-			serverType = (ServerType)serverList.get(key);
+			serverType = (Server)serverList.get(key);
 			if(serverType != null){
 				virtualMachineList = serverType.getNativeHypervisor().getVirtualMachine();
 				for (Iterator iterator = virtualMachineList.iterator(); iterator
 					.hasNext();) {
-					serverVirtualMachine = (VirtualMachineType) iterator.next();
+					serverVirtualMachine = (VirtualMachine) iterator.next();
 					//log.debug("SERVERTYPE: " + serverVirtualMachine.getFrameworkID());														
 					actualHostList.add(serverVirtualMachine.getFrameworkID());					
 				}
@@ -259,7 +259,7 @@ public class ComEniThread extends Thread{
 		double measuredPower = 0.0;
 		double cpuLoadHistory = -1;
 		double cpuUsage = -1;
-		ServerStatusType statusPower;
+		ServerStatus statusPower;
 		String ip = null;
 		int i=0, j=0 , k=0;
 		log.debug("insertInformationDataModel");
@@ -342,7 +342,7 @@ public class ComEniThread extends Thread{
 						powerState = hostsInformation_.getHostPowerState(i);
 						
 						if("poweredOn".equals(powerState) == true){					
-							operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatusType.ON);
+							operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.ON);
 							operationSet.add(operation);
 							//measuredPower = hostsInformation_.getHostMeasuredPower(i);
 
@@ -360,7 +360,7 @@ public class ComEniThread extends Thread{
 //							}							
 //							log.debug("!!MEASURED POWER: " + measuredPower);
 						} else{
-							operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatusType.OFF);
+							operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.OFF);
 							operationSet.add(operation);
 						}
 						//log.debug("powerState: " + powerState);

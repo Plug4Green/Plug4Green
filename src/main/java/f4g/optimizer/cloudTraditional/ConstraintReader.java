@@ -21,8 +21,8 @@ import org.apache.log4j.Logger;
 
 import f4g.schemas.java.constraints.placement.Ban;
 import f4g.schemas.java.constraints.placement.Capacity;
-import f4g.schemas.java.constraints.placement.ConstraintType;
-import f4g.schemas.java.constraints.placement.FIT4GreenConstraintType;
+import f4g.schemas.java.constraints.placement.Constraint;
+import f4g.schemas.java.constraints.placement.FIT4GreenConstraint;
 import f4g.schemas.java.constraints.placement.Fence;
 import f4g.schemas.java.constraints.placement.Gather;
 import f4g.schemas.java.constraints.placement.Lonely;
@@ -40,7 +40,7 @@ import f4g.schemas.java.constraints.placement.Spread;
 public class ConstraintReader {
 
 	public Logger log;
-	public ConstraintType CP;
+	public Constraint CP;
 
 	/**
 	 * get Placement constraints from file input TODO: To be set.
@@ -62,7 +62,7 @@ public class ConstraintReader {
 	 * 
 	 * @author Ts
 	 */
-	private ConstraintType readCP(String CPPathName) {
+	private Constraint readCP(String CPPathName) {
 		
 		InputStream cpStream = this.getClass().getClassLoader()
 		.getResourceAsStream(CPPathName);
@@ -72,7 +72,7 @@ public class ConstraintReader {
 					.newInstance("f4g.schemas.java.constraints.placement");
 			Unmarshaller um = context.createUnmarshaller();
 			@SuppressWarnings("unchecked")
-			JAXBElement<FIT4GreenConstraintType> s = (JAXBElement<FIT4GreenConstraintType>) um
+			JAXBElement<FIT4GreenConstraint> s = (JAXBElement<FIT4GreenConstraint>) um
 					.unmarshal(cpStream);	
 					//.unmarshal(new FileReader(CPPathName));
 			return s.getValue().getDataCentre().getTargetSys().getConstraint();

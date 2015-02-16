@@ -51,20 +51,20 @@ import f4g.optimizer.cloudTraditional.NetworkControl;
 import f4g.optimizer.utils.OptimizerWorkload;
 import f4g.optimizer.Optimizer.CloudTradCS;
 import f4g.schemas.java.metamodel.*;
-import f4g.schemas.java.actions.AbstractBaseActionType;
-import f4g.schemas.java.actions.ActionRequestType;
-import f4g.schemas.java.actions.LiveMigrateVMActionType;
-import f4g.schemas.java.actions.MoveVMActionType;
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.actions.PowerOnActionType;
-import f4g.schemas.java.actions.ActionRequestType.ActionList;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.RequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
-import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
-import f4g.schemas.java.allocation.CloudVmAllocationType;
-import f4g.schemas.java.allocation.TraditionalVmAllocationResponseType;
-import f4g.schemas.java.allocation.TraditionalVmAllocationType;
+import f4g.schemas.java.actions.AbstractBaseAction;
+import f4g.schemas.java.actions.ActionRequest;
+import f4g.schemas.java.actions.LiveMigrateVMAction;
+import f4g.schemas.java.actions.MoveVMAction;
+import f4g.schemas.java.actions.PowerOffAction;
+import f4g.schemas.java.actions.PowerOnAction;
+import f4g.schemas.java.actions.ActionRequest.ActionList;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.Request;
+import f4g.schemas.java.allocation.AllocationResponse;
+import f4g.schemas.java.allocation.CloudVmAllocationResponse;
+import f4g.schemas.java.allocation.CloudVmAllocation;
+import f4g.schemas.java.allocation.TraditionalVmAllocationResponse;
+import f4g.schemas.java.allocation.TraditionalVmAllocation;
 import f4g.schemas.java.allocation.ObjectFactory;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
@@ -113,7 +113,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	/**
 	 * Virtual Machines types retrieved from SLA
 	 */
-	private VMTypeType vmTypes;
+	private VMTypeType vms;
 
 	/**
 	 * Cluster definition
@@ -170,13 +170,13 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			log.trace("SLA pathname:" + currentSlaClusterPathName);
 			SLAReader slaReader = new SLAReader(currentSlaClusterPathName);
 
-			vmTypes = slaReader.getVMtypes();
+			vms = slaReader.getVMtypes();
 			clusters = slaReader.getCluster();
 			serverGroups = slaReader.getServerGroup();
 			policies = slaReader.getPolicies();
 			federation = slaReader.getFeds();
 			SLAs = slaReader.getSLAs();
-			showVMs(vmTypes);
+			showVMs(vms);
 
 		} catch (Exception e) {
 			log.warn("error in SLA");
@@ -195,7 +195,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		// default to Cloud
 		computingStyle = CloudTradCS.CLOUD;
 
-		vmTypes = theVMTypes;
+		vms = theVMTypes;
 		
 		if(myFederation.getBoundedCluster() != null) {
 			clusters = new ClusterType();
@@ -209,7 +209,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		policies = myPolicies;
 		federation = myFederation;
 		
-		showVMs(vmTypes);
+		showVMs(vms);
 		
 	}
 	
@@ -224,13 +224,13 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		super(controller, powerCalculator, costEstimator);
 		log = Logger.getLogger(this.getClass().getName());
 		computingStyle = cs;
-		vmTypes = slaReader.getVMtypes();
+		vms = slaReader.getVMtypes();
 		clusters = slaReader.getCluster();
 		serverGroups = slaReader.getServerGroup();
 		policies = slaReader.getPolicies();
 		federation = slaReader.getFeds();
 		SLAs = slaReader.getSLAs();
-		showVMs(vmTypes);
+		showVMs(vms);
 		
 	}
 
@@ -241,7 +241,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 *            Data structure describing the resource allocation request
 	 * @return A data structure representing the result of the allocation
 	 */
-	public AllocationResponseType allocateResource(AllocationRequestType allocationRequest, FIT4GreenType F4GModel) {
+	public AllocationResponse allocateResource(AllocationRequest allocationRequest, FIT4Green F4GModel) {
 		log.debug("allocateResource");
 		if (allocationRequest == null || allocationRequest.getRequest() == null) {
 			log.warn("Allocation request is not correct");
@@ -265,12 +265,12 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
             if(dest != null) {
             	return createAllocationResponseFromServer(dest, allocationRequest.getRequest().getValue(), nodeNames);	
             } else {
-            	return new AllocationResponseType();
+            	return new AllocationResponse();
             }
             
             
         } else {
-           	return new AllocationResponseType();
+           	return new AllocationResponse();
         } 
 	}
 	
@@ -279,10 +279,10 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 * Handles a request for a global optimization
 	 */
 	@Override
-	public void runGlobalOptimization(FIT4GreenType F4GModel) {
+	public void runGlobalOptimization(FIT4Green F4GModel) {
 		log.debug("Performing Global Optimization");
 		
-		Optional<ReconfigurationPlan> oPlan = computePlan(F4GModel, Optional.<AllocationRequestType>absent());
+		Optional<ReconfigurationPlan> oPlan = computePlan(F4GModel, Optional.<AllocationRequest>absent());
 		
 		if(oPlan.isPresent()) {
 			ReconfigurationPlan plan = oPlan.get();
@@ -291,26 +291,26 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
             
             F4GDriverFactory f4GDriverFactory = new F4GDriverFactory(controller, F4GModel, nodeNames, vmNames);
             
-            List<AbstractBaseActionType> actions = new ArrayList<AbstractBaseActionType>();
+            List<AbstractBaseAction> actions = new ArrayList<AbstractBaseAction>();
 			for (Action action : plan.getActions()) {
     			log.debug("action: " + action.getClass().getName());
 
-    			AbstractBaseActionType f4gAction = f4GDriverFactory.transform(action).getActionToExecute();
+    			AbstractBaseAction f4gAction = f4GDriverFactory.transform(action).getActionToExecute();
     			if(f4gAction != null){
     				actions.add(f4gAction);	
     			}    			 
     		}
     		
-    		List<PowerOnActionType> powerOns = new ArrayList<PowerOnActionType>();
-    		List<PowerOffActionType> powerOffs = new ArrayList<PowerOffActionType>();
-    		List<AbstractBaseActionType> moves = new ArrayList<AbstractBaseActionType>();
-    		for (AbstractBaseActionType action : actions) {
-    			if (action instanceof PowerOnActionType)
-    				powerOns.add((PowerOnActionType) action);
-    			if (action instanceof PowerOffActionType)
-    				powerOffs.add((PowerOffActionType) action);
-    			if (action instanceof MoveVMActionType 
-    			 || action instanceof LiveMigrateVMActionType)
+    		List<PowerOnAction> powerOns = new ArrayList<PowerOnAction>();
+    		List<PowerOffAction> powerOffs = new ArrayList<PowerOffAction>();
+    		List<AbstractBaseAction> moves = new ArrayList<AbstractBaseAction>();
+    		for (AbstractBaseAction action : actions) {
+    			if (action instanceof PowerOnAction)
+    				powerOns.add((PowerOnAction) action);
+    			if (action instanceof PowerOffAction)
+    				powerOffs.add((PowerOffAction) action);
+    			if (action instanceof MoveVMAction 
+    			 || action instanceof LiveMigrateVMAction)
     				moves.add(action);
     		}
     		
@@ -319,13 +319,13 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
     		
     		ActionList actionList = new ActionList();
     		// create JAXB actions
-    		for (AbstractBaseActionType action : actions) {
+    		for (AbstractBaseAction action : actions) {
     			actionList.getAction().add((new f4g.schemas.java.actions.ObjectFactory()).createAction(action));
     		}
     		
     		// compute the new datacenter with only moves
-    		FIT4GreenType newFederationWithMoves = performMoves(moves, F4GModel);
-    		FIT4GreenType newFederation = performOnOffs(powerOns, powerOffs, newFederationWithMoves);
+    		FIT4Green newFederationWithMoves = performMoves(moves, F4GModel);
+    		FIT4Green newFederation = performOnOffs(powerOns, powerOffs, newFederationWithMoves);
 
     		// -------------------
     		// ON/OFF actions on network equipmentF4GModel
@@ -335,15 +335,15 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
     				myNetworkActionList);
     		// -------------------
 
-    		ActionRequestType actionRequest = getActionRequest(actionList, F4GModel, newFederation);
+    		ActionRequest actionRequest = getActionRequest(actionList, F4GModel, newFederation);
     		controller.executeActionList(actionRequest);
 		}		
 	}
 	
-	public Optional<ReconfigurationPlan> computePlan(FIT4GreenType F4GModel, Optional<AllocationRequestType> oAllocationRequest) {
+	public Optional<ReconfigurationPlan> computePlan(FIT4Green F4GModel, Optional<AllocationRequest> oAllocationRequest) {
 			
 		Model model = new DefaultModel();
-		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(F4GModel, vmTypes, powerCalculator, optiObjective);
+		F4GConfigurationAdapter confAdapter = new F4GConfigurationAdapter(F4GModel, vms, powerCalculator, optiObjective);
 		confAdapter.addConfiguration(model);
 
 		List<SatConstraint> cstrs = getConstraints(F4GModel, model);
@@ -353,8 +353,8 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			model.getMapping().addReadyVM(VMtoAllocate);
 			cstrs.add(new Running(VMtoAllocate));
 			
-			RequestType request = (RequestType) oAllocationRequest.get().getRequest().getValue();	
-			confAdapter.addVMViews(VMtoAllocate, (CloudVmAllocationType) request, model); //TODO generalize
+			Request request = (Request) oAllocationRequest.get().getRequest().getValue();	
+			confAdapter.addVMViews(VMtoAllocate, (CloudVmAllocation) request, model); //TODO generalize
 		}
 		
 		ChocoScheduler cra = new DefaultChocoScheduler();
@@ -392,7 +392,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	}
 	
 	
-	private List<SatConstraint> getConstraints(FIT4GreenType F4Gmodel, Model model) {
+	private List<SatConstraint> getConstraints(FIT4Green F4Gmodel, Model model) {
 		
 		List<SatConstraint> constraints = new LinkedList<SatConstraint>();
 
@@ -404,23 +404,23 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 //			}
 		}
 
-		constraints.addAll(new PolicyConstraintFactory(clusters, model, F4Gmodel, federation, vmTypes, powerCalculator, costEstimator).createPolicyConstraints());
+		constraints.addAll(new PolicyConstraintFactory(clusters, model, F4Gmodel, federation, vms, powerCalculator, costEstimator).createPolicyConstraints());
 		constraints.addAll(new ModelConstraintFactory(model, F4Gmodel).getModelConstraints());
 		return constraints;
 	}
 	
-	private List<SatConstraint> getConstraints(FIT4GreenType model, RequestType request, Mapping src, VM VMtoAllocate) {
+	private List<SatConstraint> getConstraints(FIT4Green model, Request request, Mapping src, VM VMtoAllocate) {
 		
 		
 		int minPriority = 1;
 		List<SatConstraint> queue = new LinkedList<SatConstraint>(); 
 		
 		if (computingStyle == CloudTradCS.CLOUD) {
-			if (((CloudVmAllocationType) request).getMinPriority() != null)
-				minPriority = ((CloudVmAllocationType) request).getMinPriority();
+			if (((CloudVmAllocation) request).getMinPriority() != null)
+				minPriority = ((CloudVmAllocation) request).getMinPriority();
 		} else {
-			if (((TraditionalVmAllocationType) request).getMinPriority() != null)
-				minPriority = ((TraditionalVmAllocationType) request).getMinPriority();
+			if (((TraditionalVmAllocation) request).getMinPriority() != null)
+				minPriority = ((TraditionalVmAllocation) request).getMinPriority();
 		}
 		
 		if (clusters != null) {
@@ -438,9 +438,9 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	}
 	
 
-	private List<AbstractBaseActionType> computeActions(FIT4GreenType F4GModel, Model model, List<SatConstraint> cstrs, NamingService<Node> nodeNames, NamingService<VM> vmNames) {
+	private List<AbstractBaseAction> computeActions(FIT4Green F4GModel, Model model, List<SatConstraint> cstrs, NamingService<Node> nodeNames, NamingService<VM> vmNames) {
 		
-		List<AbstractBaseActionType> actions = new ArrayList<AbstractBaseActionType>();
+		List<AbstractBaseAction> actions = new ArrayList<AbstractBaseAction>();
 		
         ChocoScheduler cra = new DefaultChocoScheduler();
         
@@ -456,7 +456,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
             for (Action action : plan.getActions()) {
     			log.debug("action: " + action.getClass().getName());
 
-    			AbstractBaseActionType f4gAction = f4GDriverFactory.transform(action).getActionToExecute();
+    			AbstractBaseAction f4gAction = f4GDriverFactory.transform(action).getActionToExecute();
     			if(f4gAction != null){
     				actions.add(f4gAction);	
     			}    			 
@@ -487,17 +487,17 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 * 
 	 * @param model
 	 */
-	protected AllocationResponseType createAllocationResponseFromServer(Node node, RequestType request, NamingService<Node> ns) {
+	protected AllocationResponse createAllocationResponseFromServer(Node node, Request request, NamingService<Node> ns) {
 		// Creates a response
-		AllocationResponseType response = new AllocationResponseType();
+		AllocationResponse response = new AllocationResponse();
 
 		if (node != null) {
 
 			if (computingStyle == CloudTradCS.CLOUD) {
-				CloudVmAllocationResponseType cloudVmAllocationResponse = getResponse(node, request, ns);
+				CloudVmAllocationResponse cloudVmAllocationResponse = getResponse(node, request, ns);
 				response.setResponse((new ObjectFactory()).createCloudVmAllocationResponse(cloudVmAllocationResponse));
 			} else {
-				TraditionalVmAllocationResponseType tradVmAllocationResponse = getResponse(node, ns);
+				TraditionalVmAllocationResponse tradVmAllocationResponse = getResponse(node, ns);
 				response.setResponse((new ObjectFactory()).createTradinitionalVmAllocationResponse(tradVmAllocationResponse));
 			}
 
@@ -517,14 +517,14 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		return response;
 	}
 
-	protected OptimizerWorkload getOptimizerWorkload(RequestType request) {
+	protected OptimizerWorkload getOptimizerWorkload(Request request) {
 
 		if (computingStyle == CloudTradCS.CLOUD) {
 			// Get the VM type from SLA.
 			VMTypeType.VMType SLAVM;
 			try {
 				SLAVM = Util.findVMByName(
-						((CloudVmAllocationType) request).getVmType(), vmTypes);
+						((CloudVmAllocation) request).getVm(), vms);
 			} catch (NoSuchElementException e1) {
 				log.warn("VM type not found in SLA, allocation impossible");
 				return null;
@@ -533,17 +533,17 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			OptimizerWorkload WL = new OptimizerWorkload(SLAVM, "No name");
 			return WL;
 		} else {
-			return new OptimizerWorkload((TraditionalVmAllocationType) request,
+			return new OptimizerWorkload((TraditionalVmAllocation) request,
 					"No name");
 		}
 
 	}
 
-	protected ArrayList<IOptimizerServer> getOptimizerServers(DatacenterType datacenter) {
+	protected ArrayList<IOptimizerServer> getOptimizerServers(Datacenter datacenter) {
 
 		if (computingStyle == CloudTradCS.CLOUD) {
 			// get translations between F4G types and optimizer types
-			final ArrayList<IOptimizerServer> optimizerServers = Utils.getAllOptimizerServersCloud(datacenter, vmTypes);
+			final ArrayList<IOptimizerServer> optimizerServers = Utils.getAllOptimizerServersCloud(datacenter, vms);
 			return optimizerServers;
 		} else {
 			// get translations between F4G types and optimizer types
@@ -553,22 +553,22 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
 	}
 
-	protected ArrayList<IOptimizerServer> getOptimizerServers(FIT4GreenType federation) {
+	protected ArrayList<IOptimizerServer> getOptimizerServers(FIT4Green federation) {
 
 		// get translations between F4G types and optimizer types
 		final ArrayList<IOptimizerServer> optimizerServers = new ArrayList<IOptimizerServer>();
-		for (SiteType s : federation.getSite()) {
-			for (DatacenterType dc : s.getDatacenter()) {
+		for (Site s : federation.getSite()) {
+			for (Datacenter dc : s.getDatacenter()) {
 				optimizerServers.addAll(getOptimizerServers(dc));
 			}
 		}
 		return optimizerServers;
 	}
 
-	public CloudVmAllocationResponseType getResponse(Node node,	RequestType request, NamingService<Node> ns) {
+	public CloudVmAllocationResponse getResponse(Node node,	Request request, NamingService<Node> ns) {
 
-		CloudVmAllocationResponseType cloudVmAllocationResponse = new CloudVmAllocationResponseType();
-		CloudVmAllocationType CloudOperation = (CloudVmAllocationType) request;
+		CloudVmAllocationResponse cloudVmAllocationResponse = new CloudVmAllocationResponse();
+		CloudVmAllocation CloudOperation = (CloudVmAllocation) request;
 
 		// setting the response
 		cloudVmAllocationResponse.setNodeId(ns.getName(node));
@@ -576,13 +576,13 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		cloudVmAllocationResponse.setClusterId(Utils.getClusterId(ns.getName(node), clusters));
 		cloudVmAllocationResponse.setImageId(CloudOperation.getImageId());
 		cloudVmAllocationResponse.setUserId(CloudOperation.getUserId());
-		cloudVmAllocationResponse.setVmType(CloudOperation.getVmType());
+		cloudVmAllocationResponse.setVm(CloudOperation.getVm());
 		return cloudVmAllocationResponse;
 	}
 
-	public TraditionalVmAllocationResponseType getResponse(Node node, NamingService<Node> ns) {
+	public TraditionalVmAllocationResponse getResponse(Node node, NamingService<Node> ns) {
 
-		TraditionalVmAllocationResponseType traditionalVmAllocationResponse = new TraditionalVmAllocationResponseType();
+		TraditionalVmAllocationResponse traditionalVmAllocationResponse = new TraditionalVmAllocationResponse();
 
 		// setting the response
 		traditionalVmAllocationResponse.setNodeId(ns.getName(node)); 
@@ -590,7 +590,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		traditionalVmAllocationResponse.setClusterId(Utils.getClusterId(ns.getName(node), clusters));  
 		traditionalVmAllocationResponse.setImageId("");
 		traditionalVmAllocationResponse.setUserId("");
-		traditionalVmAllocationResponse.setVmType("");
+		traditionalVmAllocationResponse.setVm("");
 		return traditionalVmAllocationResponse;
 	}
 
@@ -614,12 +614,12 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		log.debug("HD: " + VM.getCapacity().getVHardDisk().getValue());
 	}
 
-	public void setVmTypes(VMTypeType vmTypes) {
-		this.vmTypes = vmTypes;
+	public void setVmTypes(VMTypeType vms) {
+		this.vms = vms;
 	}
 
 	public VMTypeType getVmTypes() {
-		return vmTypes;
+		return vms;
 	}
 
 	public ClusterType getClusters() {
@@ -638,11 +638,11 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		this.computingStyle = computingStyle;
 	}
 
-	public void showAllocation(AllocationRequestType allocationRequest) {
-		RequestType request = (RequestType) allocationRequest.getRequest()
+	public void showAllocation(AllocationRequest allocationRequest) {
+		Request request = (Request) allocationRequest.getRequest()
 				.getValue();
-		if (request instanceof CloudVmAllocationType) {
-			CloudVmAllocationType r = (CloudVmAllocationType) request;
+		if (request instanceof CloudVmAllocation) {
+			CloudVmAllocation r = (CloudVmAllocation) request;
 			log.debug("allocation type Cloud:");
 			String ids = new String();
 			for (String id : r.getClusterId()) {
@@ -650,11 +650,11 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			}
 			log.debug("Cluster IDs = " + ids);
 			log.debug("Image ID = " + r.getImageId());
-			log.debug("VM type = " + r.getVmType());
+			log.debug("VM type = " + r.getVm());
 			log.debug("User ID = " + r.getUserId());
 
 		} else {
-			TraditionalVmAllocationType r = (TraditionalVmAllocationType) request;
+			TraditionalVmAllocation r = (TraditionalVmAllocation) request;
 			log.debug("allocation type Traditional:");
 			String ids = new String();
 			for (String id : r.getClusterId()) {
@@ -675,10 +675,10 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	
 	
     //Compare two nodes and returns the one with less remaining space on CPU
-    public static class ActionComparator implements Comparator<AbstractBaseActionType> {
+    public static class ActionComparator implements Comparator<AbstractBaseAction> {
 
     	@Override
-        public int compare(AbstractBaseActionType a1, AbstractBaseActionType a2) {
+        public int compare(AbstractBaseAction a1, AbstractBaseAction a2) {
     		int pos1 = getPosition(a1);
     		int pos2 = getPosition(a2);
 			if (pos1 > pos2 ) {
@@ -690,14 +690,14 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			}
         }
     	
-    	public int getPosition(AbstractBaseActionType action) {
-    		if (action instanceof PowerOnActionType) {
+    	public int getPosition(AbstractBaseAction action) {
+    		if (action instanceof PowerOnAction) {
     			return 1;
-    		} else if (action instanceof MoveVMActionType) {
+    		} else if (action instanceof MoveVMAction) {
     			return 2;
-    		} else if (action instanceof LiveMigrateVMActionType) {
+    		} else if (action instanceof LiveMigrateVMAction) {
     			return 2;
-    		} else if (action instanceof PowerOffActionType) {
+    		} else if (action instanceof PowerOffAction) {
     			return 3;
     		} else {
     			return 4;

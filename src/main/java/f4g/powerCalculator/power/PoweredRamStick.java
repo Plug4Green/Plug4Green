@@ -1,15 +1,15 @@
 package f4g.powerCalculator.power;
 import f4g.powerCalculator.power.PoweredComponent;
 import f4g.schemas.java.metamodel.BufferTypeType;
-import f4g.schemas.java.metamodel.FrequencyType;
-import f4g.schemas.java.metamodel.RAMSizeType;
+import f4g.schemas.java.metamodel.Frequency;
+import f4g.schemas.java.metamodel.RAMSize;
 import f4g.schemas.java.metamodel.RAMTypeType;
-import f4g.schemas.java.metamodel.RAMStickType;
-import f4g.schemas.java.metamodel.VoltageType;
+import f4g.schemas.java.metamodel.RAMStick;
+import f4g.schemas.java.metamodel.Voltage;
 import f4g.schemas.java.metamodel.RAMTypeVendorType;
 import org.apache.log4j.Logger;
 
-public class PoweredRamStick extends RAMStickType implements PoweredComponent{	
+public class PoweredRamStick extends RAMStick implements PoweredComponent{	
 	
 	private final static double constantFrequency = 1600;
 	private final static double constantFactor = 0.000026;
@@ -17,7 +17,7 @@ public class PoweredRamStick extends RAMStickType implements PoweredComponent{
 	private double factor=0;
 	static Logger log = Logger.getLogger(PoweredRamStick.class.getName());
 	
-	public PoweredRamStick(FrequencyType frequency, BufferTypeType bufferType, RAMSizeType size, RAMTypeVendorType vendor,RAMTypeType type, double factor, VoltageType voltage){
+	public PoweredRamStick(Frequency frequency, BufferTypeType bufferType, RAMSize size, RAMTypeVendorType vendor,RAMTypeType type, double factor, Voltage voltage){
 		this.frequency = frequency;
 		this.size = size;
 		this.bufferType = bufferType;	

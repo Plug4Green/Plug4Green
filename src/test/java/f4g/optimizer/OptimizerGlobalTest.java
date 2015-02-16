@@ -9,18 +9,18 @@ import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
-import f4g.schemas.java.metamodel.CpuUsageType;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.RackableServerType;
-import f4g.schemas.java.metamodel.ServerStatusType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
-import f4g.schemas.java.actions.MoveVMActionType;
-import f4g.schemas.java.actions.PowerOffActionType;
+import f4g.schemas.java.metamodel.CpuUsage;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.RackableServer;
+import f4g.schemas.java.metamodel.ServerStatus;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.VirtualMachine;
+import f4g.schemas.java.actions.MoveVMAction;
+import f4g.schemas.java.actions.PowerOffAction;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedPoliciesType;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
-import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
-import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
+import f4g.schemas.java.constraints.optimizerconstraints.Load;
+import f4g.schemas.java.constraints.optimizerconstraints.Period;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
 import f4g.schemas.java.constraints.optimizerconstraints.SpareNodes;
@@ -49,7 +49,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
+		Period period = new Period(begin, end, null, null, new Load(null, null));
 		
 		PolicyType.Policy pol = new Policy();
 		pol.getPeriodVMThreshold().add(period);
@@ -67,7 +67,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		fed.setBoundedPolicies(bpols);
 		
 		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(),
-				SLAGenerator.createVirtualMachineType(), policies, fed);
+				SLAGenerator.createVirtualMachine(), policies, fed);
 	    
 		optimizer.setSla(SLAGenerator.createDefaultSLA());
 		optimizer.setOptiObjective(OptimizationObjective.Power);
@@ -100,14 +100,14 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setCORE(1);
 		modelGenerator.setRAM_SIZE(100);
 
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		
 		optimizer.runGlobalOptimization(model);
 			
 		assertEquals(1, getMoves().size());
 		assertEquals("DC1", getMoves().get(0).getFrameworkName());
 
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(100));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(100));
 		optimizer.runGlobalOptimization(model);
 		
 		assertEquals(0, getMoves().size());
@@ -124,17 +124,17 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(10);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);				
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();				
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();				
 	
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(0));
 		optimizer.runGlobalOptimization(model);
 				
 		assertEquals(9, getMoves().size());
 		assertEquals(9, getPowerOffs().size());
 	
 		//no duplicate moves or power offs should be found
-		Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(getMoves());
-		Set<PowerOffActionType> powerOffSet = new HashSet<PowerOffActionType>(getPowerOffs()); 
+		Set<MoveVMAction> moveSet = new HashSet<MoveVMAction>(getMoves());
+		Set<PowerOffAction> powerOffSet = new HashSet<PowerOffAction>(getPowerOffs()); 
 		assertTrue(moveSet.size()==9);
 		assertTrue(powerOffSet.size()==9);
 	}
@@ -154,9 +154,9 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(6); 
 		modelGenerator.setRAM_SIZE(2);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();				
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();				
 	
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(0));
 		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVRam().setValue(1);
 		optimizer.runGlobalOptimization(model);
         		
@@ -176,7 +176,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(4); //4 cores
 
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 				
 		optimizer.runGlobalOptimization(model);
 			  
@@ -197,7 +197,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(10);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();				
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();				
 			
 		optimizer.runGlobalOptimization(model);
 		
@@ -215,7 +215,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 
 		//Create a Power Calculator that computes a more feeble power a server.
 		class MyPowerCalculator extends MockPowerCalculator {
-			public PowerData computePowerServer(ServerType server) {
+			public PowerData computePowerServer(Server server) {
 				PowerData power = new PowerData();
 				if(server.getFrameworkID().equals("id100000"))
 					power.setActualConsumption(15.0 + traverser.calculatePower(server).getActualConsumption());
@@ -230,7 +230,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		
 		//TEST 1 switching off the server that consumes more
 		optimizer.setPowerCalculator(new MyPowerCalculator());
@@ -243,7 +243,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	
 		//Create a Power Calculator that computes a more feeble power for a server.
 		class MyPowerCalculator2 extends MockPowerCalculator {
-			public PowerData computePowerServer(ServerType server) {
+			public PowerData computePowerServer(Server server) {
 				PowerData power = new PowerData();
 				if(server.getFrameworkID().equals("id200000"))
 					power.setActualConsumption(15.0 + traverser.calculatePower(server).getActualConsumption());
@@ -269,7 +269,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		
 		//Create a Power Calculator that computes a more feeble power a server.
 		class MyPowerCalculator extends MockPowerCalculator {
-			public PowerData computePowerServer(ServerType server) {
+			public PowerData computePowerServer(Server server) {
 				PowerData power = new PowerData();
 				if(server.getFrameworkID().equals("id200000"))
 					power.setActualConsumption(8.0 + traverser.calculatePower(server).getActualConsumption());
@@ -284,11 +284,11 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(2); 
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
 								
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		
-		List<ServerType> servers = Utils.getAllServers(model.getSite().get(0).getDatacenter().get(0));
-		servers.get(0).setStatus(ServerStatusType.OFF);
-		servers.get(1).setStatus(ServerStatusType.OFF);
+		List<Server> servers = Utils.getAllServers(model.getSite().get(0).getDatacenter().get(0));
+		servers.get(0).setStatus(ServerStatus.OFF);
+		servers.get(1).setStatus(ServerStatus.OFF);
 		
 		optimizer.getPolicies().getPolicy().get(0).getPeriodVMThreshold().get(0).getLoad().setSpareNodes(new SpareNodes(1, UnitType.ABSOLUTE));
 		optimizer.setPowerCalculator(new MyPowerCalculator());
@@ -311,11 +311,11 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setNB_SERVERS(8);
 		modelGenerator.setNB_VIRTUAL_MACHINES(4);
 		modelGenerator.setCORE(4);
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		
 		//emptying VM1
-		RackableServerType S1 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1);
-		VirtualMachineType VM1 = S1.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().get(0);
+		RackableServer S1 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1);
+		VirtualMachine VM1 = S1.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().get(0);
 		
 		//nulify non used values (should work without)
 		VM1.setNumberOfCPUs(null);
@@ -347,7 +347,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(4);
 		modelGenerator.IS_CLOUD = false;
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 
 		optimizer.runGlobalOptimization(model);	
 		
@@ -366,7 +366,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setNB_VIRTUAL_MACHINES(4);
 		modelGenerator.setCORE(4); 
 		
-		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
+		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 			
 		optimizer.setClusters(createDefaultCluster(8, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
@@ -375,8 +375,8 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		//8 VMS -> full servers
 				
 		//transferring VMs
-		List<VirtualMachineType> VMs0 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(0).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
-		List<VirtualMachineType> VMs1 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
+		List<VirtualMachine> VMs0 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(0).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
+		List<VirtualMachine> VMs1 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 		VMs0.addAll(VMs1);
 		VMs1.clear();
 				

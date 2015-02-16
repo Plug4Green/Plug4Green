@@ -17,19 +17,19 @@ import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.Pointer;
 import org.apache.log4j.Logger;
 import f4g.commons.com.AbstractCom;
-import f4g.schemas.java.metamodel.CPUType;
-import f4g.schemas.java.metamodel.CoreLoadType;
-import f4g.schemas.java.metamodel.CoreType;
-import f4g.schemas.java.metamodel.CpuUsageType;
-import f4g.schemas.java.metamodel.HardDiskType;
-import f4g.schemas.java.metamodel.IoRateType;
-import f4g.schemas.java.metamodel.MainboardType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
-import f4g.schemas.java.metamodel.NetworkUsageType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.StorageUsageType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
+import f4g.schemas.java.metamodel.CPU;
+import f4g.schemas.java.metamodel.CoreLoad;
+import f4g.schemas.java.metamodel.Core;
+import f4g.schemas.java.metamodel.CpuUsage;
+import f4g.schemas.java.metamodel.HardDisk;
+import f4g.schemas.java.metamodel.IoRate;
+import f4g.schemas.java.metamodel.Mainboard;
+import f4g.schemas.java.metamodel.MemoryUsage;
+import f4g.schemas.java.metamodel.NetworkUsage;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.StorageUsage;
+import f4g.schemas.java.metamodel.VirtualMachine;
 
 /**
  *
@@ -50,47 +50,47 @@ public class JXPathCustomFactory extends AbstractFactory {
 	public boolean createObject(JXPathContext context, Pointer pointer,
 			Object parent, String name, int index) {
 		log.debug("Setting new node " + name + " from Factory. Parent Type:" + parent.getClass().getName());
-		if ((parent instanceof ServerType) && name.equals("measuredPower")) {
+		if ((parent instanceof Server) && name.equals("measuredPower")) {
 			log.debug("Setting new measured power!");
-			((ServerType) parent).setMeasuredPower(new PowerType());
+			((Server) parent).setMeasuredPower(new Power());
 			return true;
-		} else if ((parent instanceof CoreType) && name.equals("coreLoad")) {
-			((CoreType) parent).setCoreLoad(new CoreLoadType());
+		} else if ((parent instanceof Core) && name.equals("coreLoad")) {
+			((Core) parent).setCoreLoad(new CoreLoad());
 			return true;
-		} else if ((parent instanceof HardDiskType) && name.equals("readRate")) {
-			((HardDiskType) parent).setReadRate(new IoRateType());
+		} else if ((parent instanceof HardDisk) && name.equals("readRate")) {
+			((HardDisk) parent).setReadRate(new IoRate());
 			return true;
-		}  else if ((parent instanceof HardDiskType) && name.equals("writeRate")) {
-			((HardDiskType) parent).setWriteRate(new IoRateType());
+		}  else if ((parent instanceof HardDisk) && name.equals("writeRate")) {
+			((HardDisk) parent).setWriteRate(new IoRate());
 			return true;
 		} else
-		if ((parent instanceof MainboardType)) {
+		if ((parent instanceof Mainboard)) {
 			if(name.equals("CPU")) {
-				((MainboardType) parent).getCPU().add(new CPUType());
+				((Mainboard) parent).getCPU().add(new CPU());
 				return true;
 			} else if (name.equals("memoryUsage")) {
-				((MainboardType) parent).setMemoryUsage(new MemoryUsageType());
+				((Mainboard) parent).setMemoryUsage(new MemoryUsage());
 				return true;
 			} else if (name.equals("hardDisk")) {
-				((MainboardType) parent).getHardDisk().add(new HardDiskType());
+				((Mainboard) parent).getHardDisk().add(new HardDisk());
 				return true;
 			}
 		} else 
-		if (parent instanceof VirtualMachineType){
+		if (parent instanceof VirtualMachine){
 			if(name.equals("actualCPUUsage")) {
-				((VirtualMachineType) parent).setActualCPUUsage(new CpuUsageType());
+				((VirtualMachine) parent).setActualCPUUsage(new CpuUsage());
 				return true;
 			} else if (name.equals("actualStorageUsage")) {
-				((VirtualMachineType) parent).setActualStorageUsage(new StorageUsageType());
+				((VirtualMachine) parent).setActualStorageUsage(new StorageUsage());
 				return true;
 			} else if (name.equals("actualNetworkUsage")) {
-				((VirtualMachineType) parent).setActualNetworkUsage(new NetworkUsageType());
+				((VirtualMachine) parent).setActualNetworkUsage(new NetworkUsage());
 				return true;
 			} else if (name.equals("actualDiskIORate")) {
-				((VirtualMachineType) parent).setActualDiskIORate(new IoRateType());
+				((VirtualMachine) parent).setActualDiskIORate(new IoRate());
 				return true;
 			} else if (name.equals("actualMemoryUsage")) {
-				((VirtualMachineType) parent).setActualMemoryUsage(new MemoryUsageType());
+				((VirtualMachine) parent).setActualMemoryUsage(new MemoryUsage());
 				return true;
 			} 
 		}

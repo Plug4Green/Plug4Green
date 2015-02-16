@@ -11,7 +11,7 @@
 	<xsd:import namespace="f4g/schemas/java/MetaModel"
 		schemaLocation="MetaModel.xsd" />
 		
-	<xs:simpleType name="NodeType_1.0">
+	<xs:simpleType name="Node_1.0">
 		<xs:annotation>
 			<xs:documentation>FIT4GREEN node type</xs:documentation>
 		</xs:annotation>
@@ -20,10 +20,10 @@
 		</xs:restriction>
 	</xs:simpleType>
 	<!--Date and time-->
-	<xsd:simpleType name="MinutesType">
+	<xsd:simpleType name="Minutes">
 		<xsd:restriction base="xsd:positiveInteger" />
 	</xsd:simpleType>
-	<xs:complexType name="TimeperiodType">
+	<xs:complexType name="Timeperiod">
 		<xs:sequence>
 			<xs:element name="From" type="xs:dateTime" />
 			<xs:element name="To" type="xs:dateTime" />
@@ -36,11 +36,11 @@
 	</xsd:attributeGroup>
 	
 	<xsd:attributeGroup name="TSAttr">	
-	    <xsd:attribute name="scenario" type="f4g:ScenarioType" use="required" />
+	    <xsd:attribute name="scenario" type="f4g:Scenario" use="required" />
 	    <xsd:attribute name="id" type="xsd:string" use="required" />     	
 	</xsd:attributeGroup>
 	
-	<xs:simpleType name="ProcessorFrequencyType">
+	<xs:simpleType name="ProcessorFrequency">
 		<xs:annotation>
 			<xs:documentation>Processor Frequency in % (0-100)</xs:documentation>
 		</xs:annotation>
@@ -49,7 +49,7 @@
 			<xs:minInclusive value="0"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="VirtualMachineIDType">
+	<xs:simpleType name="VirtualMachineID">
 		<xs:annotation>
 			<xs:documentation>Virtual Machine ID type</xs:documentation>
 		</xs:annotation>
@@ -57,7 +57,7 @@
 			<xs:maxLength value="50"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="VirtualMachineDumpType">
+	<xs:simpleType name="VirtualMachineDump">
 		<xs:annotation>
 			<xs:documentation>Virtual Machine Dump type</xs:documentation>
 		</xs:annotation>
@@ -65,7 +65,7 @@
 			<xs:maxLength value="50"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="SecondsType">
+	<xs:simpleType name="Seconds">
 		<xs:annotation>
 			<xs:documentation>Second Type.</xs:documentation>
 		</xs:annotation>
@@ -74,7 +74,7 @@
 			<xs:maxInclusive value="1000"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="OperatorType">
+	<xs:simpleType name="Operator">
 		<xs:annotation>
 			<xs:documentation>F4G Operator type</xs:documentation>
 		</xs:annotation>
@@ -82,7 +82,7 @@
 			<xs:maxLength value="50"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="ReasonType">
+	<xs:simpleType name="Reason">
 		<xs:annotation>
 			<xs:documentation>Action Reason type</xs:documentation>
 		</xs:annotation>
@@ -90,7 +90,7 @@
 			<xs:maxLength value="50"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="IsAutomaticType">
+	<xs:simpleType name="IsAutomatic">
 		<xs:annotation>
 			<xs:documentation>Yes, No</xs:documentation>
 		</xs:annotation>
@@ -99,7 +99,7 @@
 			<xs:enumeration value="No"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="VersionType">
+	<xs:simpleType name="Version">
 		<xs:annotation>
 			<xs:documentation>Action Reason type</xs:documentation>
 		</xs:annotation>
@@ -107,13 +107,13 @@
 			<xs:maxLength value="50"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="RequestDateTimeType">
+	<xs:simpleType name="RequestDateTime">
 		<xs:annotation>
 			<xs:documentation>Action Request date and time type</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:dateTime"/>
 	</xs:simpleType>
-	<xs:simpleType name="ActionResultCodeType">
+	<xs:simpleType name="ActionResultCode">
 		<xs:annotation>
 			<xs:documentation>Action Result Code type</xs:documentation>
 		</xs:annotation>
@@ -121,7 +121,7 @@
 			<xs:maxLength value="10"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="ActionResultDescriptionType">
+	<xs:simpleType name="ActionResultDescription">
 		<xs:annotation>
 			<xs:documentation>Action Result Description type</xs:documentation>
 		</xs:annotation>
@@ -129,7 +129,7 @@
 			<xs:maxLength value="150"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="JobIDType">
+	<xs:simpleType name="JobID">
 		<xs:annotation>
 			<xs:documentation>FIT4GREEN job ID type</xs:documentation>
 		</xs:annotation>

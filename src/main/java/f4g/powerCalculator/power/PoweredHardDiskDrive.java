@@ -1,12 +1,12 @@
 package f4g.powerCalculator.power;
 import f4g.powerCalculator.power.PoweredComponent;
-import f4g.schemas.java.metamodel.HardDiskType;
+import f4g.schemas.java.metamodel.HardDisk;
 
-import f4g.schemas.java.metamodel.IoRateType;
-import f4g.schemas.java.metamodel.PowerType;
+import f4g.schemas.java.metamodel.IoRate;
+import f4g.schemas.java.metamodel.Power;
 import org.apache.log4j.Logger;
 
-public class PoweredHardDiskDrive extends HardDiskType implements PoweredComponent{	
+public class PoweredHardDiskDrive extends HardDisk implements PoweredComponent{	
 	
 	static Logger log = Logger.getLogger(PoweredHardDiskDrive.class.getName());
 	private double operationProbability = 0.0; // This is used to distribute the probability of accessing the disk, being in idle or in startup modes. It is given by: x.P +0.9(1-x).P +0.1(1-x).P
@@ -14,7 +14,7 @@ public class PoweredHardDiskDrive extends HardDiskType implements PoweredCompone
 	private boolean lunFlag;
 	private double powerHardDiskDrive=0.0;
 	
-	public PoweredHardDiskDrive(IoRateType readRate, IoRateType maxReadRate, IoRateType writeRate, IoRateType maxWriteRate, PowerType powerIdle){		
+	public PoweredHardDiskDrive(IoRate readRate, IoRate maxReadRate, IoRate writeRate, IoRate maxWriteRate, Power powerIdle){		
 		
 		this.readRate = readRate;
 		this.maxReadRate = maxReadRate;		

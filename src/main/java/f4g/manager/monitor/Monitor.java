@@ -54,13 +54,13 @@ import f4g.commons.core.Constants;
 import f4g.commons.core.IMain;
 import f4g.manager.couchDB.ConvertToJSON;
 import f4g.manager.couchDB.DataBase;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.FrameworkCapabilitiesType;
-import f4g.schemas.java.metamodel.FrameworkStatusType;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.FrameworkCapabilities;
+import f4g.schemas.java.metamodel.FrameworkStatus;
 import f4g.schemas.java.metamodel.ObjectFactory;
-import f4g.schemas.java.metamodel.SiteType;
-import f4g.schemas.java.allocation.AllocationRequestType;
-import f4g.schemas.java.allocation.AllocationResponseType;
+import f4g.schemas.java.metamodel.Site;
+import f4g.schemas.java.allocation.AllocationRequest;
+import f4g.schemas.java.allocation.AllocationResponse;
 import f4g.commons.util.Util;
 import f4g.commons.util.JXPathCustomFactory;
 
@@ -75,7 +75,7 @@ public class Monitor implements IMonitor {
 	
 	static Logger log = Logger.getLogger(Monitor.class.getName()); 
 	
-	FIT4GreenType model = null;
+	FIT4Green model = null;
 	
 	private HashMap<String, Object> mapping = new HashMap<String, Object>();
 	
@@ -198,7 +198,7 @@ public class Monitor implements IMonitor {
 			// objects composed of classes from the "f4gschema" package.
 			poElement = (JAXBElement<?>) u.unmarshal(isModel);
 			
-			model = (FIT4GreenType) poElement.getValue();
+			model = (FIT4Green) poElement.getValue();
 			
 
 		} catch (JAXBException je) {
@@ -239,11 +239,11 @@ public class Monitor implements IMonitor {
 	 * @author FIT4Green, Vasiliki Georgiadou
 	 */
 	@Override
-	public synchronized FIT4GreenType getModelCopy() {
+	public synchronized FIT4Green getModelCopy() {
 		// This method returns a deep copy (using com.rits.cloning.Cloner deep clone)
 
 		Cloner cloner=new Cloner();
-		FIT4GreenType modelClone = cloner.deepClone(model);
+		FIT4Green modelClone = cloner.deepClone(model);
 
 		return modelClone;
 	}
@@ -355,14 +355,14 @@ public class Monitor implements IMonitor {
 	 * request
 	 */
 	@Override
-	public AllocationResponseType allocateResource(
-			AllocationRequestType allocationRequest) {
+	public AllocationResponse allocateResource(
+			AllocationRequest allocationRequest) {
 		
 		long start = System.currentTimeMillis();
 		
 		log.debug("In allocateRequest()");
 		
-		FIT4GreenType modelCopy = getModelCopy();
+		FIT4Green modelCopy = getModelCopy();
 		log.debug("Metric: got model copy in " + (System.currentTimeMillis() - start) + " ms.");
 		
 		start = System.currentTimeMillis();
@@ -378,7 +378,7 @@ public class Monitor implements IMonitor {
 		log.debug("Metric: set optimization objective in " + (System.currentTimeMillis() - start) + " ms.");
 		
 		start = System.currentTimeMillis();
-		AllocationResponseType response = main.getOptimizer().allocateResource(allocationRequest, modelCopy);
+		AllocationResponse response = main.getOptimizer().allocateResource(allocationRequest, modelCopy);
 		log.debug("Metric: allocated resource in " + (System.currentTimeMillis() - start) + " ms.");
 		
 		log.debug("Response in Monitor: " + response);
@@ -392,7 +392,7 @@ public class Monitor implements IMonitor {
 	@Override
 	public void requestGlobalOptimization() {
 		
-		FIT4GreenType modelCopy = getModelCopy();
+		FIT4Green modelCopy = getModelCopy();
 		
 		main.getPowerCalculator().computePowerFIT4Green(modelCopy);
 		createModelDocument(modelCopy);
@@ -418,7 +418,7 @@ public class Monitor implements IMonitor {
 			
 			log.debug("*** F4G MODEL in Monitor *****");
 			
-			JAXBElement<FIT4GreenType> element = (new ObjectFactory()).createFIT4Green(model);
+			JAXBElement<FIT4Green> element = (new ObjectFactory()).createFIT4Green(model);
 			
 			Marshaller m = jaxbCtx.createMarshaller();
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -453,7 +453,7 @@ public class Monitor implements IMonitor {
 		return computedPower;
 	}
 	
-	public void setFrameworkStatus (String frameworkName, FrameworkStatusType status) {
+	public void setFrameworkStatus (String frameworkName, FrameworkStatus status) {
 		log.debug("Setting framework status...");
 		double start = System.currentTimeMillis();
 		
@@ -466,8 +466,8 @@ public class Monitor implements IMonitor {
 		
 		while (fCapabilitiesIterator.hasNext()){
         	
-        	FrameworkCapabilitiesType fCapability = 
-        		(FrameworkCapabilitiesType)fCapabilitiesIterator.next();
+        	FrameworkCapabilities fCapability = 
+        		(FrameworkCapabilities)fCapabilitiesIterator.next();
         	log.debug("Time Metric: fCapabilitiesIterator.next took " + (System.currentTimeMillis() - start) + " ms.");
         	
         		JXPathContext context2 = JXPathContext.newContext(fCapability);
@@ -480,13 +480,13 @@ public class Monitor implements IMonitor {
         		log.debug("Time Metric: context2.setValue took " + (System.currentTimeMillis() - start) + " ms.");
         		
         		// check current status
-        		if (status.value().compareTo(FrameworkStatusType.RUNNING.toString()) == 0 ) {
+        		if (status.value().compareTo(FrameworkStatus.RUNNING.toString()) == 0 ) {
         			main.setError(false);
             		main.setErrorMessage(null);
-        		} else if (status.value().compareTo(FrameworkStatusType.STOPPED.toString()) == 0 ) {
+        		} else if (status.value().compareTo(FrameworkStatus.STOPPED.toString()) == 0 ) {
         			// check previous status as retrieved from couchDB
         			String previousStatus = retrieveFrameworkStatus(frameworkName);
-            		if (previousStatus.compareTo(FrameworkStatusType.RUNNING.toString()) == 0) {
+            		if (previousStatus.compareTo(FrameworkStatus.RUNNING.toString()) == 0) {
             			main.setError(true);
                 		main.setErrorMessage("Framework \"" + frameworkName + "\" has stopped; trying to re-connect; see log for more info.");
             		}
@@ -494,7 +494,7 @@ public class Monitor implements IMonitor {
         		log.debug("Time Metric: while iteration took " + (System.currentTimeMillis() - start) + " ms.");
  		}
 
-		FIT4GreenType modelCopyUpdated = getModelCopy();
+		FIT4Green modelCopyUpdated = getModelCopy();
 		log.debug("Time Metric: getModelCopy took " + (System.currentTimeMillis() - start) + " ms.");
 		main.getPowerCalculator().computePowerFIT4Green(modelCopyUpdated);
 		log.debug("Time Metric: computePowerFIT4Green took " + (System.currentTimeMillis() - start) + " ms.");
@@ -524,8 +524,8 @@ public class Monitor implements IMonitor {
        
         // Iteration over the "FrameworkCapabilities" items
         while(fCapabilitiesIterator.hasNext()){
-        	FrameworkCapabilitiesType fCapability = 
-        		(FrameworkCapabilitiesType)fCapabilitiesIterator.next();
+        	FrameworkCapabilities fCapability = 
+        		(FrameworkCapabilities)fCapabilitiesIterator.next();
             log.debug("fCapability name " + fCapability.getFrameworkName() 
             		                      + " (" + fCapability + ")");
             
@@ -636,7 +636,7 @@ public class Monitor implements IMonitor {
 			
 			computedPower = new PowerData();
 			if (main != null && main.isRunning()) {
-				FIT4GreenType modelCopy = getModelCopy();
+				FIT4Green modelCopy = getModelCopy();
 				computedPower = main.getPowerCalculator().computePowerFIT4Green(modelCopy);
 				createModelDocument(modelCopy);
 				//getMetrics(modelCopy);
@@ -653,7 +653,7 @@ public class Monitor implements IMonitor {
 	 *
 	 * @author Vasiliki Georgiadou
 	 */
-	private void createModelDocument (FIT4GreenType model) {
+	private void createModelDocument (FIT4Green model) {
 			
 		DataBase db = new DataBase();
 		db.setUrl(Configuration.get(Constants.DB_URL));
@@ -790,7 +790,7 @@ public class Monitor implements IMonitor {
 		return status;
 	}
 	
-	private void getMetrics(FIT4GreenType model) {
+	private void getMetrics(FIT4Green model) {
 	
 		double totalIctPower = 0.0;
 		double totalSitePower = 0.0;
@@ -801,7 +801,7 @@ public class Monitor implements IMonitor {
 		Iterator siteIterator = context.iterate(myQuery);
        
         while(siteIterator.hasNext()){
-        	SiteType site = (SiteType)siteIterator.next();
+        	Site site = (Site)siteIterator.next();
         	totalIctPower += site.getComputedPower().getValue();
         	totalSitePower += site.getComputedPower().getValue() * site.getPUE().getValue();
         	totalCarbonEmissions += site.getComputedPower().getValue() * site.getCUE().getValue();

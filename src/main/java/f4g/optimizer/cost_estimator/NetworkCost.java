@@ -14,12 +14,12 @@ import org.jscience.economics.money.*;
 import javax.measure.quantity.*;
 import static javax.measure.unit.SI.*;
 
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.NetworkNodeType;
-import f4g.schemas.java.metamodel.NetworkPortType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
-import f4g.schemas.java.metamodel.SiteType;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.NetworkNode;
+import f4g.schemas.java.metamodel.NetworkPort;
+import f4g.schemas.java.metamodel.VirtualMachine;
+import f4g.schemas.java.metamodel.Site;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.power.IPowerCalculator;
 import f4g.powerCalculator.power.PoweredNetworkNode;
@@ -61,10 +61,10 @@ public class NetworkCost implements ICostEstimator {
     private VMTypeType currentVMType;
    
     
-    public NetworkCost(OptimizationObjective optObj, VMTypeType vmType) {
+    public NetworkCost(OptimizationObjective optObj, VMTypeType vm) {
         super();
         optiObjective = optObj;
-        currentVMType = vmType;
+        currentVMType = vm;
     }
 
     //TODO: remove this (broken) constructor
@@ -89,15 +89,15 @@ public class NetworkCost implements ICostEstimator {
 	 * @param the origin server, the destination server, the VM to move, the complete model
 	 * @return the energy
 	 */
-	public Amount<Energy> moveEnergyCost(NetworkNodeType srcServer, NetworkNodeType dstServer, VirtualMachineType VM, FIT4GreenType model) 
+	public Amount<Energy> moveEnergyCost(NetworkNode srcServer, NetworkNode dstServer, VirtualMachine VM, FIT4Green model) 
     {  
-        ArrayList<NetworkNodeType> route = calculateRoute(srcServer, dstServer, model);   
+        ArrayList<NetworkNode> route = calculateRoute(srcServer, dstServer, model);   
         double throughput = estimateThroughput(route);   
         double nbytes = 0.;
         
         VMTypeType.VMType SLA_VM = null;
 		if(VM.getActualStorageUsage() == null || VM.getActualMemoryUsage() == null) {
-			SLA_VM = Util.findVMByName(VM.getCloudVmType(), currentVMType);	
+			SLA_VM = Util.findVMByName(VM.getCloudVm(), currentVMType);	
             nbytes = SLA_VM.getExpectedLoad().getVRamUsage().getValue() + SLA_VM.getCapacity().getVHardDisk().getValue();       // check units 
         }
         else {
@@ -112,16 +112,16 @@ public class NetworkCost implements ICostEstimator {
     
     
     public Amount<Duration> 
-    moveDownTimeCost(NetworkNodeType srcServer, NetworkNodeType dstServer, VirtualMachineType VM, FIT4GreenType model)
+    moveDownTimeCost(NetworkNode srcServer, NetworkNode dstServer, VirtualMachine VM, FIT4Green model)
     {
-        ArrayList<NetworkNodeType> route = calculateRoute(srcServer, dstServer, model);
+        ArrayList<NetworkNode> route = calculateRoute(srcServer, dstServer, model);
         double throughput = estimateThroughput(route);
         double nbytes = 0.;
         
         VMTypeType.VMType SLA_VM = null;
 		if(VM.getActualStorageUsage() == null || VM.getActualMemoryUsage() == null) {
 //		if(VM.getCloudVmType() != null) {
-			SLA_VM = Util.findVMByName(VM.getCloudVmType(), currentVMType);	
+			SLA_VM = Util.findVMByName(VM.getCloudVm(), currentVMType);	
             nbytes = SLA_VM.getExpectedLoad().getVRamUsage().getValue() + SLA_VM.getExpectedLoad().getVDiskLoad().getValue();
 		}
         else {
@@ -132,7 +132,7 @@ public class NetworkCost implements ICostEstimator {
     }
     
     
-    public Amount<Money> moveFinancialCost(NetworkNodeType srcServer, NetworkNodeType dstServer, VirtualMachineType VM, FIT4GreenType model) {
+    public Amount<Money> moveFinancialCost(NetworkNode srcServer, NetworkNode dstServer, VirtualMachine VM, FIT4Green model) {
         
     	Amount<Money> money = Amount.valueOf(0.0, Currency.EUR);
         return money;
@@ -155,18 +155,18 @@ public class NetworkCost implements ICostEstimator {
     
     
     protected Amount<Power> 
-    calculatePowerEndHosts(NetworkNodeType srcServer, NetworkNodeType dstServer, double throughput, FIT4GreenType model)
+    calculatePowerEndHosts(NetworkNode srcServer, NetworkNode dstServer, double throughput, FIT4Green model)
     {
     	Amount<Power> total = Amount.valueOf(0.0, WATT);
-        List<NetworkPortType> sportlst = srcServer.getNetworkPort();
-        List<NetworkPortType> dportlst = dstServer.getNetworkPort();
+        List<NetworkPort> sportlst = srcServer.getNetworkPort();
+        List<NetworkPort> dportlst = dstServer.getNetworkPort();
         
         if( sportlst.size() > 0 && dportlst.size() > 0 ) {
             
-            NetworkPortType sport = sportlst.get(0);
-            NetworkPortType dport = dportlst.get(0);            
+            NetworkPort sport = sportlst.get(0);
+            NetworkPort dport = dportlst.get(0);            
             
-            SiteType ssite = null, dsite = null;
+            Site ssite = null, dsite = null;
             
             if(model != null) {
                 ssite = Utils.getNetworkNodeSite(srcServer, model);
@@ -213,19 +213,19 @@ public class NetworkCost implements ICostEstimator {
     
     
     protected Amount<Power> 
-    calculatePowerNetwork(ArrayList<NetworkNodeType> route, double throughput, FIT4GreenType model)
+    calculatePowerNetwork(ArrayList<NetworkNode> route, double throughput, FIT4Green model)
     {
     	Amount<Power> total = Amount.valueOf(0.0, WATT);
         
         if( route.size() > 2 ) {
             // add network cost
             for(int i=1; i<(route.size()-1); i++) {
-                NetworkNodeType node = route.get(i);
+                NetworkNode node = route.get(i);
                 double a = node.getPowerIdle().getValue(), b = node.getPowerMax().getValue(), c = node.getProcessingBandwidth().getValue();                
                 Amount<Power> node_pwr = PoweredNetworkNode.trafficToPower( a, b, throughput, c ).minus(PoweredNetworkNode.trafficToPower( a, b, 0, c ));
                 
                 
-                SiteType site = Utils.getNetworkNodeSite(node, model);
+                Site site = Utils.getNetworkNodeSite(node, model);
                 if( site != null ) {
                     double f;
                     if(optiObjective == OptimizationObjective.Power) 
@@ -246,7 +246,7 @@ public class NetworkCost implements ICostEstimator {
     
     
     protected double 
-    estimateThroughput(ArrayList<NetworkNodeType> route)            
+    estimateThroughput(ArrayList<NetworkNode> route)            
     {
         double throughput = 0.;
         if( route.size() <= 0 ) return 0.;
@@ -255,7 +255,7 @@ public class NetworkCost implements ICostEstimator {
         
         throughput = route.get(0).getNetworkPort().get(0).getLineCapacity().getValue() / 8.0;
         
-        for(NetworkNodeType node : route) {
+        for(NetworkNode node : route) {
             double prate = node.getNetworkPort().get(0).getLineCapacity().getValue();
             if( prate < throughput ) throughput = prate;                                        // PENDING: Replace with residual bandwidth 
         }
@@ -287,12 +287,12 @@ public class NetworkCost implements ICostEstimator {
     
     // ========================================================================================================
     
-    protected ArrayList<NetworkNodeType>
-    calculateRoute(NetworkNodeType srcServer, NetworkNodeType dstServer, FIT4GreenType model)
+    protected ArrayList<NetworkNode>
+    calculateRoute(NetworkNode srcServer, NetworkNode dstServer, FIT4Green model)
     {  
         boolean found = false;
-        LinkedList<NetworkNodeType> q  = new LinkedList();
-        Map<NetworkNodeType, NetworkNodeType> predecessor = new HashMap<NetworkNodeType, NetworkNodeType>();
+        LinkedList<NetworkNode> q  = new LinkedList();
+        Map<NetworkNode, NetworkNode> predecessor = new HashMap<NetworkNode, NetworkNode>();
         //System.out.println("S: " + srcServer.getFrameworkID() + " " + dstServer.getFrameworkID() );
         // traverse graph
         q.addLast( srcServer );
@@ -300,7 +300,7 @@ public class NetworkCost implements ICostEstimator {
 
        	if(model!=null){
         while( q.size() > 0 ) {          
-            NetworkNodeType node = q.removeFirst();        
+            NetworkNode node = q.removeFirst();        
             System.out.println( "-> " + node.getFrameworkID() );          
             if( node.getFrameworkID() == dstServer.getFrameworkID() ) {
                 System.out.println( "found" );
@@ -308,20 +308,20 @@ public class NetworkCost implements ICostEstimator {
                 break;
             }
             else {
-               List<NetworkPortType> portlist = node.getNetworkPort();
+               List<NetworkPort> portlist = node.getNetworkPort();
                 if( portlist == null ) {
                     //System.out.println( "no route" );
                     return new ArrayList();     // no route
                 }
-                for(NetworkPortType port : portlist) {                
-                    NetworkNodeType neighbor = new NetworkNodeType();                  
+                for(NetworkPort port : portlist) {                
+                    NetworkNode neighbor = new NetworkNode();                  
                     if( port.getNetworkPortRef() != null ) {
                         try {
-                            ServerType srv = (ServerType) Utils.findServerByName(model, (String) port.getNetworkPortRef());
-                            neighbor = (NetworkNodeType) (srv.getMainboard().get(0).getEthernetNIC().get(0));
+                            Server srv = (Server) Utils.findServerByName(model, (String) port.getNetworkPortRef());
+                            neighbor = (NetworkNode) (srv.getMainboard().get(0).getEthernetNIC().get(0));
                             }
                         catch (NoSuchElementException e) {
-                        	neighbor = (NetworkNodeType) Utils.findNetworkNodeByName(model, (String) port.getNetworkPortRef());
+                        	neighbor = (NetworkNode) Utils.findNetworkNodeByName(model, (String) port.getNetworkPortRef());
                         }
                         System.out.println( "neighbor: " + neighbor.getFrameworkID() );
                     }
@@ -341,9 +341,9 @@ public class NetworkCost implements ICostEstimator {
         
         // prepare return structure
         
-        LinkedList<NetworkNodeType> route = new LinkedList();
+        LinkedList<NetworkNode> route = new LinkedList();
         if( found ) {
-            NetworkNodeType node = dstServer;
+            NetworkNode node = dstServer;
             while( ! node.equals( srcServer ) ) {
                 route.addFirst(node);
                 node = predecessor.get( node );

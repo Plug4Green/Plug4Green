@@ -15,38 +15,38 @@ import org.jscience.economics.money.*;
 import javax.measure.quantity.*;
 import static javax.measure.unit.SI.*;
 
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.NetworkNodeType;
-import f4g.schemas.java.metamodel.NetworkPortType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
-import f4g.schemas.java.metamodel.SiteType;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.NetworkNode;
+import f4g.schemas.java.metamodel.NetworkPort;
+import f4g.schemas.java.metamodel.VirtualMachine;
+import f4g.schemas.java.metamodel.Site;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.power.IPowerCalculator;
 import f4g.powerCalculator.power.PoweredNetworkNode;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
-import f4g.schemas.java.metamodel.NetworkPortBufferSizeType;
-import f4g.schemas.java.metamodel.BitErrorRateType;
-import f4g.schemas.java.metamodel.PropagationDelayType;
-import f4g.schemas.java.metamodel.NetworkNodeStatusType;
-import f4g.schemas.java.metamodel.NetworkTrafficType;
-import f4g.schemas.java.metamodel.LinkType;
-import f4g.schemas.java.metamodel.FlowType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
-import f4g.schemas.java.metamodel.StorageUsageType;
-import f4g.schemas.java.metamodel.MainboardType;
-import f4g.schemas.java.metamodel.NICType;
-import f4g.schemas.java.metamodel.ServerStatusType;
+import f4g.schemas.java.metamodel.NetworkPortBufferSize;
+import f4g.schemas.java.metamodel.BitErrorRate;
+import f4g.schemas.java.metamodel.PropagationDelay;
+import f4g.schemas.java.metamodel.NetworkNodeStatus;
+import f4g.schemas.java.metamodel.NetworkTraffic;
+import f4g.schemas.java.metamodel.Link;
+import f4g.schemas.java.metamodel.Flow;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.MemoryUsage;
+import f4g.schemas.java.metamodel.StorageUsage;
+import f4g.schemas.java.metamodel.Mainboard;
+import f4g.schemas.java.metamodel.NIC;
+import f4g.schemas.java.metamodel.ServerStatus;
 
 
 public class OptimizerNetworkTestBasic extends TestCase {
     
 	private Logger log; 
-    FIT4GreenType model;
-    List<ServerType> allServers;
-    List<NetworkNodeType> allSwitches;
+    FIT4Green model;
+    List<Server> allServers;
+    List<NetworkNode> allSwitches;
         
     
     public OptimizerNetworkTestBasic(String name) { 
@@ -71,11 +71,11 @@ public class OptimizerNetworkTestBasic extends TestCase {
         // Network settings
         modelGenerator.setNB_SWITCHES(3);
         modelGenerator.setNB_ROUTERS(0);
-        ModelGenerator.defaultSwitchPowerIdle = new PowerType( 100.0 );
-        ModelGenerator.defaultSwitchPowerMax = new PowerType( 100.0 );
+        ModelGenerator.defaultSwitchPowerIdle = new Power( 100.0 );
+        ModelGenerator.defaultSwitchPowerMax = new Power( 100.0 );
        
         // Populate model
-        model = modelGenerator.createPopulatedFIT4GreenType();
+        model = modelGenerator.createPopulatedFIT4Green();
         allServers = Utils.getAllServers(model);
         allSwitches = Utils.getAllNetworkDeviceNodes(model.getSite().get(0));
 
@@ -161,7 +161,7 @@ public class OptimizerNetworkTestBasic extends TestCase {
         assertTrue( power_switch2 < 100.1 );
         
         // switch off server0
-        allServers.get(0).setStatus( ServerStatusType.OFF );
+        allServers.get(0).setStatus( ServerStatus.OFF );
         power_switch0 = new PoweredNetworkNode(allSwitches.get(0)).computePower();
         power_switch1 = new PoweredNetworkNode(allSwitches.get(1)).computePower();
         power_switch2 = new PoweredNetworkNode(allSwitches.get(2)).computePower();
@@ -173,7 +173,7 @@ public class OptimizerNetworkTestBasic extends TestCase {
         assertTrue( power_switch2  < 100.1 );
 
         // switch off server1
-        allServers.get(1).setStatus( ServerStatusType.OFF );
+        allServers.get(1).setStatus( ServerStatus.OFF );
         power_switch0 = new PoweredNetworkNode(allSwitches.get(0)).computePower();
         power_switch1 = new PoweredNetworkNode(allSwitches.get(1)).computePower();
         power_switch2 = new PoweredNetworkNode(allSwitches.get(2)).computePower();
@@ -185,7 +185,7 @@ public class OptimizerNetworkTestBasic extends TestCase {
         assertTrue( power_switch2  < 100.1 );
         
         // switch off server2
-        allServers.get(2).setStatus( ServerStatusType.OFF );
+        allServers.get(2).setStatus( ServerStatus.OFF );
         power_switch0 = new PoweredNetworkNode(allSwitches.get(0)).computePower();
         power_switch1 = new PoweredNetworkNode(allSwitches.get(1)).computePower();
         power_switch2 = new PoweredNetworkNode(allSwitches.get(2)).computePower();
@@ -197,7 +197,7 @@ public class OptimizerNetworkTestBasic extends TestCase {
         assertTrue( power_switch2  < 100.1 );
 
         // switch off server3
-        allServers.get(3).setStatus( ServerStatusType.OFF );        
+        allServers.get(3).setStatus( ServerStatus.OFF );        
         power_switch0 = new PoweredNetworkNode(allSwitches.get(0)).computePower();
         power_switch1 = new PoweredNetworkNode(allSwitches.get(1)).computePower();
         power_switch2 = new PoweredNetworkNode(allSwitches.get(2)).computePower();
@@ -209,16 +209,16 @@ public class OptimizerNetworkTestBasic extends TestCase {
         assertTrue( power_switch2  < 100.1 );
 
         // switch off switch1
-        allSwitches.get(1).setStatus( NetworkNodeStatusType.OFF );
+        allSwitches.get(1).setStatus( NetworkNodeStatus.OFF );
         power_switch0 = new PoweredNetworkNode(allSwitches.get(0)).computePower();
         power_switch1 = new PoweredNetworkNode(allSwitches.get(1)).computePower();
         power_switch2 = new PoweredNetworkNode(allSwitches.get(2)).computePower();
 
         // switch on everything
         for(int i=0; i<allServers.size(); ++i) 
-                allServers.get(i).setStatus( ServerStatusType.ON );        
+                allServers.get(i).setStatus( ServerStatus.ON );        
         for(int i=0; i<allSwitches.size(); ++i) 
-                allSwitches.get(i).setStatus( NetworkNodeStatusType.ON );
+                allSwitches.get(i).setStatus( NetworkNodeStatus.ON );
 	}
     
     

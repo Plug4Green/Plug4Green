@@ -33,7 +33,7 @@ public class DisRequestStatusJob extends DisRequest {
 	 */
 	static DisRequest make(){
 		DisRequest disRequest = new DisRequestStatusJob();
-		disRequest.addHeader(RequestType.STATUSJOB);
+		disRequest.addHeader(Request.STATUSJOB);
 		disRequest.addInt(0);
 		disRequest.addInt(0);
 		disRequest.addExtension();

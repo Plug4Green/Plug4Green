@@ -2,17 +2,17 @@ package f4g.powerCalculator.power;
 
 import f4g.commons.core.IMain;
 import java.util.*;
-import f4g.schemas.java.metamodel.MainboardType;
+import f4g.schemas.java.metamodel.Mainboard;
 import java.util.Iterator;
-import f4g.schemas.java.metamodel.TowerServerType;
-import f4g.schemas.java.metamodel.BladeServerType;
-import f4g.schemas.java.metamodel.RackableServerType;
+import f4g.schemas.java.metamodel.TowerServer;
+import f4g.schemas.java.metamodel.BladeServer;
+import f4g.schemas.java.metamodel.RackableServer;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.log4j.Logger;
 import f4g.commons.com.util.PowerData;
-import f4g.schemas.java.metamodel.FIT4GreenType;
-import f4g.schemas.java.metamodel.CPUType;
-import f4g.schemas.java.metamodel.RAMStickType;
+import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.CPU;
+import f4g.schemas.java.metamodel.RAMStick;
 import f4g.powerCalculator.power.PoweredRamStick;
 import f4g.powerCalculator.power.PoweredFan;
 import f4g.powerCalculator.power.PoweredCore;
@@ -20,40 +20,40 @@ import f4g.powerCalculator.power.PoweredCPU;
 import f4g.powerCalculator.power.PoweredNetworkNode;
 import f4g.powerCalculator.power.PoweredHardDiskDrive;
 import f4g.powerCalculator.power.PoweredNAS;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.CPUArchitectureType;
-import f4g.schemas.java.metamodel.NetworkPortType;
-import f4g.schemas.java.metamodel.OperatingSystemTypeType;
-import f4g.schemas.java.metamodel.ServerStatusType;
-import f4g.schemas.java.metamodel.StorageUnitType;
-import f4g.schemas.java.metamodel.NICType;
-import f4g.schemas.java.metamodel.HardwareRAIDType;
-import f4g.schemas.java.metamodel.SANType;
-import f4g.schemas.java.metamodel.FanType;
-import f4g.schemas.java.metamodel.IoRateType;
-import f4g.schemas.java.metamodel.WaterCoolerType;
-import f4g.schemas.java.metamodel.PSUType;
-import f4g.schemas.java.metamodel.RAIDType;
-import f4g.schemas.java.metamodel.CacheType;
-import f4g.schemas.java.metamodel.HardDiskType;
-import f4g.schemas.java.metamodel.SolidStateDiskType;
-import f4g.schemas.java.metamodel.EnclosureType;
-import f4g.schemas.java.metamodel.RackType;
-import f4g.schemas.java.metamodel.PDUType;
-import f4g.schemas.java.metamodel.DatacenterType;
-import f4g.schemas.java.metamodel.SiteType;
-import f4g.schemas.java.metamodel.CoreType;
-import f4g.schemas.java.metamodel.NativeOperatingSystemType;
-import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.BoxRouterType;
-import f4g.schemas.java.metamodel.BoxSwitchType;
-import f4g.schemas.java.metamodel.RackableRouterType;
-import f4g.schemas.java.metamodel.RackableSwitchType;
-import f4g.schemas.java.metamodel.NetworkNodeType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
-import f4g.schemas.java.metamodel.NrOfTransistorsType;
-import f4g.schemas.java.metamodel.NASType;
-import f4g.schemas.java.metamodel.ControllerType;
+import f4g.schemas.java.metamodel.Power;
+import f4g.schemas.java.metamodel.CPUArchitecture;
+import f4g.schemas.java.metamodel.NetworkPort;
+import f4g.schemas.java.metamodel.OperatingSystemType;
+import f4g.schemas.java.metamodel.ServerStatus;
+import f4g.schemas.java.metamodel.StorageUnit;
+import f4g.schemas.java.metamodel.NIC;
+import f4g.schemas.java.metamodel.HardwareRAID;
+import f4g.schemas.java.metamodel.SAN;
+import f4g.schemas.java.metamodel.Fan;
+import f4g.schemas.java.metamodel.IoRate;
+import f4g.schemas.java.metamodel.WaterCooler;
+import f4g.schemas.java.metamodel.PSU;
+import f4g.schemas.java.metamodel.RAID;
+import f4g.schemas.java.metamodel.Cache;
+import f4g.schemas.java.metamodel.HardDisk;
+import f4g.schemas.java.metamodel.SolidStateDisk;
+import f4g.schemas.java.metamodel.Enclosure;
+import f4g.schemas.java.metamodel.Rack;
+import f4g.schemas.java.metamodel.PDU;
+import f4g.schemas.java.metamodel.Datacenter;
+import f4g.schemas.java.metamodel.Site;
+import f4g.schemas.java.metamodel.Core;
+import f4g.schemas.java.metamodel.NativeOperatingSystem;
+import f4g.schemas.java.metamodel.Server;
+import f4g.schemas.java.metamodel.BoxRouter;
+import f4g.schemas.java.metamodel.BoxSwitch;
+import f4g.schemas.java.metamodel.RackableRouter;
+import f4g.schemas.java.metamodel.RackableSwitch;
+import f4g.schemas.java.metamodel.NetworkNode;
+import f4g.schemas.java.metamodel.MemoryUsage;
+import f4g.schemas.java.metamodel.NrOfTransistors;
+import f4g.schemas.java.metamodel.NAS;
+import f4g.schemas.java.metamodel.Controller;
 import f4g.commons.power.IPowerCalculator;
 
 //Repository copy
@@ -89,7 +89,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @return a data structure containing the power consumption in Watts of the FIT4Green system 
 	 */
 	@Override
-	public PowerData computePowerFIT4Green(FIT4GreenType model) {
+	public PowerData computePowerFIT4Green(FIT4Green model) {
 	
 		if (model == null){
 			log.debug("FIT4GreeType model is null");
@@ -98,14 +98,14 @@ public class PowerCalculator implements IPowerCalculator {
 			return  powerData;
 		}
 			
-		PowerType totalF4GPower = new PowerType();
+		Power totalF4GPower = new Power();
 		totalF4GPower.setValue(0.0);
 		JXPathContext context = JXPathContext.newContext(model);
 		String F4GQuery = "/";
 		Iterator F4GPowerIterator = context.iterate(F4GQuery);
 		
 		if(F4GPowerIterator.hasNext()){
-			FIT4GreenType	myF4G = (FIT4GreenType)F4GPowerIterator.next();
+			FIT4Green	myF4G = (FIT4Green)F4GPowerIterator.next();
 			totalF4GPower = sitePower(myF4G);			
 		}		
 				
@@ -125,7 +125,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @return a data structure containing the power consumption in Watts of a FIT4Green site 
 	 */
 	@Override
-	public PowerData computePowerSite(SiteType site){
+	public PowerData computePowerSite(Site site){
 	
 		if (site == null){
 			log.debug("Site model is null");
@@ -134,7 +134,7 @@ public class PowerCalculator implements IPowerCalculator {
 			return  powerData;
 		}
 
-		PowerType sitePower=new PowerType();;
+		Power sitePower=new Power();;
 		sitePower.setValue(0.0);	
 		sitePower = datacenterPower(site);
 		site.setComputedPower(sitePower);		
@@ -155,12 +155,12 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @return a data structure containing the power consumption in Watts of a FIT4Green datacenter 
 	 */
 	@Override
-	public PowerData computePowerDatacenter(DatacenterType datacenter){
+	public PowerData computePowerDatacenter(Datacenter datacenter){
 		
 	double totalRackPower=0.0;
 	double totalBoxNetworkPower=0.0;    		
 	double totalTowerServerPower=0.0;
-	PowerType DCPower = new PowerType();
+	Power DCPower = new Power();
 	DCPower.setValue(0.0);
 	
 	if (datacenter == null){
@@ -209,9 +209,9 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param rack
 	 * @return a data structure containing the power consumption in Watts of a FIT4Green rack 
 	 */
-	public PowerData computePowerRack(RackType rack){
+	public PowerData computePowerRack(Rack rack){
 		
-		PowerType rackPower=new PowerType();
+		Power rackPower=new Power();
 		rackPower.setValue(0.0);
 		double totalPDUPower=0.0;
 		double totalEnclosurePower=0.0;
@@ -300,7 +300,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @return a data structure containing the power consumption in Watts of a FIT4Green server 
 	 */
 	@Override
-	public PowerData computePowerServer(ServerType server){
+	public PowerData computePowerServer(Server server){
 
         if (server == null){
     		log.debug("Server Type is null");
@@ -333,7 +333,7 @@ public class PowerCalculator implements IPowerCalculator {
     	
     	while(psuPowerIterator.hasNext())
     	{
-    		PSUType myPSU = (PSUType)psuPowerIterator.next();
+    		PSU myPSU = (PSU)psuPowerIterator.next();
     		if(myPSU.getMeasuredPower() == null ||myPSU.getMeasuredPower().getValue()<=0)
    	    	measuredPowerPSU = false;
     		if(myPSU.getLoad().getValue() > 0.0)
@@ -347,7 +347,7 @@ public class PowerCalculator implements IPowerCalculator {
 		 *
 		 * 
 		 */	
-    	if(countPSU==0 && !(server instanceof BladeServerType) )          		
+    	if(countPSU==0 && !(server instanceof BladeServer) )          		
    		serverPower = 0.0;
     	else
     	{
@@ -355,7 +355,7 @@ public class PowerCalculator implements IPowerCalculator {
 		/**
 		 * Fetching the operating system
 		 */
-		OperatingSystemTypeType operatingSystem = getOperatingSystem(server);
+		OperatingSystemType operatingSystem = getOperatingSystem(server);
 		
 		/**
 		 * Power consumption of the Mainboards
@@ -367,7 +367,7 @@ public class PowerCalculator implements IPowerCalculator {
         /**
          * Power consumption of the cooling system and power supply units for Tower and Rackable Servers
          */
-        if(server instanceof TowerServerType || server instanceof RackableServerType){
+        if(server instanceof TowerServer || server instanceof RackableServer){
         
         /**
          * Cooling System part
@@ -385,9 +385,9 @@ public class PowerCalculator implements IPowerCalculator {
     	
     	while(psuPowerIterator.hasNext())
     	{
-    		PowerType psuCurrentPower = new PowerType();
+    		Power psuCurrentPower = new Power();
     		psuCurrentPower.setValue(0.0);
-    		PSUType myPSU = (PSUType)psuPowerIterator.next();
+    		PSU myPSU = (PSU)psuPowerIterator.next();
     		
     		/**
     		 * The monitoring system
@@ -434,8 +434,8 @@ public class PowerCalculator implements IPowerCalculator {
         } //end of if(myQuery.indexOf('t') == 0 || myQuery.indexOf('r') == 0)          
       } //end of else (any PSU has a load >0)
       
-      /* Casting from double to PowerType*/
-      PowerType serverPow = new PowerType();
+      /* Casting from double to Power*/
+      Power serverPow = new Power();
       serverPow.setValue(serverPower);
       server.setComputedPower(serverPow);          
         		
@@ -456,7 +456,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @return a data structure containing the power consumption in Watts of a server's mainboard 
 	 */
 	@Override
-	public PowerData computePowerMainboard(MainboardType mainboard,OperatingSystemTypeType operatingSystem){
+	public PowerData computePowerMainboard(Mainboard mainboard,OperatingSystemType operatingSystem){
 		
 			if (mainboard == null){
 	    		log.debug("Mainboard Type is null");
@@ -517,7 +517,7 @@ public class PowerCalculator implements IPowerCalculator {
 			while(hwRaidPowerIterator.hasNext())
            {
 					double hwRaidPower=0.0;
-					HardwareRAIDType myRaid = (HardwareRAIDType)hwRaidPowerIterator.next();        	         	  
+					HardwareRAID myRaid = (HardwareRAID)hwRaidPowerIterator.next();        	         	  
             
 					//Power consumption of the storage unit
 					double totalhwRaidStoragePower= StoragePower(myRaid);              
@@ -529,7 +529,7 @@ public class PowerCalculator implements IPowerCalculator {
 					log.debug("The power consumption of the Hardware Raid Caches is "+totalhwRaidCachePower+ " Watts");              
 					hwRaidPower = hwRaidPower+totalhwRaidCachePower; 
              
-					PowerType hwRaidPow = new PowerType();
+					Power hwRaidPow = new Power();
 					hwRaidPow.setValue(hwRaidPower);
 					myRaid.setComputedPower(hwRaidPow);
 					log.debug("The power consumption of the Hardware Raid is "+hwRaidPower+ " Watts");
@@ -541,7 +541,7 @@ public class PowerCalculator implements IPowerCalculator {
 			log.debug("The power consumption of the Hardware Raids is "+totalHWRaidPower+ " Watts");         
 			totalMainboardPower = totalMainboardPower+totalHWRaidPower;
             
-			PowerType totalMainboardPow = new PowerType();
+			Power totalMainboardPow = new Power();
 			totalMainboardPow.setValue(totalMainboardPower);
 			mainboard.setComputedPower(totalMainboardPow);
 			
@@ -561,7 +561,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @return a data structure containing the power consumption in Watts of a RAID device  
 	 */
 	@Override
-	public PowerData computePowerRAID(RAIDType raid){
+	public PowerData computePowerRAID(RAID raid){
 	
 		if (raid == null){
     		log.debug("Raid Type is null");
@@ -573,7 +573,7 @@ public class PowerCalculator implements IPowerCalculator {
 		double raidPower=0.0;
 		raidPower = StoragePower(raid);
 		
-		PowerType raidPow = new PowerType();
+		Power raidPow = new Power();
 		raidPow.setValue(raidPower);
 		raid.setComputedPower(raidPow); 			
 		
@@ -593,7 +593,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @return a data structure containing the power consumption in Watts of a hard disk   
 	 */
 	@Override
-	public PowerData computePowerHardDisk(HardDiskType hardDisk){
+	public PowerData computePowerHardDisk(HardDisk hardDisk){
 		
 		if (hardDisk == null){
     		log.debug("HardDisk Type is null");
@@ -603,7 +603,7 @@ public class PowerCalculator implements IPowerCalculator {
     	}
 
 		double hdPower = 0.0;
-		IoRateType IoRate = new IoRateType();
+		IoRate IoRate = new IoRate();
   	    double totalCachePower = CachePower(hardDisk);
   	    log.debug("The power consumption of the Hard Disk Cache is "+totalCachePower+ " Watts");
   	    
@@ -623,7 +623,7 @@ public class PowerCalculator implements IPowerCalculator {
   	    	hdPower = myPoweredHardDisk.computePower()+ totalCachePower;
   	    }
         
-  	    PowerType hdPow = new PowerType();
+  	    Power hdPow = new Power();
   	    hdPow.setValue(hdPower);
   	    hardDisk.setComputedPower(hdPow);        		
 	
@@ -643,7 +643,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @return a data structure currently containing a value of zero for the power consumption of a solid state disk   
 	 */
 	@Override
-	public PowerData computePowerSolidStateDisk(SolidStateDiskType ssdisk){		
+	public PowerData computePowerSolidStateDisk(SolidStateDisk ssdisk){		
 	     		
 		if (ssdisk == null){
     		log.debug("SolidStateDisk Type is null");
@@ -669,7 +669,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 */
 	@Override	
 	
-	public PowerData computePowerCPU(CPUType cpu,OperatingSystemTypeType operatingSystem){		
+	public PowerData computePowerCPU(CPU cpu,OperatingSystemType operatingSystem){		
 		
 		if (cpu == null){
     		log.debug("CPU Type is null");
@@ -683,7 +683,7 @@ public class PowerCalculator implements IPowerCalculator {
 		
 		if (myPoweredCPU.getCpuUsage().getValue() > 0.0)	cpuPower = myPoweredCPU.computePower();
 		
-		PowerType cpuPow = new PowerType();
+		Power cpuPow = new Power();
 		cpuPow.setValue(cpuPower);
 		cpu.setComputedPower(cpuPow);			
 	
@@ -704,7 +704,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 */
 	@Override	
 	
-	public PowerData computePowerCore(CoreType myCore, CPUType cpu, OperatingSystemTypeType os){		
+	public PowerData computePowerCore(Core myCore, CPU cpu, OperatingSystemType os){		
 		
 		if (cpu == null || myCore == null){
     		log.debug("CPU/Core Type is null");
@@ -718,7 +718,7 @@ public class PowerCalculator implements IPowerCalculator {
 		
 		double corePower = myPoweredCore.computePower();
 		
-		PowerType corePow = new PowerType();
+		Power corePow = new Power();
 		corePow.setValue(corePower);
 		cpu.setComputedPower(corePow);			
 	
@@ -741,7 +741,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 */
 	@Override	
 	
-	public PowerData computePowerMainboardRAMs(MainboardType mainboard){		
+	public PowerData computePowerMainboardRAMs(Mainboard mainboard){		
 		
 		if (mainboard == null ){
     		log.debug("Mainboard Type is null");
@@ -753,7 +753,7 @@ public class PowerCalculator implements IPowerCalculator {
 		double ramPower=0.0;
 		
 		if(mainboard.getMemoryUsage()== null){
-			MemoryUsageType memoryUsageType = new MemoryUsageType();
+			MemoryUsage memoryUsageType = new MemoryUsage();
 			memoryUsageType.setValue(0.0);
 			mainboard.setMemoryUsage(memoryUsageType);
 		}
@@ -780,7 +780,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 */
 	@Override	
 	
-	public PowerData computePowerFAN(FanType fan){		
+	public PowerData computePowerFAN(Fan fan){		
 		
 		if (fan == null ){
     		log.debug("Fan Type is null");
@@ -794,7 +794,7 @@ public class PowerCalculator implements IPowerCalculator {
 		PoweredFan myPoweredFan = new PoweredFan(fan.getActualRPM(),fan.getDepth(), fan.getMaxRPM(), fan.getPowerMax(), fan.getMeasuredPower(), this.simulationFlag);           
 		fanPower = myPoweredFan.computePower();
 		
-		PowerType fanPow = new PowerType();
+		Power fanPow = new Power();
 		fanPow.setValue(fanPower);
 		fan.setComputedPower(fanPow);
 		
@@ -812,7 +812,7 @@ public class PowerCalculator implements IPowerCalculator {
  * @return double value containing the power consumption of box type routers and switches
  */
 	
-	private double BoxNetworkPower(DatacenterType obj){
+	private double BoxNetworkPower(Datacenter obj){
 	
 		double totalBoxNetworkPower=0.0;
 		JXPathContext context = JXPathContext.newContext(obj);
@@ -825,7 +825,7 @@ public class PowerCalculator implements IPowerCalculator {
         while(boxRouterPowerIterator.hasNext()){
         	
         	double boxRouterPower =0.0;
-        	BoxRouterType myBoxRouter = (BoxRouterType)boxRouterPowerIterator.next();
+        	BoxRouter myBoxRouter = (BoxRouter)boxRouterPowerIterator.next();
         	PoweredNetworkNode myNetworkNode = new PoweredNetworkNode(myBoxRouter);
         	
         	boxRouterPower = myNetworkNode.computePower();
@@ -842,7 +842,7 @@ public class PowerCalculator implements IPowerCalculator {
             
         	boxRouterPower = boxRouterPower+PSUNetworkNodePower(myBoxRouter, boxRouterPower);
         	
-        	PowerType boxRouterPow = new PowerType();
+        	Power boxRouterPow = new Power();
         	boxRouterPow.setValue(boxRouterPower);
         	myBoxRouter.setComputedPower(boxRouterPow);        	
     				
@@ -862,7 +862,7 @@ public class PowerCalculator implements IPowerCalculator {
         while(boxSwitchPowerIterator.hasNext()){
         	
         	double boxSwitchPower =0.0;
-        	BoxSwitchType myBoxSwitch = (BoxSwitchType)boxSwitchPowerIterator.next();
+        	BoxSwitch myBoxSwitch = (BoxSwitch)boxSwitchPowerIterator.next();
         	PoweredNetworkNode myNetworkNode = new PoweredNetworkNode(myBoxSwitch);
         	boxSwitchPower = myNetworkNode.computePower();
         	
@@ -879,7 +879,7 @@ public class PowerCalculator implements IPowerCalculator {
         	
         	boxSwitchPower = boxSwitchPower+PSUNetworkNodePower(myBoxSwitch, boxSwitchPower);
         	
-        	PowerType boxSwitchPow = new PowerType();
+        	Power boxSwitchPow = new Power();
         	boxSwitchPow.setValue(boxSwitchPower);
         	myBoxSwitch.setComputedPower(boxSwitchPow);        	
     				
@@ -898,7 +898,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @return double value containing the power consumption of rackable type routers and switches
 	 */
 		
-		private double RackableNetworkPower(RackType obj){
+		private double RackableNetworkPower(Rack obj){
 		
 			double totalRackableNetworkPower=0.0;
 			JXPathContext context = JXPathContext.newContext(obj);
@@ -911,7 +911,7 @@ public class PowerCalculator implements IPowerCalculator {
 	        while(rackableRouterPowerIterator.hasNext()){
 	        	
 	        	double rackbaleRouterPower =0.0;
-	        	RackableRouterType myRackableRouter = (RackableRouterType)rackableRouterPowerIterator.next();
+	        	RackableRouter myRackableRouter = (RackableRouter)rackableRouterPowerIterator.next();
 	        	PoweredNetworkNode myNetworkNode = new PoweredNetworkNode(myRackableRouter);
 	        	
 	        	rackbaleRouterPower = myNetworkNode.computePower();
@@ -927,7 +927,7 @@ public class PowerCalculator implements IPowerCalculator {
 	             */
 	        	rackbaleRouterPower = rackbaleRouterPower+PSUNetworkNodePower(myRackableRouter, rackbaleRouterPower);
 	        	
-	        	PowerType rackbaleRouterPow = new PowerType();
+	        	Power rackbaleRouterPow = new Power();
 
 	        	rackbaleRouterPow.setValue(rackbaleRouterPower);
 	        	myRackableRouter.setComputedPower(rackbaleRouterPow);        	
@@ -947,7 +947,7 @@ public class PowerCalculator implements IPowerCalculator {
 	        while(rackableSwitchPowerIterator.hasNext()){
 	        	
 	        	double rackableSwitchPower =0.0;
-	        	RackableSwitchType myRackableSwitch = (RackableSwitchType)rackableSwitchPowerIterator.next();
+	        	RackableSwitch myRackableSwitch = (RackableSwitch)rackableSwitchPowerIterator.next();
 	        	PoweredNetworkNode myNetworkNode = new PoweredNetworkNode(myRackableSwitch);
 	        	
 	        	rackableSwitchPower = myNetworkNode.computePower();
@@ -963,7 +963,7 @@ public class PowerCalculator implements IPowerCalculator {
 	             */
 	        	rackableSwitchPower = rackableSwitchPower+PSUNetworkNodePower(myRackableSwitch, rackableSwitchPower);
 	        	
-	        	PowerType rackbaleSwitchPow = new PowerType();
+	        	Power rackbaleSwitchPow = new Power();
 	        	rackbaleSwitchPow.setValue(rackableSwitchPower);
 	        	myRackableSwitch.setComputedPower(rackbaleSwitchPow);        	
 	    				
@@ -984,9 +984,9 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param obj:input object of type FIT4Green 
 	 * @return double value containing information on power consumption of Sites
 	 */
-	private PowerType sitePower(FIT4GreenType obj){
+	private Power sitePower(FIT4Green obj){
 		
-		PowerType totalSitePower = new PowerType();
+		Power totalSitePower = new Power();
 		totalSitePower.setValue(0.0);
 		JXPathContext context = JXPathContext.newContext(obj);
 		String siteQuery = "site";                                   
@@ -994,14 +994,14 @@ public class PowerCalculator implements IPowerCalculator {
         
         while(sitePowerIterator.hasNext()){
         	
-        	SiteType mySite = (SiteType)sitePowerIterator.next();        	
-        	PowerType sitePower =new PowerType();
+        	Site mySite = (Site)sitePowerIterator.next();        	
+        	Power sitePower =new Power();
         	sitePower.setValue(0.0); 
         	
         	/**
         	 * Power consumption of Datacenters
         	 */
-        	PowerType totalDCPower= datacenterPower(mySite);    		
+        	Power totalDCPower= datacenterPower(mySite);    		
     		sitePower.setValue(sitePower.getValue()+ totalDCPower.getValue());
     		mySite.setComputedPower(sitePower);
     		log.debug("The power consumption of the Site Datacenters is "+sitePower.getValue()+ " Watts");    		  		
@@ -1020,7 +1020,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param obj:input object of type Site 
 	 * @return double value containing information on power consumption of Datacenters
 	 */
-	private PowerType datacenterPower(SiteType obj){
+	private Power datacenterPower(Site obj){
 		
 		double totalDCPower=0.0;
 		JXPathContext context = JXPathContext.newContext(obj);
@@ -1029,7 +1029,7 @@ public class PowerCalculator implements IPowerCalculator {
         
         while(DCPowerIterator.hasNext()){
         	
-        	DatacenterType myDC = (DatacenterType)DCPowerIterator.next();        	
+        	Datacenter myDC = (Datacenter)DCPowerIterator.next();        	
     		
     		double totalRackPower=0.0;
     		double totalBoxNetworkPower=0.0;    		
@@ -1062,13 +1062,13 @@ public class PowerCalculator implements IPowerCalculator {
     		//Power consumption of the whole datacenter
     		log.debug("The power consumption of the Datacenter is "+DCPower+ " Watts");
     		
-    		PowerType DCPow = new PowerType();
+    		Power DCPow = new Power();
     		DCPow.setValue(DCPower);        	
     	    myDC.setComputedPower(DCPow);    		
     		
     	    totalDCPower = totalDCPower+ DCPower;
         }
-		PowerType totalDCPow = new PowerType();
+		Power totalDCPow = new Power();
 		totalDCPow.setValue(totalDCPower);
         log.debug("The power consumption of the Datacenters is "+totalDCPower+ " Watts");		
 		return totalDCPow;
@@ -1080,7 +1080,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param obj:input object of type Datacenter 
 	 * @return double value containing information on power consumption of the racks
 	 */
-	private double rackPower(DatacenterType obj){
+	private double rackPower(Datacenter obj){
 		
 		double totalRackPower=0.0;
 		JXPathContext context = JXPathContext.newContext(obj);
@@ -1089,7 +1089,7 @@ public class PowerCalculator implements IPowerCalculator {
         
         while(rackPowerIterator.hasNext()){
         	
-        	RackType myRack = (RackType)rackPowerIterator.next();
+        	Rack myRack = (Rack)rackPowerIterator.next();
         	double totalPDUPower=0.0;
     		double totalEnclosurePower=0.0;
     		double totalSANPower=0.0;
@@ -1151,7 +1151,7 @@ public class PowerCalculator implements IPowerCalculator {
     		//Power consumption of the whole rack
     		log.debug("The power consumption of the Rack is "+rackPower+ " Watts");
     		
-    		PowerType rackPow = new PowerType();
+    		Power rackPow = new Power();
     		rackPow.setValue(rackPower);
     		myRack.setComputedPower(rackPow);
     		
@@ -1168,7 +1168,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param obj:input object of type Rack 
 	 * @return double value containing information on power consumption of the enclosures
 	 */
-	private double enclosurePower(RackType obj){
+	private double enclosurePower(Rack obj){
 		
 		double totalEnclosurePower=0.0;
 		JXPathContext context = JXPathContext.newContext(obj);
@@ -1177,7 +1177,7 @@ public class PowerCalculator implements IPowerCalculator {
         
         while(enclosurePowerIterator.hasNext()){
         	
-        	EnclosureType myEnclosure = (EnclosureType)enclosurePowerIterator.next();
+        	Enclosure myEnclosure = (Enclosure)enclosurePowerIterator.next();
     		double enclosurePower=0.0;
     		
         	if (!simulationFlag && myEnclosure.getMeasuredPower() != null && myEnclosure.getMeasuredPower().getValue() > 0.0) 
@@ -1203,7 +1203,7 @@ public class PowerCalculator implements IPowerCalculator {
 				*/	
 	        	while(psuPowerIterator.hasNext())
 	        	{
-	        		PSUType myPSU = (PSUType)psuPowerIterator.next();
+	        		PSU myPSU = (PSU)psuPowerIterator.next();
 	        	    if(myPSU.getMeasuredPower() == null ||myPSU.getMeasuredPower().getValue()<=0)
 	        	    	measuredPowerPSU = false;
 	        	    if(myPSU.getLoad().getValue() > 0.0)
@@ -1251,7 +1251,7 @@ public class PowerCalculator implements IPowerCalculator {
 	        	while(psuPowerIterator.hasNext())
 	        	{
 	        		double psuCurrentPower = 0.0;
-	        		PSUType myPSU = (PSUType)psuPowerIterator.next();
+	        		PSU myPSU = (PSU)psuPowerIterator.next();
 	        		
 	        		/**
 						* The monitoring system
@@ -1264,7 +1264,7 @@ public class PowerCalculator implements IPowerCalculator {
 		        		{
 		        			psuCurrentPower = PSUPower(myPSU.getMeasuredPower().getValue(),myPSU.getEfficiency().getValue());
 		        			log.debug("The power consumption of the PSU is "+psuCurrentPower+ " Watts");
-		        			PowerType psuCurrentPow = new PowerType();
+		        			Power psuCurrentPow = new Power();
 		        			psuCurrentPow.setValue(psuCurrentPower);
 		        			myPSU.setComputedPower(psuCurrentPow);
 		        			
@@ -1281,7 +1281,7 @@ public class PowerCalculator implements IPowerCalculator {
 		        			
 		        			psuCurrentPower= PSUPower(myEnclosure.getMeasuredPower().getValue()/countPSU,myPSU.getEfficiency().getValue());
 		        			
-		        			PowerType psuCurrentPow = new PowerType();
+		        			Power psuCurrentPow = new Power();
 		        			psuCurrentPow.setValue(psuCurrentPower);
 		        			log.debug("The power consumption of the PSU is "+psuCurrentPow.getValue()+ " Watts");
 		        			myPSU.setComputedPower(psuCurrentPow);
@@ -1292,7 +1292,7 @@ public class PowerCalculator implements IPowerCalculator {
 		        			if(myPSU.getEfficiency().getValue()>0)
 		        				psuCurrentPower = Math.round((measuredPower/myPSU.getEfficiency().getValue())*100)-Math.round(enclosurePower/countPSU);
 		        			
-		        			PowerType psuCurrentPow = new PowerType();
+		        			Power psuCurrentPow = new Power();
 		        			psuCurrentPow.setValue(psuCurrentPower);
 		        			log.debug("The power consumption of the PSU is "+psuCurrentPow.getValue()+ " Watts");
 		        			myPSU.setComputedPower(psuCurrentPow);
@@ -1310,7 +1310,7 @@ public class PowerCalculator implements IPowerCalculator {
     		//Power consumption of the whole enclosure
     		log.debug("The power consumption of the Enclosure is "+enclosurePower+ " Watts");
     		
-    		PowerType enclosurePow = new PowerType();
+    		Power enclosurePow = new Power();
     		enclosurePow.setValue(enclosurePower);
     		myEnclosure.setComputedPower(enclosurePow);
     		
@@ -1335,34 +1335,34 @@ public class PowerCalculator implements IPowerCalculator {
 		Iterator serverPowerIterator = context.iterate(myQuery);
 		
 		double totalServersPower=0.0;
-		TowerServerType myTSObj = null;
-		RackableServerType myRSObj = null;
-		BladeServerType myBSObj = null;
+		TowerServer myTSObj = null;
+		RackableServer myRSObj = null;
+		BladeServer myBSObj = null;
 		
 		while(serverPowerIterator.hasNext())
 		{				
 			double serverPower=0.0;
 			double totalMainboardPower=0.0;			
-			ServerType serverObj = (ServerType)serverPowerIterator.next();			
+			Server serverObj = (Server)serverPowerIterator.next();			
 			
 			/**
 			 * C.Dupont: I'm adding that as a server off should consume 0
 			 * to check
 			 */
-			if(serverObj.getStatus() == ServerStatusType.ON){
+			if(serverObj.getStatus() == ServerStatus.ON){
 				
 			
 			//Casting to Tower Server
 			if(myQuery.indexOf('t') == 0)
-				myTSObj = (TowerServerType)serverObj;				 
+				myTSObj = (TowerServer)serverObj;				 
 			
 			//Casting to Rackable Server
 			else if (myQuery.indexOf('r') == 0)
-				myRSObj = (RackableServerType)serverObj;
+				myRSObj = (RackableServer)serverObj;
 			
 			//Casting to Blade Server
 			else if	(myQuery.indexOf('b') == 0)
-				myBSObj = (BladeServerType)serverObj;
+				myBSObj = (BladeServer)serverObj;
 			
 						
 			
@@ -1381,7 +1381,7 @@ public class PowerCalculator implements IPowerCalculator {
 				*/	
         	while(psuPowerIterator.hasNext())
         	{
-        		PSUType myPSU = (PSUType)psuPowerIterator.next();
+        		PSU myPSU = (PSU)psuPowerIterator.next();
         	    if(myPSU.getMeasuredPower() == null ||myPSU.getMeasuredPower().getValue()<=0)
         	    	measuredPowerPSU = false;
         	    if(myPSU.getLoad().getValue() > 0.0)
@@ -1395,7 +1395,7 @@ public class PowerCalculator implements IPowerCalculator {
 			/**
 			 * Fetching the operating system
 			 */
-			OperatingSystemTypeType operatingSystem = getOperatingSystem(serverObj);
+			OperatingSystemType operatingSystem = getOperatingSystem(serverObj);
 			
 			/**
 			 * Power consumption of the Mainboards
@@ -1429,7 +1429,7 @@ public class PowerCalculator implements IPowerCalculator {
         		while(psuPowerIterator.hasNext())
         		{
         			double psuCurrentPower = 0.0;
-        			PSUType myPSU = (PSUType)psuPowerIterator.next();
+        			PSU myPSU = (PSU)psuPowerIterator.next();
         		
         			/**
         			 * The monitoring system
@@ -1443,7 +1443,7 @@ public class PowerCalculator implements IPowerCalculator {
         			{
         				psuCurrentPower = PSUPower(myPSU.getMeasuredPower().getValue(),myPSU.getEfficiency().getValue());
         				
-        				PowerType psuCurrentPow = new PowerType();
+        				Power psuCurrentPow = new Power();
         				psuCurrentPow.setValue(psuCurrentPower);
         				log.debug("The power consumption of the PSU is "+psuCurrentPow.getValue()+ " Watts");
         				myPSU.setComputedPower(psuCurrentPow);
@@ -1459,7 +1459,7 @@ public class PowerCalculator implements IPowerCalculator {
         			
         			psuCurrentPower= PSUPower(serverObj.getMeasuredPower().getValue()/countPSU,myPSU.getEfficiency().getValue());
         			
-        			PowerType psuCurrentPow = new PowerType();
+        			Power psuCurrentPow = new Power();
     				psuCurrentPow.setValue(psuCurrentPower);
     				log.debug("The power consumption of the PSU is "+psuCurrentPow.getValue()+ " Watts");
         			myPSU.setComputedPower(psuCurrentPow);
@@ -1472,7 +1472,7 @@ public class PowerCalculator implements IPowerCalculator {
         				if(myPSU.getEfficiency().getValue()>0)
         					psuCurrentPower = Math.round(((measuredPower/myPSU.getEfficiency().getValue())*100))-Math.round((serverPower/countPSU));
         				
-        				PowerType psuCurrentPow = new PowerType();
+        				Power psuCurrentPow = new Power();
         				psuCurrentPow.setValue(psuCurrentPower);
         				log.debug("The power consumption of the PSU is "+psuCurrentPow.getValue()+ " Watts");
         				myPSU.setComputedPower(psuCurrentPow);
@@ -1489,7 +1489,7 @@ public class PowerCalculator implements IPowerCalculator {
            
             } //end of if(myQuery.indexOf('t') == 0 || myQuery.indexOf('r') == 0)          
          } //end of else (any PSU has a load >0)
-        	PowerType serverPow = new PowerType();
+        	Power serverPow = new Power();
         	serverPow.setValue(serverPower);
             if(myQuery.indexOf('t') == 0)           	 
               myTSObj.setComputedPower(serverPow);                      
@@ -1512,18 +1512,18 @@ public class PowerCalculator implements IPowerCalculator {
 	 * A function to return the operating system running on the server
 	 * 
 	 * @param obj:input object of type Server
-	 * @return OperatingSystemTypeType value containing information on the operating system
+	 * @return OperatingSystemType value containing information on the operating system
 	 */
-	private OperatingSystemTypeType getOperatingSystem(ServerType obj){
+	private OperatingSystemType getOperatingSystem(Server obj){
 
 		if(obj.getNativeHypervisor() != null){
 			if(obj.getNativeHypervisor().getName() == null){
-				return OperatingSystemTypeType.LINUX;
+				return OperatingSystemType.LINUX;
 			}
 			return obj.getNativeHypervisor().getName();
 		} else {
 			if(obj.getNativeOperatingSystem().getName() == null){
-				return OperatingSystemTypeType.LINUX;
+				return OperatingSystemType.LINUX;
 			}
 			return obj.getNativeOperatingSystem().getName();
 		}
@@ -1552,8 +1552,8 @@ public class PowerCalculator implements IPowerCalculator {
 		
 		while(fanPowerIterator.hasNext())
         {		   	
-           PowerType fanCurrentPow = new PowerType();
-           fanCurrentPow.setValue(computePowerFAN((FanType)fanPowerIterator.next()).getActualConsumption());           
+           Power fanCurrentPow = new Power();
+           fanCurrentPow.setValue(computePowerFAN((Fan)fanPowerIterator.next()).getActualConsumption());           
            fanPower = fanPower + fanCurrentPow.getValue();
            log.debug("The power consumption of the Fan is "+fanCurrentPow.getValue()+ " Watts");
            
@@ -1569,11 +1569,11 @@ public class PowerCalculator implements IPowerCalculator {
 		
 		while(waterCoolerPowerIterator.hasNext())
         {		   	
-		   WaterCoolerType myWaterCooler = (WaterCoolerType)waterCoolerPowerIterator.next();	
+		   WaterCooler myWaterCooler = (WaterCooler)waterCoolerPowerIterator.next();	
            double waterCoolerCurrentPower = 0.0; 
            //myWaterCooler.getCurrentPower();
            
-           PowerType waterCoolerCurrentPow = new PowerType();
+           Power waterCoolerCurrentPow = new Power();
            waterCoolerCurrentPow.setValue(waterCoolerCurrentPower);
            myWaterCooler.setComputedPower(waterCoolerCurrentPow);
            waterCoolerPower = waterCoolerPower + waterCoolerCurrentPower; 
@@ -1591,7 +1591,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param obj:input object of type Server
 	 * @return double value containing information on power consumption of the mainboards
 	 */
-	private double mainboardPower(ServerType obj,OperatingSystemTypeType operatingSystem){
+	private double mainboardPower(Server obj,OperatingSystemType operatingSystem){
 		
 		JXPathContext context = JXPathContext.newContext(obj);
 		String mainboardQuery = "mainboard";                                   
@@ -1600,7 +1600,7 @@ public class PowerCalculator implements IPowerCalculator {
         
         while(mainboardPowerIterator.hasNext())
         {
-        	MainboardType myMainboard = (MainboardType)mainboardPowerIterator.next();
+        	Mainboard myMainboard = (Mainboard)mainboardPowerIterator.next();
            	JXPathContext context2 = JXPathContext.newContext(myMainboard);
            	
            	double totalMainboardPower=0.0;
@@ -1609,7 +1609,7 @@ public class PowerCalculator implements IPowerCalculator {
            	 * In case, the mainboard power of different servers is not given,
            	 * the powercalculator will use the following constant number of the mainboard power.
            	 */
-			if(obj instanceof BladeServerType)
+			if(obj instanceof BladeServer)
 		           	{
 		           		if(myMainboard.getPowerMax().getValue()>0)
 		           			totalMainboardPower = myMainboard.getPowerMax().getValue();
@@ -1617,7 +1617,7 @@ public class PowerCalculator implements IPowerCalculator {
 		           			totalMainboardPower = 80.0;
 		           		
 		           	}
-		           	else if(obj instanceof TowerServerType)
+		           	else if(obj instanceof TowerServer)
 		           	{
 		           		if(myMainboard.getPowerMax().getValue()>0)
 		           			totalMainboardPower = myMainboard.getPowerMax().getValue();
@@ -1625,7 +1625,7 @@ public class PowerCalculator implements IPowerCalculator {
 		           			totalMainboardPower= 65.0;
 		           		
 		           	}
-		           	else if(obj instanceof RackableServerType)
+		           	else if(obj instanceof RackableServer)
 		           	{
 		           		if(myMainboard.getPowerMax().getValue()>0)
 		           			totalMainboardPower = myMainboard.getPowerMax().getValue();
@@ -1678,7 +1678,7 @@ public class PowerCalculator implements IPowerCalculator {
    			while(hwRaidPowerIterator.hasNext())
                {
    					double hwRaidPower=0.0;
-   					HardwareRAIDType myRaid = (HardwareRAIDType)hwRaidPowerIterator.next();        	         	  
+   					HardwareRAID myRaid = (HardwareRAID)hwRaidPowerIterator.next();        	         	  
                 
    					//Power consumption of the storage unit
    					double totalhwRaidStoragePower= StoragePower(myRaid);              
@@ -1690,7 +1690,7 @@ public class PowerCalculator implements IPowerCalculator {
    					log.debug("The power consumption of the Hardware Raid Caches is "+totalhwRaidCachePower+ " Watts");              
    					hwRaidPower = hwRaidPower+totalhwRaidCachePower; 
                  
-   					PowerType hwRaidPow = new PowerType();
+   					Power hwRaidPow = new Power();
    					hwRaidPow.setValue(hwRaidPower);
    					myRaid.setComputedPower(hwRaidPow);
    					log.debug("The power consumption of the Hardware Raid is "+hwRaidPower+ " Watts");
@@ -1701,7 +1701,7 @@ public class PowerCalculator implements IPowerCalculator {
            log.debug("The power consumption of the Hardware Raids is "+totalHWRaidPower+ " Watts");         
            totalMainboardPower = totalMainboardPower+totalHWRaidPower;
           
-           PowerType totalMainboardPow = new PowerType();
+           Power totalMainboardPow = new Power();
            totalMainboardPow.setValue(totalMainboardPower);
            myMainboard.setComputedPower(totalMainboardPow);         
            
@@ -1723,7 +1723,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param obj:input object of type Mainboard 
 	 * @return double value containing information on power consumption of the RAMSticks
 	 */	
-	private double RAMPower(MainboardType myMainboard){
+	private double RAMPower(Mainboard myMainboard){
 		
 		double totalRAMPower=0.0;		
 		int totalRAMNumber=0;
@@ -1746,7 +1746,7 @@ public class PowerCalculator implements IPowerCalculator {
 		 */
 		while(ramPowerIterator.hasNext())
 		{
-			RAMStickType myRAM = (RAMStickType)ramPowerIterator.next();			
+			RAMStick myRAM = (RAMStick)ramPowerIterator.next();			
 			totalRAMSize = totalRAMSize + myRAM.getSize().getValue();
 			totalRAMNumber = totalRAMNumber+1;
 		} 
@@ -1757,20 +1757,20 @@ public class PowerCalculator implements IPowerCalculator {
 			/** check whether the CPU is in idle mode or not			 
 			 */
 								
-			Iterator<CPUType> cpuIterator = myMainboard.getCPU().iterator();
+			Iterator<CPU> cpuIterator = myMainboard.getCPU().iterator();
 			boolean CPUIdle = true;
 			
 			while(cpuIterator.hasNext())
 			{
 				
-				CPUType myCPU = (CPUType)cpuIterator.next();
+				CPU myCPU = (CPU)cpuIterator.next();
 				if(myCPU.getCpuUsage()!= null && myCPU.getCpuUsage().getValue()> 0)
 					CPUIdle = false;
 				else if(myCPU.getCpuUsage()== null || myCPU.getCpuUsage().getValue()== 0){
-					Iterator<CoreType> coreIterator = myCPU.getCore().iterator();
+					Iterator<Core> coreIterator = myCPU.getCore().iterator();
 					
 					while(coreIterator.hasNext()){
-					CoreType myCore = (CoreType)coreIterator.next();
+					Core myCore = (Core)coreIterator.next();
 					if(myCore.getCoreLoad()!= null && myCore.getCoreLoad().getValue() >0)					
 						CPUIdle = false;
 						
@@ -1809,7 +1809,7 @@ public class PowerCalculator implements IPowerCalculator {
 		
 		while(ramPowerIterator.hasNext())
 		{
-			RAMStickType myRAM = (RAMStickType)ramPowerIterator.next();
+			RAMStick myRAM = (RAMStick)ramPowerIterator.next();
 			PoweredRamStick myLoadedRAM = null;
 			
 			if(counter == 0)
@@ -1820,7 +1820,7 @@ public class PowerCalculator implements IPowerCalculator {
 			
 			double ramPower = myLoadedRAM.computePower();
 			
-			PowerType ramPow = new PowerType();
+			Power ramPow = new Power();
 			ramPow.setValue(ramPower);
 			myRAM.setComputedPower(ramPow);
 			totalRAMPower = totalRAMPower + ramPower; 
@@ -1837,7 +1837,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param obj:input object of type Mainboard
 	 * @return double value containing information on power consumption of the central processing units
 	 */
-    private double CPUPower(MainboardType obj, OperatingSystemTypeType operatingSystem){
+    private double CPUPower(Mainboard obj, OperatingSystemType operatingSystem){
 		
 		JXPathContext context = JXPathContext.newContext(obj);
 		double totalCPUPower= 0.0;
@@ -1848,11 +1848,11 @@ public class PowerCalculator implements IPowerCalculator {
 			while(cpuPowerIterator.hasNext())
 			{
 				
-				CPUType myCPU = (CPUType)cpuPowerIterator.next();
+				CPU myCPU = (CPU)cpuPowerIterator.next();
 				PoweredCPU myPoweredCPU = new PoweredCPU(myCPU,operatingSystem);		
 				double cpuPower = myPoweredCPU.computePower();
 				
-				PowerType cpuPow = new PowerType();
+				Power cpuPow = new Power();
 				cpuPow.setValue(cpuPower);
 				myCPU.setComputedPower(cpuPow);
 				log.debug("The power consumption of the CPU is "+cpuPower+ " Watts");
@@ -1880,7 +1880,7 @@ public class PowerCalculator implements IPowerCalculator {
 	    
         while(storagePowerIterator.hasNext())
         {
-        	HardDiskType myHardDisk = (HardDiskType)storagePowerIterator.next();
+        	HardDisk myHardDisk = (HardDisk)storagePowerIterator.next();
         	double storageCurrentPower = 0.0;
       	    double totalCachePower = CachePower(myHardDisk);
       	    log.debug("The power consumption of the Hard Disk Cache is "+totalCachePower+ " Watts");
@@ -1889,12 +1889,12 @@ public class PowerCalculator implements IPowerCalculator {
       	    {
       	    	
       	    	if(myHardDisk.getReadRate() == null){
-      	    		IoRateType ioRate = new IoRateType();
+      	    		IoRate ioRate = new IoRate();
       	    		ioRate.setValue(0.0);      	    		
       	    		myHardDisk.setReadRate(ioRate);
       	    	}
       	    	if(myHardDisk.getWriteRate() == null){
-      	    		IoRateType ioRate = new IoRateType();
+      	    		IoRate ioRate = new IoRate();
       	    		ioRate.setValue(0.0);
       	    		myHardDisk.setWriteRate(ioRate);
       	    	}
@@ -1902,7 +1902,7 @@ public class PowerCalculator implements IPowerCalculator {
       	    	storageCurrentPower = myPoweredHardDisk.computePower()+ totalCachePower;
       	    }
             
-      	    PowerType storageCurrentPow = new PowerType();
+      	    Power storageCurrentPow = new Power();
       	    storageCurrentPow.setValue(storageCurrentPower);
             myHardDisk.setComputedPower(storageCurrentPow);
             totalStoragePower = totalStoragePower + storageCurrentPower; 
@@ -1913,12 +1913,12 @@ public class PowerCalculator implements IPowerCalculator {
 	    storagePowerIterator = context.iterate(storageQuery);	      		  
         while(storagePowerIterator.hasNext())
         {
-        	SolidStateDiskType mySolidStateDisk = (SolidStateDiskType)storagePowerIterator.next();
+        	SolidStateDisk mySolidStateDisk = (SolidStateDisk)storagePowerIterator.next();
       	    double totalCachePower = CachePower(mySolidStateDisk);
       	    log.debug("The power consumption of the Solid State Disk Cache is "+totalCachePower+ " Watts"); 
             double storageCurrentPower = mySolidStateDisk.getPowerMax().getValue()+ totalCachePower;
             
-            PowerType storageCurrentPow = new PowerType();
+            Power storageCurrentPow = new Power();
       	    storageCurrentPow.setValue(storageCurrentPower);
             mySolidStateDisk.setComputedPower(storageCurrentPow);
             totalStoragePower = totalStoragePower + storageCurrentPower; 
@@ -1944,11 +1944,11 @@ public class PowerCalculator implements IPowerCalculator {
 		//log.debug("Inside the cache"); 
         while(cachePowerIterator.hasNext())
         {
-      	  CacheType myCache = (CacheType)cachePowerIterator.next();
+      	  Cache myCache = (Cache)cachePowerIterator.next();
       	  //TODO: In the future, implement the power consumption function for the Cache
           double cacheCurrentPower = 0.0;
           
-          PowerType cacheCurrentPow = new PowerType();
+          Power cacheCurrentPow = new Power();
           cacheCurrentPow.setValue(cacheCurrentPower);
           myCache.setComputedPower(cacheCurrentPow);
           totalCachePower = totalCachePower + cacheCurrentPower; 
@@ -1960,7 +1960,7 @@ public class PowerCalculator implements IPowerCalculator {
 		
 	}
 	
-	public PowerData computePowerSAN(RackType obj){
+	public PowerData computePowerSAN(Rack obj){
 		
 		double power = SANPower(obj, 0);
 		PowerData powerData = new PowerData();
@@ -1969,7 +1969,7 @@ public class PowerCalculator implements IPowerCalculator {
 
 	}
 	
-	public PowerData computePowerIdleSAN(RackType obj){
+	public PowerData computePowerIdleSAN(Rack obj){
 
 		double power = SANPower(obj, 1);
 		PowerData powerData = new PowerData();
@@ -1977,12 +1977,12 @@ public class PowerCalculator implements IPowerCalculator {
   		return powerData;
 	}//end of computePowerIdleSAN method
 	
-	public PowerData computePowerNAS(NASType obj){
+	public PowerData computePowerNAS(NAS obj){
 		
 		double powerNAS = NASPower(obj, 0);
 		
 		//Set the computed power to the NAS
-		PowerType nasPower=new PowerType();
+		Power nasPower=new Power();
 		nasPower.setValue(powerNAS);
 		obj.setComputedPower(nasPower);
 				
@@ -1991,12 +1991,12 @@ public class PowerCalculator implements IPowerCalculator {
   		return powerData;
 	}//end of computePowerNAS method
 
-	public PowerData computePowerIdleNAS(NASType obj){
+	public PowerData computePowerIdleNAS(NAS obj){
 		
 		double powerNAS = NASPower(obj, 1);
 		
 		//Set the computed power to the NAS
-		PowerType nasPower=new PowerType();
+		Power nasPower=new Power();
 		nasPower.setValue(powerNAS);
 		obj.setComputedPower(nasPower);
 				
@@ -2011,7 +2011,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param obj:input object of type Rack
 	 * @return double value containing information on power consumption of the storage area network devices
 	 */
-	private double SANPower(RackType obj, int idleFlag){
+	private double SANPower(Rack obj, int idleFlag){
 
 		JXPathContext contextSAN = JXPathContext.newContext(obj);
 		String myQuery = "SAN";
@@ -2022,14 +2022,14 @@ public class PowerCalculator implements IPowerCalculator {
 		while(SANPowerIterator.hasNext())
 		{	
 
-			SANType san = (SANType)SANPowerIterator.next();
+			SAN san = (SAN)SANPowerIterator.next();
 			PoweredSAN mySAN = new PoweredSAN(san, simulationFlag);
 			double sanCurrenPower = 0.0;
 
 			if (mySAN.getMeasuredPower()!=null && mySAN.getMeasuredPower().getValue() > 0) sanCurrenPower = mySAN.getMeasuredPower().getValue();
 			else	sanCurrenPower = (idleFlag == 1) ? mySAN.computePowerIdle() : mySAN.computePower();
 
-      		PowerType sanCurrentPow = new PowerType();
+      		Power sanCurrentPow = new Power();
       		sanCurrentPow.setValue(sanCurrenPower);
       		mySAN.setComputedPower(sanCurrentPow);
 			totalSANPower= totalSANPower + sanCurrenPower;
@@ -2046,7 +2046,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param idleFlag: takes a value of 1 if we want to compute the idle power, otherwise it has a value of 1
 	 * @return double value containing information on power consumption of the network-attached storage devices
 	 */
-	private double NASPower(NASType nasObj, int idleFlag){		   	
+	private double NASPower(NAS nasObj, int idleFlag){		   	
 			
 		double totalNASPower=0.0;
 		
@@ -2071,7 +2071,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param idleFlag: takes a value of 1 if we want to compute the idle power, otherwise it has a value of 1
 	 * @return double value containing information on power consumption of the network-attached storage devices
 	 */
-	private double OverallNASPower(RackType rack, int idleFlag){
+	private double OverallNASPower(Rack rack, int idleFlag){
 		
 		double totalNASPower=0.0;  
 		JXPathContext context = JXPathContext.newContext(rack);
@@ -2081,10 +2081,10 @@ public class PowerCalculator implements IPowerCalculator {
 	      while(nasPowerIterator.hasNext())
 	      	{
 	    	    double nasCurrentPower = 0.0;
-	      		NASType myNAS = (NASType)nasPowerIterator.next();	      		
+	      		NAS myNAS = (NAS)nasPowerIterator.next();	      		
 	      		nasCurrentPower = NASPower(myNAS,idleFlag); 
 	      		
-	      		PowerType nasCurrentPow = new PowerType();
+	      		Power nasCurrentPow = new Power();
 	      		nasCurrentPow.setValue(nasCurrentPower);
 	      		myNAS.setComputedPower(nasCurrentPow);
 	      		totalNASPower = totalNASPower + nasCurrentPower; 
@@ -2110,11 +2110,11 @@ public class PowerCalculator implements IPowerCalculator {
       while(nicPowerIterator.hasNext())
       	{
     	  double nicCurrentPower = 0.0;
-      		NICType myNIC = (NICType)nicPowerIterator.next();
+      		NIC myNIC = (NIC)nicPowerIterator.next();
       		PoweredNetworkNode myNetworkNode = new PoweredNetworkNode(myNIC);
       		nicCurrentPower = myNetworkNode.computePower(); 
       		
-      		PowerType nicCurrentPow = new PowerType();
+      		Power nicCurrentPow = new Power();
       		nicCurrentPow.setValue(nicCurrentPower);
       		myNIC.setComputedPower(nicCurrentPow);
       		totalNICPower = totalNICPower + nicCurrentPower; 
@@ -2127,11 +2127,11 @@ public class PowerCalculator implements IPowerCalculator {
      while(nicPowerIterator.hasNext())
      	{
    	    	double nicCurrentPower = 0.0;
-     		NICType myNIC = (NICType)nicPowerIterator.next();
+     		NIC myNIC = (NIC)nicPowerIterator.next();
      		PoweredNetworkNode myNetworkNode = new PoweredNetworkNode(myNIC);
       		nicCurrentPower = myNetworkNode.computePower(); 
      		      		
-     		PowerType nicCurrentPow = new PowerType();
+     		Power nicCurrentPow = new Power();
      		nicCurrentPow.setValue(nicCurrentPower);
      		myNIC.setComputedPower(nicCurrentPow);
      		totalNICPower = totalNICPower + nicCurrentPower; 
@@ -2145,11 +2145,11 @@ public class PowerCalculator implements IPowerCalculator {
     while(nicPowerIterator.hasNext())
     	{
   	    	double nicCurrentPower = 0.0;
-    		NICType myNIC = (NICType)nicPowerIterator.next();
+    		NIC myNIC = (NIC)nicPowerIterator.next();
     		PoweredNetworkNode myNetworkNode = new PoweredNetworkNode(myNIC);
       		nicCurrentPower = myNetworkNode.computePower(); 
     		      		
-    		PowerType nicCurrentPow = new PowerType();
+    		Power nicCurrentPow = new Power();
     		nicCurrentPow.setValue(nicCurrentPower);
     		myNIC.setComputedPower(nicCurrentPow);
     		totalNICPower = totalNICPower + nicCurrentPower; 
@@ -2174,10 +2174,10 @@ public class PowerCalculator implements IPowerCalculator {
 	    
 		while(nicPowerIterator.hasNext()) {
 			double nicCurrentPower = 0.0;
-			NICType myNIC = (NICType)nicPowerIterator.next();
+			NIC myNIC = (NIC)nicPowerIterator.next();
 			nicCurrentPower=myNIC.getPowerIdle().getValue();
 	      
-			PowerType nicCurrentPow = new PowerType();
+			Power nicCurrentPow = new Power();
 			nicCurrentPow.setValue(nicCurrentPower);
 			myNIC.setComputedPower(nicCurrentPow);
 			totalNICPower = totalNICPower + nicCurrentPower; 
@@ -2192,10 +2192,10 @@ public class PowerCalculator implements IPowerCalculator {
 		while(nicPowerIterator.hasNext()) {
 	       
 			double nicCurrentPower = 0.0;
-			NICType myNIC = (NICType)nicPowerIterator.next();
+			NIC myNIC = (NIC)nicPowerIterator.next();
 			nicCurrentPower=myNIC.getPowerIdle().getValue();
 			
-			PowerType nicCurrentPow = new PowerType();
+			Power nicCurrentPow = new Power();
 			nicCurrentPow.setValue(nicCurrentPower);
 			myNIC.setComputedPower(nicCurrentPow);
 			totalNICPower = totalNICPower + nicCurrentPower; 
@@ -2210,10 +2210,10 @@ public class PowerCalculator implements IPowerCalculator {
 		while(nicPowerIterator.hasNext()) {
 	       
 			double nicCurrentPower = 0.0;
-			NICType myNIC = (NICType)nicPowerIterator.next();
+			NIC myNIC = (NIC)nicPowerIterator.next();
 			nicCurrentPower=myNIC.getPowerIdle().getValue();
 			
-			PowerType nicCurrentPow = new PowerType();
+			Power nicCurrentPow = new Power();
 			nicCurrentPow.setValue(nicCurrentPower);	      
 			myNIC.setComputedPower(nicCurrentPow);	      
 			totalNICPower = totalNICPower + nicCurrentPower; 
@@ -2246,7 +2246,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param obj:input object of type Rack 
 	 * @return double value containing information on power consumption of the power distribution units
 	 */	
-	private double PDUPower(RackType obj){
+	private double PDUPower(Rack obj){
 		
 		double totalPDUPower=0;	
 		JXPathContext context = JXPathContext.newContext(obj);
@@ -2255,11 +2255,11 @@ public class PowerCalculator implements IPowerCalculator {
 	
 		while(pduPowerIterator.hasNext())
 		{
-			PDUType myPDU = (PDUType)pduPowerIterator.next();
+			PDU myPDU = (PDU)pduPowerIterator.next();
 			//TODO: implementation of the formula for the PDUs
 			double pduCurrentPower = myPDU.getMeasuredPower().getValue();
 			
-			PowerType pduCurrentPow = new PowerType();
+			Power pduCurrentPow = new Power();
 			pduCurrentPow.setValue(pduCurrentPower);
 			myPDU.setComputedPower(pduCurrentPow);			
 			totalPDUPower = totalPDUPower+pduCurrentPower;       
@@ -2269,7 +2269,7 @@ public class PowerCalculator implements IPowerCalculator {
 		return totalPDUPower;
 	}
 	
-	private double PSUNetworkNodePower(NetworkNodeType networkNode, double countedPower){
+	private double PSUNetworkNodePower(NetworkNode networkNode, double countedPower){
 		
 		double totalPSUPower=0.0;
         double countPSU=0.0;
@@ -2286,7 +2286,7 @@ public class PowerCalculator implements IPowerCalculator {
 		*/	
     	while(psuPowerIterator.hasNext())
     	{
-    		PSUType myPSU = (PSUType)psuPowerIterator.next();
+    		PSU myPSU = (PSU)psuPowerIterator.next();
     	    if(myPSU.getMeasuredPower() == null ||myPSU.getMeasuredPower().getValue()<=0)
     	    	measuredPowerPSU = false;
     	    if(myPSU.getLoad().getValue() > 0.0)
@@ -2300,7 +2300,7 @@ public class PowerCalculator implements IPowerCalculator {
     	while(psuPowerIterator.hasNext())
     	{
     		double psuCurrentPower = 0.0;
-    		PSUType myPSU = (PSUType)psuPowerIterator.next();
+    		PSU myPSU = (PSU)psuPowerIterator.next();
     		
     		/**
     		 * The monitoring system
@@ -2313,7 +2313,7 @@ public class PowerCalculator implements IPowerCalculator {
     		{
     			psuCurrentPower = PSUPower(myPSU.getMeasuredPower().getValue(),myPSU.getEfficiency().getValue());
     			
-    			PowerType psuCurrentPow = new PowerType();
+    			Power psuCurrentPow = new Power();
     			psuCurrentPow.setValue(psuCurrentPower);
     			log.debug("The power consumption of the PSU is "+psuCurrentPow.getValue()+ " Watts");
     			myPSU.setComputedPower(psuCurrentPow);
@@ -2329,7 +2329,7 @@ public class PowerCalculator implements IPowerCalculator {
     			
     			psuCurrentPower= PSUPower(networkNode.getMeasuredPower().getValue()/countPSU,myPSU.getEfficiency().getValue());
     			
-    			PowerType psuCurrentPow = new PowerType();
+    			Power psuCurrentPow = new Power();
     			psuCurrentPow.setValue(psuCurrentPower);
     			log.debug("The power consumption of the PSU is "+psuCurrentPow.getValue()+ " Watts");
     			myPSU.setComputedPower(psuCurrentPow);
@@ -2342,7 +2342,7 @@ public class PowerCalculator implements IPowerCalculator {
     			psuCurrentPower = Math.round((measuredPower/myPSU.getEfficiency().getValue())*100)-Math.round(countedPower/countPSU);
     			
     			
-    			PowerType psuCurrentPow = new PowerType();
+    			Power psuCurrentPow = new Power();
     			psuCurrentPow.setValue(psuCurrentPower);
     			log.debug("The power consumption of the PSU is "+psuCurrentPow.getValue()+ " Watts");
     			myPSU.setComputedPower(psuCurrentPow);
