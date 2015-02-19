@@ -366,7 +366,6 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		//cra.setVerbosity(3);
 		cra.doOptimize(true);
 		cra.setTimeLimit(5);
-			
 		ReconfigurationPlan plan = null;
 		try {
             System.err.println(model);

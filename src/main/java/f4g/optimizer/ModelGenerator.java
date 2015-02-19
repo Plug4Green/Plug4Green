@@ -40,9 +40,6 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 public class ModelGenerator {
 	
-	
-	
-	
 	//bounds to construct a server
 	public int MIN_CPU = 1;
 	public int MAX_CPU = 1;
