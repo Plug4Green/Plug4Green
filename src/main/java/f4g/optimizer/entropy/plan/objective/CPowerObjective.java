@@ -80,7 +80,7 @@ public class CPowerObjective implements CObjective {
         
         injectPlacementHeuristic(rp, reconfEnergy);
         postCostConstraints();
-        
+
         return true;
     }
   	

@@ -111,16 +111,16 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	public void testGlobalOneVMperServerVMNoLoad() {
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(10);
+		modelGenerator.setNB_SERVERS(5);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);				
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();				
 	
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
 		optimizer.runGlobalOptimization(model);
 				
-		assertEquals(9, getMoves().size());
-		assertEquals(9, getPowerOffs().size());
-	
+		assertEquals(5, getMoves().size());
+		assertEquals(5, getPowerOffs().size());
+
 		//no duplicate moves or power offs should be found
 		Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(getMoves());
 		Set<PowerOffActionType> powerOffSet = new HashSet<PowerOffActionType>(getPowerOffs()); 
