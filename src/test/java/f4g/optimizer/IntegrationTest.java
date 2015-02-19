@@ -1,20 +1,10 @@
-/**
- * ============================== Header ==============================
- * file:          OptimizerTest.java
- * project:       FIT4Green/Optimizer
- * created:       10 déc. 2010 by cdupont
- * last modified: $LastChangedDate: 2012-07-05 16:23:09 +0200 (jeu. 05 juil. 2012) $ by $LastChangedBy: f4g.cnit $
- * revision:      $LastChangedRevision: 1512 $
- *
- * short description:
- *   Integration with the power calculator tests
- * ============================= /Header ==============================
- */
 package f4g.optimizer;
 
-
+import static org.junit.Assert.*;
 
 import org.apache.log4j.Logger;
+import org.junit.Before;
+import org.junit.Test;
 
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
@@ -25,11 +15,6 @@ import f4g.optimizer.utils.OptimizerWorkload.CreationImpossible;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.powerCalculator.power.PowerCalculator;
-import f4g.schemas.java.actions.AbstractBaseActionType;
-import f4g.schemas.java.actions.ActionRequestType.ActionList;
-import f4g.schemas.java.actions.MoveVMActionType;
-import f4g.schemas.java.actions.PowerOffActionType;
-import f4g.schemas.java.*;
 import f4g.schemas.java.allocation.AllocationRequestType;
 import f4g.schemas.java.allocation.AllocationResponseType;
 import f4g.schemas.java.allocation.CloudVmAllocationResponseType;
@@ -59,14 +44,15 @@ import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
  */
 public class IntegrationTest extends OptimizerTest {
 
-    public Logger log;
+    
+	public Logger log;
 
     OptimizerEngineCloudTraditional optimizer = null;
     PolicyType vmMargins;
-
-
-    protected void setUp() throws Exception {
-        super.setUp();
+    
+    @Before
+    public void setUp() throws Exception {
+    	super.setUp();
 
         log = Logger.getLogger(this.getClass().getName());
 
@@ -90,14 +76,7 @@ public class IntegrationTest extends OptimizerTest {
 
     }
 
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        optimizer = null;
-
-    }
-
-
+    @Test
     public void testaddVM() {
 
         modelGenerator.setNB_VIRTUAL_MACHINES(1);
@@ -150,6 +129,7 @@ public class IntegrationTest extends OptimizerTest {
     /**
      * Test allocation with real power calculator
      */
+    @Test
     public void testAllocation() {
 
         modelGenerator.setNB_SERVERS(5);
@@ -229,6 +209,7 @@ public class IntegrationTest extends OptimizerTest {
     /**
      * test global optimization with real power calculator
      */
+    @Test
     public void testGlobal() {
 
         modelGenerator.setNB_SERVERS(3);
@@ -266,6 +247,7 @@ public class IntegrationTest extends OptimizerTest {
     /**
      * Test allocation with constraints not satisfied
      */
+    @Test
     public void testconstraintnotsatisfied() {
         modelGenerator.setNB_SERVERS(4);
         modelGenerator.setNB_VIRTUAL_MACHINES(1);
@@ -364,6 +346,7 @@ public class IntegrationTest extends OptimizerTest {
     /**
      * Test allocation & global with HP SLA
      */
+    @Test
     public void testHPSLA() {
 
         String sep = System.getProperty("file.separator");
@@ -435,8 +418,6 @@ public class IntegrationTest extends OptimizerTest {
         assertEquals(getMoves().size(), 0);
 
     }
-
-
 
     public static boolean deleteDir(File dir) {
         if (dir.isDirectory()) {

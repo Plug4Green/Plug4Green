@@ -1,28 +1,17 @@
-/**
-* ============================== Header ============================== 
-* file:          OptimizerGlobalCloudTest.java
-* project:       FIT4Green/Optimizer
-* created:       10 déc. 2010 by cdupont
-* last modified: $LastChangedDate: 2012-05-02 00:47:35 +0200 (mié, 02 may 2012) $ by $LastChangedBy: f4g.cnit $
-* revision:      $LastChangedRevision: 1411 $
-* 
-* short description:
-*   Optimizer cloud allocation algorithm tests
-* ============================= /Header ==============================
-*/
 package f4g.optimizer;
 
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import org.junit.Before;
+import org.junit.Test;
 
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 import f4g.commons.optimizer.OptimizationObjective;
-import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.CpuUsageType;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.IoRateType;
@@ -59,10 +48,6 @@ import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxV
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType.SLA;
 
 
-/**
- * Test singe allocation with Entropy
- *
- */
 public class OptimizerMultiClusterTest extends OptimizerTest {
 	
 	SLAGenerator slaGenerator = new SLAGenerator();
@@ -71,7 +56,8 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	/**
 	 * Construction of the test suite
 	 */
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		super.setUp();
 		
 		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
@@ -101,15 +87,6 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 	}
 
-
-	/**
-	 * Destruction
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		optimizer = null;
-	}
-	
 	protected ClusterType createMultiCluster(int NumberOfNodes, int NumberOfClusters, List<SLA> sla, List<Policy> policy) {
 		
 		List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
@@ -140,6 +117,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 	/**
 	 * Test allocation with multiple clusters
 	 */
+	@Test
 	public void testAllocationWithClusters() {
 		
 		modelGenerator.setNB_SERVERS(2);
@@ -185,10 +163,9 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 
 	/**
 	 * Test with 2 DC and 2 clusters in each DC
-	 *
-	 * @author cdupont
 	 */
-public void testPowerOnOffClusters() {
+	@Test
+	public void testPowerOnOffClusters() {
 		
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
@@ -205,9 +182,8 @@ public void testPowerOnOffClusters() {
 	
 	/**
 	 * Test with different policies on cluster & federation
-	 *
-	 * @author cdupont
 	 */
+	@Test
 	public void testPowerOnOffClustersAndFederation() {
 		
 		modelGenerator.setNB_SERVERS(2);
@@ -242,9 +218,8 @@ public void testPowerOnOffClusters() {
 	
 	/**
 	 * Test global optimization with 2 DC and migrations between allowed
-	 *
-	 * @author cdupont
 	 */
+	@Test
 	public void test2DCMigrationInter() {
 		
 		modelGenerator.setNB_SERVERS(1);
@@ -271,6 +246,7 @@ public void testPowerOnOffClusters() {
 	/**
 	 * Test global optimization based on PUE
 	 */
+	@Test
 	public void test2SitesMigrationInterPUE() {
 		
 		modelGenerator.setNB_SERVERS(1);
@@ -300,8 +276,8 @@ public void testPowerOnOffClusters() {
 	
 	/**
 	 * Test global optimization based on CUE
-	 * @author cdupont
 	 */
+	@Test
 	public void test2SitesMigrationInterCUE() {
 
 		modelGenerator.setNB_SERVERS(1);
@@ -336,8 +312,8 @@ public void testPowerOnOffClusters() {
 	
 	/**
 	 * Test global optimization based on CUE
-	 * @author cdupont
 	 */
+	@Test
 	public void test2SitesMigrationInterPUEorCUE() {
 		
 		modelGenerator.setNB_SERVERS(1);
@@ -367,11 +343,8 @@ public void testPowerOnOffClusters() {
 		assertEquals("id0", getMoves().get(0).getDestNodeController());
 		
 	}
-	
 
-	/**
-	 * 
-	 */
+	@Test
 	public void testAllocationAllOffSecondCluster() {
 
 		modelGenerator.setNB_SERVERS(2);
@@ -410,6 +383,7 @@ public void testPowerOnOffClusters() {
 	/**
 	 * Test allocation with multiple clusters
 	 */
+	@Test
 	public void testAllocationOneClusterFull() {
 
 		modelGenerator.setNB_SERVERS(2);
@@ -461,11 +435,10 @@ public void testPowerOnOffClusters() {
 			
 	}
 	
-	
-
 	/**
-	 * Test global with one cluster non repairable
+	 * Test global with one cluster non reparable
 	 */
+	@Test
 	public void testGlobalOneClusterBroken() {
 
 		modelGenerator.setNB_SERVERS(8);
@@ -565,10 +538,9 @@ public void testPowerOnOffClusters() {
 	}
 	
 	/**
-	 * Test if the framework cabability Move and Live Migrate is working
-	 * @author cdupont
+	 * Test if the framework capability Move and Live Migrate is working
 	 */
-	
+	@Test
 	public void testMoveVSLiveMigrate() {
 
 		modelGenerator.setNB_SERVERS(2);
@@ -613,6 +585,4 @@ public void testPowerOnOffClusters() {
 		assertTrue(getLiveMigrate().size()==1);
 		assertTrue(getMoves().size()==2);
 	}
-	
-	
 }

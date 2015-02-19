@@ -1,5 +1,7 @@
 package f4g.optimizer;
 
+import static org.junit.Assert.*;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,14 +24,14 @@ import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
 import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
 import f4g.schemas.java.constraints.optimizerconstraints.PeriodType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
-import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
 import f4g.schemas.java.constraints.optimizerconstraints.SpareNodes;
 import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 
-
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -43,10 +45,9 @@ public class OptimizerGlobalTest extends OptimizerTest {
 
 	/**
 	 * Construction of the optimizer
-	 *
-	 * @author cdupont
 	 */
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		super.setUp();
 
 		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
@@ -74,18 +75,6 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		//ChocoLogging.setVerbosity(Verbosity.SEARCH);
 	}
 
-
-	/**
-	 * Destruction
-	 * 
-	 * @author cdupont
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		optimizer = null;
-	}
-	
-	
 	/**
 	 * Test global optimization with one VM per servers, constraint is on CPU usage
 	 */
@@ -117,8 +106,8 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	
 	/**
 	 * Test global optimization with one VM per servers and no load
-	 *
 	 */
+    @Test
 	public void testGlobalOneVMperServerVMNoLoad() {
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -139,20 +128,17 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		assertTrue(powerOffSet.size()==9);
 	}
 
-
-
 	/**
 	 * Test global optimization with one VM per servers, constraint is on Memory
-	 * 
-	 * @author cdupont
 	 */
+    @Test
 	public void testGlobalConstraintOnMemory() {
 
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(10);
+		modelGenerator.setNB_SERVERS(4);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		modelGenerator.setCPU(1);
-		modelGenerator.setCORE(6); 
+		modelGenerator.setCORE(6);
 		modelGenerator.setRAM_SIZE(2);
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();				
 	
@@ -160,14 +146,13 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVRam().setValue(1);
 		optimizer.runGlobalOptimization(model);
         		
-		assertEquals(5, getMoves().size());	
+		assertEquals(5, getMoves().size());
 	}
 
 	/**
 	 * Test the "expected saved power" field.
-	 * 
-	 * @author cdupont
 	 */
+    @Test
 	public void testExpectedSavedPower(){
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -189,9 +174,8 @@ public class OptimizerGlobalTest extends OptimizerTest {
 
 	/**
 	 * Test global optimization with no VMs
-	 *
-	 * @author cdupont
 	 */
+    @Test
 	public void testGlobalNoVM() {
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -204,13 +188,11 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		assertEquals(0, getMoves().size());
 		assertEquals(10, getPowerOffs().size());
 	}
-
-
-
 	
 	/**
 	 * server with high power idle is switched off
-	 */ 
+	 */
+    @Test
 	public void testGlobalServerWithLowPowerIdle(){
 
 		//Create a Power Calculator that computes a more feeble power a server.
@@ -265,6 +247,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	/**
 	 * There is too few ON servers, issuing powers ON on the most energy efficient server
 	 */
+    @Test
 	public void testGlobalTooFewServers() {
 		
 		//Create a Power Calculator that computes a more feeble power a server.
@@ -303,6 +286,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	/**
 	 *
 	 */
+    @Test
 	public void testGlobalConstraintOnNbCoresCharged(){
 		
 		//generate one VM per server
@@ -357,9 +341,10 @@ public class OptimizerGlobalTest extends OptimizerTest {
 
 
 	/**
-	 * Test global with constraints not satisfied
+	 * Test global with CPU constraints not satisfied (model need to be repaired)
 	 */
-	public void testGlobalTooMuchVMs() {
+    @Ignore @Test //The new BtrPlace does not support anymore the "wrong" situations, where VMs are consuming more than 100% CPUs and must be moved.
+    public void testGlobalTooMuchVMs() {
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(3);
@@ -385,6 +370,3 @@ public class OptimizerGlobalTest extends OptimizerTest {
 			
 	}
 }
-
-
-

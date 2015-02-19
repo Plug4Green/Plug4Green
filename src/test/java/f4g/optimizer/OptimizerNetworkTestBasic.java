@@ -2,42 +2,19 @@ package f4g.optimizer;
 
 import junit.framework.TestCase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
-import f4g.commons.util.LoadCalculator;
-import f4g.optimizer.cost_estimator.NetworkCost;
-import org.jscience.physics.amount.*;
-import org.jscience.economics.money.*;
-import javax.measure.quantity.*;
-import static javax.measure.unit.SI.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.NetworkNodeType;
-import f4g.schemas.java.metamodel.NetworkPortType;
-import f4g.schemas.java.metamodel.VirtualMachineType;
-import f4g.schemas.java.metamodel.SiteType;
-import f4g.commons.optimizer.ICostEstimator;
-import f4g.commons.power.IPowerCalculator;
 import f4g.powerCalculator.power.PoweredNetworkNode;
-import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
-import f4g.schemas.java.metamodel.NetworkPortBufferSizeType;
-import f4g.schemas.java.metamodel.BitErrorRateType;
-import f4g.schemas.java.metamodel.PropagationDelayType;
 import f4g.schemas.java.metamodel.NetworkNodeStatusType;
-import f4g.schemas.java.metamodel.NetworkTrafficType;
-import f4g.schemas.java.metamodel.LinkType;
-import f4g.schemas.java.metamodel.FlowType;
 import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
-import f4g.schemas.java.metamodel.StorageUsageType;
-import f4g.schemas.java.metamodel.MainboardType;
-import f4g.schemas.java.metamodel.NICType;
 import f4g.schemas.java.metamodel.ServerStatusType;
 
 
@@ -54,7 +31,8 @@ public class OptimizerNetworkTestBasic extends TestCase {
         log = Logger.getLogger(OptimizerNetworkTestBasic.class);
     }
     
-	protected void setUp() throws Exception {
+    @Before
+	public void setUp() throws Exception {
 		super.setUp();
 
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -95,12 +73,8 @@ public class OptimizerNetworkTestBasic extends TestCase {
         ModelGenerator.connectServerToNetDevFullDuplex(allServers.get(2), allSwitches.get(2));
         ModelGenerator.connectServerToNetDevFullDuplex(allServers.get(3), allSwitches.get(2));
 	}
-    
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
         
-    
+    @Test
     public void testIds() {
 
         // Start tests
@@ -115,7 +89,8 @@ public class OptimizerNetworkTestBasic extends TestCase {
         assertEquals("id2000000",  allSwitches.get(1).getFrameworkID());     // switch1
         assertEquals("id3000000",  allSwitches.get(2).getFrameworkID());     // switch2
     }
-        
+     
+    @Before
     public void testSwitchConnections() {
 
         // verify who is connected to switch0 
@@ -146,6 +121,7 @@ public class OptimizerNetworkTestBasic extends TestCase {
          
     }
 
+    @Test
     public void testSwitchPower() {
 
         // test power
@@ -220,7 +196,6 @@ public class OptimizerNetworkTestBasic extends TestCase {
         for(int i=0; i<allSwitches.size(); ++i) 
                 allSwitches.get(i).setStatus( NetworkNodeStatusType.ON );
 	}
-    
     
 }
 

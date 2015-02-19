@@ -1,9 +1,7 @@
 package f4g.optimizer;
 
-
 import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cost_estimator.NetworkCost;
-
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.optimizer.OptimizationObjective;
@@ -17,30 +15,31 @@ import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxV
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVRAMperPhyRAM;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
 import f4g.schemas.java.metamodel.*;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+
 import java.util.*;
 
 import org.jscience.physics.amount.*;
 import org.jscience.economics.money.*;
-import javax.measure.quantity.*;
-import static javax.measure.unit.SI.*;
+import org.junit.Before;
+import org.junit.Test;
 
-/**
- * {To be completed; use html notation, if necessary}
- * 
- * 
- * @author TS
- */
+import javax.measure.quantity.*;
+
+import static javax.measure.unit.SI.*;
+import static org.junit.Assert.*;
+
+
 public class OptimizerSLATest extends OptimizerTest {
 
 	/**
 	 * Construction of the optimizer
-	 * 
-	 * @author TS
 	 */
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		super.setUp();
 		PeriodType period = new PeriodType(begin, end, null, null, new LoadType(null, null));
 		
@@ -73,20 +72,9 @@ public class OptimizerSLATest extends OptimizerTest {
 	}
 
 	/**
-	 * Destruction
-	 * 
-	 * @author TS
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		optimizer = null;
-	}
-
-	/**
 	 * Test global optimization with one VM per servers and no load
-	 * 
-	 * @author Ts
 	 */
+	@Test
 	public void testHDDGlobal() {
 		
 		modelGenerator.setNB_SERVERS(2);
@@ -105,9 +93,8 @@ public class OptimizerSLATest extends OptimizerTest {
 
 	/**
 	 * Test global optimization with one VM per servers and no load
-	 * 
-	 * @author Ts
 	 */
+	@Test
 	public void testSpareCPUs() {
 
 		modelGenerator.setNB_SERVERS(2);
@@ -142,9 +129,8 @@ public class OptimizerSLATest extends OptimizerTest {
 
 	/**
 	 * Test global optimization for Max Server CPU load (F4GCPUConstraint)
-	 * 
-	 * @author Ts
 	 */
+	@Test
 	public void testCPUGlobal() {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
@@ -163,9 +149,8 @@ public class OptimizerSLATest extends OptimizerTest {
 
 	/**
 	 * Test global optimization with one VM per servers and no load
-	 * 
-	 * @author Ts
 	 */
+	@Test
 	public void testOverbookingGlobal() {
 
 		modelGenerator.setNB_SERVERS(4);
@@ -175,7 +160,8 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setSTORAGE_SIZE(10000000);
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		// TEST 1 low overbooking factor
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(1));
 		optimizer.runGlobalOptimization(model);
 
 		assertEquals(12, getMoves().size()); // everyone on the same server
@@ -220,7 +206,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		assertEquals(4, getMoves().size()); 
 	}
 
-	
+	@Test
 	public void testMaxVMperServerGlobal() {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
@@ -233,8 +219,8 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		assertEquals(0, getMoves().size());
 	}
-
-
+	
+	@Test
 	public void testMemoryOverbookingGlobal() {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
@@ -253,9 +239,8 @@ public class OptimizerSLATest extends OptimizerTest {
 
 	/**
 	 * Test VM Payback Time
-	 * 
-	 * @author cdupont
 	 */
+	@Test
 	public void testVMPaybackTimeGlobal() {
 
 		class MyNetworkCost implements ICostEstimator {
@@ -310,11 +295,10 @@ public class OptimizerSLATest extends OptimizerTest {
 
 		assertEquals(12, getMoves().size());
 		
-
 	}
 	
 		
-	
+	@Test	
 	public void testDelayBetweenMoveGlobal() {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
@@ -341,7 +325,7 @@ public class OptimizerSLATest extends OptimizerTest {
 
 	}
 	
-	
+	@Test
 	public void testDelayBetweenOnOffGlobal() {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
@@ -503,8 +487,8 @@ public class OptimizerSLATest extends OptimizerTest {
 	/**
 	 * Test Max Power per Server constraint
 	 */
+	@Test
 	public void testMaxPowerServerGlobal() {
-		
 	
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);

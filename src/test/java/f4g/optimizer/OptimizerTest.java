@@ -1,21 +1,8 @@
-/**
-* ============================== Header ============================== 
-* file:          OptimizerTest.java
-* project:       FIT4Green/Optimizer
-* created:       10 déc. 2010 by cdupont
-* last modified: $LastChangedDate: 2012-05-01 00:59:19 +0200 (mar, 01 may 2012) $ by $LastChangedBy: f4g.cnit $
-* revision:      $LastChangedRevision: 1406 $
-* 
-* short description:
-*   Optimizer mother class for tests
-* ============================= /Header ==============================
-*/
 package f4g.optimizer;
 
-
-import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
 import f4g.commons.com.util.PowerData;
 import f4g.commons.controller.IController;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
@@ -32,9 +19,11 @@ import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType.SLA;
 import f4g.schemas.java.metamodel.*;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +32,17 @@ import java.util.concurrent.Semaphore;
 
 import org.jscience.physics.amount.*;
 import org.jscience.economics.money.*;
+import org.junit.Before;
+
 import javax.measure.quantity.*;
+
 import static javax.measure.unit.SI.*;
 
 /**
  * {To be completed; use html notation, if necessary}
  * @author  cdupont
  */
-public class OptimizerTest extends TestCase {
+public class OptimizerTest {
 
 	public Logger log;  
 	
@@ -282,8 +274,9 @@ public class OptimizerTest extends TestCase {
 	 *
 	 * @author cdupont
 	 */
+	@Before
 	protected void setUp() throws Exception {
-		super.setUp();
+
 		begin = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(2010, 1, 1, 0);
 		end = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(2020, 1, 1, 0);
 		
@@ -302,20 +295,7 @@ public class OptimizerTest extends TestCase {
 		
 		actionRequestAvailable.acquire();	    
 	}
-
-
-
-	/**
-	 * Destruction
-	 * 
-	 * @author cdupont
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
 		
-	}
-
-	
 	/**
 	 * helper function
 	 */
@@ -379,11 +359,6 @@ public class OptimizerTest extends TestCase {
 		} 		
 		
 		BoundedPoliciesType bPolicies = null;
-		if(bPolicies != null) {
-			bPolicies = new BoundedPoliciesType();
-			bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy.get(0)));	
-		}
-		
 		
 		cluster.add(new Cluster("c1", new NodeControllerType(nodeName) , bSlas, bPolicies, "id"));
 		return new ClusterType(cluster);

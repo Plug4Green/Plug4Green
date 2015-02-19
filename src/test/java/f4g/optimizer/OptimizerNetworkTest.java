@@ -1,21 +1,24 @@
 package f4g.optimizer;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.optimizer.cost_estimator.NetworkCost;
-
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.NetworkNodeType;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.PowerType;
 import f4g.schemas.java.metamodel.MemoryUsageType;
-
 import f4g.schemas.java.metamodel.CpuUsageType;
 import f4g.schemas.java.metamodel.IoRateType;
 import f4g.schemas.java.metamodel.NetworkUsageType;
@@ -38,13 +41,12 @@ import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 
 public class OptimizerNetworkTest extends OptimizerTest {
     
-//	private Logger log; 
     FIT4GreenType model;
     List<ServerType> allServers;
     List<NetworkNodeType> allSwitches;
         
-        
-	protected void setUp() throws Exception {
+    @Before
+	public void setUp() throws Exception {
 		super.setUp();
 
 		SLAGenerator slaGenerator = new SLAGenerator();
@@ -71,14 +73,7 @@ public class OptimizerNetworkTest extends OptimizerTest {
 
     }
     
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		optimizer = null;
-	}
-        
-     
-
-        
+    @Test
     public void checkNetworkConnections() {
     
         // verify who is connected to switch0 
@@ -116,18 +111,13 @@ public class OptimizerNetworkTest extends OptimizerTest {
         assertEquals("id800000", s7);        // should be connected to server3
          
     }
-
-
-    
-    
 	
 	/**
 	 * Test global optimization with router/switch turning on/off
      * Based on OptimizerGlobalTest/testGlobalConstraintOnCPUUsage
-	 * @author rlent
 	 */
-     
-	public void testGlobalConstraintOnCPUUsageWithNetwork() {
+    @Test
+    public void testGlobalConstraintOnCPUUsageWithNetwork() {
 
 		//generate one VM per server
 		//VMs ressource usage is 0
@@ -215,8 +205,7 @@ public class OptimizerNetworkTest extends OptimizerTest {
         System.out.println("Poweroffs: " + powerOffs.size());
 		
 	}
-	    
-    
+	
 }
 
 

@@ -1,28 +1,20 @@
-/**
-* ============================== Header ============================== 
-* file:          OptimizerGlobalCloudTest.java
-* project:       FIT4Green/Optimizer
-* created:       10 déc. 2010 by cdupont
-* last modified: $LastChangedDate: 2012-05-01 00:59:19 +0200 (mar, 01 may 2012) $ by $LastChangedBy: f4g.cnit $
-* revision:      $LastChangedRevision: 1406 $
-* 
-* short description:
-*   Optimizer cloud allocation algorithm tests
-* ============================= /Header ==============================
-*/
 package f4g.optimizer;
 
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
-import f4g.optimizer.Optimizer.CloudTradCS;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.ServerStatusType;
@@ -33,7 +25,6 @@ import f4g.schemas.java.allocation.CloudVmAllocationType;
 import f4g.schemas.java.allocation.AllocationRequestType;
 import f4g.schemas.java.allocation.AllocationResponseType;
 import f4g.schemas.java.allocation.ObjectFactory;
-import f4g.schemas.java.allocation.TraditionalVmAllocationResponseType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.LoadType;
 import f4g.schemas.java.constraints.optimizerconstraints.NodeControllerType;
@@ -46,16 +37,18 @@ import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
 import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
 
 /**
- * Test singe allocation with Entropy
+ * Test single allocation with Entropy
  *
  */
 public class OptimizerAllocationTest extends OptimizerTest {
 	
 	PolicyType vmMargins;
+	
 	/**
 	 * Construction of the test suite
 	 */
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		super.setUp();
 		
 		PeriodType period = new PeriodType(
@@ -75,18 +68,10 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		optimizer.setSla(SLAGenerator.createDefaultSLA());
 	}
 
-
-	/**
-	 * Destruction
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		optimizer = null;
-	}
-
 	/**
 	 * Test allocation success
 	 */
+	@Test
 	public void testAllocationSuccess() {
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");		
@@ -107,6 +92,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 *
 	 * @author cdupont
 	 */
+	@Test
 	public void testAllocationVoid() {
 
 		AllocationRequestType allocationRequestVoid = new AllocationRequestType();
@@ -122,6 +108,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 * Test allocation with many servers full load
 	 * There is no space left to allocate a new VM
 	 */
+	@Test
 	public void testAllocationManyServersFullLoad() {
 		
 		modelGenerator.setNB_SERVERS(10);
@@ -143,6 +130,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	/**
 	 * Test allocation with no servers
 	 */
+	@Test
 	public void testAllocationNoServer() {
 		FIT4GreenType model = modelGenerator.createFIT4GreenType();
 		AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
@@ -156,8 +144,8 @@ public class OptimizerAllocationTest extends OptimizerTest {
 
 	/**
 	 * Test allocation with one server and no VM
-	 *
 	 */
+	@Test
 	public void testAllocationOneServerNoVM() {
 		
 		modelGenerator.setNB_SERVERS(1);
@@ -182,6 +170,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	/**
 	 * Test allocation failure and success with respect to the constraint on CPU
 	 */
+	@Test
 	public void testAllocationCPUConstraint() {	
 		modelGenerator.setNB_SERVERS(1); 
 		modelGenerator.setNB_VIRTUAL_MACHINES(0);
@@ -211,6 +200,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	/**
 	 * Test allocation failure and success with respect to the constraint on RAM
 	 */
+	@Test
 	public void testAllocationRAMConstraint() {	
 
 		modelGenerator.setNB_SERVERS(1); 
@@ -238,6 +228,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	/**
 	 * Test the filling of all response fields
 	 */
+	@Test
 	public void testResponseFields() {
 		
 		modelGenerator.setNB_SERVERS(1);
@@ -285,6 +276,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 * Test allocation: VM should be allocated on the server with lowest energy profile
 	 * TODO: power idle doesn't have any impact on VM allocation now
 	 */
+	@Test
 	public void testAllocationPowerIdle() {
 		
 		//Create a Power Calculator that computes a more feeble power for server #2.
@@ -357,6 +349,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	/**
 	 * Test allocation: VM should be allocated on the server with lowest energy profile
 	 */
+	@Test
 	public void testAllocationPowerPerVM() {
 		
 		//Create a Power Calculator that computes a more feeble power for server #1.
@@ -442,6 +435,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	/**
 	 * 
 	 */
+	@Test
 	public void testAllocationAllOff() {
 		
 		modelGenerator.setNB_SERVERS(10);
@@ -466,6 +460,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 	 * Test allocation with constraints not satisfied
 	 * MaxVirtualCPUPerCore is not satisfied on a node -> suppress this node and hosted VMs and allocate anyway
 	 */
+	@Test @Ignore //Test ignored because BtrPlace does not accept anymore overloaded servers
 	public void testAllocationTooMuchVMs() {
 		
 		modelGenerator.setNB_SERVERS(8);

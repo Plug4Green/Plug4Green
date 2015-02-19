@@ -1,56 +1,32 @@
 package f4g.optimizer;
 
-import junit.framework.TestCase;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
-import f4g.commons.util.LoadCalculator;
-import f4g.optimizer.cost_estimator.NetworkCost;
-import org.jscience.physics.amount.*;
-import org.jscience.economics.money.*;
-import javax.measure.quantity.*;
-import static javax.measure.unit.SI.*;
+import org.junit.Before;
+import org.junit.Test;
 
+import f4g.optimizer.utils.Utils;
+import f4g.optimizer.cost_estimator.NetworkCost;
+import static javax.measure.unit.SI.*;
+import static org.junit.Assert.*;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.ServerType;
 import f4g.schemas.java.metamodel.NetworkNodeType;
-import f4g.schemas.java.metamodel.NetworkPortType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
-import f4g.schemas.java.metamodel.SiteType;
-import f4g.commons.optimizer.ICostEstimator;
-import f4g.commons.power.IPowerCalculator;
-import f4g.powerCalculator.power.PoweredNetworkNode;
-import f4g.commons.optimizer.OptimizationObjective;
-import f4g.optimizer.utils.Utils;
-import f4g.schemas.java.metamodel.NetworkPortBufferSizeType;
-import f4g.schemas.java.metamodel.BitErrorRateType;
-import f4g.schemas.java.metamodel.PropagationDelayType;
-import f4g.schemas.java.metamodel.NetworkTrafficType;
-import f4g.schemas.java.metamodel.LinkType;
-import f4g.schemas.java.metamodel.FlowType;
 import f4g.schemas.java.metamodel.PowerType;
 import f4g.schemas.java.metamodel.MemoryUsageType;
 import f4g.schemas.java.metamodel.StorageUsageType;
 
-
-
-public class NetworkCostTest extends TestCase {
+public class NetworkCostTest {
     
     NetworkCost networkCost;
     FIT4GreenType model;
     List<ServerType> allServers;
     List<NetworkNodeType> allNetdevs;
     
-    public NetworkCostTest(String name) { 
-        super(name);
-    }
     
-	protected void setUp() throws Exception {
-		super.setUp();
+    @Before
+	public void setUp() throws Exception {
         networkCost = new NetworkCost();
 
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -99,11 +75,8 @@ public class NetworkCostTest extends TestCase {
         ModelGenerator.connectNetDevsFullDuplex(allNetdevs.get(3), allNetdevs.get(4));
         
 	}
-    
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-    
+        
+    @Test
     public void testSwitchConnections() {
 
         NetworkNodeType srcNetNode = allServers.get(0).getMainboard().get(0).getEthernetNIC().get(0);
@@ -121,10 +94,8 @@ public class NetworkCostTest extends TestCase {
         assertEquals( allServers.get(0).getFrameworkID(), srcNetNode.getFrameworkID() );
         assertEquals( allServers.get(1).getFrameworkID(), dstNetNode.getFrameworkID() );
     }
-
     
-    
-    
+    @Test
     public void testMoveCost() {
 
         NetworkNodeType srcServer = allServers.get(0).getMainboard().get(0).getEthernetNIC().get(0);
@@ -137,7 +108,7 @@ public class NetworkCostTest extends TestCase {
         vm.setActualStorageUsage( new StorageUsageType(0.0) );
         vm.setActualMemoryUsage( new MemoryUsageType(0.0) );
         energycost = networkCost.moveEnergyCost(srcServer, dstServer, vm, model).doubleValue(JOULE);
-        assertEquals(0.0 ,  energycost);
+        assertEquals(0.0 ,  energycost, 0.1);
 
         // 2
         vm.setActualStorageUsage( new StorageUsageType(45.0) );

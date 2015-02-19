@@ -1,7 +1,12 @@
 package f4g.optimizer;
 
+import static org.junit.Assert.*;
+
 import java.util.LinkedList;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.utils.Utils;
@@ -19,22 +24,14 @@ import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 
 
-/**
- * {To be completed; use html notation, if necessary}
- * 
- *
- * @author cdupont
- */
 public class OptimizerModelConstraintTest extends OptimizerTest {
 
 	/**
 	 * Construction of the optimizer
-	 *
-	 * @author cdupont
 	 */
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		super.setUp();
-
 		
 		SLAGenerator slaGenerator = new SLAGenerator();
 		
@@ -53,25 +50,14 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		
 		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
 				        slaGenerator.createVirtualMachineType(), vmMargins, makeSimpleFed(vmMargins, null));
-	    
 				
 	}
 
 
 	/**
-	 * Destruction
-	 * 
-	 * @author cdupont
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		optimizer = null;
-	}
-	
-
-	/**
 	 * cloud controllers doesn't host VMs
 	 */
+	@Test
 	public void testNoMovesForController() {
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -105,9 +91,9 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 	
 	
 	/**
-	 * Test if the framework cabability ispoweron/ispoweroff  is working
+	 * Test if the framework capability ispoweron/ispoweroff  is working
 	 */
-	
+	@Test
 	public void testOnOffCapability() {
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -136,14 +122,13 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		optimizer.runGlobalOptimization(model);
 		
 		assertEquals(0, getPowerOns().size());
-	
-		
 	}
 	
 	
 	/**
 	 * There is too few ON servers, issuing powers ON
 	 */
+	@Test
 	public void testGlobalPoweringOnPoweringOff() {
 		
 		//generate one VM per server

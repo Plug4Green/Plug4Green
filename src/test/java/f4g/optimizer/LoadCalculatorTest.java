@@ -1,28 +1,16 @@
 package f4g.optimizer;
 
+import org.junit.Test;
+
 import junit.framework.TestCase;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 import f4g.schemas.java.metamodel.CPUType;
 import f4g.schemas.java.metamodel.CoreType;
 import f4g.schemas.java.metamodel.MainboardType;
-import f4g.schemas.java.metamodel.PSUType;
-import f4g.schemas.java.metamodel.RackableServerType;
 import f4g.schemas.java.metamodel.ServerType;
-import f4g.schemas.java.metamodel.TowerServerType;
 import f4g.schemas.java.metamodel.CpuUsageType;
 import f4g.schemas.java.metamodel.CoreLoadType;
-import f4g.schemas.java.metamodel.PowerType;
-import f4g.schemas.java.metamodel.PSULoadType;
-import f4g.schemas.java.metamodel.MemoryUsageType;
 import f4g.schemas.java.metamodel.VirtualMachineType;
 import f4g.schemas.java.metamodel.NrOfCpusType;
-
 import f4g.commons.util.LoadCalculator;
 
 
@@ -46,7 +34,7 @@ public class LoadCalculatorTest extends TestCase {
 		super.tearDown();
 	}
     
-    
+    @Test
     public void testVMLoad() {
         
         
@@ -117,8 +105,7 @@ public class LoadCalculatorTest extends TestCase {
        
         // Test VM with multiple CPU
         
-	}
-    
+	}   
     
 }
 
