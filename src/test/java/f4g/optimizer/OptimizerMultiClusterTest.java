@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import f4g.optimizer.cost_estimator.NetworkCost;
@@ -48,6 +49,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxV
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType.SLA;
 
 
+@Ignore //no clustering now
 public class OptimizerMultiClusterTest extends OptimizerTest {
 	
 	SLAGenerator slaGenerator = new SLAGenerator();
