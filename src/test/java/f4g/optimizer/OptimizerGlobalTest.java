@@ -151,7 +151,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	public void testExpectedSavedPower(){
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
-		modelGenerator.setNB_SERVERS(20);
+		modelGenerator.setNB_SERVERS(10);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
 		modelGenerator.setCPU(1);
 		modelGenerator.setCORE(4); //4 cores
@@ -161,8 +161,8 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.runGlobalOptimization(model);
 			  
 		log.debug("ExpectedPowerSaving = " + (actionRequest.getComputedPowerAfter().getValue() - actionRequest.getComputedPowerBefore().getValue()));
-		//17 servers off, should result in 17 * 10.0 units of power saved
-		assertEquals(-17 * 10.0, actionRequest.getComputedPowerAfter().getValue() - actionRequest.getComputedPowerBefore().getValue(), 0.1);
+		//8 servers off, should result in 8 * 10.0 units of power saved
+		assertEquals(-8 * 10.0, actionRequest.getComputedPowerAfter().getValue() - actionRequest.getComputedPowerBefore().getValue(), 0.1);
 
 	}
 
