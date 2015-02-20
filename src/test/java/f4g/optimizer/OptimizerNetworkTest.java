@@ -73,7 +73,6 @@ public class OptimizerNetworkTest extends OptimizerTest {
 
     }
     
-    @Test
     public void checkNetworkConnections() {
     
         // verify who is connected to switch0 
