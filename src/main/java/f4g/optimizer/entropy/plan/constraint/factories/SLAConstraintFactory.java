@@ -1,25 +1,13 @@
-/**
- * ============================== Header ============================== 
- * file:          SLAConstraintFactory.java
- * project:       FIT4Green/Optimizer
- * created:       09.10.2011 by ts
- * last modified: $LastChangedDate: 2010-11-26 11:33:26 +0100 (Fr, 26 Nov 2010) $ by $LastChangedBy: corentin.dupont@create-net.org $
- * revision:      $LastChangedRevision: 150 $
- * 
- * short description:
- *   {To be completed}
- * ============================= /Header ==============================
- */
 package f4g.optimizer.entropy.plan.constraint.factories;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-
 import org.btrplace.model.constraint.Fence;
 import org.btrplace.model.constraint.Lonely;
 import org.btrplace.model.constraint.SatConstraint;
@@ -27,6 +15,7 @@ import org.btrplace.model.Mapping;
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
 import org.btrplace.model.VM;
+import org.btrplace.model.constraint.ResourceCapacity;
 import org.btrplace.model.constraint.Overbook;
 
 import f4g.optimizer.OptimizerEngine;
@@ -49,14 +38,6 @@ import f4g.schemas.java.metamodel.FIT4GreenType;
 import f4g.schemas.java.metamodel.FrequencyType;
 import f4g.schemas.java.metamodel.ServerType;
 
-
-
-/**
- * {To be completed; use html notation, if necessary}
- * 
- * 
- * @author ts
- */
 public class SLAConstraintFactory  extends ConstraintFactory {
 
 	private FIT4GreenType F4GModel;
@@ -196,13 +177,17 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 //			}
 //		}
 		
-//		// Max Server CPU Load			
-//		if (type.getMaxServerCPULoad() != null && type.getMaxServerCPULoad().getValue() != 0) {
-//			if (type.getMaxServerCPULoad().getPriority() >= minPriority) {
-//				v.add(new F4GCPUConstraint(nodes, (double) type.getMaxServerCPULoad().getValue()));
-//			}
-//		}
-//		
+		// Max Server CPU Load			
+		if (type.getMaxServerCPULoad() != null && type.getMaxServerCPULoad().getValue() != 0) {
+			if (type.getMaxServerCPULoad().getPriority() >= minPriority) {
+				for(Node n : nodes) {
+					//Todo multiply by number of cores
+					v.add(new ResourceCapacity(n, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, (int)type.getMaxServerCPULoad().getValue()));
+				}
+				
+			}
+		}
+		
 //		// Memory Overbooking on Server Level
 //		if (type.getMaxVRAMperPhyRAM() != null && type.getMaxVRAMperPhyRAM().getValue() != 0) {
 //			if (type.getMaxVRAMperPhyRAM().getPriority() >= minPriority) {

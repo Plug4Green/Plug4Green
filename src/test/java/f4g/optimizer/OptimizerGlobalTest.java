@@ -145,7 +145,8 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
 		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVRam().setValue(1);
 		optimizer.runGlobalOptimization(model);
-        		
+
+		//Servers offers 2 RAM units, VMs consumes 1
 		assertEquals(5, getMoves().size());
 	}
 

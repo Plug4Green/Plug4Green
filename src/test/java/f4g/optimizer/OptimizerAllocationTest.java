@@ -481,7 +481,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		((CloudVmAllocationType)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
 	
 		
-		//8 VMS -> full serverss		
+		//8 VMS -> full servers	
 		model = modelGenerator.createPopulatedFIT4GreenType();
 		
 		//clearing space on c2
