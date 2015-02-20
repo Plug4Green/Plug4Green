@@ -129,7 +129,7 @@ public class OptimizerSLATest extends OptimizerTest {
 	}
 
 	/**
-	 * Test global optimization for Max Server CPU load (F4GCPUConstraint)
+	 * Test global optimization for Max Server CPU load
 	 */
 	@Test  
 	public void testCPUGlobal() {

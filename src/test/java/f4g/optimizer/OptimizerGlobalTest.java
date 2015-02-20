@@ -35,12 +35,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 
-/**
- * {To be completed; use html notation, if necessary}
- * 
- *
- * @author cdupont
- */
 public class OptimizerGlobalTest extends OptimizerTest {
 
 	/**
@@ -115,17 +109,17 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);				
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();				
 	
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(1));
 		optimizer.runGlobalOptimization(model);
 				
-		assertEquals(5, getMoves().size());
-		assertEquals(5, getPowerOffs().size());
+		assertEquals(4, getMoves().size());
+		assertEquals(4, getPowerOffs().size());
 
 		//no duplicate moves or power offs should be found
 		Set<MoveVMActionType> moveSet = new HashSet<MoveVMActionType>(getMoves());
 		Set<PowerOffActionType> powerOffSet = new HashSet<PowerOffActionType>(getPowerOffs()); 
-		assertTrue(moveSet.size()==9);
-		assertTrue(powerOffSet.size()==9);
+		assertTrue(moveSet.size()==4);
+		assertTrue(powerOffSet.size()==4);
 	}
 
 	/**
@@ -142,12 +136,12 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setRAM_SIZE(2);
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();				
 	
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(0));
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(10));
 		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVRam().setValue(1);
 		optimizer.runGlobalOptimization(model);
 
 		//Servers offers 2 RAM units, VMs consumes 1
-		assertEquals(5, getMoves().size());
+		assertEquals(2, getMoves().size());
 	}
 
 	/**
@@ -291,7 +285,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	public void testGlobalConstraintOnNbCoresCharged(){
 		
 		//generate one VM per server
-		//VMs ressource usage is 0
+		//VMs resource usage is 0
 		ModelGenerator modelGenerator = new ModelGenerator();
 		modelGenerator.setNB_SERVERS(8);
 		modelGenerator.setNB_VIRTUAL_MACHINES(4);
@@ -302,7 +296,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		RackableServerType S1 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1);
 		VirtualMachineType VM1 = S1.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().get(0);
 		
-		//nulify non used values (should work without)
+		//Nullify non used values (should work without)
 		VM1.setNumberOfCPUs(null);
 		VM1.setActualCPUUsage(null);
 		VM1.setActualDiskIORate(null);
