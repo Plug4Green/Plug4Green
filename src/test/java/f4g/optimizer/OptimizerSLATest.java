@@ -161,13 +161,14 @@ public class OptimizerSLATest extends OptimizerTest {
 		modelGenerator.setSTORAGE_SIZE(10000000);
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 
-		// TEST 1 low overbooking factor
+		// TEST 1 low VM consumption
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(1));
 		optimizer.runGlobalOptimization(model);
 
 		assertEquals(12, getMoves().size()); // everyone on the same server
 
 		// TEST 2 with overbooking setting = 1
+		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(100));
 		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
 		
 		optimizer.runGlobalOptimization(model);
