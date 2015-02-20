@@ -25,6 +25,7 @@ import java.util.*;
 import org.jscience.physics.amount.*;
 import org.jscience.economics.money.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.measure.quantity.*;
@@ -130,7 +131,7 @@ public class OptimizerSLATest extends OptimizerTest {
 	/**
 	 * Test global optimization for Max Server CPU load (F4GCPUConstraint)
 	 */
-	@Test
+	@Test  
 	public void testCPUGlobal() {
 		modelGenerator.setNB_SERVERS(2);
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);
@@ -138,7 +139,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType();
 		
 		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsageType(50));
-		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxServerCPULoad(new MaxServerCPULoad(0.6, 1));
+		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxServerCPULoad(new MaxServerCPULoad(50, 1));
 
 		optimizer.runGlobalOptimization(model);
 
