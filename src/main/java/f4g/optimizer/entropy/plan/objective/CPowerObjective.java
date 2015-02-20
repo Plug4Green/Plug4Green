@@ -14,7 +14,6 @@ import org.btrplace.scheduler.choco.constraint.ChocoConstraintBuilder;
 import org.btrplace.scheduler.choco.transition.TransitionUtils;
 import org.btrplace.scheduler.choco.transition.VMTransition;
 import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.constraints.IntConstraintFactory;
 import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
 import org.chocosolver.solver.search.strategy.selectors.variables.InputOrder;
 import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
@@ -186,10 +185,10 @@ public class CPowerObjective implements CObjective {
     	BoolVar moves[] = new BoolVar[rp.getVMs().length];
         int i = 0;
         for (VM vm : rp.getVMs()) {        	
-          	//A boolean variable to indicate whether the node is used or not
+          	//A boolean variable to indicate whether the VM moves
             moves[i] = VF.bool("moves(" + vm.id() + ")", solver);
             IntVar hoster = rp.getVMAction(vm).getDSlice().getHoster();
-            moves[i] = ICF.arithm(hoster, "=", rp.getCurrentVMLocation(i)).reif();
+            moves[i] = ICF.arithm(hoster, "!=", rp.getCurrentVMLocation(i)).reif();
             i++;
         }
         return moves;
