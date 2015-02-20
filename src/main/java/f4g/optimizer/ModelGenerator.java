@@ -125,7 +125,7 @@ public class ModelGenerator {
     public static BandwidthType defaultSwitchProcessingBandwidth = new BandwidthType(1000000000);
     
 
-    public String schema_location =  "../Schemas/src/main/schema/MetaModel.xsd";
+    public String schema_location =  "src/main/resources/schemas/MetaModel.xsd";
 
 	public ModelGenerator() {
 		
