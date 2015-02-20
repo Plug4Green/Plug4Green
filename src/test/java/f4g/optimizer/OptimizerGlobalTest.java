@@ -168,7 +168,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 			  
 		log.debug("ExpectedPowerSaving = " + (actionRequest.getComputedPowerAfter().getValue() - actionRequest.getComputedPowerBefore().getValue()));
 		//17 servers off, should result in 17 * 10.0 units of power saved
-		assertEquals(-17 * 10.0, actionRequest.getComputedPowerAfter().getValue() - actionRequest.getComputedPowerBefore().getValue());
+		assertEquals(-17 * 10.0, actionRequest.getComputedPowerAfter().getValue() - actionRequest.getComputedPowerBefore().getValue(), 0.1);
 
 	}
 
