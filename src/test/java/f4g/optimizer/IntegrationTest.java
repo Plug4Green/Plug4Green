@@ -243,106 +243,6 @@ public class IntegrationTest extends OptimizerTest {
 
     }
 
-
-    /**
-     * Test allocation with constraints not satisfied
-     */
-    @Test
-    public void testconstraintnotsatisfied() {
-        modelGenerator.setNB_SERVERS(4);
-        modelGenerator.setNB_VIRTUAL_MACHINES(1);
-        modelGenerator.setCPU(8);
-        modelGenerator.setCORE(1);
-        modelGenerator.setRAM_SIZE(24);
-
-        FIT4GreenType model = modelGenerator.createPopulatedFIT4GreenType2Sites();
-
-
-        VMTypeType VMs = new VMTypeType();
-
-        VMTypeType.VMType type1 = new VMTypeType.VMType();
-        type1.setName("m1.small");
-        type1.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-        type1.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(50), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-        VMs.getVMType().add(type1);
-        VMTypeType.VMType type2 = new VMTypeType.VMType();
-        type2.setName("m1.medium");
-        type2.setCapacity(new CapacityType(new NrOfCpusType(1), new RAMSizeType(1), new StorageCapacityType(1)));
-        type2.setExpectedLoad(new ExpectedLoadType(new CpuUsageType(50), new MemoryUsageType(0), new IoRateType(0), new NetworkUsageType(0)));
-        VMs.getVMType().add(type2);
-
-        SLAType slas = new SLAType();
-
-        QoSConstraintsType qos = new QoSConstraintsType();
-        MaxVirtualCPUPerCore mvCPU = new MaxVirtualCPUPerCore();
-        qos.setMaxVirtualCPUPerCore(mvCPU);
-        qos.getMaxVirtualCPUPerCore().setValue((float) 1.0);
-
-        SLAType.SLA sla = new SLAType.SLA();
-        slas.getSLA().add(sla);
-        sla.setQoSConstraints(qos);
-        BoundedSLAsType bSlas = new BoundedSLAsType();
-        bSlas.getSLA().add(new BoundedSLAsType.SLA(sla));
-
-        PolicyType.Policy policy = new PolicyType.Policy();
-
-        BoundedPoliciesType bPolicies = new BoundedPoliciesType();
-        bPolicies.getPolicy().add(new BoundedPoliciesType.Policy(policy));
-
-        List<String> nodeName = new ArrayList<String>();
-        nodeName.add("id0");
-        nodeName.add("id100000");
-        nodeName.add("id200000");
-        nodeName.add("id300000");
-        List<Cluster> cluster = new ArrayList<ClusterType.Cluster>();
-        cluster.add(new Cluster("c1", new NodeControllerType(nodeName), bSlas, bPolicies, "idc1"));
-        nodeName = new ArrayList<String>();
-        nodeName.add("id1000000");
-        nodeName.add("id1100000");
-        nodeName.add("id1200000");
-        nodeName.add("id1300000");
-        cluster.add(new Cluster("c2", new NodeControllerType(nodeName), bSlas, bPolicies, "idc2"));
-        ClusterType clusters = new ClusterType(cluster);
-
-
-        FederationType fed = new FederationType();
-
-        BoundedClustersType bcls = new BoundedClustersType();
-        for (Cluster cl : clusters.getCluster()) {
-            BoundedClustersType.Cluster bcl = new BoundedClustersType.Cluster();
-            bcl.setIdref(cl);
-            bcls.getCluster().add(bcl);
-        }
-
-        fed.setBoundedCluster(bcls);
-
-        //Create a new optimizer with the special power calculator
-        OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new PowerCalculator(), new NetworkCost(),
-                VMs, vmMargins, fed);
-
-        MyOptimizer.setClusters(clusters);
-
-        //TEST 1
-
-        AllocationRequestType allocationRequest = createAllocationRequestCloud("m1.small");
-        ((CloudVmAllocationType) allocationRequest.getRequest().getValue()).getClusterId().clear();
-        ((CloudVmAllocationType) allocationRequest.getRequest().getValue()).getClusterId().add("c1");
-
-        //clearing VMs
-        List<ServerType> servers = Utils.getAllServers(model);
-        for (int i = 1; i < 8; i++) {
-            servers.get(i).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
-        }
-
-        AllocationResponseType response = MyOptimizer.allocateResource(allocationRequest, model);
-
-        assertNotNull(response);
-        assertNotNull(response.getResponse());
-        assertTrue(response.getResponse().getValue() instanceof CloudVmAllocationResponseType);
-
-    }
-
-
     /**
      * Test allocation & global with HP SLA
      */
@@ -350,7 +250,7 @@ public class IntegrationTest extends OptimizerTest {
     public void testHPSLA() {
 
         String sep = System.getProperty("file.separator");
-        FIT4GreenType model = modelGenerator.getModel("resources" + sep + "unittest_f4gmodel_instance_ComHP_federated.xml");
+        FIT4GreenType model = modelGenerator.getModel("src/main/resources/optimizer" + sep + "unittest_f4gmodel_instance_ComHP_federated.xml");
 
         try {
             Date date = new Date();
