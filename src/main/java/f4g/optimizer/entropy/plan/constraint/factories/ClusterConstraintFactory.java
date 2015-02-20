@@ -1,15 +1,3 @@
-/**
- * ============================== Header ============================== 
- * file:          SLAConstraintFactory.java
- * project:       FIT4Green/Optimizer
- * created:       09.10.2011 by ts
- * last modified: $LastChangedDate: 2010-11-26 11:33:26 +0100 (Fr, 26 Nov 2010) $ by $LastChangedBy: corentin.dupont@create-net.org $
- * revision:      $LastChangedRevision: 150 $
- * 
- * short description:
- *   {To be completed}
- * ============================= /Header ==============================
- */
 package f4g.optimizer.entropy.plan.constraint.factories;
 
 import java.util.ArrayList;
@@ -33,8 +21,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.metamodel.FIT4GreenType;
 
 /**
- * A Class containing everything relevant to cluster constraints
- * 
+ * Class containing everything relevant to cluster constraints
  */
 public class ClusterConstraintFactory extends ConstraintFactory {
 	
