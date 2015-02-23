@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <!-- The Basics -->
   <groupId>f4g</groupId>
   <artifactId>Plug4Green</artifactId>
   <version>1.0</version>
@@ -41,6 +40,12 @@
       <type>jar</type>
     </dependency>
     <dependency>
+      <groupId>uk.com.robust-it</groupId>
+      <artifactId>cloning</artifactId>
+      <version>1.7.4</version>
+      <type>jar</type>
+    </dependency>   
+    <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <version>1.5.3</version>
@@ -62,12 +67,6 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>16.0.1</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>uk.com.robust-it</groupId>
-      <artifactId>cloning</artifactId>
-      <version>1.7.4</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -101,13 +100,6 @@
       <classifier>jdk15</classifier>
     </dependency>
   </dependencies>
-  <distributionManagement>
-    <repository>
-      <id>grails</id>
-      <name>grails-releases</name>
-      <url>http://repo.grails.org/grails/ext-releases-local</url>
-    </repository>
-  </distributionManagement>
   <!-- Build Settings -->
   <build>
     <resources>
@@ -117,13 +109,11 @@
       <resource>
         <directory>${basedir}/src/main/config</directory>
       </resource>
-      
     </resources>
     <extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ssh-external</artifactId>
-        <!--It enables Maven to deploy artifacts and sites to SSH servers-->
         <version>2.4</version>
       </extension>
     </extensions>
@@ -170,7 +160,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <!--The Compiler Plugin is used to compile the sources of your project-->
         <version>3.1</version>
         <configuration>
           <source>1.8</source>
@@ -187,11 +176,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <!-- This plugin is used to release a project with Maven-->
         <version>2.3.2</version>
         <configuration>
           <tagNameFormat>@{project.groupId}-@{project.artifactId}-@{project.version}</tagNameFormat>
-          <!-- release.sh will perform the pushes -->
           <pushChanges>false</pushChanges>
           <localCheckout>true</localCheckout>
         </configuration>
@@ -208,7 +195,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <!-- runs the unit tests of an application -->
         <version>2.14.1</version>
         <configuration>
           <includes>
@@ -219,7 +205,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <!--run integration tests while the Surefire Plugins is designed to run unit tests-->
         <version>2.14.1</version>
         <executions>
           <execution>
@@ -260,38 +245,7 @@
   <!-- More Project Information -->
   <name>Plug4Green</name>
   <description>Plug4Green plug-in is an application that focuses on saving energy in Data Centres </description>
-  <url>https://github.com/fit4green/Plug4Green</url>
-  <inceptionYear>2013</inceptionYear>
-  <developers>
-    <developer>
-      <name>Corentin Dupont</name>
-      <email>cdupont@create-net.org</email>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>Italy/Trento</timezone>
-    </developer>
-  </developers>
-  <contributors>
-    <contributor>
-      <name>Gregoire Porteu</name>
-      <email>porteu.gregoire@gmail.com</email>
-      <roles>
-        <role>repackaging the project ant to maven</role>
-      </roles>
-      <timezone>France</timezone>
-    </contributor>
-  </contributors>
-  <!-- Environment Settings -->
-  <scm>
-    <connection>scm:svn:https://github.com/fit4green/FIT4Green</connection>
-    <developerConnection>scm:svn:https://github.com/fit4green/FIT4Green</developerConnection>
-    <tag>HEAD</tag>
-    <url>https://github.com/fit4green/FIT4Green</url>
-  </scm>
-  <prerequisites>
-    <maven>3.0.5</maven>
-  </prerequisites>
+  <url>https://github.com/Plug4Green/Plug4Green</url>
   <repositories>
     <repository>
       <id>central</id>
@@ -302,26 +256,5 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <repository>
-      <id>choco.repos</id>
-      <url>http://www.emn.fr/z-info/choco-repo/mvn/repository/</url>
-    </repository>
-    <!--repository>
-      <id>btrp-releases</id>
-      <url>http://btrp.inria.fr/repos/releases</url>
-    </repository>
-    <repository>
-      <id>btrp-snapshots</id>
-      <url>http://btrp.inria.fr/repos/snapshot-releases</url>
-    </repository-->
-    <repository>
-      <id>xom</id>
-      <url>http://maven.repository.redhat.com/techpreview/eap6/6.0.0/maven-repository/xom/xom/1.2.7-redhat-1/</url>
-    </repository>
-      <repository>
-          <id>sonatype-snapshots</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-          <layout>default</layout>
-      </repository>
   </repositories>
 </project>
