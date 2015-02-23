@@ -171,7 +171,6 @@ public class F4GConfigurationAdapter
 		
 	}
 
-
 	private void putVMMemoryConsumption(final VM vm, final VirtualMachine F4GVM, ShareableResource s) {
 		
 		VMFlavorType.VMFlavor SLA_VM = null;
@@ -196,7 +195,6 @@ public class F4GConfigurationAdapter
 	}
 
 	private void putServerMemoryResource(final Node n, final Server server, ShareableResource s) {
-
 	     s.setCapacity(n, (int) Utils.getMemory(server) * 1024);		
 	}
 	

@@ -36,6 +36,7 @@ import f4g.schemas.java.metamodel.Power;
 import f4g.schemas.java.metamodel.MemoryUsage;
 import f4g.schemas.java.metamodel.StorageUsage;
 
+
 public class NetworkCostTest {
     
     NetworkCost networkCost;

@@ -140,7 +140,6 @@ public class OptimizerSLATest extends OptimizerTest {
 		
 		optimizer.getVmTypes().getVMFlavor().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(50));
 		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxServerCPULoad(new MaxServerCPULoad(50, 1));
-
 		optimizer.runGlobalOptimization(model);
 
 		assertEquals(0, getMoves().size());

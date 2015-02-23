@@ -244,7 +244,6 @@ public class IntegrationTest extends OptimizerTest {
         optimizer.runGlobalOptimization(model);
       
         // going to the low power server
-
         assertEquals("id100000", getMoves().get(0).getDestNodeController());
     }
 
