@@ -285,7 +285,7 @@ public class PowerCalculatorTraverser {
 		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.E80211XType)
 		 */
 		@Override
-		public void visit(E80211XType aBean) {
+		public void visit(E80211X aBean) {
 			setPower(0.0);
 			
 		}
@@ -749,7 +749,7 @@ public class PowerCalculatorTraverser {
 		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.Bandwidth)
 		 */
 		@Override
-		public void visit(Bandwidth aBean) {
+		public void visit(f4g.schemas.java.metamodel.Bandwidth aBean) {
 			setPower(0.0);
 			
 		}
@@ -1103,7 +1103,7 @@ public class PowerCalculatorTraverser {
 		 * @see org.f4g.schema.metamodel.Visitor#visit(org.f4g.schema.metamodel.RAIDLevel)
 		 */
 		@Override
-		public void visit(RAIDLevel aBean) {
+		public void visit(f4g.schemas.java.metamodel.RAIDLevel aBean) {
 			setPower(0.0);
 			
 		}

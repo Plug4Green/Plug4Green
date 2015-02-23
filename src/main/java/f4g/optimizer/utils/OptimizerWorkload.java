@@ -94,7 +94,7 @@ public class OptimizerWorkload extends VirtualMachine implements Cloneable, Copy
 	    actualNetworkUsage = VM.getActualNetworkUsage();
 	    hostedOperatingSystem = VM.getHostedOperatingSystem();
 	    cloudVmImage = VM.getCloudVmImage();
-	    cloudVm = VM.getCloudVmType();
+	    cloudVm = VM.getCloudVm();
 	   
 	}
 	
