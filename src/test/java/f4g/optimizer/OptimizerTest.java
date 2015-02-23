@@ -319,12 +319,12 @@ public class OptimizerTest extends TestCase {
 	/**
 	 * helper function
 	 */
-	protected AllocationRequest createAllocationRequestCloud(String VMType) {
+	protected AllocationRequest createAllocationRequestCloud(String VMFlavor) {
 		
 		AllocationRequest request = new AllocationRequest();
 		
 		CloudVmAllocation alloc = new CloudVmAllocation();
-		alloc.setVm(VMType);
+		alloc.setVm(VMFlavor);
 		alloc.setImageId("");
 		alloc.getClusterId().add("c1");
 		

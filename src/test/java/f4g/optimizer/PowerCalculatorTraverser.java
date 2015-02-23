@@ -122,8 +122,8 @@ import f4g.schemas.java.constraints.optimizerconstraints.SpareNodes;
 import f4g.schemas.java.constraints.optimizerconstraints.Split;
 import f4g.schemas.java.constraints.optimizerconstraints.Spread;
 import f4g.schemas.java.constraints.optimizerconstraints.VMGroup;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType.VMType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType.VMFlavor;
 import f4g.schemas.java.constraints.placement.DC;
 import f4g.schemas.java.constraints.placement.FIT4GreenConstraint;
 import f4g.schemas.java.constraints.placement.OneOf;
@@ -2196,19 +2196,19 @@ public class PowerCalculatorTraverser {
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.VMTypeType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType)
 		 */
 		@Override
-		public void visit(VMTypeType aBean) {
+		public void visit(VMFlavorType aBean) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.VMTypeType.VMType)
+		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType.VMFlavor)
 		 */
 		@Override
-		public void visit(VMType aBean) {
+		public void visit(VMFlavor aBean) {
 			// TODO Auto-generated method stub
 			
 		}

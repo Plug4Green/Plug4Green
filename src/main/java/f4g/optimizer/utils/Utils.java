@@ -27,15 +27,15 @@ import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
 import f4g.optimizer.utils.OptimizerBladeServer;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.metamodel.*;
 import f4g.commons.util.Util;
+
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathNotFoundException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-
 import org.btrplace.model.Node;
 
 import com.google.common.base.Optional;
@@ -309,7 +309,7 @@ public class Utils {
 	 * @param vms 
 	 * 
 	 */
-	public static ArrayList<IOptimizerServer> getAllOptimizerServersCloud(Datacenter datacenter, VMTypeType vms) {
+	public static ArrayList<IOptimizerServer> getAllOptimizerServersCloud(Datacenter datacenter, VMFlavorType vms) {
 		ArrayList<IOptimizerServer> servers = new ArrayList<IOptimizerServer>();
 
 		//creating optimizer servers from towers, rackables and blades

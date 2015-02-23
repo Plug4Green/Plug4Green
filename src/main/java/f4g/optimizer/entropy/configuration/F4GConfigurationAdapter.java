@@ -5,19 +5,19 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
-
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
 import org.btrplace.model.VM;
 import org.btrplace.model.view.ShareableResource;
+
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.plan.objective.PowerView;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.allocation.CloudVmAllocation;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType.VMType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType.VMFlavor;
 import f4g.schemas.java.metamodel.Core;
 import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.metamodel.ServerStatus;
@@ -42,7 +42,7 @@ public class F4GConfigurationAdapter
 	public static final String SHAREABLE_RESOURCE_RAM = "ShareableResourceRAM";
 	
 	FIT4Green currentFit4Green;
-	VMTypeType currentVMType;
+	VMFlavorType currentVMFlavor;
 		
 	private Logger log;
 	private OptimizationObjective optiObjective;
@@ -58,9 +58,9 @@ public class F4GConfigurationAdapter
 		this.currentFit4Green = currentFIT4Green;
 	}
 
-	public F4GConfigurationAdapter(FIT4Green f4g, VMTypeType vm, IPowerCalculator powerCalculator, OptimizationObjective optiObjective) {
+	public F4GConfigurationAdapter(FIT4Green f4g, VMFlavorType vm, IPowerCalculator powerCalculator, OptimizationObjective optiObjective) {
 		currentFit4Green = f4g;
-		currentVMType = vm;
+		currentVMFlavor = vm;
 		this.powerCalculator = powerCalculator;
 		powerCalculation = new StaticPowerCalculation(null);
 		this.optiObjective = optiObjective;
@@ -127,7 +127,7 @@ public class F4GConfigurationAdapter
 	private void putVMCPUConsumption(VM vm, CloudVmAllocation request, ShareableResource s) {
 		
 		try {
-			VMTypeType.VMType SLA_VM = Util.findVMByName(request.getVm(), currentVMType);
+			VMFlavorType.VMFlavor SLA_VM = Util.findVMByName(request.getVm(), currentVMFlavor);
 			s.setConsumption(vm, SLA_VM.getCapacity().getVCpus().getValue());
 		} catch (NoSuchElementException e1) {
 			log.error("VM name " + request.getVm() + " could not be found in SLA");
@@ -137,7 +137,7 @@ public class F4GConfigurationAdapter
 	private void putVMMemoryConsumption(VM vm, CloudVmAllocation request, ShareableResource s) {
 		
 		try {
-			VMTypeType.VMType SLA_VM = Util.findVMByName(request.getVm(), currentVMType);
+			VMFlavorType.VMFlavor SLA_VM = Util.findVMByName(request.getVm(), currentVMFlavor);
 			s.setConsumption(vm, (int) SLA_VM.getCapacity().getVRam().getValue() * 1024);
 		} catch (NoSuchElementException e1) {
 			log.error("VM name " + request.getVm() + " could not be found in SLA");
@@ -146,9 +146,9 @@ public class F4GConfigurationAdapter
 	
 	private void putVMCPUConsumption(VM vm, VirtualMachine F4GVM, ShareableResource s) {
 		
-		VMTypeType.VMType SLA_VM = null;
+		VMFlavorType.VMFlavor SLA_VM = null;
 		if(F4GVM.getCloudVm() != null) {
-			SLA_VM = Util.findVMByName(F4GVM.getCloudVm(), currentVMType);	
+			SLA_VM = Util.findVMByName(F4GVM.getCloudVm(), currentVMFlavor);	
 		}
 					
 		//If the measured values are present in the VM, we take these.
@@ -173,9 +173,9 @@ public class F4GConfigurationAdapter
 
 	private void putVMMemoryConsumption(VM vm, VirtualMachine F4GVM, ShareableResource s) {
 		
-		VMTypeType.VMType SLA_VM = null;
+		VMFlavorType.VMFlavor SLA_VM = null;
 		if(F4GVM.getCloudVm() != null) {
-			SLA_VM = Util.findVMByName(F4GVM.getCloudVm(), currentVMType);	
+			SLA_VM = Util.findVMByName(F4GVM.getCloudVm(), currentVMFlavor);	
 		}
 		
 		if(F4GVM.getActualMemoryUsage() != null) {
@@ -224,9 +224,9 @@ public class F4GConfigurationAdapter
 //			System.exit(-1);
 //		}
 //		
-//		VMTypeType.VMType SLA_VM = null;
+//		VMFlavorType.VMFlavor SLA_VM = null;
 //		if(VM.getCloudVmType() != null) {
-//			SLA_VM = Util.findVMByName(VM.getCloudVmType(), currentVMType);	
+//			SLA_VM = Util.findVMByName(VM.getCloudVmType(), currentVMFlavor);	
 //		}
 //		
 //				
@@ -273,10 +273,10 @@ public class F4GConfigurationAdapter
 	
 //	public VM getVM(CloudVmAllocation request) {
 //		
-//		VMTypeType.VMType SLA_VM;
+//		VMFlavorType.VMFlavor SLA_VM;
 //		
 //		try {
-//			SLA_VM = Util.findVMByName(request.getVm(), currentVMType);
+//			SLA_VM = Util.findVMByName(request.getVm(), currentVMFlavor);
 //		} catch (NoSuchElementException e1) {
 //			log.error("VM name " + request.getVm() + " could not be found in SLA");
 //			return null;
@@ -367,7 +367,7 @@ public class F4GConfigurationAdapter
                 
     	double ue = getUsageEffectiveness(server);	
     	
-        VMType vm = currentVMType.getVMType().get(0);
+    	VMFlavor vm = currentVMFlavor.getVMFlavor().get(0);
     	ServerStatus status = server.getStatus();
     	server.setStatus(ServerStatus.ON); //set the server status to ON to avoid a null power
     	float PperVM = (float) (powerCalculation.computePowerForVM(server, vm, powerCalculator) * ue);

@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.metamodel.CPU;
 import f4g.schemas.java.metamodel.Core;
 import f4g.schemas.java.metamodel.Mainboard;

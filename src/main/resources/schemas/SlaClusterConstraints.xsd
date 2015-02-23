@@ -16,7 +16,7 @@
 	<xsd:element name="FIT4GreenOptimizerConstraint">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="VirtualMachines" type="opticon:VMTypeType" />
+				<xsd:element name="VirtualMachines" type="opticon:VMFlavorType" />
 				<xsd:element name="FIT4GreenFederation" minOccurs="0" type="opticon:FederationType" />
 				<xsd:element name="FIT4GreenCluster" type="opticon:ClusterType" />
 				<xsd:element name="FIT4GreenServerGroup" minOccurs="0" type="opticon:ServerGroupType" />
@@ -30,9 +30,9 @@
 
 	<!-- ****************** VMTypes ************************ -->
 
-	<xsd:complexType name="VMTypeType">
+	<xsd:complexType name="VMFlavorType">
 		<xsd:sequence>
-			<xsd:element name="VMType" maxOccurs="unbounded">
+			<xsd:element name="VMFlavor" maxOccurs="unbounded">
 				<xsd:complexType>
 					<xsd:sequence>
 						<!-- Used to identify the appropriate virtual machine type: e.g. m1.small, 
