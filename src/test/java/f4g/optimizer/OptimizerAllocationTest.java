@@ -120,7 +120,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		modelGenerator.setCORE(6);
 		
 		//VMs takes 100% CPU
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().getVCpuLoad().setValue(100);
+		optimizer.getVmTypes().getVMFlavor().get(0).getExpectedLoad().getVCpuLoad().setValue(100);
 		
     	FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 
@@ -184,7 +184,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		FIT4Green model = modelGenerator.createPopulatedFIT4Green();	
 					
 		//VMs takes 100% CPU
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().getVCpuLoad().setValue(100);
+		optimizer.getVmTypes().getVMFlavor().get(0).getExpectedLoad().getVCpuLoad().setValue(100);
 		AllocationRequest allocationRequest = createAllocationRequestCloud("m1.small");		
 		AllocationResponse response = optimizer.allocateResource(allocationRequest, model);
 		
@@ -192,7 +192,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		assertEquals("id100000", ((CloudVmAllocationResponse) response.getResponse().getValue()).getNodeId());
 		//assertEquals(0, getPowerOns().size());
 		
-		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVCpus().setValue(2);
+		optimizer.getVmTypes().getVMFlavor().get(0).getCapacity().getVCpus().setValue(2);
 
 		response = optimizer.allocateResource(allocationRequest, model);
 		
@@ -220,7 +220,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		//enough RAM: New VM should be allocated on first server		
 		assertEquals("id100000", ((CloudVmAllocationResponse) response.getResponse().getValue()).getNodeId());
 		
-		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVRam().setValue(2000);
+		optimizer.getVmTypes().getVMFlavor().get(0).getCapacity().getVRam().setValue(2000);
 
 		response = optimizer.allocateResource(allocationRequest, model);
 		

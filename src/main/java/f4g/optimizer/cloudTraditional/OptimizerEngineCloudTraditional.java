@@ -74,7 +74,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
 import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType.Cluster;
 
 import org.btrplace.plan.DependencyBasedPlanApplier;
@@ -116,7 +116,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	/**
 	 * Virtual Machines types retrieved from SLA
 	 */
-	private VMTypeType vms;
+	private VMFlavorType vms;
 
 	/**
 	 * Cluster definition
@@ -192,13 +192,13 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 */
 	public OptimizerEngineCloudTraditional(IController controller,
 			IPowerCalculator powerCalculator, ICostEstimator costEstimator,
-			VMTypeType theVMTypes, PolicyType myPolicies, FederationType myFederation) {
+			VMFlavorType theVMFlavors, PolicyType myPolicies, FederationType myFederation) {
 		super(controller, powerCalculator, costEstimator);
 		log = Logger.getLogger(this.getClass().getName());
 		// default to Cloud
 		computingStyle = CloudTradCS.CLOUD;
 
-		vms = theVMTypes;
+		vms = theVMFlavors;
 		
 		if(myFederation.getBoundedCluster() != null) {
 			clusters = new ClusterType();
@@ -528,7 +528,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
 		if (computingStyle == CloudTradCS.CLOUD) {
 			// Get the VM type from SLA.
-			VMTypeType.VMType SLAVM;
+			VMFlavorType.VMFlavor SLAVM;
 			try {
 				SLAVM = Util.findVMByName(
 						((CloudVmAllocation) request).getVm(), vms);
@@ -604,16 +604,16 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	/**
 	 * shows all VMs from SLA.
 	 */
-	protected void showVMs(VMTypeType VMs) {
+	protected void showVMs(VMFlavorType VMs) {
 		log.debug("VMs from SLA:");
-		for (VMTypeType.VMType VM : VMs.getVMType())
+		for (VMFlavorType.VMFlavor VM : VMs.getVMFlavor())
 			showVM(VM);
 	}
 
 	/**
 	 * shows one VM.
 	 */
-	void showVM(VMTypeType.VMType VM) {
+	void showVM(VMFlavorType.VMFlavor VM) {
 		log.debug("Name: " + VM.getName());
 		log.debug("CPUs: " + VM.getCapacity().getVCpus().getValue());
 		log.debug("CPU consumption: " + VM.getExpectedLoad().getVCpuLoad().getValue());
@@ -621,11 +621,11 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		log.debug("HD: " + VM.getCapacity().getVHardDisk().getValue());
 	}
 
-	public void setVmTypes(VMTypeType vms) {
+	public void setVmTypes(VMFlavorType vms) {
 		this.vms = vms;
 	}
 
-	public VMTypeType getVmTypes() {
+	public VMFlavorType getVmTypes() {
 		return vms;
 	}
 

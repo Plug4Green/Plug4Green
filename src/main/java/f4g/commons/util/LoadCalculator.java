@@ -16,7 +16,7 @@ import f4g.schemas.java.metamodel.CpuUsage;
 import f4g.schemas.java.metamodel.CoreLoad;
 import f4g.schemas.java.metamodel.Power;
 import f4g.schemas.java.metamodel.VirtualMachine;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 
 
 /**
@@ -26,14 +26,14 @@ import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
 public class LoadCalculator {
     
     private static Logger log = Logger.getLogger(LoadCalculator.class.getName());
-    private static VMTypeType currentVMType;
+    private static VMFlavorType currentVMFlavor;
 	
     public LoadCalculator() { 
-        currentVMType = null;
+        currentVMFlavor = null;
     }
     
-    public LoadCalculator(VMTypeType vm) { 
-        currentVMType = vm;
+    public LoadCalculator(VMFlavorType vm) { 
+        currentVMFlavor = vm;
     }
     
     /**
@@ -119,7 +119,7 @@ public class LoadCalculator {
     /**
      * compute the power overhead induced by one VM on a server
      */
-    public static Server addVMLoadOnServer(final Server server, final VMTypeType.VMType vm) {
+    public static Server addVMLoadOnServer(final Server server, final VMFlavorType.VMFlavor vm) {
         
     	Server myServer = (Server) server.clone();
     	
@@ -188,10 +188,10 @@ public class LoadCalculator {
             if(vm.getActualCPUUsage() != null) {
                 vmLoad = vm.getActualCPUUsage().getValue();
             } else {
-                VMTypeType.VMType SLA_VM = null;
+            	VMFlavorType.VMFlavor SLA_VM = null;
                 
                 if(vm.getCloudVm() != null) {
-                    SLA_VM = Util.findVMByName(vm.getCloudVm(), currentVMType);	
+                    SLA_VM = Util.findVMByName(vm.getCloudVm(), currentVMFlavor);	
                     vmLoad = SLA_VM.getExpectedLoad().getVCpuLoad().getValue();
                 }
                 

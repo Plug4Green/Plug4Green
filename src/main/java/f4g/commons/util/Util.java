@@ -2,14 +2,14 @@ package f4g.commons.util;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 
-
 import java.util.NoSuchElementException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 
 
 public class Util {
@@ -35,20 +35,20 @@ public class Util {
 	 * 
 	 * @author cdupont
 	 */
-	public static VMTypeType.VMType findVMByName(final String VMName,
-			VMTypeType myVMTypes) throws NoSuchElementException {
+	public static VMFlavorType.VMFlavor findVMByName(final String VMName,
+			VMFlavorType myVMFlavors) throws NoSuchElementException {
 
 		if(VMName == null) 
 			throw new NoSuchElementException();
 		
-		Predicate<VMTypeType.VMType> isOfName = new Predicate<VMTypeType.VMType>() {
+		Predicate<VMFlavorType.VMFlavor> isOfName = new Predicate<VMFlavorType.VMFlavor>() {
 			@Override
-			public boolean apply(VMTypeType.VMType VM) {
+			public boolean apply(VMFlavorType.VMFlavor VM) {
 				return VMName.equals(VM.getName());
 			}
 		};
 
-		return Iterators.find(myVMTypes.getVMType().iterator(), isOfName);
+		return Iterators.find(myVMFlavors.getVMFlavor().iterator(), isOfName);
 	}
 
 

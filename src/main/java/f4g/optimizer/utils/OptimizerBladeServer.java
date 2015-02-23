@@ -20,7 +20,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import f4g.commons.com.util.PowerData;
 import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.metamodel.*;
 import org.jvnet.jaxb2_commons.lang.CopyStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
@@ -42,10 +42,10 @@ public class OptimizerBladeServer extends BladeServer implements IOptimizerServe
 	/**
 	 * Server constructor for Cloud
 	 */
-	public OptimizerBladeServer(Server modelServer, VMTypeType myVMTypes) throws CreationImpossible{
+	public OptimizerBladeServer(Server modelServer, VMFlavorType myVMFlavors) throws CreationImpossible{
 		
 		log = Logger.getLogger(this.getClass().getName());		
-		optimizerServer = new OptimizerServer(modelServer, myVMTypes, (Server)this);
+		optimizerServer = new OptimizerServer(modelServer, myVMFlavors, (Server)this);
 		
 	}
 	

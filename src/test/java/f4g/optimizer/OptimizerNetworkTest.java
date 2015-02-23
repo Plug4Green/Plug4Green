@@ -11,7 +11,8 @@ import javax.xml.bind.JAXBElement;
 import org.junit.Before;
 import org.junit.Test;
 
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
+
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.metamodel.Server;
@@ -132,12 +133,12 @@ public class OptimizerNetworkTest extends OptimizerTest {
 
 		modelGenerator.setVM_TYPE("CPU_constraint");
 		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
+		VMFlavorType.VMFlavor type1 = new VMFlavorType.VMFlavor();
 		type1.setName("CPU_constraint");
 		type1.setCapacity(new CapacityType(new NrOfCpus(1), new RAMSize(12), new StorageCapacity(1)));
 		type1.setExpectedLoad(new ExpectedLoad(new CpuUsage(50), new MemoryUsage(0), new IoRate(0), new NetworkUsage(0)));
 				
-		optimizer.getVmTypes().getVMType().add(type1);
+		optimizer.getVmTypes().getVMFlavor().add(type1);
 		
 
         // Network settings

@@ -17,6 +17,7 @@ package f4g.optimizer.utils;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
 import f4g.schemas.java.metamodel.CpuUsage;
 import f4g.schemas.java.metamodel.IoRate;
 import f4g.schemas.java.metamodel.MemoryUsage;
@@ -26,7 +27,8 @@ import f4g.schemas.java.metamodel.StorageUsage;
 import f4g.schemas.java.metamodel.VirtualMachine;
 import f4g.schemas.java.allocation.*;
 import f4g.schemas.java.*;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
+
 import org.jvnet.jaxb2_commons.lang.CopyStrategy;
 import org.jvnet.jaxb2_commons.lang.CopyTo;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
@@ -121,7 +123,7 @@ public class OptimizerWorkload extends VirtualMachine implements Cloneable, Copy
 	/**
 	 * making a Workload from a VM from the SLA (Cloud)
 	 */
-	public OptimizerWorkload(VMTypeType.VMType VM, String frameWorkID) {
+	public OptimizerWorkload(VMFlavorType.VMFlavor VM, String frameWorkID) {
 
 		setFrameworkID(frameWorkID);
 		setNumberOfCPUs(VM.getCapacity().getVCpus());

@@ -146,13 +146,13 @@ public class IntegrationTest extends OptimizerTest {
 
         FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 
-        VMTypeType vms = new VMTypeType();
+        VMFlavorType vms = new VMFlavorType();
 
-        VMTypeType.VMType type1 = new VMTypeType.VMType();
+        VMFlavorType.VMFlavor type1 = new VMFlavorType.VMFlavor();
         type1.setName("small");
         type1.setCapacity(new CapacityType(new NrOfCpus(1), new RAMSize(1), new StorageCapacity(0)));
         type1.setExpectedLoad(new ExpectedLoad(new CpuUsage(100), new MemoryUsage(0), new IoRate(0), new NetworkUsage(0)));
-        vms.getVMType().add(type1);
+        vms.getVMFlavor().add(type1);
 
         List<Load> load = new LinkedList<Load>();
         load.add(new Load(new SpareCPUs(3, UnitType.ABSOLUTE), null));
@@ -247,6 +247,7 @@ public class IntegrationTest extends OptimizerTest {
 
         assertEquals("id100000", getMoves().get(0).getDestNodeController());
     }
+
 
     /**
      * Test allocation & global with HP SLA

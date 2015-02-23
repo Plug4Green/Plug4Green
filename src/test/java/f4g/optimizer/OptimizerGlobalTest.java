@@ -90,7 +90,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		assertEquals(1, getMoves().size());
 		assertEquals("DC1", getMoves().get(0).getFrameworkName());
 
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(100));
+		optimizer.getVmTypes().getVMFlavor().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(100));
 		optimizer.runGlobalOptimization(model);
 		
 		assertEquals(0, getMoves().size());
@@ -109,8 +109,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setNB_VIRTUAL_MACHINES(1);				
 		FIT4Green model = modelGenerator.createPopulatedFIT4Green();				
 	
-
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(1));
+		optimizer.getVmTypes().getVMFlavor().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(1));
 		optimizer.runGlobalOptimization(model);
 				
 		assertEquals(4, getMoves().size());
@@ -137,8 +136,8 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		modelGenerator.setRAM_SIZE(2);
 		FIT4Green model = modelGenerator.createPopulatedFIT4Green();				
 	
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(10));
-		optimizer.getVmTypes().getVMType().get(0).getCapacity().getVRam().setValue(1);
+		optimizer.getVmTypes().getVMFlavor().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(10));
+		optimizer.getVmTypes().getVMFlavor().get(0).getCapacity().getVRam().setValue(1);
 		optimizer.runGlobalOptimization(model);
 
 		//Servers offers 2 RAM units, VMs consumes 1
@@ -349,7 +348,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		
 		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 		optimizer.getSla().getSLA().get(0).getQoSConstraints().setMaxVirtualCPUPerCore(new MaxVirtualCPUPerCore((float)1.0, 1));
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(100));
+		optimizer.getVmTypes().getVMFlavor().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(100));
 		
 		//TEST 1		
 		//transferring VMs: server id100000 has 8 VMs, id200000 has zero 

@@ -25,7 +25,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.FIT4GreenOptimizerConst
 import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType;
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.metamodel.CpuUsage;
 import f4g.schemas.java.metamodel.IoRate;
 import f4g.schemas.java.metamodel.MemoryUsage;
@@ -68,36 +68,36 @@ public class SLAGenerator {
 	 *
 	 * @author cdupont
 	 */
-	public static VMTypeType createVirtualMachine(){
+	public static VMFlavorType createVirtualMachine(){
 		
-		VMTypeType VMs = new VMTypeType();
+		VMFlavorType VMs = new VMFlavorType();
 		
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
+		VMFlavorType.VMFlavor type1 = new VMFlavorType.VMFlavor();
 		type1.setName("m1.small");
 		type1.setCapacity(new CapacityType(new NrOfCpus(1), new RAMSize(0.125), new StorageCapacity(1)));
 		type1.setExpectedLoad(new ExpectedLoad(new CpuUsage(50), new MemoryUsage(0), new IoRate(0), new NetworkUsage(0)));
-		VMs.getVMType().add(type1);
+		VMs.getVMFlavor().add(type1);
 		
-		VMTypeType.VMType type2 = new VMTypeType.VMType();
+		VMFlavorType.VMFlavor type2 = new VMFlavorType.VMFlavor();
 
 		type2.setName("m1.medium");
 		type2.setCapacity(new CapacityType(new NrOfCpus(2), new RAMSize(0.5), new StorageCapacity(6)));
 		type2.setExpectedLoad(new ExpectedLoad(new CpuUsage(60), new MemoryUsage(0), new IoRate(0), new NetworkUsage(0)));
-		VMs.getVMType().add(type2);
+		VMs.getVMFlavor().add(type2);
 				
-		VMTypeType.VMType type3 = new VMTypeType.VMType();
+		VMFlavorType.VMFlavor type3 = new VMFlavorType.VMFlavor();
 
 		type3.setName("m1.large");
 		type3.setCapacity(new CapacityType(new NrOfCpus(18), new RAMSize(1), new StorageCapacity(12)));
 		type3.setExpectedLoad(new ExpectedLoad(new CpuUsage(70), new MemoryUsage(0), new IoRate(0), new NetworkUsage(0)));
-		VMs.getVMType().add(type3);
+		VMs.getVMFlavor().add(type3);
 		
-		VMTypeType.VMType type4 = new VMTypeType.VMType();
+		VMFlavorType.VMFlavor type4 = new VMFlavorType.VMFlavor();
 
 		type4.setName("m1.xlarge");
 		type4.setCapacity(new CapacityType(new NrOfCpus(18), new RAMSize(1), new StorageCapacity(12)));
 		type4.setExpectedLoad(new ExpectedLoad(new CpuUsage(80), new MemoryUsage(0), new IoRate(0), new NetworkUsage(0)));
-		VMs.getVMType().add(type4);
+		VMs.getVMFlavor().add(type4);
 		
 		
 		return VMs;

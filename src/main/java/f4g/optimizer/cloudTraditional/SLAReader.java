@@ -40,7 +40,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.Repeats;
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
 import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 
 /**
  * {To be completed; use html notation, if necessary}
@@ -80,7 +80,7 @@ public class SLAReader {
 	/**
 	 * get VMtypes from a SLA file
 	 */
-	public VMTypeType getVMtypes() {
+	public VMFlavorType getVMtypes() {
 
 		// TODO: protect?
 		if (SLA != null)

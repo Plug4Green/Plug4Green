@@ -26,7 +26,7 @@ import f4g.powerCalculator.power.PoweredNetworkNode;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
 import f4g.optimizer.cloudTraditional.SLAReader;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.commons.util.Util;
 
 /*
@@ -58,13 +58,13 @@ public class NetworkCost implements ICostEstimator {
     private int defaultNetworkProto = NetworkCost.Protocol.SSH;
     private int defaultPacketSize = 512;
     private OptimizationObjective optiObjective = OptimizationObjective.Power;
-    private VMTypeType currentVMType;
+    private VMFlavorType currentVMFlavor;
    
     
-    public NetworkCost(OptimizationObjective optObj, VMTypeType vm) {
+    public NetworkCost(OptimizationObjective optObj, VMFlavorType vm) {
         super();
         optiObjective = optObj;
-        currentVMType = vm;
+        currentVMFlavor = vm;
     }
 
     //TODO: remove this (broken) constructor
@@ -95,9 +95,9 @@ public class NetworkCost implements ICostEstimator {
         double throughput = estimateThroughput(route);   
         double nbytes = 0.;
         
-        VMTypeType.VMType SLA_VM = null;
+        VMFlavorType.VMFlavor SLA_VM = null;
 		if(VM.getActualStorageUsage() == null || VM.getActualMemoryUsage() == null) {
-			SLA_VM = Util.findVMByName(VM.getCloudVm(), currentVMType);	
+			SLA_VM = Util.findVMByName(VM.getCloudVm(), currentVMFlavor);	
             nbytes = SLA_VM.getExpectedLoad().getVRamUsage().getValue() + SLA_VM.getCapacity().getVHardDisk().getValue();       // check units 
         }
         else {
@@ -118,10 +118,10 @@ public class NetworkCost implements ICostEstimator {
         double throughput = estimateThroughput(route);
         double nbytes = 0.;
         
-        VMTypeType.VMType SLA_VM = null;
+        VMFlavorType.VMFlavor SLA_VM = null;
 		if(VM.getActualStorageUsage() == null || VM.getActualMemoryUsage() == null) {
 //		if(VM.getCloudVmType() != null) {
-			SLA_VM = Util.findVMByName(VM.getCloudVm(), currentVMType);	
+			SLA_VM = Util.findVMByName(VM.getCloudVm(), currentVMFlavor);	
             nbytes = SLA_VM.getExpectedLoad().getVRamUsage().getValue() + SLA_VM.getExpectedLoad().getVDiskLoad().getValue();
 		}
         else {

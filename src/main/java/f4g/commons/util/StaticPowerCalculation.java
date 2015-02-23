@@ -1,8 +1,9 @@
 package f4g.commons.util;
 
 import org.apache.log4j.Logger;
+
 import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.metamodel.Server;
 import f4g.schemas.java.metamodel.VirtualMachine;
 
@@ -12,10 +13,10 @@ import f4g.schemas.java.metamodel.VirtualMachine;
 public class StaticPowerCalculation {
 
    private static Logger log = Logger.getLogger(StaticPowerCalculation.class.getName());
-   private VMTypeType currentVMType;
+   private VMFlavorType currentVMFlavor;
    
-   public StaticPowerCalculation(VMTypeType vm) { 
-       currentVMType = vm;
+   public StaticPowerCalculation(VMFlavorType vm) { 
+       currentVMFlavor = vm;
    }
    
    
@@ -38,14 +39,14 @@ public class StaticPowerCalculation {
     
     
     //compute the power overhead induced by one VM on a server
-    // public static double computePowerForVM(Server server, VMTypeType.VMType vm, IPowerCalculator powerCalculator) 
+    // public static double computePowerForVM(Server server, VMFlavorType.VMFlavor vm, IPowerCalculator powerCalculator) 
     public double computePowerForVM(Server server, VirtualMachine vm, 
     		IPowerCalculator powerCalculator) {
     	
     	//boolean previousFlag = powerCalculator.getSimulationFlag();
     	//powerCalculator.setSimulationFlag(true);
                
-        LoadCalculator loadCalculator = new LoadCalculator(currentVMType);   	
+        LoadCalculator loadCalculator = new LoadCalculator(currentVMFlavor);   	
 
     	Server serverIdle   = loadCalculator.getServerIdle(server, powerCalculator);
     	Server serverWithVM = loadCalculator.addVMLoadOnServer(serverIdle, vm);
@@ -60,13 +61,13 @@ public class StaticPowerCalculation {
     }
     
     //compute the power overhead induced by one VM on a server
-    public double computePowerForVM(Server server, VMTypeType.VMType vm, 
+    public double computePowerForVM(Server server, VMFlavorType.VMFlavor vm, 
     		IPowerCalculator powerCalculator) {
     	
     	//boolean previousFlag = powerCalculator.getSimulationFlag();
     	//powerCalculator.setSimulationFlag(true);
                
-        LoadCalculator loadCalculator = new LoadCalculator(currentVMType);   	
+        LoadCalculator loadCalculator = new LoadCalculator(currentVMFlavor);   	
 
     	Server serverIdle   = loadCalculator.getServerIdle(server, powerCalculator);
     	Server serverWithVM = loadCalculator.addVMLoadOnServer(serverIdle, vm);

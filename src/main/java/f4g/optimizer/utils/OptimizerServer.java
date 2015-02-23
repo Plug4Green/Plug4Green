@@ -18,15 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-
 import org.apache.log4j.Logger;
+
 import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.metamodel.*;
 import f4g.commons.util.Util;
+
 import org.jvnet.jaxb2_commons.lang.CopyStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
@@ -114,7 +115,7 @@ public class OptimizerServer {
 	/**
 	 * Server constructor for Cloud
 	 */
-	public OptimizerServer(final Server modelServer, final VMTypeType myVMTypes, Server toServer) throws CreationImpossible{
+	public OptimizerServer(final Server modelServer, final VMFlavorType myVMFlavors, Server toServer) throws CreationImpossible{
 
 		InitOptimizerServer(modelServer, toServer);
 		
@@ -126,7 +127,7 @@ public class OptimizerServer {
 						
 			try {
 				
-				VMTypeType.VMType SLA_VM = Util.findVMByName(VM.getCloudVm(), myVMTypes);
+				VMFlavorType.VMFlavor SLA_VM = Util.findVMByName(VM.getCloudVm(), myVMFlavors);
 				OptimizerWorkload optimizerWorkload = new OptimizerWorkload(SLA_VM, VM.getFrameworkID());
 				workloads.add(optimizerWorkload); 
 				i++;

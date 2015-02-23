@@ -43,7 +43,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType;
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
 import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
 import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
@@ -395,7 +395,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		
 		FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 				
-		optimizer.getVmTypes().getVMType().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(100));	
+		optimizer.getVmTypes().getVMFlavor().get(0).getExpectedLoad().setVCpuLoad(new CpuUsage(100));	
 		optimizer.setClusters(createMultiCluster(1, 2, optimizer.getSla().getSLA(), optimizer.getPolicies().getPolicy()));
 		optimizer.getClusters().getCluster().get(0).getNodeController().getNodeName().clear();
 		optimizer.getClusters().getCluster().get(0).getNodeController().getNodeName().add("id100000");
@@ -424,7 +424,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		//clearing c0
 		model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine().clear();
 		//c1 full
-		optimizer.getVmTypes().getVMType().get(0).getCapacity().setVCpus(new NrOfCpus(6));
+		optimizer.getVmTypes().getVMFlavor().get(0).getCapacity().setVCpus(new NrOfCpus(6));
 		response = optimizer.allocateResource(allocationRequest, model);
 		
 		assertNotNull(response.getResponse());
@@ -455,12 +455,12 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 				
 		modelGenerator.setVM_TYPE("m1.small");
 	
-		VMTypeType vms = new VMTypeType();
-		VMTypeType.VMType type1 = new VMTypeType.VMType();
+		VMFlavorType vms = new VMFlavorType();
+		VMFlavorType.VMFlavor type1 = new VMFlavorType.VMFlavor();
 		type1.setName("m1.small");
 		type1.setCapacity(new CapacityType(new NrOfCpus(1), new RAMSize(1), new StorageCapacity(1)));
 		type1.setExpectedLoad(new ExpectedLoad(new CpuUsage(10), new MemoryUsage(1), new IoRate(0), new NetworkUsage(0)));
-		vms.getVMType().add(type1);
+		vms.getVMFlavor().add(type1);
 		optimizer.setVmTypes(vms);
 		
 		SLAType slas = SLAGenerator.createDefaultSLA();

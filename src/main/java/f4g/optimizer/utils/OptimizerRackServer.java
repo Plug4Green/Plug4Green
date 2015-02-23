@@ -18,11 +18,13 @@ package f4g.optimizer.utils;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
 import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.metamodel.*;
+
 import org.jvnet.jaxb2_commons.lang.CopyStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
@@ -47,10 +49,10 @@ public class OptimizerRackServer extends RackableServer implements IOptimizerSer
 	/**
 	 * Server constructor for Cloud
 	 */
-	public OptimizerRackServer(RackableServer modelServer, VMTypeType myVMTypes) throws CreationImpossible{
+	public OptimizerRackServer(RackableServer modelServer, VMFlavorType myVMFlavors) throws CreationImpossible{
 		
 		InitOptimizerRackServer(modelServer);
-		optimizerServer = new OptimizerServer(modelServer, myVMTypes, (Server)this);
+		optimizerServer = new OptimizerServer(modelServer, myVMFlavors, (Server)this);
 		
 	}
 	

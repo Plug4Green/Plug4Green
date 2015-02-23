@@ -24,10 +24,10 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.log4j.Logger;
-
 import org.btrplace.model.Mapping;
 import org.btrplace.model.constraint.Root;
 import org.btrplace.model.constraint.SatConstraint;
+
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.optimizer.entropy.NamingService;
@@ -42,7 +42,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
 import f4g.schemas.java.constraints.optimizerconstraints.Load;
 import f4g.schemas.java.constraints.optimizerconstraints.Period;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
-import f4g.schemas.java.constraints.optimizerconstraints.VMTypeType;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.metamodel.Server;
@@ -71,7 +71,7 @@ public class PolicyConstraintFactory {
 	 * Cluster definition
 	 */
 	private ClusterType clusters;
-	private VMTypeType SLAvms;
+	private VMFlavorType SLAvms;
 	private IPowerCalculator powerCalculator;
 	private ICostEstimator costEstimator;
 
@@ -81,7 +81,7 @@ public class PolicyConstraintFactory {
 	 */
 	public PolicyConstraintFactory(ClusterType myClusters, Model model,
 			FIT4Green F4Gmodel, FederationType federation, 
-			VMTypeType myVMs, 
+			VMFlavorType myVMs, 
 			IPowerCalculator myPowerCalculator, 
 			ICostEstimator myCostEstimator) {
 
