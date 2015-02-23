@@ -35,8 +35,8 @@
 	<xsd:group name="TraditionalParameters">
 		<xsd:sequence>
 			<xsd:choice>
-				<xsd:element name="CPUUsageRate" type="f4g:CpuUsage"/>
-				<xsd:element name="AmountMemoryUsage" type="f4g:MemoryUsage"/>
+<!-- 				<xsd:element name="CPUUsageRate" type="f4g:CpuUsage"/> -->
+<!-- 				<xsd:element name="AmountMemoryUsage" type="f4g:MemoryUsage"/> -->
 			</xsd:choice>
 		</xsd:sequence>
 	</xsd:group>

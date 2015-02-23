@@ -367,7 +367,7 @@ public class F4GConfigurationAdapter
                 
     	double ue = getUsageEffectiveness(server);	
     	
-        VMType vm = currentVMType.getVmType().get(0);
+        VMType vm = currentVMType.getVMType().get(0);
     	ServerStatus status = server.getStatus();
     	server.setStatus(ServerStatus.ON); //set the server status to ON to avoid a null power
     	float PperVM = (float) (powerCalculation.computePowerForVM(server, vm, powerCalculator) * ue);
