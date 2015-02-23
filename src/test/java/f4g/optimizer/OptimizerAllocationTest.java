@@ -25,10 +25,7 @@ import f4g.schemas.java.allocation.CloudVmAllocation;
 import f4g.schemas.java.allocation.AllocationRequest;
 import f4g.schemas.java.allocation.AllocationResponse;
 import f4g.schemas.java.allocation.ObjectFactory;
-<<<<<<< HEAD
-=======
 import f4g.schemas.java.allocation.TraditionalVmAllocationResponse;
->>>>>>> initial #7: not working
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.Load;
 import f4g.schemas.java.constraints.optimizerconstraints.NodeController;
@@ -485,13 +482,8 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		((CloudVmAllocation)allocationRequest.getRequest().getValue()).getClusterId().add("c1");
 	
 		
-<<<<<<< HEAD
 		//8 VMS -> full servers	
-		model = modelGenerator.createPopulatedFIT4GreenType();
-=======
-		//8 VMS -> full serverss		
 		model = modelGenerator.createPopulatedFIT4Green();
->>>>>>> initial #7: not working
 		
 		//clearing space on c2
 		List<VirtualMachine> VMs4 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(4).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();

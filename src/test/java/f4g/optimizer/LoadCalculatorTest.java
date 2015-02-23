@@ -1,8 +1,11 @@
 package f4g.optimizer;
 
-import org.junit.Test;
+import static org.junit.Assert.*;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.apache.log4j.Logger;
+
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.metamodel.CPU;
@@ -21,25 +24,18 @@ import f4g.schemas.java.metamodel.VirtualMachine;
 import f4g.schemas.java.metamodel.NrOfCpus;
 import f4g.commons.util.LoadCalculator;
 
-
-
-public class LoadCalculatorTest extends TestCase {
+public class LoadCalculatorTest {
     
     LoadCalculator loadCalculator;
     
     public LoadCalculatorTest(String name) { 
-        super(name);
     }
     
+    @Before
 	protected void setUp() throws Exception {
-		super.setUp();
         
         loadCalculator = new LoadCalculator();
         
-	}
-    
-	protected void tearDown() throws Exception {
-		super.tearDown();
 	}
     
     @Test
