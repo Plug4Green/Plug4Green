@@ -51,3 +51,4 @@ src/main/java/f4g/schemas/
 
 .idea
 *.iml
+/target/

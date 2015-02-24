@@ -23,7 +23,7 @@ public abstract class GenericSimulationThread implements Runnable{
 
 	private Thread t = null;
 
-	ICom comObject = null;
+	protected ICom comObject = null;
 	
 	public GenericSimulationThread(ICom comObject, long interval) {
 		this.comObject = comObject;
