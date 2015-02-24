@@ -1,4 +1,7 @@
-﻿Plug4Green
+﻿[![Build Status](https://travis-ci.org/cdupont/Plug4Green.png?branch=master)](https://travis-ci.org/cdupont/Plug4Green)
+
+
+Plug4Green
 ==========
 
 Plug4Green is a software focusing on saving energy in data centres optimizing the ICT resources.
