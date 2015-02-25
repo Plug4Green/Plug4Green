@@ -57,7 +57,7 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 
 	private HashMap queuesHashMap = new HashMap();
 
-	IMonitor monitor = null;
+	protected IMonitor monitor = null;
 
 	protected String comName = null;
 

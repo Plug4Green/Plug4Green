@@ -13,68 +13,14 @@
 	<url>https://github.com/Plug4Green/Plug4Green</url>
 
     <modules>
-        <module>CommunicatorOpenStack</module>
         <module>Core</module>
+        <module>CommunicatorOpenStack</module>
+        <module>CommunicatorDemo</module>
     </modules>
 
 	<!-- Build Settings -->
 	<build>
-<!--  		<resources>
-			<resource>
-				<directory>${basedir}/src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>${basedir}/src/main/config</directory>
-			</resource>
-		</resources> -->
-<!-- 		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh-external</artifactId>
-				<version>2.4</version>
-			</extension>
-		</extensions> -->
 		<plugins>
-<!-- 			<plugin>
-				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<strict>false</strict>
-					<extension>true</extension>
-					<schemaDirectory>${basedir}/src/main/resources/schemas</schemaDirectory>
-					<schemaDirectory>${basedir}/src/main/resources/schemas</schemaDirectory>
-					<args>
-						<arg>-Xvisitor</arg>
-						<arg>-Xvisitor-package:com.massfords.humantask</arg>
-						<arg>-Xvalue-constructor</arg>
-						<arg>-Xcopyable</arg>
-					</args>
-					<plugins>
-						<plugin>
-							<groupId>com.massfords</groupId>
-							<artifactId>jaxb-visitor</artifactId>
-							<version>1.13</version>
-						</plugin>
-						<plugin>
-							<groupId>org.jvnet.jaxb2_commons</groupId>
-							<artifactId>jaxb2-value-constructor</artifactId>
-							<version>3.0</version>
-						</plugin>
-						<plugin>
-							<groupId>org.jvnet.jaxb2_commons</groupId>
-							<artifactId>jaxb2-basics</artifactId>
-							<version>0.6.4</version>
-						</plugin>
-					</plugins>
-				</configuration>
-			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -110,58 +56,6 @@
 						${project.version} API</windowtitle>
 				</configuration>
 			</plugin>
-<!-- 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.14.1</version>
-				<configuration>
-					<includes>
-						<include>**/*Test.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.14.1</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<includes>
-						<include>**/*Integration.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>java</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<mainClass>f4g.optimizer.Benchmark</mainClass>
-					<arguments>
-						<argument>-gen</argument>
-						<argument>3</argument>
-						<argument>3</argument>
-						<argument>-sla</argument>
-						<argument>/home/kau/FIT4Green/src/main/resources/optimizer/sla_void.xml</argument>
-						<argument>-o</argument>
-						<argument>output</argument>
-					</arguments>
-				</configuration>
-			</plugin>-->
 		</plugins> 
 	</build>
 	<repositories>

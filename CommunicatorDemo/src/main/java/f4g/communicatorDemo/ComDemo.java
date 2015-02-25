@@ -12,7 +12,7 @@
 *   {To be completed}
 * ============================= /Header ==============================
 */
-package f4g.communicatorDemo.com;
+package f4g.communicatorDemo;
 
 
 import java.io.IOException;
