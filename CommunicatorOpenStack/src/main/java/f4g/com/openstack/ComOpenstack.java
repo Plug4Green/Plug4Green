@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.util.Map;
 
 import org.openstack4j.api.OSClient;
+import org.openstack4j.model.compute.ActionResponse;
+import org.openstack4j.model.compute.actions.LiveMigrateOptions;
 import org.openstack4j.openstack.OSFactory;
 import org.yaml.snakeyaml.Yaml;
 
@@ -37,8 +39,14 @@ public class ComOpenstack extends AbstractCom {
 
     @Override
     public boolean liveMigrate(LiveMigrateVMAction action) {
-	// TODO Auto-generated method stub
-	return false;
+	
+	LiveMigrateOptions options = LiveMigrateOptions.create().host(action.getDestNodeController());
+		//otherHypervisor.getHypervisorHostname().replace(".domain.tld",""));
+	if (!admin.compute().servers().liveMigrate(action.getVirtualMachine(), options).isSuccess()) {
+	    return false;
+	}
+	//TODO: should we check if we need to wait until the migration is done?
+	return true;
     }
 
     @Override
