@@ -1,4 +1,4 @@
-﻿[![Build Status](https://travis-ci.org/cdupont/Plug4Green.png?branch=master)](https://travis-ci.org/cdupont/Plug4Green)
+﻿[![Build Status](https://travis-ci.org/Plug4Green/Plug4Green.svg?branch=master)](https://travis-ci.org/Plug4Green/Plug4Green)
 
 
 Plug4Green
