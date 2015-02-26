@@ -29,8 +29,6 @@
 					<source>1.8</source>
 					<target>1.8</target>
  					<excludes>
-						<exclude>f4g/communicatorEni/**</exclude>
-						<exclude>f4g/communicatorFzj/**</exclude>
 						<exclude>**/old/**</exclude>
 					</excludes>
 				</configuration>
