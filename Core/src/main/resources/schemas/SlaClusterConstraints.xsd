@@ -28,7 +28,7 @@
 		</xsd:complexType>
 	</xsd:element>
 
-	<!-- ****************** VMTypes ************************ -->
+	<!-- ****************** VMFlavorType ************************ -->
 
 	<xsd:complexType name="VMFlavorType">
 		<xsd:sequence>

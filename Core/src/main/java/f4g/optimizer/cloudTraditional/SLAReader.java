@@ -30,6 +30,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.apache.log4j.Logger;
+
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.Constraint;
 import f4g.schemas.java.constraints.optimizerconstraints.FIT4GreenOptimizerConstraint;
@@ -251,7 +252,13 @@ public class SLAReader {
 	 */
 	public FIT4GreenOptimizerConstraint readSLA(String SLAPathName) {
         log.debug("SLAPathName: " + SLAPathName);
-        return readSLA(this.getClass().getClassLoader().getResourceAsStream(SLAPathName));
+        try {
+	    return readSLA(new FileInputStream(SLAPathName));
+	} catch (FileNotFoundException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	return null;
 	}
 
 	

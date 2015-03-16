@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<p:FIT4GreenConstraint date="2001-01-01" version="0.0" xmlns:f4g="http://www.f4g.org/schema/MetaModel" xmlns:p="http://www.f4g.org/schema/constraints/placement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.f4g.org/schema/constraints/placement PlacementConstraints.xsd ">
+<p:FIT4GreenConstraint date="2001-01-01" version="0.0" 
+xmlns:f4g="http://www.f4g.org/schema/MetaModel" 
+xmlns:p="http://www.f4g.org/schema/constraints/placement" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.f4g.org/schema/constraints/placement PlacementConstraints.xsd ">
   <p:DataCentre location="" scenario="single" style="SUPER">
     <p:TargetSys id="idvalue0">
       <p:Constraint>        

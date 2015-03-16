@@ -278,7 +278,7 @@ public class IntegrationTest extends OptimizerTest {
         }
 
 
-        SLAReader sla = new SLAReader("src/main/resources/optimizer" + sep + "unittest_SLA_instance_ComHP.xml");
+        SLAReader sla = new SLAReader("src" + sep + "main" + sep + "resources" + sep + "optimizer" + sep + "unittest_SLA_instance_ComHP.xml");
         optimizer.setClusters(sla.getCluster());
         optimizer.setSla(sla.getSLAs());
         optimizer.setFederation(sla.getFeds());

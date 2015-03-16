@@ -2,9 +2,9 @@
 <opticon:FIT4GreenOptimizerConstraint id="" scenario="single"
                                       xmlns:opticon="http://www.f4g.org/schema/constraints/OptimizerConstraints"
                                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                                      xsi:schemaLocation="http://www.f4g.org/schema/constraints/OptimizerConstraints ../schemas/SlaClusterConstraints.xsd ">
+                                      xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas/SlaClusterConstraints.xsd ">
     <VirtualMachines>
-        <VMType>
+        <VMFlavorType>
             <name>m1.small</name>
             <capacity>
                 <vCpus>1</vCpus>
@@ -17,8 +17,8 @@
                 <vDiskLoad>5.0</vDiskLoad>
                 <vNetworkLoad>1.0</vNetworkLoad>
             </expectedLoad>
-        </VMType>
-        <VMType>
+        </VMFlavorType>
+        <VMFlavorType>
             <name>c1.medium</name>
             <capacity>
                 <vCpus>1</vCpus>
@@ -31,8 +31,8 @@
                 <vDiskLoad>5.0</vDiskLoad>
                 <vNetworkLoad>1.0</vNetworkLoad>
             </expectedLoad>
-        </VMType>
-        <VMType>
+        </VMFlavorType>
+        <VMFlavorType>
             <name>m1.large</name>
             <capacity>
                 <vCpus>1</vCpus>
@@ -45,8 +45,8 @@
                 <vDiskLoad>5.0</vDiskLoad>
                 <vNetworkLoad>1.0</vNetworkLoad>
             </expectedLoad>
-        </VMType>
-        <VMType>
+        </VMFlavorType>
+        <VMFlavorType>
             <name>m1.xlarge</name>
             <capacity>
                 <vCpus>2</vCpus>
@@ -59,8 +59,8 @@
                 <vDiskLoad>5.0</vDiskLoad>
                 <vNetworkLoad>1.0</vNetworkLoad>
             </expectedLoad>
-        </VMType>
-        <VMType>
+        </VMFlavorType>
+        <VMFlavorType>
             <name>c1.xlarge</name>
             <capacity>
                 <vCpus>4</vCpus>
@@ -73,7 +73,7 @@
                 <vDiskLoad>5.0</vDiskLoad>
                 <vNetworkLoad>1.0</vNetworkLoad>
             </expectedLoad>
-        </VMType>
+        </VMFlavorType>
     </VirtualMachines>
     <FIT4GreenCluster>
         <Cluster id="ID1">

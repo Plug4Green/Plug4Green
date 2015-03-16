@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<opticon:FIT4GreenOptimizerConstraint id="devEni" scenario="single" xmlns:f4g="http://www.f4g.org/schema/MetaModel" xmlns:opticon="http://www.f4g.org/schema/constraints/OptimizerConstraints" xmlns:p="http://www.f4g.org/schema/CommonTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.f4g.org/schema/constraints/OptimizerConstraints ../../../../Schemas/src/main/schema/SlaClusterConstraints.xsd ">
+<opticon:FIT4GreenOptimizerConstraint id="devEni" scenario="single" 
+xmlns:f4g="http://www.f4g.org/schema/MetaModel" 
+xmlns:opticon="http://www.f4g.org/schema/constraints/OptimizerConstraints" 
+xmlns:p="http://www.f4g.org/schema/CommonTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas/SlaClusterConstraints.xsd">
   <VirtualMachines>
     <VMType>
       <name>a</name>

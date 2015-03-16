@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:FIT4Green xmlns:ns2="http://www.f4g.org/schema/MetaModel">
+<ns2:FIT4Green xmlns:ns2="f4g/schemas/java/MetaModel">
     <ns2:Site>
         <PUE>2.0</PUE>
         <CUE>1.0</CUE>

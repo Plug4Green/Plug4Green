@@ -180,7 +180,7 @@ public class Monitor implements IMonitor {
 //			URL url = 
 //				this.getClass().getClassLoader().getResource("src/main/resources/schema/MetaModel.xsd");
 			File file = new File("src/main/resources/schemas/MetaModel.xsd");
-			
+			log.info("Metamodel exists:" + file.exists());
 			
 			log.debug("file: " + file);
 			

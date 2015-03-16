@@ -2,7 +2,7 @@
 <opticon:FIT4GreenOptimizerConstraint id="" scenario="single"
                                       xmlns:opticon="http://www.f4g.org/schema/constraints/OptimizerConstraints"
                                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                                      xsi:schemaLocation="http://www.f4g.org/schema/constraints/OptimizerConstraints ../schemas/SlaClusterConstraints.xsd ">
+                                      xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas/SlaClusterConstraints.xsd ">
     <VirtualMachines>
         <VMType>
             <name>m1.small</name>

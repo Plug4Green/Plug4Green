@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<opticon:FIT4GreenOptimizerConstraint id="" scenario="single" xmlns:f4g="http://www.f4g.org/schema/MetaModel" xmlns:opticon="http://www.f4g.org/schema/constraints/OptimizerConstraints" xmlns:p="http://www.f4g.org/schema/CommonTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.f4g.org/schema/constraints/OptimizerConstraints ../schemas/SlaClusterConstraints.xsd ">
+<opticon:FIT4GreenOptimizerConstraint id="" scenario="single" 
+xmlns:f4g="f4g/schemas/java/MetaModel" 
+xmlns:opticon="f4g/schemas/java/constraints/OptimizerConstraints" 
+xmlns:p="f4g/schemas/java/CommonTypes"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas/SlaClusterConstraints.xsd ">
   <VirtualMachines>
-    <VMType>
+    <VMFlavor>
       <name>m1.small</name>
       <capacity>
         <vCpus>1</vCpus>
@@ -14,8 +19,8 @@
         <vDiskLoad>5.0</vDiskLoad>
         <vNetworkLoad>1.0</vNetworkLoad>
       </expectedLoad>
-    </VMType>
-     <VMType>
+    </VMFlavor>
+     <VMFlavor>
       <name>c1.medium</name>
       <capacity>
         <vCpus>1</vCpus>
@@ -28,8 +33,8 @@
         <vDiskLoad>5.0</vDiskLoad>
         <vNetworkLoad>1.0</vNetworkLoad>
       </expectedLoad>
-    </VMType>
-     <VMType>
+    </VMFlavor>
+     <VMFlavor>
       <name>m1.large</name>
       <capacity>
         <vCpus>1</vCpus>
@@ -42,8 +47,8 @@
         <vDiskLoad>5.0</vDiskLoad>
         <vNetworkLoad>1.0</vNetworkLoad>
       </expectedLoad>
-    </VMType>
-     <VMType>
+    </VMFlavor>
+     <VMFlavor>
       <name>m1.xlarge</name>
       <capacity>
         <vCpus>2</vCpus>
@@ -56,8 +61,8 @@
         <vDiskLoad>5.0</vDiskLoad>
         <vNetworkLoad>1.0</vNetworkLoad>
       </expectedLoad>
-    </VMType>
-     <VMType>
+    </VMFlavor>
+     <VMFlavor>
       <name>c1.xlarge</name>
       <capacity>
         <vCpus>4</vCpus>
@@ -70,7 +75,7 @@
         <vDiskLoad>5.0</vDiskLoad>
         <vNetworkLoad>1.0</vNetworkLoad>
       </expectedLoad>
-    </VMType>
+    </VMFlavor>
   </VirtualMachines>
   <FIT4GreenCluster>
     <Cluster id="ID1">
@@ -106,15 +111,18 @@
   </FIT4GreenCluster>
   <ListOfSLA>
     <SLA id="ID11">
-      <HardwareMetrics/>
-      <CommonQoSRelatedMetrics>
+      <HardwareConstraints/>
+      <QoSConstraints>
         <MaxVirtualCPUPerCore>2</MaxVirtualCPUPerCore>
         <!-- MaxServerAvg_vCPUperCore>2</MaxServerAvg_vCPUperCore>
         MaxServerAvg_vRAMperPhyRAM>1</MaxServerAvg_vRAMperPhyRAM>-->
         <Max_vRAMperPhyRAM>1</Max_vRAMperPhyRAM>
         <MaxVMperServer>15</MaxVMperServer>
-      </CommonQoSRelatedMetrics>
-      <AdditionalMetrics/>
+      </QoSConstraints>
+      <SecurityConstraints>
+      </SecurityConstraints>
+      <EnergyConstraints>
+      </EnergyConstraints>
     </SLA>
   </ListOfSLA>
   <ListOfPolicies>
