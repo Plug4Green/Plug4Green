@@ -119,10 +119,8 @@ xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas
         <Max_vRAMperPhyRAM>1</Max_vRAMperPhyRAM>
         <MaxVMperServer>15</MaxVMperServer>
       </QoSConstraints>
-      <SecurityConstraints>
-      </SecurityConstraints>
-      <EnergyConstraints>
-      </EnergyConstraints>
+      <SecurityConstraints/>
+      <EnergyConstraints/>
     </SLA>
   </ListOfSLA>
   <ListOfPolicies>
