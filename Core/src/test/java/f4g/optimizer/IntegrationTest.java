@@ -303,7 +303,7 @@ public class IntegrationTest extends OptimizerTest {
 
         optimizer.runGlobalOptimization(model);
       
-        assertEquals(6, getPowerOffs().size());
+        assertEquals(8, getPowerOffs().size());
 
         //TEST 3
         Date date = new Date();
