@@ -1,5 +1,6 @@
 package f4g.commons.core;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -17,8 +18,9 @@ public class Configuration {
 	
 	public Configuration(String filePath) throws IOException {
 		configuration = new Properties();
-		ClassLoader cl = this.getClass().getClassLoader();
-		InputStream is = cl.getResourceAsStream(filePath);
+		//ClassLoader cl = this.getClass().getClassLoader();
+		//InputStream is = cl.getResourceAsStream(filePath)
+		InputStream is = new FileInputStream(filePath);
 		configuration.load(is);
 	}
 	

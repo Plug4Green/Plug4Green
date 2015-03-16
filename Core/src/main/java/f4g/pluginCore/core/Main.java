@@ -14,6 +14,7 @@
 */
 package f4g.pluginCore.core;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -116,12 +117,16 @@ public class Main implements IMain {
 					PropertyConfigurator.configure(log4jProperties);				
 				}
 				log.info("Loading configuration...");
-				
+				log.info("File exists: " + new File(f4gConfigPathName).exists());
+
 				//TODO: Currently the config file is a .properties file. 
 				//Will become XML as soon as the related schema will be finalized
 				configuration = new Configuration(f4gConfigPathName);
+				if(configuration == null){
+				    return false;
+
+				}
 				initialized = true;
-			
 				log.debug("The Main has been initialized");
 			} else {
 				log.debug("The Main was already initialized!");

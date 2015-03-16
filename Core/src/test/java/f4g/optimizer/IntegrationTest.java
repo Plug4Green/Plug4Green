@@ -37,6 +37,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
@@ -255,9 +256,16 @@ public class IntegrationTest extends OptimizerTest {
     public void testHPSLA() {
 
         String sep = System.getProperty("file.separator");
-
-        FIT4Green model = modelGenerator.getModel("src/main/resources/optimizer" + sep + "unittest_f4gmodel_instance_ComHP_federated.xml");
-
+        File modelFile = new File("src" + sep + "main" + sep + "resources" + sep + "optimizer" + sep + "unittest_f4gmodel_instance_ComHP_federated.xml");
+        assertTrue(modelFile.exists());
+        FIT4Green model = null;
+	try {
+	    model = modelGenerator.getModel(modelFile.getCanonicalPath());
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+       
         try {
             Date date = new Date();
             GregorianCalendar gCalendar = new GregorianCalendar();
@@ -270,7 +278,7 @@ public class IntegrationTest extends OptimizerTest {
         }
 
 
-        SLAReader sla = new SLAReader("resources" + sep + "unittest_SLA_instance_ComHP.xml");
+        SLAReader sla = new SLAReader("src/main/resources/optimizer" + sep + "unittest_SLA_instance_ComHP.xml");
         optimizer.setClusters(sla.getCluster());
         optimizer.setSla(sla.getSLAs());
         optimizer.setFederation(sla.getFeds());

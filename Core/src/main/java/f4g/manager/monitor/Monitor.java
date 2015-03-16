@@ -16,7 +16,11 @@ package f4g.manager.monitor;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -99,6 +103,7 @@ public class Monitor implements IMonitor {
 		
 		String currentFilePath = Constants.F4G_MODEL_FILE_PATH;
 		String currentModelPathName = Configuration.get(currentFilePath);
+		log.info("currentModelPathName" + currentModelPathName);
 		boolean isModelLoaded = loadModel(currentModelPathName);
 		if(!isModelLoaded){
 			log.error("Error while loading model; exiting");
@@ -154,9 +159,16 @@ public class Monitor implements IMonitor {
 	@Override
 	public boolean loadModel(String modelPathName) {
 		
-		InputStream isModel = 
-			this.getClass().getClassLoader().getResourceAsStream(modelPathName);
-		
+//		InputStream isModel = 
+//			this.getClass().getResourceAsStream(modelPathName);
+		InputStream isModel = null;
+		try {
+		    isModel = new FileInputStream(modelPathName);
+		} catch (FileNotFoundException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}
+
 		log.debug("modelPathName: " + modelPathName + ", isModel: " + isModel);
 		
 		JAXBElement<?> poElement = null;
@@ -165,14 +177,16 @@ public class Monitor implements IMonitor {
 			Unmarshaller u = Util.getJaxbContext().createUnmarshaller();
 
 			// ****** VALIDATION ******
-			URL url = 
-				this.getClass().getClassLoader().getResource("schema/MetaModel.xsd");
+//			URL url = 
+//				this.getClass().getClassLoader().getResource("src/main/resources/schema/MetaModel.xsd");
+			File file = new File("src/main/resources/schemas/MetaModel.xsd");
 			
-			log.debug("URL: " + url);
+			
+			log.debug("file: " + file);
 			
 			SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 			try {
-				Schema schema = sf.newSchema(url);
+				Schema schema = sf.newSchema(file);
 				u.setSchema(schema);
 				u.setEventHandler(new ValidationEventHandler() {
 					// allow unmarshalling to continue even if there are errors

@@ -106,18 +106,6 @@
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<mainClass>f4g.optimizer.Benchmark</mainClass>
-					<arguments>
-						<argument>-gen</argument>
-						<argument>3</argument>
-						<argument>3</argument>
-						<argument>-sla</argument>
-						<argument>/home/kau/FIT4Green/src/main/resources/optimizer/sla_void.xml</argument>
-						<argument>-o</argument>
-						<argument>output</argument>
-					</arguments>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
