@@ -36,7 +36,7 @@ import java.util.HashMap;
  */
 public class Optimizer implements IOptimizer{
 	
-	public Logger log;  
+    	private final Logger log = Logger.getLogger(getClass()); 
 	IController controller = null;
 	IPowerCalculator powerCalculator = null;
 
@@ -65,7 +65,6 @@ public class Optimizer implements IOptimizer{
 		
 		this.controller = myController;
 		this.powerCalculator = myPowerCalculator;
-		log = Logger.getLogger(Optimizer.class.getName());
 		
 		log.debug("Initializing engines...");
 		engines = new HashMap<DCComputingStyle, OptimizerEngine> ();

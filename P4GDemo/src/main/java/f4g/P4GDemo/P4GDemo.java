@@ -17,7 +17,7 @@ public class P4GDemo {
 	HashMap<String, ICom> map = new HashMap<String, ICom>();
 	map.put("comOpenstack", comOS);
 	Main p4g = new Main(map);
-	p4g.init("../Core/src/main/config/pluginCore/f4gconfig.properties");
+	p4g.init("src/main/config/core/f4gconfig.properties");
 	p4g.startup();
     }
 }

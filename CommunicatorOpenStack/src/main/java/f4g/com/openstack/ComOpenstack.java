@@ -216,14 +216,15 @@ public class ComOpenstack extends AbstractCom {
 			    if(openstackAPI.getVMCPUs(vmId).isPresent()){ 
 			    operation = new ComOperation(
 				    ComOperation.TYPE_ADD,
-				    "./nativeHypervisor/virtualMachine/frameworkID",
+				    ComOperation.VM_ON_HYPERVISOR_PATH,
 				    vmId + " a a "
-					    + openstackAPI.getVMCPUs(vmId).get()
-					    + " " + vmId);
+					    + openstackAPI.getVMCPUs(vmId).get());
+			    operations.add(operation);
 			    
 			    ((ConcurrentLinkedQueue<ComOperationCollector>) this
 				    .getQueuesHashMap().get(key))
 				    .add(operations);
+			    log.info("Adding VM: " + vmId);
 			    monitor.updateNode(key, this);
 			    operations.remove(operation);
 			    }
@@ -240,9 +241,8 @@ public class ComOpenstack extends AbstractCom {
 		    for (String vmId : actualVMsList) {
 			operation = new ComOperation(
 				ComOperation.TYPE_REMOVE,
-				"./nativeHypervisor/virtualMachine/frameworkID",
-				vmId + " a a " + openstackAPI.getVMCPUs(vmId)
-					+ " " + vmId);
+				ComOperation.VM_ON_HYPERVISOR_PATH,
+				vmId + " a a " + openstackAPI.getVMCPUs(vmId));
 			operations.add(operation);
 			((ConcurrentLinkedQueue<ComOperationCollector>) this
 				.getQueuesHashMap().get(key)).add(operations);
@@ -318,14 +318,14 @@ public class ComOpenstack extends AbstractCom {
 
 	// get the CPU usages
 	try {
-	    // CPU Load
-	    openstackAPI.getCurrentWorkload(hyperVisorName)
-		    .ifPresent(
-			    cpuUsage -> operationSet.add(new ComOperation(
-				    ComOperation.TYPE_UPDATE,
-				    "/mainboard/CPU[frameworkID='"
-					    + hyperVisorName + "']/cpuUsage",
-				    String.valueOf(cpuUsage))));
+	    //TODO: CPU Load
+//	    openstackAPI.getCurrentWorkload(hyperVisorName)
+//		    .ifPresent(
+//			    cpuUsage -> operationSet.add(new ComOperation(
+//				    ComOperation.TYPE_UPDATE,
+//				    "/mainboard/CPU[frameworkID='"
+//					    + hyperVisorName + "']/cpuUsage",
+//				    String.valueOf(cpuUsage))));
 	} catch (NullPointerException exception) {
 	    // in case that is impossible to get the information, whatever
 	    // the reason

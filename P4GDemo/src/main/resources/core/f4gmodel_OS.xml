@@ -18,66 +18,23 @@
 						<frameworkID>node-2.domain.tld</frameworkID>
 						<status>ON</status>
 						<ns2:Mainboard>
-							<ns2:HardwareRAID Id="RAID1">
-								<level>1</level>
-								<computedPower>0.0</computedPower>
-								<ns2:HardDisk>
-									<frameworkID>naa.600508b1001030384230443944301400</frameworkID>
-									<storageCapacity>146.0</storageCapacity>
-									<maxReadRate>1000.0</maxReadRate>
-									<maxWriteRate>1000.0</maxWriteRate>
-									<readRate>0.0</readRate>
-									<writeRate>255.0</writeRate>
-									<powerIdle>5.96</powerIdle>
-									<powerMax>8.42</powerMax>
-									<computedPower>0.0</computedPower>
-									<ns2:Cache>
-										<level>10</level>
-										<size>5000.0</size>
-									</ns2:Cache>
-									<rpm>15000</rpm>
-								</ns2:HardDisk>
-								<ns2:HardDisk>
-									<frameworkID>naa.600508b1001030384230443944301400</frameworkID>
-									<storageCapacity>146.0</storageCapacity>
-									<maxReadRate>1000.0</maxReadRate>
-									<maxWriteRate>1000.0</maxWriteRate>
-									<readRate>0.0</readRate>
-									<writeRate>255.0</writeRate>
-									<powerIdle>5.96</powerIdle>
-									<powerMax>8.42</powerMax>
-									<computedPower>0.0</computedPower>
-									<ns2:Cache>
-										<level>10</level>
-										<size>5000.0</size>
-									</ns2:Cache>
-									<rpm>15000</rpm>
-								</ns2:HardDisk>
-							</ns2:HardwareRAID>
 							<ns2:CPU>
+								<transistorNumber>1170</transistorNumber>
+								<frameworkID>node-2.domain.tld</frameworkID>
 								<architecture>INTEL</architecture>
 								<DVFS>true</DVFS>
 								<lithography>32</lithography>
 								<powerIdle>0.0</powerIdle>
 								<powerMax>95.0</powerMax>
 								<ns2:Core>
+									<frameworkID>node-2.domain.tld.core0</frameworkID>
 									<voltage>1.1</voltage>
 									<frequency>3.06</frequency>
 									<frequencyMin>2.66</frequencyMin>
 									<frequencyMax>3.06</frequencyMax>
 								</ns2:Core>
 								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
+									<frameworkID>node-2.domain.tld.core1</frameworkID>
 									<voltage>1.1</voltage>
 									<frequency>3.06</frequency>
 									<frequencyMin>2.66</frequencyMin>
@@ -102,69 +59,26 @@
 
 					<ns2:BladeServer frameworkRef="FIT4GREEN_Assago">
 						<name>TRADITIONAL_HOST</name>
-						<frameworkID>node-2.domain.tld</frameworkID>
+						<frameworkID>node-3.domain.tld</frameworkID>
 						<status>ON</status>
 						<ns2:Mainboard>
-							<ns2:HardwareRAID Id="RAID1">
-								<level>1</level>
-								<computedPower>0.0</computedPower>
-								<ns2:HardDisk>
-									<frameworkID>naa.600508b1001030384230443944301400</frameworkID>
-									<storageCapacity>146.0</storageCapacity>
-									<maxReadRate>1000.0</maxReadRate>
-									<maxWriteRate>1000.0</maxWriteRate>
-									<readRate>0.0</readRate>
-									<writeRate>255.0</writeRate>
-									<powerIdle>5.96</powerIdle>
-									<powerMax>8.42</powerMax>
-									<computedPower>0.0</computedPower>
-									<ns2:Cache>
-										<level>10</level>
-										<size>5000.0</size>
-									</ns2:Cache>
-									<rpm>15000</rpm>
-								</ns2:HardDisk>
-								<ns2:HardDisk>
-									<frameworkID>naa.600508b1001030384230443944301400</frameworkID>
-									<storageCapacity>146.0</storageCapacity>
-									<maxReadRate>1000.0</maxReadRate>
-									<maxWriteRate>1000.0</maxWriteRate>
-									<readRate>0.0</readRate>
-									<writeRate>255.0</writeRate>
-									<powerIdle>5.96</powerIdle>
-									<powerMax>8.42</powerMax>
-									<computedPower>0.0</computedPower>
-									<ns2:Cache>
-										<level>10</level>
-										<size>5000.0</size>
-									</ns2:Cache>
-									<rpm>15000</rpm>
-								</ns2:HardDisk>
-							</ns2:HardwareRAID>
 							<ns2:CPU>
+								<transistorNumber>1170</transistorNumber>
 								<architecture>INTEL</architecture>
 								<DVFS>true</DVFS>
 								<lithography>32</lithography>
 								<powerIdle>0.0</powerIdle>
 								<powerMax>95.0</powerMax>
+								<frameworkID>node-3.domain.tld</frameworkID>
 								<ns2:Core>
+									<frameworkID>node-3.domain.tld.core0</frameworkID>
 									<voltage>1.1</voltage>
 									<frequency>3.06</frequency>
 									<frequencyMin>2.66</frequencyMin>
 									<frequencyMax>3.06</frequencyMax>
 								</ns2:Core>
 								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
+									<frameworkID>node-3.domain.tld.core1</frameworkID>
 									<voltage>1.1</voltage>
 									<frequency>3.06</frequency>
 									<frequencyMin>2.66</frequencyMin>
@@ -203,8 +117,8 @@
 				<vm>
 					<interLiveMigrate>true</interLiveMigrate>
 					<intraLiveMigrate>true</intraLiveMigrate>
-					<interMoveVM>false</interMoveVM>
-					<intraMoveVM>false</intraMoveVM>
+					<interMoveVM>true</interMoveVM>
+					<intraMoveVM>true</intraMoveVM>
 				</vm>
 			</ns2:FrameworkCapabilities>
 		</ns2:Datacenter>

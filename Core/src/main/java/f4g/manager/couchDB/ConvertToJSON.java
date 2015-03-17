@@ -27,10 +27,12 @@ import javax.xml.validation.SchemaFactory;
 
 import net.sf.json.JSON;
 import net.sf.json.xml.XMLSerializer;
-
 import f4g.commons.core.Constants;
+import f4g.manager.controller.Controller;
 import f4g.schemas.java.actions.ActionRequest;
 import f4g.schemas.java.metamodel.FIT4Green;
+
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 /**
@@ -40,7 +42,7 @@ import org.xml.sax.SAXException;
  * @author Vasiliki Georgiadou
  */
 public class ConvertToJSON {
-	
+    static Logger log = Logger.getLogger(ConvertToJSON.class.getName());
 	/**
 	 * Marshalls an object to XML and converts the later to JSON
 	 * 
@@ -61,11 +63,14 @@ public class ConvertToJSON {
 			String schemaPackageName = Constants.ACTIONS_PACKAGE_NAME;
 		
 			URL schemaLocation = 
-				this.getClass().getClassLoader().getResource("schema/" + schemaFileName);
+				this.getClass().getClassLoader().getResource("schemas/" + schemaFileName);
+			
 			SchemaFactory schemaFactory = 
 				SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = schemaFactory.newSchema(schemaLocation);
-			
+			if(schema == null){
+			    log.error("Schema actions is null");
+			}
 			Marshaller marshaller = 
 				JAXBContext.newInstance(schemaPackageName).createMarshaller();
 			marshaller.setSchema(schema);

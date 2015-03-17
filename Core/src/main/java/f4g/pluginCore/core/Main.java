@@ -123,8 +123,7 @@ public class Main implements IMain {
 					PropertyConfigurator.configure(log4jProperties);				
 				}
 				log.info("Loading configuration...");
-				log.info("File exists: " + new File(f4gConfigPathName).exists() + "path: " + new File(f4gConfigPathName).getAbsolutePath());
-
+				
 				//TODO: Currently the config file is a .properties file. 
 				//Will become XML as soon as the related schema will be finalized
 				configuration = new Configuration(f4gConfigPathName);

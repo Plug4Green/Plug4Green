@@ -1611,7 +1611,7 @@ public class PowerCalculator implements IPowerCalculator {
            	 */
 			if(obj instanceof BladeServer)
 		           	{
-		           		if(myMainboard.getPowerMax().getValue()>0)
+		           		if(myMainboard.getPowerMax() != null && myMainboard.getPowerMax().getValue()>0)
 		           			totalMainboardPower = myMainboard.getPowerMax().getValue();
 		           		else
 		           			totalMainboardPower = 80.0;
