@@ -117,7 +117,7 @@ public class ConvertToJSON {
 			String schemaPackageName = Constants.METAMODEL_PACKAGE_NAME;
 		
 			URL schemaLocation = 
-				this.getClass().getClassLoader().getResource("schema/" + schemaFileName);
+				this.getClass().getClassLoader().getResource("schemas/" + schemaFileName);
 			SchemaFactory schemaFactory = 
 				SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = schemaFactory.newSchema(schemaLocation);

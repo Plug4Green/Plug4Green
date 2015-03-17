@@ -1206,7 +1206,7 @@ public class PowerCalculator implements IPowerCalculator {
 	        		PSU myPSU = (PSU)psuPowerIterator.next();
 	        	    if(myPSU.getMeasuredPower() == null ||myPSU.getMeasuredPower().getValue()<=0)
 	        	    	measuredPowerPSU = false;
-	        	    if(myPSU.getLoad().getValue() > 0.0)
+	        	    if(myPSU.getLoad() != null && myPSU.getLoad().getValue() > 0.0)
 	        	    	//loadPSU = true;
 	        	    	countPSU++;
 	        	}

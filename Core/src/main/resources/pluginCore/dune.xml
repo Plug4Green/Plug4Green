@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ns1:FIT4Green 
- xmlns:ns1="http://www.f4g.org/schema/MetaModel"
+ xmlns:ns1="f4g/schemas/java/MetaModel/MetaModel"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://www.f4g.org/schema/MetaModel ../../../../Schemas/src/main/schema/MetaModel.xsd">	
+ xsi:schemaLocation="f4g/schemas/java/MetaModel ../schemas/MetaModel.xsd">	
  <ns1:Site>
 		<PUE>1.2</PUE>
  		<CUE>1.1</CUE>

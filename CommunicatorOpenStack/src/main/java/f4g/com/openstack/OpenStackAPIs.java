@@ -51,7 +51,7 @@ public class OpenStackAPIs {
 		    .credentials(config.get("user"), config.get("password"))
 		    .tenantName(config.get("tenant")).authenticate();
 	} catch (AuthenticationException e) {
-	    log.error("Connectio to OpenStack datacenter fails: {}", e);
+	    log.error("Connection to OpenStack datacenter fails: {}", e);
 	    return false;
 
 	}
@@ -61,7 +61,8 @@ public class OpenStackAPIs {
     public Set<String> getComputeNames() {
 	Set<String> hyperVisors = new HashSet<String>();
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
-	    hyperVisors.add(hyperVisor.getHypervisorHostname().split(".")[0]);
+	    log.info("Computes: " + hyperVisor.getHypervisorHostname());
+	    hyperVisors.add(hyperVisor.getHypervisorHostname());
 	}
 	return hyperVisors;
     }
@@ -74,17 +75,19 @@ public class OpenStackAPIs {
     public Optional<Integer> getCPU(String hyperVisorName) {
 
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
-	    if (hyperVisor.getHypervisorHostname().split(".")[0] == hyperVisorName) {
+	    if (hyperVisor.getHypervisorHostname().split(".")[0].equals(hyperVisorName)) {
+		    log.info("CPU: " + hyperVisor.getVirtualCPU());
 		return Optional.ofNullable(hyperVisor.getVirtualCPU());
 	    }
 	}
 	return Optional.empty();
     }
 
+    //Not used
     public Optional<Integer> getDisk(String hyperVisorName) {
 
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
-	    if (hyperVisor.getHypervisorHostname().split(".")[0] == hyperVisorName) {
+	    if (hyperVisor.getHypervisorHostname().split(".")[0].equals(hyperVisorName)) {
 		return Optional.ofNullable(hyperVisor.getLocalDisk());
 	    }
 	}
@@ -94,7 +97,8 @@ public class OpenStackAPIs {
     public Optional<Integer> getCurrentWorkload(String hyperVisorName) {
 
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
-	    if (hyperVisor.getHypervisorHostname().split(".")[0] == hyperVisorName) {
+	    if (hyperVisor.getHypervisorHostname().equals(hyperVisorName)) {
+		 log.info("WorkLoad: " + hyperVisor.getCurrentWorkload());
 		return Optional.ofNullable(hyperVisor.getCurrentWorkload());
 	    }
 	}
@@ -104,8 +108,10 @@ public class OpenStackAPIs {
     public Optional<Integer> getUsedRAM(String hyperVisorName) {
 
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
-	    if (hyperVisor.getHypervisorHostname().split(".")[0] == hyperVisorName) {
-		return Optional.ofNullable(hyperVisor.getLocalMemory()/hyperVisor.getLocalMemoryUsed());
+	    log.info("hypervisor name: " + hyperVisor.getHypervisorHostname());
+	    if (hyperVisor.getHypervisorHostname().equals(hyperVisorName)) {
+		log.info("Local RAM: " + hyperVisor.getLocalMemory() + "Used RAM: " +  hyperVisor.getLocalMemoryUsed());
+		return Optional.ofNullable(hyperVisor.getLocalMemoryUsed());
 	    }
 	}
 	return Optional.empty();
@@ -114,7 +120,7 @@ public class OpenStackAPIs {
     public Optional<Integer> getUsedVirtualCPU(String hyperVisorName) {
 
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
-	    if (hyperVisor.getHypervisorHostname().split(".")[0] == hyperVisorName) {
+	    if (hyperVisor.getHypervisorHostname().equals(hyperVisorName)) {
 		return Optional.ofNullable(hyperVisor.getVirtualCPU() / hyperVisor.getVirtualUsedCPU());
 	    }
 	}
@@ -124,7 +130,7 @@ public class OpenStackAPIs {
     public Optional<Integer> getFreeDisk(String hyperVisorName) {
 
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
-	    if (hyperVisor.getHypervisorHostname().split(".")[0] == hyperVisorName) {
+	    if (hyperVisor.getHypervisorHostname().equals(hyperVisorName)) {
 		return Optional.ofNullable(hyperVisor.getFreeDisk());
 	    }
 	}
@@ -133,15 +139,18 @@ public class OpenStackAPIs {
 
     public Set<String> getVMsId(String hyperVisorName) {
 	Set<String> vmNames = new HashSet<String>();
+	log.info("VMs list is empty: " + admin.compute().servers().list().isEmpty());
 	for (Server vm : admin.compute().servers().list()) {
-	    if (vm.getHypervisorHostname().split(".")[0] == hyperVisorName) {
-		vmNames.add(vm.getHostId());
+	    if (vm.getHypervisorHostname().equals(hyperVisorName)) {
+		log.info("VM saved: " + vm.getId());
+		vmNames.add(vm.getId());
 	    }
 	}
 	return vmNames;
     }
     
     public Optional<Integer> getVMCPUs(String vmId){
+	log.info("Vcpu..." + admin.compute().servers().get(vmId).getFlavor().getVcpus());
 	return Optional.ofNullable(admin.compute().servers().get(vmId).getFlavor().getVcpus());
     }
 

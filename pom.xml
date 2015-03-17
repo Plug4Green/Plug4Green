@@ -1,23 +1,36 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>f4g</groupId>
-    <artifactId>Plug4Green</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0</version>
-    <name>Plug4Green</name>
+	<groupId>f4g</groupId>
+	<artifactId>Plug4Green</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0</version>
+	<name>Plug4Green</name>
 	<description>Plug4Green plug-in is an application that focuses on saving energy in Data Centres </description>
 	<url>https://github.com/Plug4Green/Plug4Green</url>
 
-    <modules>
-        <module>Core</module>
-        <module>CommunicatorOpenStack</module>
-        <module>CommunicatorDemo</module>
-    </modules>
-
+	<modules>
+		<module>Core</module>
+		<module>CommunicatorOpenStack</module>
+		<module>CommunicatorDemo</module>
+		<module>P4GDemo</module>
+	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+			<type>jar</type>
+		</dependency>
+		</dependencies>
 	<!-- Build Settings -->
 	<build>
 		<plugins>
@@ -28,7 +41,7 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
- 					<excludes>
+					<excludes>
 						<exclude>**/old/**</exclude>
 					</excludes>
 				</configuration>
@@ -54,7 +67,15 @@
 						${project.version} API</windowtitle>
 				</configuration>
 			</plugin>
-		</plugins> 
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 	<repositories>
 		<repository>

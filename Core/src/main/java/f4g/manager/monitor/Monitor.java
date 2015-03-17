@@ -179,7 +179,7 @@ public class Monitor implements IMonitor {
 			// ****** VALIDATION ******
 //			URL url = 
 //				this.getClass().getClassLoader().getResource("src/main/resources/schema/MetaModel.xsd");
-			File file = new File("src/main/resources/schemas/MetaModel.xsd");
+			File file = new File("../Core/src/main/resources/schemas/MetaModel.xsd");
 			log.info("Metamodel exists:" + file.exists());
 			
 			log.debug("file: " + file);
@@ -536,7 +536,7 @@ public class Monitor implements IMonitor {
 		
         Iterator fCapabilitiesIterator = context.iterate(myQuery);
        
-        // Iteration over the "FrameworkCapabilities" items
+        // Iteration over the "FameworkCapabilities" items
         while(fCapabilitiesIterator.hasNext()){
         	FrameworkCapabilities fCapability = 
         		(FrameworkCapabilities)fCapabilitiesIterator.next();

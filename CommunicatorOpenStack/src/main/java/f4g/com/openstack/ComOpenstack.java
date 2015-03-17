@@ -212,18 +212,21 @@ public class ComOpenstack extends AbstractCom {
 			if (actualVMsList.contains(vmId) == false
 				&& vmId != null) {
 			    // ADD a virtual machine to the model
+			    
+			    if(openstackAPI.getVMCPUs(vmId).isPresent()){ 
 			    operation = new ComOperation(
 				    ComOperation.TYPE_ADD,
 				    "./nativeHypervisor/virtualMachine/frameworkID",
 				    vmId + " a a "
-					    + openstackAPI.getVMCPUs(vmId)
+					    + openstackAPI.getVMCPUs(vmId).get()
 					    + " " + vmId);
-			    operations.add(operation);
+			    
 			    ((ConcurrentLinkedQueue<ComOperationCollector>) this
 				    .getQueuesHashMap().get(key))
 				    .add(operations);
 			    monitor.updateNode(key, this);
 			    operations.remove(operation);
+			    }
 			    ((ConcurrentLinkedQueue<ComOperationCollector>) this
 				    .getQueuesHashMap().get(key)).poll();
 			} else {

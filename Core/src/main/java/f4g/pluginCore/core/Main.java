@@ -18,12 +18,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import f4g.commons.com.AbstractCom;
 import f4g.commons.com.ICom;
 import f4g.commons.com.util.PowerData;
 import f4g.manager.controller.Controller;
@@ -55,7 +58,8 @@ public class Main implements IMain {
 
 	//Mapping between the Com object names (as defined in the config file)
 	//and the related classes
-	private static HashMap comMapping = new HashMap();
+	private HashMap<String, ICom> comMap;
+
 	
 	//Singleton instance
 	private static IMain me = null;
@@ -81,20 +85,22 @@ public class Main implements IMain {
 	
 	private boolean initialized = false;
 	
-	private Main() {
+	public Main(HashMap<String, ICom> comMap) {
+	    this.comMap =  new HashMap<String, ICom>();
+	    this.comMap.putAll(comMap);
 	}
 	
 	/**
 	 * Entry point to the framework. 
 	 * @return The reference to the singleton representing the FIT4Green instance
 	 */
-	public static IMain getInstance(){
-		if(me == null){
-			me = new Main();
-		}
-		return me;
-	}
-	
+//	public static IMain getInstance(){
+//		if(me == null){
+//			me = new Main();
+//		}
+//		return me;
+//	}
+//	
 
 	/**
 	 * Initializes the framework.
@@ -117,11 +123,12 @@ public class Main implements IMain {
 					PropertyConfigurator.configure(log4jProperties);				
 				}
 				log.info("Loading configuration...");
-				log.info("File exists: " + new File(f4gConfigPathName).exists());
+				log.info("File exists: " + new File(f4gConfigPathName).exists() + "path: " + new File(f4gConfigPathName).getAbsolutePath());
 
 				//TODO: Currently the config file is a .properties file. 
 				//Will become XML as soon as the related schema will be finalized
 				configuration = new Configuration(f4gConfigPathName);
+				
 				if(configuration == null){
 				    return false;
 
@@ -170,37 +177,45 @@ public class Main implements IMain {
 		}
 		powerCalculator = new PowerCalculator(this);
 		
-		//Loads and initialize the Com components
-		String[] comNames = configuration.get("comNames").split(",");
-		String comName = null;
-		for(int i=0; i<comNames.length; i++){
-			comName = comNames[i];
-			log.debug("Loading COM: " + comName);
-			String className = configuration.get(comName);
-			log.debug("Loading class: " + className);
-			try {
-				Class comClass = Main.class.getClassLoader().loadClass(className);
-				log.debug("Class " + comClass.getCanonicalName() + " loaded");
-				ICom comInstance = (ICom)comClass.newInstance();
-				comMapping.put(comName, comInstance);
-				comInstance.init(comName, monitor);
-			} catch (ClassNotFoundException e) {
-				log.error(e);
-				setStatusMessage(e.getMessage());
-				setRunning(false);
-				return false;
-			} catch (InstantiationException e) {
-				log.error(e);
-				setStatusMessage(e.getMessage());
-				setRunning(false);
-				return false;
-			} catch (IllegalAccessException e) {
-				log.error(e);
-				setStatusMessage(e.getMessage());
-				setRunning(false);
-				return false;
-			}
+		Iterator it = comMap.entrySet().iterator();
+		
+		while(it.hasNext()){
+		    Map.Entry<String, AbstractCom> pair = (Map.Entry<String, AbstractCom>)it.next();
+		    pair.getValue().init(pair.getKey(), monitor);
+		
 		}
+		
+		//Loads and initialize the Com components
+//		String[] comNames = configuration.get("comNames").split(",");
+//		String comName = null;
+//		for(int i=0; i<comNames.length; i++){
+//			comName = comNames[i];
+//			log.debug("Loading COM: " + comName);
+//			String className = configuration.get(comName);
+//			log.debug("Loading class: " + className);
+//			try {
+//				Class comClass = Main.class.getClassLoader().loadClass(className);
+//				log.debug("Class " + comClass.getCanonicalName() + " loaded");
+//				ICom comInstance = (ICom)comClass.newInstance();
+//				comMapping.put(comName, comInstance);
+//				comInstance.init(comName, monitor);
+//			} catch (ClassNotFoundException e) {
+//				log.error(e);
+//				setStatusMessage(e.getMessage());
+//				setRunning(false);
+//				return false;
+//			} catch (InstantiationException e) {
+//				log.error(e);
+//				setStatusMessage(e.getMessage());
+//				setRunning(false);
+//				return false;
+//			} catch (IllegalAccessException e) {
+//				log.error(e);
+//				setStatusMessage(e.getMessage());
+//				setRunning(false);
+//				return false;
+//			}
+//		}
 		
 		setStatusMessage("On");
 		setRunning(true);
@@ -234,17 +249,17 @@ public class Main implements IMain {
 	 * @return a reference to a Com object active in the system
 	 */
 	public ICom getComByName(String comName) {
-		return (ICom)comMapping.get(comName);
+		return (ICom)comMap.get(comName);
 	}
 
 	@Override
 	public boolean shutdown() {
 		
-		Iterator iter = comMapping.keySet().iterator();
+		Iterator iter = comMap.keySet().iterator();
 		String key = null;
 		while(iter.hasNext()){
 			key = (String)iter.next();
-			ICom com = (ICom)comMapping.get(key);
+			ICom com = (ICom)comMap.get(key);
 			log.info("Stopping Com: " + key);
 			
 			com.dispose();
@@ -252,7 +267,7 @@ public class Main implements IMain {
 			
 		}
 		
-		comMapping.clear();
+		comMap.clear();
 		
 		if(optimizer != null){
 			optimizer.dispose();
@@ -281,39 +296,39 @@ public class Main implements IMain {
 	}
 	
 
-	/**
-	 * Launcher method
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		
-		if(args.length == 0){
-			System.out.println("Please provide the path of config file as an argument (usually pluginCore/f4gconfig.properties).");
-			System.exit(1);
-		}
-		
-		IMain f4gInstance = new Main();
-		boolean res =  f4gInstance.init(args[0]);
-		
-		if(res){
-			res = f4gInstance.startup();
-		} else {
-			System.exit(1);
-		}
-
-
-		f4gInstance.isRunning();
-		f4gInstance.getStatusMessage();
-		try {
-			Thread.sleep(35000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		f4gInstance.shutdown();
-		
-	}
+//	/**
+//	 * Launcher method
+//	 * @param args
+//	 */
+//	public static void main(String[] args) {
+//		
+//		if(args.length == 0){
+//			System.out.println("Please provide the path of config file as an argument (usually pluginCore/f4gconfig.properties).");
+//			System.exit(1);
+//		}
+//		
+//		IMain f4gInstance = new Main();
+//		boolean res =  f4gInstance.init(args[0]);
+//		
+//		if(res){
+//			res = f4gInstance.startup();
+//		} else {
+//			System.exit(1);
+//		}
+//
+//
+//		f4gInstance.isRunning();
+//		f4gInstance.getStatusMessage();
+//		try {
+//			Thread.sleep(35000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		f4gInstance.shutdown();
+//		
+//	}
 
 	public boolean isRunning() {
 		log.debug("isRunning(): " + running);
