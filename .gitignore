@@ -43,6 +43,11 @@ Thumbs.db
 # Folder config file
 Desktop.ini
 
+###########
+## MAC OS
+##########
+.DS_Store
+
 #################
 ## FIT4Green
 #################

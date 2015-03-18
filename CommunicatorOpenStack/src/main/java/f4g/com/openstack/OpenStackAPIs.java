@@ -3,13 +3,11 @@ package f4g.com.openstack;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -75,19 +73,19 @@ public class OpenStackAPIs {
     public Optional<Integer> getCPU(String hyperVisorName) {
 
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
-	    if (hyperVisor.getHypervisorHostname().split(".")[0].equals(hyperVisorName)) {
-		    log.info("CPU: " + hyperVisor.getVirtualCPU());
+	    if (hyperVisor.getHypervisorHostname().equals(hyperVisorName)) {
+		log.info("CPU: " + hyperVisor.getVirtualCPU());
 		return Optional.ofNullable(hyperVisor.getVirtualCPU());
 	    }
 	}
 	return Optional.empty();
     }
 
-    //Not used
+    // Not used
     public Optional<Integer> getDisk(String hyperVisorName) {
 
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
-	    if (hyperVisor.getHypervisorHostname().split(".")[0].equals(hyperVisorName)) {
+	    if (hyperVisor.getHypervisorHostname().equals(hyperVisorName)) {
 		return Optional.ofNullable(hyperVisor.getLocalDisk());
 	    }
 	}
@@ -98,7 +96,7 @@ public class OpenStackAPIs {
 
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
 	    if (hyperVisor.getHypervisorHostname().equals(hyperVisorName)) {
-		 log.info("WorkLoad: " + hyperVisor.getCurrentWorkload());
+		log.info("WorkLoad: " + hyperVisor.getCurrentWorkload());
 		return Optional.ofNullable(hyperVisor.getCurrentWorkload());
 	    }
 	}
@@ -110,7 +108,8 @@ public class OpenStackAPIs {
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
 	    log.info("hypervisor name: " + hyperVisor.getHypervisorHostname());
 	    if (hyperVisor.getHypervisorHostname().equals(hyperVisorName)) {
-		log.info("Local RAM: " + hyperVisor.getLocalMemory() + "Used RAM: " +  hyperVisor.getLocalMemoryUsed());
+		log.info("Local RAM: " + hyperVisor.getLocalMemory()
+			+ "Used RAM: " + hyperVisor.getLocalMemoryUsed());
 		return Optional.ofNullable(hyperVisor.getLocalMemoryUsed());
 	    }
 	}
@@ -121,7 +120,8 @@ public class OpenStackAPIs {
 
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
 	    if (hyperVisor.getHypervisorHostname().equals(hyperVisorName)) {
-		return Optional.ofNullable(hyperVisor.getVirtualCPU() / hyperVisor.getVirtualUsedCPU());
+		return Optional.ofNullable(hyperVisor.getVirtualCPU()
+			/ hyperVisor.getVirtualUsedCPU());
 	    }
 	}
 	return Optional.empty();
@@ -143,24 +143,18 @@ public class OpenStackAPIs {
 	    if (vm.getHypervisorHostname().equals(hyperVisorName)) {
 		log.info("VM founded: " + vm.getId());
 		vmNames.add(vm.getId());
+		
 	    }
 	}
 	return vmNames;
     }
-    
-    public Optional<Integer> getVMCPUs(String vmId){
-	log.info("Vcpu..." + admin.compute().servers().get(vmId).getFlavor().getVcpus());
-	return Optional.ofNullable(admin.compute().servers().get(vmId).getFlavor().getVcpus());
+
+    public Optional<Integer> getVMCPUs(String vmId) {
+	log.info("Vcpu..."
+		+ admin.compute().servers().get(vmId).getFlavor().getVcpus());
+	return Optional.ofNullable(admin.compute().servers().get(vmId)
+		.getFlavor().getVcpus());
     }
 
-    public boolean liveMigrate(String dstServerId, String vmId) {
-	LiveMigrateOptions options = LiveMigrateOptions.create().host(
-		dstServerId);
-	if (!admin.compute().servers().liveMigrate(vmId, options).isSuccess()) {
-	    return false;
-	}
-	// TODO: should we check if we need to wait until the migration is done?
-	return true;
-    }
 
 }

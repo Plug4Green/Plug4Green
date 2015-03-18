@@ -367,17 +367,23 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 		}
 		
 		//TODO: to be verified if they must be set as mandatory in the model (so that they are created automatically)
-//		CpuUsage cpuUsage = new CpuUsage();
-//		cpuUsage.setValue(0.0);
-//		vm.setActualCPUUsage(cpuUsage);
-//		
+//		if(values.length > 5 && !values[5].isEmpty()){
+//			CpuUsage cpuUsage = new CpuUsage();
+//			cpuUsage.setValue(Double.valueOf(values[5]));
+//			vm.setActualCPUUsage(cpuUsage);
+//		}
+//
+//		if(values.length > 6 && !values[6].isEmpty()){
 //		IoRate ioRate = new IoRate();
-//		ioRate.setValue(0.0);
+//		ioRate.setValue(Double.valueOf(values[6]));
 //		vm.setActualDiskIORate(ioRate);
+//		}
 //		
+//		if(values.length > 7 && !values[7].isEmpty()){
 //		MemoryUsage memoryUsage = new MemoryUsage();
-//		memoryUsage.setValue(0.0);
+//		memoryUsage.setValue(Double.valueOf(values[7]));
 //		vm.setActualMemoryUsage(memoryUsage);
+//		}
 //		
 //		NetworkUsage networkUsage = new NetworkUsage();
 //		networkUsage.setValue(0.0);

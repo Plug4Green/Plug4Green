@@ -102,19 +102,22 @@ public class ComOpenstack extends AbstractCom {
 
     @Override
     public boolean powerOn(PowerOnAction action) {
+	log.info("PowerOn action for id:" + action.getNodeName());
 	// TODO Auto-generated method stub
 	return false;
     }
 
     @Override
     public boolean powerOff(PowerOffAction action) {
-	// TODO Auto-generated method stub
+	log.info("PowerOff action for id:" + action.getNodeName());
 	return false;
     }
 
     @Override
     public boolean liveMigrate(LiveMigrateVMAction action) {
-	return openstackAPI.liveMigrate(action.getDestNodeController(),
+	log.info("Livemigrate action for id:" + action.getVirtualMachine()
+		+ " to dest " + action.getDestNodeController());
+	return liveMigrate(action.getDestNodeController(),
 		action.getVirtualMachine());
 
     }
@@ -212,21 +215,23 @@ public class ComOpenstack extends AbstractCom {
 			if (actualVMsList.contains(vmId) == false
 				&& vmId != null) {
 			    // ADD a virtual machine to the model
-			    
-			    if(openstackAPI.getVMCPUs(vmId).isPresent()){ 
-			    operation = new ComOperation(
-				    ComOperation.TYPE_ADD,
-				    ComOperation.VM_ON_HYPERVISOR_PATH,
-				    vmId + " a a "
-					    + openstackAPI.getVMCPUs(vmId).get());
-			    operations.add(operation);
-			    
-			    ((ConcurrentLinkedQueue<ComOperationCollector>) this
-				    .getQueuesHashMap().get(key))
-				    .add(operations);
-			    log.info("Adding VM: " + vmId);
-			    monitor.updateNode(key, this);
-			    operations.remove(operation);
+
+			    if (openstackAPI.getVMCPUs(vmId).isPresent()) {
+				operation = new ComOperation(
+					ComOperation.TYPE_ADD,
+					ComOperation.VM_ON_HYPERVISOR_PATH,
+					vmId
+						+ " a a "
+						+ openstackAPI.getVMCPUs(vmId)
+							.get());
+				operations.add(operation);
+
+				((ConcurrentLinkedQueue<ComOperationCollector>) this
+					.getQueuesHashMap().get(key))
+					.add(operations);
+				log.info("Adding VM: " + vmId);
+				monitor.updateNode(key, this);
+				operations.remove(operation);
 			    }
 			    ((ConcurrentLinkedQueue<ComOperationCollector>) this
 				    .getQueuesHashMap().get(key)).poll();
@@ -239,10 +244,10 @@ public class ComOpenstack extends AbstractCom {
 		    // DELETE virtual machines for host in fit4green model
 
 		    for (String vmId : actualVMsList) {
-			operation = new ComOperation(
-				ComOperation.TYPE_REMOVE,
-				ComOperation.VM_ON_HYPERVISOR_PATH,
-				vmId + " a a " + openstackAPI.getVMCPUs(vmId));
+			operation = new ComOperation(ComOperation.TYPE_REMOVE,
+				ComOperation.VM_ON_HYPERVISOR_PATH, vmId
+					+ " a a "
+					+ openstackAPI.getVMCPUs(vmId));
 			operations.add(operation);
 			((ConcurrentLinkedQueue<ComOperationCollector>) this
 				.getQueuesHashMap().get(key)).add(operations);
@@ -318,14 +323,14 @@ public class ComOpenstack extends AbstractCom {
 
 	// get the CPU usages
 	try {
-	    //TODO: CPU Load
-//	    openstackAPI.getCurrentWorkload(hyperVisorName)
-//		    .ifPresent(
-//			    cpuUsage -> operationSet.add(new ComOperation(
-//				    ComOperation.TYPE_UPDATE,
-//				    "/mainboard/CPU[frameworkID='"
-//					    + hyperVisorName + "']/cpuUsage",
-//				    String.valueOf(cpuUsage))));
+	    // TODO: CPU Load
+	    // openstackAPI.getCurrentWorkload(hyperVisorName)
+	    // .ifPresent(
+	    // cpuUsage -> operationSet.add(new ComOperation(
+	    // ComOperation.TYPE_UPDATE,
+	    // "/mainboard/CPU[frameworkID='"
+	    // + hyperVisorName + "']/cpuUsage",
+	    // String.valueOf(cpuUsage))));
 	} catch (NullPointerException exception) {
 	    // in case that is impossible to get the information, whatever
 	    // the reason
@@ -415,4 +420,53 @@ public class ComOpenstack extends AbstractCom {
 	return true;
     }
 
+    private boolean liveMigrate(String dstServerId, String vmId) {
+	InputStream input = null;
+	OSClient admin = null;
+	try {
+
+	    input = new FileInputStream(new File(
+		    "src/main/config/ComOpenstack/config.yaml"));
+	} catch (FileNotFoundException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	Yaml yaml = new Yaml();
+	Map<String, String> config = (Map<String, String>) yaml.load(input);
+	try {
+	    admin = OSFactory
+		    .builder()
+		    .endpoint(
+			    "http://" + config.get("ip") + ":"
+				    + config.get("port") + "/v2.0")
+		    .credentials(config.get("user"), config.get("password"))
+		    .tenantName(config.get("tenant")).authenticate();
+	} catch (AuthenticationException e) {
+
+	    log.error("Connection to OpenStack datacenter fails: {}", e);
+	}
+	log.info("Dentro!!!");
+	String dstServerIdClean = dstServerId.replace(".domain.tld", "");
+
+	LiveMigrateOptions options = LiveMigrateOptions.create().host(
+		dstServerIdClean);
+	admin.compute().servers().liveMigrate(vmId, options);
+	int i = 1;
+	while (i < 120) {
+	    i++;
+	    admin.compute().servers().get(vmId.trim());
+	    if (admin.compute().servers().get(vmId).getHypervisorHostname()
+		    .equals(dstServerId)) {
+		return true;
+	    }
+	    try {
+		Thread.currentThread().sleep(1000);
+	    } catch (InterruptedException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	    }
+	}
+	log.warn("Not successfully migrated");
+	return false;
+    }
 }
