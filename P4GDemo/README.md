@@ -23,7 +23,8 @@ Clone the repo:
 ```
 git clone https://github.com/stackforge/fuel-main.git
 ```
-(https://fuel-jenkins.mirantis.com/view/ISO/)[Download the fuel iso.]
+
+[Download the fuel iso.](https://fuel-jenkins.mirantis.com/view/ISO/)
 
 Put the just downloaded iso in the iso folder of the repository "fuel-main/virtualbox/iso"
 
