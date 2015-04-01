@@ -10,7 +10,6 @@ This section details an Openstack installation under VirtualBox using Fuel. Such
 Requirements:
 
 - Tested on Mac OS, but it will work also on Linux.
-
 - VirtualBox with VirtualBox Extension Pack
 - Git 
 - At least 10Gb of free RAM 
@@ -21,23 +20,24 @@ It is possible to change the configuration and other stuff while the fuel master
 
 Clone the repo:
 
-```git clone https://github.com/stackforge/fuel-main.git```
+```
+git clone https://github.com/stackforge/fuel-main.git
+```
+(https://fuel-jenkins.mirantis.com/view/ISO/)[Download the fuel iso.]
 
-Download the fuel iso:
+Put the just downloaded iso in the iso folder of the repository "fuel-main/virtualbox/iso"
 
-```https://fuel-jenkins.mirantis.com/view/ISO/```
-
-Put the just downloaded iso in the iso folder of the repository “fuel-main/virtualbox/iso”
-
-At this point we need to create the VMs for the Openstack installation using the scripts in “fuel-main/virtualbox/”. Considering that we want to use less RAM as possible, the basic idea is to run:
-
-```./launch_8GB.sh```
-
+At this point we need to create the VMs for the Openstack installation using the scripts in "fuel-main/virtualbox/". Considering that we want to use less RAM as possible, the basic idea is to run:
+```
+./launch_8GB.sh 
+```
 This script will create 1 OS master and 3 slaves. Each VM uses about 1,5Gb of RAM. One is used for the Openstack controller and the other two to host the VMs (compute nodes).  Openstack live migration, that is used in P4G, requires a shared storage. So we need to create two additional VMs that will support the Ceph storage. The fastest and simplest way is to clone two slave VMs through the VirtualBox GUI. You need to check the option to reinizialize the MAC address.
 
 Access the fuel master GUI through a browser:
 
-```http://10.30.0.2:8000 (credential: admin both as user and password)```
+```
+http://10.30.0.2:8000 (credential: admin both as user and password)
+```
 
 1. Create a new environment
 2. Name and Release: assign name and choose a release
