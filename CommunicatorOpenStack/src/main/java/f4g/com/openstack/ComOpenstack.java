@@ -423,10 +423,13 @@ public class ComOpenstack extends AbstractCom {
     private boolean liveMigrate(String dstServerId, String vmId) {
 	InputStream input = null;
 	OSClient admin = null;
+	File configFile = new File("./config.yaml");
+	if (!configFile.exists()) {
+	    configFile = new File("src/main/config/ComOpenstack/config.yaml");
+	}
 	try {
 
-	    input = new FileInputStream(new File(
-		    "src/main/config/ComOpenstack/config.yaml"));
+	    input = new FileInputStream(configFile);
 	} catch (FileNotFoundException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
@@ -445,7 +448,6 @@ public class ComOpenstack extends AbstractCom {
 
 	    log.error("Connection to OpenStack datacenter fails: {}", e);
 	}
-	log.info("Dentro!!!");
 	String dstServerIdClean = dstServerId.replace(".domain.tld", "");
 
 	LiveMigrateOptions options = LiveMigrateOptions.create().host(

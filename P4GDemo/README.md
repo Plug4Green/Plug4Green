@@ -29,9 +29,11 @@ git clone https://github.com/stackforge/fuel-main.git
 Put the just downloaded iso in the iso folder of the repository "fuel-main/virtualbox/iso"
 
 At this point we need to create the VMs for the Openstack installation using the scripts in "fuel-main/virtualbox/". Considering that we want to use less RAM as possible, the basic idea is to run:
+
 ```
 ./launch_8GB.sh 
 ```
+
 This script will create 1 OS master and 3 slaves. Each VM uses about 1,5Gb of RAM. One is used for the Openstack controller and the other two to host the VMs (compute nodes).  Openstack live migration, that is used in P4G, requires a shared storage. So we need to create two additional VMs that will support the Ceph storage. The fastest and simplest way is to clone two slave VMs through the VirtualBox GUI. You need to check the option to reinizialize the MAC address.
 
 Access the fuel master GUI through a browser:
@@ -79,9 +81,16 @@ The VMs position could be displayed through the nova command line as follows:
 
 ## Plug4Green configuration
 Plug4Green uses two configuration files:
+
 - f4gmodel_OS.xml: description of the data center
 - SLA_OS.xml: service-level agreement configuration
 
 ##Plug4Green Demo
 
 The Plug4Green should be compiled with mvn clean install and can be started directly from Eclipse or from the jar created in the folder P4GDemo/target.
+P4G demo uses two configuration files:
+
+- P4GDemo/src/main/config/core/f4gconfig.properties: contains the reference to the SLA and Datacenter models.
+- P4GDemo/src/main/config/ComOpenstack/config.yaml: provides the instructions to reach the Openstack infrastructure.
+
+All this configuration files should be putted at the same lavel of the jar or inside the suggested path. 
