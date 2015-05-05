@@ -67,6 +67,102 @@ In the Nodes tab, using Add Nodes button, assign to each node a role as follows:
 
 After that you will be able to Deploy Openstack. It may require from same minutes to hours based on the system performances.
 
+### Problems with VLAN network on VirtualBox ###
+
+I had to manually configure several host-only networks on vbox to get
+fuel to properly deploy openstack infrastructure. If
+you are experincing error messages during the openstack installation
+phase on fuel interface (like no route to host, for instance) you may
+try this as well. 
+
+
+## Disclaimer
+
+
+Greate part of content come from this tutorial that
+explains how to install fuel manually.
+
+https://docs.mirantis.com/openstack/fuel/fuel-6.0/virtualbox.html
+
+OpenStack needs at least 5 networks to work properly:
+
+## Step-by-step
+
+Openstack needs to separte traffic over 5 networks to work properly.
+
+These networks are:
+
+1. Fuel network (used to boot PXE) and to deploy the environment
+2. Storage (used by ceph or cinder)
+3. Management (used by nova)
+4. Public (used to access from outside)
+5. VM (network for new created VMs)
+
+
+## Setup virtualbox
+
+Our goal will be to use vbox network adapters instead of the VLAN
+feature to work around the problem.
+Vbox limits to 4 the number of virtual network interfaces per
+VM so we will still have to put one of the networks as a VLAN.
+
+First on virtual box, go to
+
+File -> Preferences -> Network
+
+Choose the Host-only Network tab, assure the following configuration
+to each vboxnet# interface (note that # is actually a number):
+
+vboxnet0: Admin (PXE)
+10.20.0.1
+
+vboxnet1: Public
+172.16.0.1
+
+vboxnet2: Management
+192.168.0.1
+
+vboxnet3: Storage
+192.168.1.1
+
+For all vboxnet interfaces set net mask to 255.255.255.0 and no DHCP.
+
+Now you have to shutdown all your VMs. With the right mouse button
+click on Settings and fin the Network pane. Configure 4 network
+adapters each one for a different vboxnet assure the following order
+
+Adapter 1 - vboxnet0
+Adapter 2 - vboxnet 1
+Adapter 3 - vboxnet 2
+Adapter 4 - vboxnet 3
+
+At each adapter choose:
+
+Host-only Adapter
+in Advanced
+choose the PCnet-FAST III adapter instead of Intel (default)
+Set promicuous Mode to : Allow All
+check the Cable Connected option
+
+
+Now reboot all your nodes. 
+
+## Setup on fuel
+
+Access the fuel-master node create a new deployment. Use Nova as network.
+
+On the nodes tab, configure for each node the network settings as follows:
+
+eth0 : Admin (PXE) and VM (Fixed)
+eth1: Public
+eth2: Management
+eth3: Storage
+
+On the network tab, assure that only the Use VLAN tagging for
+Nova-Network is checked. Put a number as the VLAN tag.
+You can test the network now.
+
+
 
 ### Environment setup
 
@@ -93,4 +189,4 @@ P4G demo uses two configuration files:
 - P4GDemo/src/main/config/core/f4gconfig.properties: contains the reference to the SLA and Datacenter models.
 - P4GDemo/src/main/config/ComOpenstack/config.yaml: provides the instructions to reach the Openstack infrastructure.
 
-All this configuration files should be putted at the same lavel of the jar or inside the suggested path. 
+All this configuration files should be putted at the same lavel of the jar or inside the suggested path.
