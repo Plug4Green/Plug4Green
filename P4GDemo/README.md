@@ -129,6 +129,13 @@ Plug4Green Demo uses the following configuration files:
 - P4GDemo/src/main/config/core/f4gconfig.properties: contains the reference to the SLA and Datacenter models.
 - P4GDemo/src/main/config/ComOpenstack/config.yaml: provides the instructions to reach the Openstack infrastructure.
 
+## Shutting down
+
+To shutdown the environment, just issue a "Close/ACPI Shutdown" on all VMs.
+To stop P4G, just do Ctrl-C.
+
+To restart: start VirtualBox, and restart all VMs. You can then connect to OpenStack GUI and restart the OpenStack VMs.
+
 Enjoy!
 
 # Troubleshooting #
