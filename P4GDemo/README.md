@@ -49,7 +49,6 @@ In the Fuel setup accept all default values, save and quit. This step may take a
 ### Configure OpenStack environment
 
 Once the fuel master VM and the two slaves displays their login invite, you can access the fuel master GUI through a browser [at this address](http://10.20.0.2:8000) (credential: admin both as user and password)
-]
 
 Click on "Create a new OpenStack environment" and select the following settings:
 
@@ -77,10 +76,13 @@ In the Settings tab:
 
 After that you will be able to click on "Deploy Changes". It may require from some minutes to hours based on the system performances.
 
-### Create & migrate OpenStack VMs
+### Create OpenStack VMs
 
-After the installation, you would be able to access the Openstack graphical interface through a browser at [this address](172.16.0.2).
-In the Project tab, create two instances (VM) with the configuration you prefer. I suggest to use the smallest flavor.
+After the installation, you should be able to access the Openstack graphical interface through a browser at [this address](172.16.0.2).
+In the Project/Compute/Intances tab, click on "Launch instances".
+Create two instances (VM) with the configuration you prefer. I suggest to use the smallest flavor.
+
+### View and migrate OpenStack VMs
 
 The VMs position could be displayed through the nova command line as follows:
 
