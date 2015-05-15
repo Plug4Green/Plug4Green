@@ -1,7 +1,7 @@
 # Plug4Green demo
 
-This module provides a demonstration of Plug4Green (P4G) connected to OpenStack (OS). The installation of OpenStack is performed in a virtualized environment on a single laptop.\\
-P4G is an energy-aware VM placement algorithm able to compute the placement of the VMs and state of the servers. In particular P4G achieves the VMs consolidation and server state management based on configured SLAs and description of the current configuration of the data center. 
+This module provides a demonstration of Plug4Green (P4G) connected to OpenStack (OS). The installation of OpenStack is performed in a virtualized environment on a single laptop.
+
 The Openstack communicator module provides both the actuation of P4G energy and SLA aware policies (e.g., live migrate a VM from a server to another…) and the updating description of the data center configuration (real-time CPU/Ram usage, VMs position…).
 
 ## Requirements:
