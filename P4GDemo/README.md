@@ -5,20 +5,19 @@ P4G is an energy-aware VM placement algorithm able to compute the placement of t
 The Openstack communicator module provides both the actuation of P4G energy and SLA aware policies (e.g., live migrate a VM from a server to another…) and the updating description of the data center configuration (real-time CPU/Ram usage, VMs position…).
 In the following sections we describe how to install Openstack in virtual infrastruture on a single laptop, in order to test P4G energy management.
 
-## Openstack installation
-This section details an Openstack installation under VirtualBox using Fuel. Such installation can be run on a single laptop. 
+## Requirements:
 
-Requirements:
-
-- Tested on Mac OS and Ubuntu.
 - VirtualBox with VirtualBox Extension Pack
 - Git 
 - At least 10Gb of free RAM 
 - At least 1 physical core
+- Internet connection
 
-### Installation procedure
-It is possible to change the configuration and other stuff while the fuel master is booting. This guide considers the default configuration, in particular for network. 
+Tested on Mac OS and Ubuntu.
 
+## Openstack installation
+This section details an Openstack installation under VirtualBox using Fuel. Such installation can be run on a single laptop. 
+It is possible to change the configuration while the fuel master is booting. This guide considers the default configuration, in particular for network. 
 
 ```
 Clone the repo:
@@ -33,13 +32,15 @@ $ mv fuel-community-6.0.iso fuel-main/virtualbox/iso
 
 ```
 At this point we need to create the VMs for the Openstack installation using the script "fuel-main/virtualbox/launch_8GB.sh".
-This script will create 1 OS master and 3 slaves. Each VM uses about 1,5Gb of RAM. One is used for the Openstack controller and the other two to host the VMs (compute nodes). Accept default values in the Fuel setup. This step may take a long time.
+This script will create 1 OS master and 3 slaves. Each VM uses about 1,5Gb of RAM. One is used for the Openstack controller and the other two to host the VMs (compute nodes).
+Accept default values in the Fuel setup, save and quit. This step may take a long time.
 
 ```
 cd fuel-main/virtualbox/
 ./launch_8GB.sh 
 ```
-Once The fuel master VM and the two slaves displays there login invite, you can access the fuel master GUI through a browser:
+
+Once the fuel master VM and the two slaves displays their login invite, you can access the fuel master GUI through a browser:
 
 ```
 xdg-open http://10.20.0.2:8000 (credential: admin both as user and password)
@@ -67,7 +68,7 @@ In the Nodes tab, using Add Nodes button, assign to each discovered node a role 
 1. Assign "Controller" to a VM
 2. Assign "Compute" & "Storage - Ceph OSD" to the two other VMs
 
-After that you will be able to click on "Deploy". It may require from some minutes to hours based on the system performances.
+After that you will be able to click on "Deploy Changes". It may require from some minutes to hours based on the system performances.
 
 ### Environment setup
 
