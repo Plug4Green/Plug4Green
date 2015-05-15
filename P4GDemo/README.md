@@ -68,7 +68,7 @@ In the Networks tab: click on verify.
 
 In the Settings tab:
 
-- copy/paste your public key (~/.ssh/id_rsa.pub) in the appropriate field
+- Copy/paste your public key (~/.ssh/id_rsa.pub) in the appropriate field
 - Check option Ceph RBD for volumes (Cinder)
 - Check option Ceph RBD for image (Glance)
 - Check option Ceph RBD for ephemeral volumes (Nova)
@@ -78,7 +78,7 @@ After that you will be able to click on "Deploy Changes". It may require from so
 
 ### Create OpenStack VMs
 
-After the installation, you should be able to access the Openstack graphical interface through a browser at [this address](172.16.0.2).
+After the installation, you should be able to access the Openstack graphical interface through a browser at [this address](http://172.16.0.2).
 In the Project/Compute/Intances tab, click on "Launch instances".
 Create two instances (VM) with the configuration you prefer. I suggest to use the smallest flavor.
 
@@ -134,7 +134,7 @@ Plug4Green Demo uses the following configuration files:
 To shutdown the environment, just issue a "Close/ACPI Shutdown" on all VMs.
 To stop P4G, just do Ctrl-C.
 
-To restart: start VirtualBox, and restart all VMs. You can then connect to OpenStack GUI and restart the OpenStack VMs.
+To restart: start VirtualBox, and restart all VMs, starting with the fuel-master. You can then connect to OpenStack GUI and restart the OpenStack VMs.
 
 Enjoy!
 
