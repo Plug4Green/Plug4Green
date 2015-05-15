@@ -1,9 +1,8 @@
 # Plug4Green demo
 
-This module provides a demonstration of Plug4Green (P4G) connected to OpenStack (OS).
+This module provides a demonstration of Plug4Green (P4G) connected to OpenStack (OS). The installation of OpenStack is performed in a virtualized environment on a single laptop.\\
 P4G is an energy-aware VM placement algorithm able to compute the placement of the VMs and state of the servers. In particular P4G achieves the VMs consolidation and server state management based on configured SLAs and description of the current configuration of the data center. 
 The Openstack communicator module provides both the actuation of P4G energy and SLA aware policies (e.g., live migrate a VM from a server to another…) and the updating description of the data center configuration (real-time CPU/Ram usage, VMs position…).
-In the following sections we describe how to install Openstack in virtual infrastruture on a single laptop, in order to test P4G energy management.
 
 ## Requirements:
 
@@ -16,88 +15,119 @@ In the following sections we describe how to install Openstack in virtual infras
 Tested on Mac OS and Ubuntu.
 
 ## Openstack installation
-This section details an Openstack installation under VirtualBox using Fuel. Such installation can be run on a single laptop. 
-It is possible to change the configuration while the fuel master is booting. This guide considers the default configuration, in particular for network. 
+This section details an Openstack installation under VirtualBox using Fuel. Such installation can be run on a single laptop. The idea is to use VirtualBox VMs to simulate physical nodes. On one node will be installed the OpenStack Cloud Controller, and on two others OpenStack Compute nodes. The Compute nodes will then be able to host OpenStack VMs, that Plug4Green will manage.
+
+Additional infos about Fuel and OpenStack can be found here:
+https://docs.mirantis.com/openstack/fuel/fuel-6.0/user-guide.html
+
+### Fuel installation
 
 ```
-Clone the repo:
-$ git clone https://github.com/stackforge/fuel-main.git
+get Fuel:
+$ wget https://github.com/stackforge/fuel-main/archive/6.0.tar.gz
+$ tar -xzvf 6.0.tar.gz
 
-Download the fuel iso:
+Download the fuel iso and move it to the right folder:
 $ wget http://seed.fuel-infra.org/fuelweb-community-release/fuel-community-6.0.iso.torrent
 $ xdg-open fuel-community-6.0.iso.torrent
-
-Move the iso in the iso folder of the repository:
-$ mv fuel-community-6.0.iso fuel-main/virtualbox/iso
+$ mv fuel-community-6.0.iso fuel-main-6.0/virtualbox/iso
 
 ```
-At this point we need to create the VMs for the Openstack installation using the script "fuel-main/virtualbox/launch_8GB.sh".
+
+### Start node VMs
+
+At this point we need to create the VirtualBox VMs that will host the Openstack installation, using the script "fuel-main/virtualbox/launch_8GB.sh".
 This script will create 1 OS master and 3 slaves. Each VM uses about 1,5Gb of RAM. One is used for the Openstack controller and the other two to host the VMs (compute nodes).
-Accept default values in the Fuel setup, save and quit. This step may take a long time.
 
 ```
 cd fuel-main/virtualbox/
 ./launch_8GB.sh 
 ```
 
-Once the fuel master VM and the two slaves displays their login invite, you can access the fuel master GUI through a browser:
+In the Fuel setup accept all default values, save and quit. This step may take a long time.
 
-```
-xdg-open http://10.20.0.2:8000 (credential: admin both as user and password)
-```
+### Configure OpenStack environment
 
-1. Create a new environment
-2. Name and Release: assign name and choose a release
-3. Deployment Mode: multi-node
-4. Compute: QEMU
-5. Networking Setup: the default is sufficient (Neutron with VLAN)
-6. Storage Backends: choose Ceph for both options
+Once the fuel master VM and the two slaves displays their login invite, you can access the fuel master GUI through a browser [at this address](http://10.20.0.2:8000) (credential: admin both as user and password)
+]
 
-It is suggested to verify the network settings: inside the Networks tab click on verify.
-In the tab settings:
+Click on "Create a new OpenStack environment" and select the following settings:
 
-- Add your public key or keys that will be authorized to access the nodes
-- Check options:
- 
-	- Ceph RBD for volumes (Cinder)
-	- Ceph RBD for image (Glance)
-	- Ceph RBD for ephemeral volumes (Nova)
+- Name and Release: assign name and choose a release
+- Deployment Mode: multi-node
+- Compute: QEMU
+- Networking Setup: the default is sufficient (Neutron with VLAN)
+- Storage Backends: choose Ceph for both options
 
-In the Nodes tab, using Add Nodes button, assign to each discovered node a role as follows:
+In the Nodes tab:
+using Add Nodes button, assign to each discovered node a role as follows:
 
-1. Assign "Controller" to a VM
-2. Assign "Compute" & "Storage - Ceph OSD" to the two other VMs
+- Assign "Controller" to a VM
+- Assign "Compute" & "Storage - Ceph OSD" to the two other VMs
+
+In the Networks tab: click on verify.
+
+In the Settings tab:
+
+- copy/paste your public key (~/.ssh/id_rsa.pub) in the appropriate field
+- Check option Ceph RBD for volumes (Cinder)
+- Check option Ceph RBD for image (Glance)
+- Check option Ceph RBD for ephemeral volumes (Nova)
+
 
 After that you will be able to click on "Deploy Changes". It may require from some minutes to hours based on the system performances.
 
-### Environment setup
+### Create & migrate OpenStack VMs
 
-After the installation, you would be able to access the Openstack graphical interface through a browser at the address 172.16.0.2.
-In the Project tab you can create two instances (VM) with the configuration you prefer. I suggest to use the smallest flavor.
+After the installation, you would be able to access the Openstack graphical interface through a browser at [this address](172.16.0.2).
+In the Project tab, create two instances (VM) with the configuration you prefer. I suggest to use the smallest flavor.
+
 The VMs position could be displayed through the nova command line as follows:
 
-1. Connect to the controller: ssh root@172.16.0.2
-2. Type the command “nova list” to show the VMs list
-“nova show <VM identifier>” displays also the position of the VM.
-3. It possible to test to move a VM to another node to test the consolidation with the command: nova live-migrate <VM identifier> <destination node name>
+```
+Connect to the controller: 
+$ ssh root@172.16.0.2
+Setup the OS variables: 
+$ source ./openrc
+```
 
-## Plug4Green configuration
-Plug4Green uses two configuration files:
-
-- f4gmodel_OS.xml: description of the data center
-- SLA_OS.xml: service-level agreement configuration
+The following commands are then available:
+```
+to show the VMs list:
+$ nova list
+to display the position of the VM:
+$ nova show <VM identifier>
+to migrate a VM to another node: 
+$ nova live-migration <VM identifier> <destination node name>
+```
 
 ##Plug4Green Demo
+The environment is now ready to run Plug4Green demo. You should have two openStack VMs on two separate nodes, as displayed by `nova show`. 
 
-The Plug4Green should be compiled with mvn clean install and can be started directly from Eclipse or from the jar created in the folder P4GDemo/target.
-P4G demo uses two configuration files:
+```
+download and install Plug4Green:
+$ git clone git@github.com:Plug4Green/Plug4Green.git
+compile:
+$ cd Plug4Green
+$ mvn clean install -DskipTests
+```
 
+Run the demo:
+
+```
+java -jar P4GDemo/target/P4GDemo-1.0-jar-with-dependencies.jar
+```
+
+After one minute, P4G should migrate one VM to the same node as the second VM, in order to save energy. You can check this using the nova command as shown in the previous section.
+
+Plug4Green Demo uses the following configuration files:
+
+- P4GDemo/src/main/resource/core/f4gmodel_OS.xml: description of the data center
+- P4GDemo/src/main/resource/core/SLA_OS.xml: service-level agreement configuration
 - P4GDemo/src/main/config/core/f4gconfig.properties: contains the reference to the SLA and Datacenter models.
 - P4GDemo/src/main/config/ComOpenstack/config.yaml: provides the instructions to reach the Openstack infrastructure.
 
-All this configuration files should be putted at the same lavel of the jar or inside the suggested path.
-
-
+Enjoy!
 
 # Troubleshooting #
 
