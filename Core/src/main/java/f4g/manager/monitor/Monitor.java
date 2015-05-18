@@ -103,7 +103,6 @@ public class Monitor implements IMonitor {
 		
 		String currentFilePath = Constants.F4G_MODEL_FILE_PATH;
 		String currentModelPathName = Configuration.get(currentFilePath);
-		log.info("currentModelPathName" + currentModelPathName);
 		boolean isModelLoaded = loadModel(currentModelPathName);
 		if(!isModelLoaded){
 			log.error("Error while loading model; exiting");
