@@ -117,7 +117,8 @@ $ mvn clean install -DskipTests
 Run the demo:
 
 ```
-java -jar P4GDemo/target/P4GDemo-1.0-jar-with-dependencies.jar
+$ cd P4GDemo
+java -jar target/P4GDemo-1.0-jar-with-dependencies.jar
 ```
 
 After one minute, P4G should migrate one VM to the same node as the second VM, in order to save energy. You can check this using the nova command as shown in the previous section.
@@ -129,7 +130,7 @@ Plug4Green Demo uses the following configuration files:
 - P4GDemo/src/main/config/core/f4gconfig.properties: contains the reference to the SLA and Datacenter models.
 - P4GDemo/src/main/config/ComOpenstack/config.yaml: provides the instructions to reach the Openstack infrastructure.
 
-## Shutting down
+## Shutdown & restart
 
 To shutdown the environment, just issue a "Close/ACPI Shutdown" on all VMs.
 To stop P4G, just do Ctrl-C.
