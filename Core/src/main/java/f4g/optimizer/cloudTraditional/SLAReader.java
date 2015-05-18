@@ -302,11 +302,7 @@ public class SLAReader {
 						// Update current end date by adding duration
 						Date currentEndDate = new Date(currentStartDate.getTime());
 						periods.get(j).getDuration().addTo(currentEndDate);
-						
-						log.debug("Current start date: " + currentStartDate);
-									
-						log.debug("Current end date: " + currentEndDate);
-									
+
 						// Check for load (start date included, end date excluded)
 						if (currentDate.after(currentStartDate) && currentDate.before(currentEndDate)
 						|| currentDate.equals(currentStartDate)	) {
