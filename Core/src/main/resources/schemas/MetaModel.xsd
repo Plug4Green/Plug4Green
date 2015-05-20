@@ -161,13 +161,6 @@
 			<xsd:enumeration value="OTHER" />
 		</xsd:restriction>
 	</xsd:simpleType>
-	<xsd:simpleType name="DCComputingStyle">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="SUPER" />
-			<xsd:enumeration value="TRADITIONAL" />
-			<xsd:enumeration value="CLOUD" />
-		</xsd:restriction>
-	</xsd:simpleType>
 	<xsd:simpleType name="RAMTypeVendorType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="KINGSTON" />
@@ -485,8 +478,6 @@
 		<xsd:sequence>
 			<xsd:element name="name" type="xsd:string" minOccurs="0"
 				maxOccurs="1" />
-			<xsd:element name="computingStyle" type="f4g:DCComputingStyle"
-				minOccurs="1" maxOccurs="1" />
 			<xsd:element ref="f4g:ApplicationBenchmark" minOccurs="0" maxOccurs="unbounded" />				
 			<xsd:element name="computedPower" type="f4g:Power"
 				minOccurs="0" maxOccurs="1" />

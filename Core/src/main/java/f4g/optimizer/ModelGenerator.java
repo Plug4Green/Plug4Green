@@ -355,7 +355,6 @@ public class ModelGenerator {
 		frameworkCapability.setNode(nodeActions);
 		frameworkCapability.setStatus(FrameworkStatus.RUNNING);
 		
-		datacenter.setComputingStyle(DCComputingStyle.CLOUD);
 		datacenter.setComputedPower(new Power(0.0));
 		datacenter.setNetworkLoad(networkLoad);
 	

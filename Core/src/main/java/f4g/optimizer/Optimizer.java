@@ -12,9 +12,8 @@
 */
 
 package f4g.optimizer;
-
-import java.util.Map;
 import org.apache.log4j.Logger;
+
 import f4g.schemas.java.metamodel.*;
 import f4g.schemas.java.allocation.*;
 import f4g.commons.controller.IController;
@@ -23,11 +22,9 @@ import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.OptimizerEngine;
 import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
 import f4g.commons.power.IPowerCalculator;
-import f4g.optimizer.HPC.OptimizerEngineHPC;
 import f4g.optimizer.utils.Utils;
-import f4g.commons.optimizer.OptimizationObjective;
 import f4g.commons.optimizer.*;
-import java.util.HashMap;
+
 
 
 /**
@@ -40,9 +37,7 @@ public class Optimizer implements IOptimizer{
 	IController controller = null;
 	IPowerCalculator powerCalculator = null;
 
-
-	//the three engines for each computing styles are held here
-	private Map<DCComputingStyle, OptimizerEngine> engines;
+	private OptimizerEngine engine;
 
 	public enum CloudTradCS {
 		CLOUD,
@@ -65,15 +60,10 @@ public class Optimizer implements IOptimizer{
 		
 		this.controller = myController;
 		this.powerCalculator = myPowerCalculator;
-		
-		log.debug("Initializing engines...");
-		engines = new HashMap<DCComputingStyle, OptimizerEngine> ();
-		
+				
 				
 		//initialization of the three engines
-		engines.put(DCComputingStyle.SUPER,       new OptimizerEngineHPC(controller, powerCalculator, costEstimator));
-		engines.put(DCComputingStyle.TRADITIONAL, new OptimizerEngineCloudTraditional(controller, powerCalculator, costEstimator, CloudTradCS.TRADITIONAL));
-		engines.put(DCComputingStyle.CLOUD,       new OptimizerEngineCloudTraditional(controller, powerCalculator, costEstimator, CloudTradCS.CLOUD));
+		engine = new OptimizerEngineCloudTraditional(controller, powerCalculator, costEstimator, CloudTradCS.CLOUD);
 		 
 		//default objective to power
 		setOptimizationObjective(OptimizationObjective.Power);
@@ -93,11 +83,10 @@ public class Optimizer implements IOptimizer{
 		
 		Datacenter myDC = Utils.getFirstDatacenter(model);
 		
-		if(myDC!=null &&
-		   myDC.getComputingStyle() != null) {
+		if(myDC!=null) {
 			
 			//choose the engine corresponding to computing style.
-			return engines.get(myDC.getComputingStyle() ).allocateResource(allocationRequest, model);
+			return engine.allocateResource(allocationRequest, model);
 		
 		} else {
 			log.error("performGlobalOptimization: no datacenter or no computing style inside the model");
@@ -120,11 +109,10 @@ public class Optimizer implements IOptimizer{
 		
 		Datacenter myDC = Utils.getFirstDatacenter(model);
 		
-		if(myDC!=null &&
-		   myDC.getComputingStyle() != null) {
+		if(myDC!=null) {
 			
 			//choose the engine corresponding to computing style.
-			engines.get(myDC.getComputingStyle() ).performGlobalOptimization(model);
+			engine.performGlobalOptimization(model);
 		
 			return true;
 		} else {
@@ -140,9 +128,7 @@ public class Optimizer implements IOptimizer{
 	 * set the optimization objective for the 3 computing styles
 	 */
 	public void setOptimizationObjective(OptimizationObjective optiObjective) {
-		for (DCComputingStyle style : DCComputingStyle.values()) {
-			engines.get(style).setOptiObjective(optiObjective);
-		}	
+			engine.setOptiObjective(optiObjective);
 	}
 	
 	/* (non-Javadoc)
