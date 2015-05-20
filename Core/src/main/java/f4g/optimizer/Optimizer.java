@@ -18,8 +18,8 @@ import f4g.schemas.java.metamodel.*;
 import f4g.schemas.java.allocation.*;
 import f4g.commons.controller.IController;
 import f4g.commons.core.IMain;
+import f4g.optimizer.comm.SLACom;
 import f4g.optimizer.cost_estimator.NetworkCost;
-import f4g.optimizer.OptimizerEngine;
 import f4g.optimizer.cloud.OptimizerEngineCloud;
 import f4g.commons.power.IPowerCalculator;
 import f4g.optimizer.utils.Utils;
@@ -33,11 +33,12 @@ import f4g.commons.optimizer.*;
  */
 public class Optimizer implements IOptimizer{
 	
-    	private final Logger log = Logger.getLogger(getClass()); 
+    private final Logger log = Logger.getLogger(getClass()); 
 	IController controller = null;
 	IPowerCalculator powerCalculator = null;
 
-	private OptimizerEngine engine;
+	private OptimizerEngineCloud engine;
+	private SLACom slaCom;
 
 		
 	public Optimizer(IMain main) {
@@ -62,6 +63,10 @@ public class Optimizer implements IOptimizer{
 		 
 		//default objective to power
 		setOptimizationObjective(OptimizationObjective.Power);
+		
+		//initialize SLA REST API
+		slaCom = new SLACom(engine);
+		slaCom.start();
 	}
 	
 

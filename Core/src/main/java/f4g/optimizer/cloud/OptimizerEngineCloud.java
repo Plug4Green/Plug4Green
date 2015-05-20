@@ -635,4 +635,12 @@ public class OptimizerEngineCloud extends OptimizerEngine {
     	}   	
     }
 
+
+	public void setCPUOvercommit(float cpuovercommit) {
+		
+		log.debug("setting CPU overcommit=" + cpuovercommit);
+		SLAs.getSLA().get(0).getQoSConstraints().getMaxVirtualCPUPerCore().setValue(cpuovercommit);
+		
+	}
+
 }
