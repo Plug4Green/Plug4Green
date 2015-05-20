@@ -122,7 +122,7 @@ public class SLAReader {
 	}
 
 	/**
-	 * get ServerGroupypes from a SLA file
+	 * get ServerGroupTypes from a SLA file
 	 */
 	public ServerGroupType getServerGroup() {
 		if (SLA != null)

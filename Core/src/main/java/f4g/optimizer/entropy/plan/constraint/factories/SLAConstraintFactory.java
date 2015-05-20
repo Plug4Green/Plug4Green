@@ -147,14 +147,14 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 		return v;
 	}
 
-	private List<SatConstraint> getQoS(QoSConstraintsType type, Set<Node> nodes, Set<VM> vms) {
+	private List<SatConstraint> getQoS(QoSConstraintsType qos, Set<Node> nodes, Set<VM> vms) {
 
 		List<SatConstraint> v = new ArrayList<SatConstraint>(); 
 		// Bandwidth Constraint
-		if (type.getBandwidth() != null && type.getBandwidth().getPriority() >= minPriority) {
+		if (qos.getBandwidth() != null && qos.getBandwidth().getPriority() >= minPriority) {
 			List<Node> filteredNodes = new ArrayList<Node>();
 			for (Server n : Utils.getAllServers(F4GModel)){
-				if (Utils.getBandwidth(n).isPresent() && Utils.getBandwidth(n).get().getValue() >= type.getBandwidth().getValue()){ 
+				if (Utils.getBandwidth(n).isPresent() && Utils.getBandwidth(n).get().getValue() >= qos.getBandwidth().getValue()){ 
 					filteredNodes.add(nodeNames.getElement(n.getFrameworkID()));
 				}
 			}
@@ -162,10 +162,10 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 		}
 		
 		// Maximum vCPU per core
-		if (type.getMaxVirtualCPUPerCore() != null) {
-			if (type.getMaxVirtualCPUPerCore().getPriority() >= minPriority) {
+		if (qos.getMaxVirtualCPUPerCore() != null) {
+			if (qos.getMaxVirtualCPUPerCore().getPriority() >= minPriority) {
 				if (vms.size() != 0) {
-					v.addAll(Overbook.newOverbooks(nodes, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, (double) type.getMaxVirtualCPUPerCore().getValue()));
+					v.addAll(Overbook.newOverbooks(nodes, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, (double) qos.getMaxVirtualCPUPerCore().getValue()));
 				}
 			}
 		}
@@ -178,11 +178,11 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 //		}
 		
 		// Max Server CPU Load			
-		if (type.getMaxServerCPULoad() != null && type.getMaxServerCPULoad().getValue() != 0) {
-			if (type.getMaxServerCPULoad().getPriority() >= minPriority) {
+		if (qos.getMaxServerCPULoad() != null && qos.getMaxServerCPULoad().getValue() != 0) {
+			if (qos.getMaxServerCPULoad().getPriority() >= minPriority) {
 				for(Node n : nodes) {
 					//Todo multiply by number of cores
-					v.add(new ResourceCapacity(n, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, (int)type.getMaxServerCPULoad().getValue()));
+					v.add(new ResourceCapacity(n, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, (int)qos.getMaxServerCPULoad().getValue()));
 				}
 				
 			}

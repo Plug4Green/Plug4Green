@@ -21,7 +21,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import org.btrplace.model.Mapping;
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
 import org.btrplace.model.VM;
@@ -32,8 +31,6 @@ import org.btrplace.model.constraint.Online;
 import org.btrplace.model.constraint.Root;
 import org.btrplace.model.constraint.SatConstraint;
 
-import f4g.optimizer.entropy.NamingService;
-import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.Datacenter;
 import f4g.schemas.java.metamodel.FIT4Green;
