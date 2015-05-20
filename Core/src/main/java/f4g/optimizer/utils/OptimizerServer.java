@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
 import org.apache.log4j.Logger;
 
 import f4g.commons.com.util.PowerData;
-import f4g.optimizer.cloudTraditional.SLAReader;
+import f4g.optimizer.cloud.SLAReader;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.metamodel.*;

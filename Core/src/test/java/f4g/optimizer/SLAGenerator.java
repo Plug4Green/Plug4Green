@@ -39,7 +39,6 @@ public class SLAGenerator {
 	
 	
 	public Logger log;  
-
 	
 	public SLAGenerator() {
 		

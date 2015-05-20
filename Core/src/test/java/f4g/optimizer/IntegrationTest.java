@@ -7,9 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import f4g.optimizer.cost_estimator.NetworkCost;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
-import f4g.optimizer.cloudTraditional.SLAReader;
+import f4g.optimizer.cloud.OptimizerEngineCloud;
+import f4g.optimizer.cloud.SLAReader;
 import f4g.optimizer.utils.OptimizerWorkload;
 import f4g.optimizer.utils.OptimizerWorkload.CreationImpossible;
 import f4g.optimizer.utils.Utils;
@@ -53,7 +52,7 @@ public class IntegrationTest extends OptimizerTest {
     
 	public Logger log;
 
-    OptimizerEngineCloudTraditional optimizer = null;
+    OptimizerEngineCloud optimizer = null;
     PolicyType vmMargins;
     
     @Before
@@ -77,7 +76,7 @@ public class IntegrationTest extends OptimizerTest {
 
         vmMargins = new PolicyType(polL);
         vmMargins.getPolicy().add(pol);
-        optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(),
+        optimizer = new OptimizerEngineCloud(new MockController(), new MockPowerCalculator(), new NetworkCost(),
                 SLAGenerator.createVirtualMachine(), vmMargins, makeSimpleFed(vmMargins, null));
 
     }
@@ -114,7 +113,7 @@ public class IntegrationTest extends OptimizerTest {
 
             double powerBefore = powerCalculator.computePowerServer(S0).getActualConsumption();
 
-            Utils.addVM(VM, S0, AlgoType.CLOUD);
+            Utils.addVM(VM, S0);
 
             double powerAfter = powerCalculator.computePowerServer(S0).getActualConsumption();
 
@@ -182,7 +181,7 @@ public class IntegrationTest extends OptimizerTest {
         //TEST 1
 
         //Create a new optimizer with the special power calculator
-        OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new PowerCalculator(), new NetworkCost(),
+        OptimizerEngineCloud MyOptimizer = new OptimizerEngineCloud(new MockController(), new PowerCalculator(), new NetworkCost(),
                 vms, myVmMargins, makeSimpleFed(myVmMargins, model));
 
         AllocationResponse response = MyOptimizer.allocateResource(allocationRequest, model);

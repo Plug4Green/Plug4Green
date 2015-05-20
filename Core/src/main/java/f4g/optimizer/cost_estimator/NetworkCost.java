@@ -7,13 +7,13 @@
 package f4g.optimizer.cost_estimator;
 import java.util.*;
 
-
 import org.jscience.economics.money.Currency;
 import org.jscience.physics.amount.*;
 import org.jscience.economics.money.*;
-import javax.measure.quantity.*;
-import static javax.measure.unit.SI.*;
 
+import javax.measure.quantity.*;
+
+import static javax.measure.unit.SI.*;
 import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.metamodel.Server;
 import f4g.schemas.java.metamodel.NetworkNode;
@@ -25,7 +25,7 @@ import f4g.commons.power.IPowerCalculator;
 import f4g.powerCalculator.power.PoweredNetworkNode;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
-import f4g.optimizer.cloudTraditional.SLAReader;
+import f4g.optimizer.cloud.SLAReader;
 import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.commons.util.Util;
 

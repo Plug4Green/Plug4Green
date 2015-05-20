@@ -28,7 +28,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.SpareNodes;
 import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloud.OptimizerEngineCloud;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -61,7 +61,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		bpols.getPolicy().add(bpol);		
 		fed.setBoundedPolicies(bpols);
 		
-		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(),
+		optimizer = new OptimizerEngineCloud(new MockController(), new MockPowerCalculator(), new NetworkCost(),
 				SLAGenerator.createVirtualMachine(), policies, fed);
 	    
 		optimizer.setSla(SLAGenerator.createDefaultSLA());

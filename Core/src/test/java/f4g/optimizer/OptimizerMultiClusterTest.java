@@ -11,7 +11,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import f4g.optimizer.cost_estimator.NetworkCost;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloud.OptimizerEngineCloud;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.CpuUsage;
@@ -81,7 +81,7 @@ public class OptimizerMultiClusterTest extends OptimizerTest {
 		fed.setBoundedPolicies(bpols);
 		
 		
-		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
+		optimizer = new OptimizerEngineCloud(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
 				        SLAGenerator.createVirtualMachine(), vmMargins, fed);
 		
 		optimizer.setSla(SLAGenerator.createDefaultSLA());

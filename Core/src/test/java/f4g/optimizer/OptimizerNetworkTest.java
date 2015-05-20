@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
-
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.metamodel.Server;
@@ -37,7 +36,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.Load;
 import f4g.schemas.java.constraints.optimizerconstraints.Period;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloud.OptimizerEngineCloud;
 
 
 public class OptimizerNetworkTest extends OptimizerTest {
@@ -69,7 +68,7 @@ public class OptimizerNetworkTest extends OptimizerTest {
 		bpols.getPolicy().add(bpol);		
 		fed.setBoundedPolicies(bpols);
 		
-		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
+		optimizer = new OptimizerEngineCloud(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
 				        slaGenerator.createVirtualMachine(), policies, fed);
 
     }

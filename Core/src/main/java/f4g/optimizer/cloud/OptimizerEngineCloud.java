@@ -12,7 +12,7 @@
  * ============================= /Header ==============================
  */
 
-package f4g.optimizer.cloudTraditional;
+package f4g.optimizer.cloud;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,9 +48,9 @@ import f4g.optimizer.entropy.plan.objective.CPowerObjective;
 import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
 import f4g.optimizer.utils.IOptimizerServer;
 import f4g.optimizer.OptimizerEngine;
-import f4g.optimizer.cloudTraditional.SLAReader;
+import f4g.optimizer.cloud.NetworkControl;
+import f4g.optimizer.cloud.SLAReader;
 import f4g.optimizer.utils.Utils;
-import f4g.optimizer.cloudTraditional.NetworkControl;
 import f4g.optimizer.utils.OptimizerWorkload;
 import f4g.schemas.java.metamodel.*;
 import f4g.schemas.java.actions.AbstractBaseAction;
@@ -97,7 +97,7 @@ import org.btrplace.model.constraint.SatConstraint;
  * @author cdupont
  */
 
-public class OptimizerEngineCloudTraditional extends OptimizerEngine {
+public class OptimizerEngineCloud extends OptimizerEngine {
 
 	ServerGroupType serverGroups;
 
@@ -152,7 +152,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 * 
 	 * @param traditional
 	 */
-	public OptimizerEngineCloudTraditional(IController controller,
+	public OptimizerEngineCloud(IController controller,
 			IPowerCalculator powerCalculator, ICostEstimator costEstimator) {
 		super(controller, powerCalculator, costEstimator);
 		log = Logger.getLogger(this.getClass().getName());
@@ -180,7 +180,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	/**
 	 * constructor for Unit Testing
 	 */
-	public OptimizerEngineCloudTraditional(IController controller,
+	public OptimizerEngineCloud(IController controller,
 			IPowerCalculator powerCalculator, ICostEstimator costEstimator,
 			VMFlavorType theVMFlavors, PolicyType myPolicies, FederationType myFederation) {
 		super(controller, powerCalculator, costEstimator);
@@ -209,7 +209,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 * 
 	 * @param traditional
 	 */
-	public OptimizerEngineCloudTraditional(IController controller,
+	public OptimizerEngineCloud(IController controller,
 			IPowerCalculator powerCalculator, ICostEstimator costEstimator,
 			SLAReader slaReader) {
 		super(controller, powerCalculator, costEstimator);

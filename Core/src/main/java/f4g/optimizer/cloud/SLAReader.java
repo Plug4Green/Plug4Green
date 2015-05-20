@@ -10,7 +10,7 @@
  *   Reads and validate the SLA instance file.
  * ============================= /Header ==============================
  */
-package f4g.optimizer.cloudTraditional;
+package f4g.optimizer.cloud;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 

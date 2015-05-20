@@ -20,7 +20,7 @@ import f4g.commons.controller.IController;
 import f4g.commons.core.IMain;
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.OptimizerEngine;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloud.OptimizerEngineCloud;
 import f4g.commons.power.IPowerCalculator;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.optimizer.*;
@@ -58,7 +58,7 @@ public class Optimizer implements IOptimizer{
 				
 				
 		//initialization of the three engines
-		engine = new OptimizerEngineCloudTraditional(controller, powerCalculator, costEstimator);
+		engine = new OptimizerEngineCloud(controller, powerCalculator, costEstimator);
 		 
 		//default objective to power
 		setOptimizationObjective(OptimizationObjective.Power);
