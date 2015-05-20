@@ -45,8 +45,6 @@ import f4g.powerCalculator.power.PowerCalculator;
 
 /**
  * Entry point to the FIT4Green framework
- * 
- * @author FIT4Green, Vasiliki Georgiadou
  *
  */
 public class Main implements IMain {
@@ -90,17 +88,6 @@ public class Main implements IMain {
 	    this.comMap.putAll(comMap);
 	}
 	
-	/**
-	 * Entry point to the framework. 
-	 * @return The reference to the singleton representing the FIT4Green instance
-	 */
-//	public static IMain getInstance(){
-//		if(me == null){
-//			me = new Main();
-//		}
-//		return me;
-//	}
-//	
 
 	/**
 	 * Initializes the framework.
@@ -116,11 +103,13 @@ public class Main implements IMain {
 			if(!initialized){
 				log4jProperties = new Properties();
 				if(System.getProperty("log4j.configuration") != null){
-					PropertyConfigurator.configure(System.getProperty("log4j.configuration"));				
+					PropertyConfigurator.configure(System.getProperty("log4j.configuration"));
+					log.debug("System.getProperty");
 				} else {
-					InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("pluginCore/log4j.properties");
+					InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("log4j.properties");
 					log4jProperties.load(isLog4j);
-					PropertyConfigurator.configure(log4jProperties);				
+					PropertyConfigurator.configure(log4jProperties);
+					log.debug("getResourceAsStream");
 				}
 				log.info("Loading configuration...");
 				
@@ -183,39 +172,7 @@ public class Main implements IMain {
 		    pair.getValue().init(pair.getKey(), monitor);
 		
 		}
-		
-		//Loads and initialize the Com components
-//		String[] comNames = configuration.get("comNames").split(",");
-//		String comName = null;
-//		for(int i=0; i<comNames.length; i++){
-//			comName = comNames[i];
-//			log.debug("Loading COM: " + comName);
-//			String className = configuration.get(comName);
-//			log.debug("Loading class: " + className);
-//			try {
-//				Class comClass = Main.class.getClassLoader().loadClass(className);
-//				log.debug("Class " + comClass.getCanonicalName() + " loaded");
-//				ICom comInstance = (ICom)comClass.newInstance();
-//				comMapping.put(comName, comInstance);
-//				comInstance.init(comName, monitor);
-//			} catch (ClassNotFoundException e) {
-//				log.error(e);
-//				setStatusMessage(e.getMessage());
-//				setRunning(false);
-//				return false;
-//			} catch (InstantiationException e) {
-//				log.error(e);
-//				setStatusMessage(e.getMessage());
-//				setRunning(false);
-//				return false;
-//			} catch (IllegalAccessException e) {
-//				log.error(e);
-//				setStatusMessage(e.getMessage());
-//				setRunning(false);
-//				return false;
-//			}
-//		}
-		
+				
 		setStatusMessage("On");
 		setRunning(true);
 		return true;
@@ -241,7 +198,6 @@ public class Main implements IMain {
 		return (powerCalculator != null ? powerCalculator : new PowerCalculator(this));
 	}
 
-
 	/**
 	 * Returns a reference to a Com object active in the system
 	 * @param the Com object name, as configured in the f4gconfig.properties file
@@ -262,8 +218,7 @@ public class Main implements IMain {
 			log.info("Stopping Com: " + key);
 			
 			com.dispose();
-			com = null;
-			
+			com = null;			
 		}
 		
 		comMap.clear();
@@ -294,41 +249,6 @@ public class Main implements IMain {
 		return true;
 	}
 	
-
-//	/**
-//	 * Launcher method
-//	 * @param args
-//	 */
-//	public static void main(String[] args) {
-//		
-//		if(args.length == 0){
-//			System.out.println("Please provide the path of config file as an argument (usually pluginCore/f4gconfig.properties).");
-//			System.exit(1);
-//		}
-//		
-//		IMain f4gInstance = new Main();
-//		boolean res =  f4gInstance.init(args[0]);
-//		
-//		if(res){
-//			res = f4gInstance.startup();
-//		} else {
-//			System.exit(1);
-//		}
-//
-//
-//		f4gInstance.isRunning();
-//		f4gInstance.getStatusMessage();
-//		try {
-//			Thread.sleep(35000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		f4gInstance.shutdown();
-//		
-//	}
-
 	public boolean isRunning() {
 		log.debug("isRunning(): " + running);
 		return running;

@@ -29,18 +29,6 @@ import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.commons.util.Util;
 
-/*
- Things to improve:
- 
- - pass desired proto
- - 
- 
- 
- 
- 
- */
-
-
 
 /**
  * class NetworkCost: estimates network energy costs for both inter and intra site
