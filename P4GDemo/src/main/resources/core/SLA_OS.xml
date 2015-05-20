@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<opticon:FIT4GreenOptimizerConstraint id="devEni" scenario="single" 
+<opticon:FIT4GreenOptimizerConstraint 
 xmlns:f4g="f4g/schemas/java/MetaModel" 
 xmlns:opticon="f4g/schemas/java/constraints/OptimizerConstraints" 
-xmlns:p="http://www.f4g.org/schema/CommonTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas/SlaClusterConstraints.xsd">
   <VirtualMachines>
     <VMFlavor>

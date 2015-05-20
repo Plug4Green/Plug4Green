@@ -106,7 +106,7 @@ public class Main implements IMain {
 					PropertyConfigurator.configure(System.getProperty("log4j.configuration"));
 					log.debug("System.getProperty");
 				} else {
-					InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("log4j.properties");
+					InputStream isLog4j = this.getClass().getClassLoader().getResourceAsStream("pluginCore/log4j.properties");
 					log4jProperties.load(isLog4j);
 					PropertyConfigurator.configure(log4jProperties);
 					log.debug("getResourceAsStream");
