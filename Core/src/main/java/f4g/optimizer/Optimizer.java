@@ -39,11 +39,6 @@ public class Optimizer implements IOptimizer{
 
 	private OptimizerEngine engine;
 
-	public enum CloudTradCS {
-		CLOUD,
-		TRADITIONAL
-	}
-
 		
 	public Optimizer(IMain main) {
 		
@@ -63,7 +58,7 @@ public class Optimizer implements IOptimizer{
 				
 				
 		//initialization of the three engines
-		engine = new OptimizerEngineCloudTraditional(controller, powerCalculator, costEstimator, CloudTradCS.CLOUD);
+		engine = new OptimizerEngineCloudTraditional(controller, powerCalculator, costEstimator);
 		 
 		//default objective to power
 		setOptimizationObjective(OptimizationObjective.Power);

@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 
 import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cloudTraditional.SLAReader;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.metamodel.*;
@@ -293,11 +292,11 @@ public class OptimizerServer {
 	/* (non-Javadoc)
 	 * @see f4g.optimizer.IOptimizerServer#getLoadRate(f4g.optimizer.AggregatedUsage, java.lang.Boolean)
 	 */
-	public double getLoadRate(AggregatedUsage reference, AlgoType algoType)
+	public double getLoadRate(AggregatedUsage reference)
 	{
 		AggregatedUsage serverUsage = AggregatedUsage.getAggregatedUsage(workloads);
 		
-		return AggregatedUsage.loadRate(serverUsage, reference, algoType);
+		return AggregatedUsage.loadRate(serverUsage, reference);
 	}
 	
 	//returns the VMs of the server (no copying)
@@ -316,9 +315,9 @@ public class OptimizerServer {
 	 * adds a VM to a server, simulating the increase of every loads
 	 * WARNING: workloads field is NOT updated
 	 */
-	public void addVM(final OptimizerWorkload WL, final AlgoType algoType, Server toServer){
+	public void addVM(final OptimizerWorkload WL, Server toServer){
 
-		Utils.addVM(WL, toServer, algoType);
+		Utils.addVM(WL, toServer);
 		
 	}
 		

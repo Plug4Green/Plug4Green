@@ -15,7 +15,6 @@ package f4g.optimizer.utils;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.schemas.java.metamodel.VirtualMachine;
 
 /**
@@ -139,7 +138,7 @@ public class AggregatedUsage {
 	 * substraction of two AggregatedUsage
 	 * usually we substract a server capacity with all its WM usages, to get the remaining capacity of the server
 	 */
-	public static AggregatedUsage substract(AggregatedUsage usage1, AggregatedUsage usage2, AlgoType algoType){
+	public static AggregatedUsage substract(AggregatedUsage usage1, AggregatedUsage usage2){
 		
 		AggregatedUsage aggregatedUsage = new AggregatedUsage();
 	
@@ -148,29 +147,8 @@ public class AggregatedUsage {
 		aggregatedUsage.aggregatedMemoryUsage  = usage1.aggregatedMemoryUsage  - usage2.aggregatedMemoryUsage ;
 		aggregatedUsage.aggregatedNetworkUsage = usage1.aggregatedNetworkUsage - usage2.aggregatedNetworkUsage;
 		
-		if (algoType == AlgoType.TRADITIONAL) {
-			
-			//get the needed number of cores
-			double coresNeeded = usage2.aggregatedCPUUsage * usage2.aggregatedNbCores / 100; 
-			double coresFree   = usage1.aggregatedCPUUsage * usage1.aggregatedNbCores / 100; 
-			double remainingCores = coresFree - coresNeeded;
-			
-			//the int cores remaining correspond to the floor integer (2.5 cores remaining -> 3 cores have some free space)
-			aggregatedUsage.aggregatedNbCores = Math.ceil(remainingCores);
-			
-			//the average free load resulting
-			//equals 100% free - what the free cores have to deal with
-			if(aggregatedUsage.aggregatedNbCores != 0) {
-				aggregatedUsage.aggregatedCPUUsage = 100 - (aggregatedUsage.aggregatedNbCores - remainingCores) * 100 / aggregatedUsage.aggregatedNbCores;
-			} else {
-				aggregatedUsage.aggregatedCPUUsage = 0.0;
-			}
-				
-		} else {
-			aggregatedUsage.aggregatedCPUUsage     = 0.0;
-			aggregatedUsage.aggregatedNbCores      = usage1.aggregatedNbCores      - usage2.aggregatedNbCores     ;
-		}
-		
+		aggregatedUsage.aggregatedCPUUsage     = 0.0;
+		aggregatedUsage.aggregatedNbCores      = usage1.aggregatedNbCores      - usage2.aggregatedNbCores     ;
 		
 		return aggregatedUsage;
 	}
@@ -212,15 +190,11 @@ public class AggregatedUsage {
 	/**
 	 * load rate is defined as max(nCPU/maxCPU, nMem/maxMem, nStor/MaxStore))
 	 */
-	public static double loadRate(AggregatedUsage server, AggregatedUsage reference, AlgoType algoType){
+	public static double loadRate(AggregatedUsage server, AggregatedUsage reference){
 		
 		AggregatedUsage aggregatedRates = divide(server, reference);
-		
-		if (algoType == AlgoType.TRADITIONAL)
-			return max3(aggregatedRates.aggregatedCPUUsage * aggregatedRates.aggregatedNbCores, aggregatedRates.aggregatedMemoryUsage, aggregatedRates.aggregatedStorageUsage);
-		else
-			return max3(aggregatedRates.aggregatedNbCores, aggregatedRates.aggregatedMemoryUsage, aggregatedRates.aggregatedStorageUsage);	
-		
+		return max3(aggregatedRates.aggregatedNbCores, aggregatedRates.aggregatedMemoryUsage, aggregatedRates.aggregatedStorageUsage);	
+	
 	}
 	
 
@@ -231,24 +205,15 @@ public class AggregatedUsage {
 	/**
 	 * tests if an AggregatedUsage (typicaly from a VM) fits in another AggregatedUsage (typicaly from a Server)
 	 */
-	public static Boolean fitsIn(AggregatedUsage VMUsage, AggregatedUsage ServerUsage, AlgoType algoType) {
+	public static Boolean fitsIn(AggregatedUsage VMUsage, AggregatedUsage ServerUsage) {
 		
 		Boolean CPUfits;
 		Boolean NetworkFits;
 		
 		//In Traditional, several VMs can be packed in one CPU.
 		//In cloud, number of cores requirements must be strictly followed.
-		if (algoType == AlgoType.TRADITIONAL){
-			CPUfits = VMUsage.aggregatedNbCores * VMUsage.aggregatedCPUUsage / 100.0 <= ServerUsage.aggregatedNbCores * ServerUsage.aggregatedCPUUsage / 100.0;
-		} else {
-			CPUfits = VMUsage.aggregatedNbCores <= ServerUsage.aggregatedNbCores;
-		}
-		
-		if (algoType == AlgoType.TRADITIONAL){
-			NetworkFits = VMUsage.aggregatedNetworkUsage <= ServerUsage.aggregatedNetworkUsage;
-		} else {
-			NetworkFits = true; //No network in Cloud now
-		}
+		CPUfits = VMUsage.aggregatedNbCores <= ServerUsage.aggregatedNbCores;
+		NetworkFits = true; //No network in Cloud now
 			
 		return CPUfits
 		    && (VMUsage.aggregatedStorageUsage <= ServerUsage.aggregatedStorageUsage)

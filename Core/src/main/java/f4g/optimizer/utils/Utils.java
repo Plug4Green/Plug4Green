@@ -21,7 +21,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import f4g.optimizer.utils.OptimizerRackServer;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
 import f4g.optimizer.utils.OptimizerBladeServer;
@@ -449,7 +448,7 @@ public class Utils {
 	/* 
 	 * Add a VM to the server, simulating every load increases
 	 */
-	public static void addVM(final OptimizerWorkload WL, final Server server, final AlgoType algoType){
+	public static void addVM(final OptimizerWorkload WL, final Server server){
 
 		Server toServer = server;
 		

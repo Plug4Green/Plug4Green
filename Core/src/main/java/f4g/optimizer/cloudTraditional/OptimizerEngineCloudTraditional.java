@@ -52,7 +52,6 @@ import f4g.optimizer.cloudTraditional.SLAReader;
 import f4g.optimizer.utils.Utils;
 import f4g.optimizer.cloudTraditional.NetworkControl;
 import f4g.optimizer.utils.OptimizerWorkload;
-import f4g.optimizer.Optimizer.CloudTradCS;
 import f4g.schemas.java.metamodel.*;
 import f4g.schemas.java.actions.AbstractBaseAction;
 import f4g.schemas.java.actions.ActionRequest;
@@ -96,17 +95,10 @@ import org.btrplace.model.constraint.SatConstraint;
  * This class contains the algorithm for Cloud computing.
  * 
  * @author cdupont
- * @uml.dependency supplier="f4g.optimizer.SLAReader"
  */
 
 public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
-
-    public enum AlgoType {
-		CLOUD, TRADITIONAL
-	}
-
-	CloudTradCS computingStyle;
 	ServerGroupType serverGroups;
 
 	public void setServerGroups(ServerGroupType sg) {
@@ -161,11 +153,9 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 * @param traditional
 	 */
 	public OptimizerEngineCloudTraditional(IController controller,
-			IPowerCalculator powerCalculator, ICostEstimator costEstimator,
-			CloudTradCS cs) {
+			IPowerCalculator powerCalculator, ICostEstimator costEstimator) {
 		super(controller, powerCalculator, costEstimator);
 		log = Logger.getLogger(this.getClass().getName());
-		computingStyle = cs;
 
 		try {
 			String currentSlaClusterPathName = f4g.commons.core.Configuration
@@ -195,8 +185,6 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			VMFlavorType theVMFlavors, PolicyType myPolicies, FederationType myFederation) {
 		super(controller, powerCalculator, costEstimator);
 		log = Logger.getLogger(this.getClass().getName());
-		// default to Cloud
-		computingStyle = CloudTradCS.CLOUD;
 
 		vms = theVMFlavors;
 		
@@ -223,10 +211,9 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 */
 	public OptimizerEngineCloudTraditional(IController controller,
 			IPowerCalculator powerCalculator, ICostEstimator costEstimator,
-			CloudTradCS cs, SLAReader slaReader) {
+			SLAReader slaReader) {
 		super(controller, powerCalculator, costEstimator);
 		log = Logger.getLogger(this.getClass().getName());
-		computingStyle = cs;
 		vms = slaReader.getVMtypes();
 		clusters = slaReader.getCluster();
 		serverGroups = slaReader.getServerGroup();
@@ -421,15 +408,9 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		
 		int minPriority = 1;
 		List<SatConstraint> queue = new LinkedList<SatConstraint>(); 
-		
-		if (computingStyle == CloudTradCS.CLOUD) {
-			if (((CloudVmAllocation) request).getMinPriority() != null)
-				minPriority = ((CloudVmAllocation) request).getMinPriority();
-		} else {
-			if (((TraditionalVmAllocation) request).getMinPriority() != null)
-				minPriority = ((TraditionalVmAllocation) request).getMinPriority();
-		}
-		
+		if (((CloudVmAllocation) request).getMinPriority() != null)
+			minPriority = ((CloudVmAllocation) request).getMinPriority();
+				
 		if (clusters != null) {
 //			queue.addAll(new SLAConstraintFactory(clusters, src, model, minPriority, serverGroups).createSLAConstraints());
 //			ClusterConstraintFactory clusterConstraintFactory = new ClusterConstraintFactory(clusters, src);
@@ -500,14 +481,9 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
 		if (node != null) {
 
-			if (computingStyle == CloudTradCS.CLOUD) {
-				CloudVmAllocationResponse cloudVmAllocationResponse = getResponse(node, request, ns);
-				response.setResponse((new ObjectFactory()).createCloudVmAllocationResponse(cloudVmAllocationResponse));
-			} else {
-				TraditionalVmAllocationResponse tradVmAllocationResponse = getResponse(node, ns);
-				response.setResponse((new ObjectFactory()).createTradinitionalVmAllocationResponse(tradVmAllocationResponse));
-			}
-
+			CloudVmAllocationResponse cloudVmAllocationResponse = getResponse(node, request, ns);
+			response.setResponse((new ObjectFactory()).createCloudVmAllocationResponse(cloudVmAllocationResponse));
+			
 			log.debug("Allocated on: " + ns.getName(node));
 
 			try {
@@ -526,38 +502,25 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
 	protected OptimizerWorkload getOptimizerWorkload(Request request) {
 
-		if (computingStyle == CloudTradCS.CLOUD) {
-			// Get the VM type from SLA.
-			VMFlavorType.VMFlavor SLAVM;
-			try {
-				SLAVM = Util.findVMByName(
-						((CloudVmAllocation) request).getVm(), vms);
-			} catch (NoSuchElementException e1) {
-				log.warn("VM type not found in SLA, allocation impossible");
-				return null;
-			}
-
-			OptimizerWorkload WL = new OptimizerWorkload(SLAVM, "No name");
-			return WL;
-		} else {
-			return new OptimizerWorkload((TraditionalVmAllocation) request,
-					"No name");
+		// Get the VM type from SLA.
+		VMFlavorType.VMFlavor SLAVM;
+		try {
+			SLAVM = Util.findVMByName(
+					((CloudVmAllocation) request).getVm(), vms);
+		} catch (NoSuchElementException e1) {
+			log.warn("VM type not found in SLA, allocation impossible");
+			return null;
 		}
+			OptimizerWorkload WL = new OptimizerWorkload(SLAVM, "No name");
+		return WL;
 
 	}
 
 	protected ArrayList<IOptimizerServer> getOptimizerServers(Datacenter datacenter) {
 
-		if (computingStyle == CloudTradCS.CLOUD) {
-			// get translations between F4G types and optimizer types
-			final ArrayList<IOptimizerServer> optimizerServers = Utils.getAllOptimizerServersCloud(datacenter, vms);
-			return optimizerServers;
-		} else {
-			// get translations between F4G types and optimizer types
-			final ArrayList<IOptimizerServer> optimizerServers = Utils.getAllOptimizerServersTradi(datacenter);
-			return optimizerServers;
-		}
-
+		// get translations between F4G types and optimizer types
+		final ArrayList<IOptimizerServer> optimizerServers = Utils.getAllOptimizerServersCloud(datacenter, vms);
+		return optimizerServers;
 	}
 
 	protected ArrayList<IOptimizerServer> getOptimizerServers(FIT4Green federation) {
@@ -635,14 +598,6 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
 	public void setClusters(ClusterType clusterType) {
 		this.clusters = clusterType;
-	}
-
-	public CloudTradCS getComputingStyle() {
-		return computingStyle;
-	}
-
-	public void setComputingStyle(CloudTradCS computingStyle) {
-		this.computingStyle = computingStyle;
 	}
 
 	public void showAllocation(AllocationRequest allocationRequest) {
