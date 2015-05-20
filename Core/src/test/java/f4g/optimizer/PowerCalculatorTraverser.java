@@ -124,8 +124,6 @@ import f4g.schemas.java.constraints.optimizerconstraints.Spread;
 import f4g.schemas.java.constraints.optimizerconstraints.VMGroup;
 import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType.VMFlavor;
-import f4g.schemas.java.loadpatterns.LoadPattern;
-import f4g.schemas.java.loadpatterns.LoadPatterns;
 import f4g.schemas.java.metamodel.*;
 
 
@@ -2209,50 +2207,6 @@ public class PowerCalculatorTraverser {
 			
 		}
 
-		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.DC)
-		 */
-		@Override
-		public void visit(f4g.schemas.java.loadpatterns.DC aBean) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.LoadPattern)
-		 */
-		@Override
-		public void visit(LoadPattern aBean) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.LoadPatterns)
-		 */
-		@Override
-		public void visit(LoadPatterns aBean) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.Load)
-		 */
-		@Override
-		public void visit(f4g.schemas.java.loadpatterns.Load aBean) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.loadpatterns.Period)
-		 */
-		@Override
-		public void visit(f4g.schemas.java.loadpatterns.Period aBean) {
-			// TODO Auto-generated method stub
-			
-		}
 		
 	}
 	
