@@ -99,27 +99,7 @@ public class OptimizerWorkload extends VirtualMachine implements Cloneable, Copy
 	    cloudVm = VM.getCloudVm();
 	   
 	}
-	
-	/**
-	 * Making a Workload from a VirtualMachine from model (Traditional)
-	 */
-	public OptimizerWorkload(TraditionalVmAllocation allocation, String frameWorkID) {
-
-		setFrameworkID(frameWorkID);
-		if(allocation.getNumberOfCPUs() != null ) setNumberOfCPUs(new NrOfCpus(allocation.getNumberOfCPUs())); //in a VM, the number of CPU is in fact the number of cores
-		else setNumberOfCPUs(new NrOfCpus(0)); 
-		if( allocation.getMemoryUsage() != null)  setActualMemoryUsage(new MemoryUsage(allocation.getMemoryUsage())); 
-		else setActualMemoryUsage(new MemoryUsage(0));			
-		if( allocation.getStorageUsage() != null) setActualStorageUsage(new StorageUsage(allocation.getStorageUsage()));
-		else setActualStorageUsage(new StorageUsage(0));
-		if( allocation.getCPUUsage() != null)     setActualCPUUsage(new CpuUsage(allocation.getCPUUsage()));	
-		else setActualCPUUsage(new CpuUsage(0));	
-		if( allocation.getNetworkUsage() != null) setActualNetworkUsage(new NetworkUsage(allocation.getNetworkUsage()));	
-		else setActualNetworkUsage(new NetworkUsage(0));			
-		if( allocation.getDiskIORate() != null)   setActualDiskIORate(new IoRate(allocation.getDiskIORate()));
-		else setActualDiskIORate(new IoRate(0));
-	}
-	
+		
 	/**
 	 * making a Workload from a VM from the SLA (Cloud)
 	 */

@@ -50,10 +50,6 @@ import f4g.schemas.java.allocation.AllocationRequest;
 import f4g.schemas.java.allocation.AllocationResponse;
 import f4g.schemas.java.allocation.CloudVmAllocationResponse;
 import f4g.schemas.java.allocation.CloudVmAllocation;
-import f4g.schemas.java.allocation.HpcClusterAllocationResponse;
-import f4g.schemas.java.allocation.HpcClusterAllocation;
-import f4g.schemas.java.allocation.TraditionalVmAllocationResponse;
-import f4g.schemas.java.allocation.TraditionalVmAllocation;
 import f4g.schemas.java.commontypes.ActionResultCode;
 import f4g.schemas.java.commontypes.ActionResultDescription;
 import f4g.schemas.java.commontypes.JobID;
@@ -1487,42 +1483,6 @@ public class PowerCalculatorTraverser {
 		 */
 		@Override
 		public void visit(CloudVmAllocation aBean) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.HpcClusterAllocationResponse)
-		 */
-		@Override
-		public void visit(HpcClusterAllocationResponse aBean) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.HpcClusterAllocation)
-		 */
-		@Override
-		public void visit(HpcClusterAllocation aBean) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.TraditionalVmAllocationResponse)
-		 */
-		@Override
-		public void visit(TraditionalVmAllocationResponse aBean) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		/* (non-Javadoc)
-		 * @see com.massfords.humantask.Visitor#visit(f4g.schemas.java.allocation.TraditionalVmAllocation)
-		 */
-		@Override
-		public void visit(TraditionalVmAllocation aBean) {
 			// TODO Auto-generated method stub
 			
 		}

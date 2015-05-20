@@ -13,7 +13,6 @@ import f4g.schemas.java.actions.*;
 import f4g.schemas.java.allocation.AllocationRequest;
 import f4g.schemas.java.allocation.CloudVmAllocation;
 import f4g.schemas.java.allocation.ObjectFactory;
-import f4g.schemas.java.allocation.TraditionalVmAllocation;
 import f4g.schemas.java.constraints.optimizerconstraints.*;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
@@ -317,32 +316,6 @@ public class OptimizerTest {
 		return request;
 	}
 
-	/**
-	 * helper function
-	 */
-	protected AllocationRequest createAllocationRequestTrad() {
-		
-		AllocationRequest request = new AllocationRequest();
-		
-		TraditionalVmAllocation alloc = new TraditionalVmAllocation();
-		//cloudAlloc.
-		alloc.getClusterId().add("c1");
-		alloc.setNumberOfCPUs(1);
-		alloc.setCPUUsage(100.0);
-		alloc.setDiskIORate(0.0);
-		alloc.setMemoryUsage(0.0);
-		alloc.setNetworkUsage(0.0);
-		alloc.setStorageUsage(0.0);
-		
-		
-		
-		//Simulates a CloudVmAllocation operation
-		JAXBElement<TraditionalVmAllocation>  operationType = (new ObjectFactory()).createTraditionalVmAllocation(alloc);
-	
-		request.setRequest(operationType);
-		
-		return request;
-	}
 	
 	protected ClusterType createDefaultCluster(int NumberOfNodes, List<SLA> sla, List<Policy> policy) {
 	

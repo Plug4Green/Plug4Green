@@ -34,7 +34,6 @@ import f4g.commons.core.Constants;
 import f4g.commons.power.IPowerCalculator;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.util.Util;
-import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.action.F4GDriverFactory;
 import f4g.optimizer.entropy.plan.constraint.CMaxServerPower;
@@ -46,6 +45,7 @@ import f4g.optimizer.entropy.plan.constraint.factories.PolicyConstraintFactory;
 import f4g.optimizer.entropy.plan.constraint.factories.SLAConstraintFactory;
 import f4g.optimizer.entropy.plan.objective.CPowerObjective;
 import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
+import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.utils.IOptimizerServer;
 import f4g.optimizer.OptimizerEngine;
 import f4g.optimizer.cloud.NetworkControl;
@@ -65,8 +65,6 @@ import f4g.schemas.java.allocation.Request;
 import f4g.schemas.java.allocation.AllocationResponse;
 import f4g.schemas.java.allocation.CloudVmAllocationResponse;
 import f4g.schemas.java.allocation.CloudVmAllocation;
-import f4g.schemas.java.allocation.TraditionalVmAllocationResponse;
-import f4g.schemas.java.allocation.TraditionalVmAllocation;
 import f4g.schemas.java.allocation.ObjectFactory;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
@@ -158,8 +156,7 @@ public class OptimizerEngineCloud extends OptimizerEngine {
 		log = Logger.getLogger(this.getClass().getName());
 
 		try {
-			String currentSlaClusterPathName = f4g.commons.core.Configuration
-					.get(Constants.SLA_CLUSTER_FILE_PATH);
+			String currentSlaClusterPathName = f4g.commons.core.Configuration.get(Constants.SLA_CLUSTER_FILE_PATH);
 			log.trace("SLA pathname:" + currentSlaClusterPathName);
 			SLAReader slaReader = new SLAReader(currentSlaClusterPathName);
 
@@ -550,20 +547,6 @@ public class OptimizerEngineCloud extends OptimizerEngine {
 		return cloudVmAllocationResponse;
 	}
 
-	public TraditionalVmAllocationResponse getResponse(Node node, NamingService<Node> ns) {
-
-		TraditionalVmAllocationResponse traditionalVmAllocationResponse = new TraditionalVmAllocationResponse();
-
-		// setting the response
-		traditionalVmAllocationResponse.setNodeId(ns.getName(node)); 
-
-		traditionalVmAllocationResponse.setClusterId(Utils.getClusterId(ns.getName(node), clusters));  
-		traditionalVmAllocationResponse.setImageId("");
-		traditionalVmAllocationResponse.setUserId("");
-		traditionalVmAllocationResponse.setVm("");
-		return traditionalVmAllocationResponse;
-	}
-
 	/**
 	 * shows all VMs from SLA.
 	 */
@@ -615,22 +598,7 @@ public class OptimizerEngineCloud extends OptimizerEngine {
 			log.debug("VM type = " + r.getVm());
 			log.debug("User ID = " + r.getUserId());
 
-		} else {
-			TraditionalVmAllocation r = (TraditionalVmAllocation) request;
-			log.debug("allocation type Traditional:");
-			String ids = new String();
-			for (String id : r.getClusterId()) {
-				ids += id + ";";
-			}
-			log.debug("Cluster IDs = " + ids);
-			log.debug("NB of CPU = " + r.getNumberOfCPUs());
-			log.debug("CPU usage = " + r.getCPUUsage());
-			log.debug("Disk IO rate = " + r.getDiskIORate());
-			log.debug("Memory usage = " + r.getMemoryUsage());
-			log.debug("Network usage = " + r.getNetworkUsage());
-			log.debug("Storage usage = " + r.getStorageUsage());
-
-		}
+		} 
 
 		log.debug("Name: " + allocationRequest.getRequest().getValue());
 	}
