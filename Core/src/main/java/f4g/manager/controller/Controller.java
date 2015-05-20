@@ -33,8 +33,6 @@ import f4g.commons.core.Configuration;
 import f4g.commons.core.Constants;
 import f4g.commons.core.IMain;
 import f4g.schemas.java.actions.ActionRequest;
-import f4g.commons.web.IWebDataCollector;
-import f4g.commons.web.WebDataCollector;
 import f4g.manager.couchDB.ConvertToJSON;
 import f4g.manager.couchDB.DataBase;
 
@@ -57,7 +55,6 @@ public class Controller implements IController {
 	static Logger log = Logger.getLogger(Controller.class.getName());
 
 	IMain main = null;
-	IWebDataCollector webDataCollector = null;
 	
 	private int op;
 	
@@ -75,7 +72,6 @@ public class Controller implements IController {
 	public Controller(IMain main) {
 		
 		this.main = main;
-		this.webDataCollector = WebDataCollector.getInstance();
 		
 		// Set operation mode from configuration file
 		String operationMode = Configuration.get(Constants.OPERATION_MODE);
@@ -155,38 +151,16 @@ public class Controller implements IController {
 			log.debug("Cancelling previous approval timer...");
 		}
 
-		// clearing actions; setting ICT power before and after to 0; setting obsolete to false
-		webDataCollector.clearActions();
-
 		// Check whether Optimizer has suggested any actions
 		if (actionRequest.getActionList().getAction().size() == 0 ) {
 			log.debug("No actions suggested by the Optimizer");
 		} else {
 		
-			// Check operation mode; set "automatic" flag
-			if (this.op == 1) {
-				actionRequest.setIsAutomatic(true);
-				webDataCollector.setAutomatic(true);
-			} else {
-				actionRequest.setIsAutomatic(false);
-				webDataCollector.setAutomatic(false);
-			}
-		
+			
 			// TODO (phase 3) Set data centre operator name from configuration file
 			actionRequest.setOperatorName("unknown");
-			webDataCollector.setOperatorName("unknown");
-		
-			// Extract computed ICT power before and after and set web data collector
-			if (actionRequest.getComputedPowerAfter() != null 
-					|| actionRequest.getComputedPowerBefore() != null) {
-				webDataCollector.setComputedPowerBefore(actionRequest.getComputedPowerBefore().getValue());
-				webDataCollector.setComputedPowerAfter(actionRequest.getComputedPowerAfter().getValue());
-			} else {
-				log.warn("Computed ICT power after and before have not been set by the Optimizer");
-				webDataCollector.setComputedPowerBefore(0.0);
-				webDataCollector.setComputedPowerAfter(0.0);
-			}
-			
+					
+						
 			// Set unique IDs per action
 			for (int i = 0; i < actionRequest.getActionList().getAction().size(); i++) {
 				String value = UUID.randomUUID().toString();
@@ -210,7 +184,7 @@ public class Controller implements IController {
 				((ArrayList)groupedActions.get(frameworkName)).add(actionList.getAction().get(i));
 				log.debug("Adding " + frameworkName + " - " 
 						+ actionList.getAction().get(i).getClass().getName() + " to Web Component");
-				webDataCollector.addAction(actionList.getAction().get(i));
+				
 			}
 			
 			Iterator iter = groupedActions.keySet().iterator();
@@ -223,7 +197,6 @@ public class Controller implements IController {
 				// check operation mode
 				if (this.op == 1) {			// fully-automatic
 					dispatchActions(comName, actions, actionRequest);
-					webDataCollector.setObsolete(true);
 				} else if (this.op == 2) {	// semi-automatic
 					log.info("Actions pending for approval...");
 					scheduleApprovalTask(comName, actions, actionRequest);
@@ -415,7 +388,6 @@ public class Controller implements IController {
 				}
 				setApprovalSent(false);
 				setActionsApproved(false);
-				webDataCollector.setObsolete(true);
 				cancel();
 			} else {
 				log.debug("Approval pending...");
@@ -425,7 +397,6 @@ public class Controller implements IController {
 				log.info("Actions approval time-out!");
 				setApprovalSent(false);
 				setActionsApproved(false);
-				webDataCollector.setObsolete(true);
 				cancel();
 			}
 			
