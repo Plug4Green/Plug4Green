@@ -26,7 +26,7 @@ xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas
     <Cluster id="Assago">
       <Name>Assago</Name>
       <NodeController>
-       <NodeName>node-2.domain.tld</NodeName>
+        <NodeName>node-2.domain.tld</NodeName>
         <NodeName>node-3.domain.tld</NodeName>
       </NodeController>
       <BoundedSLAs>

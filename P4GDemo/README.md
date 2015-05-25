@@ -10,7 +10,7 @@ The Openstack communicator module provides both the actuation of P4G energy and 
 - Git 
 - At least 10Gb of free RAM 
 - At least 1 physical core
-- Internet connection
+- A *cable* Internet connection (no wifi)
 
 Tested on Mac OS and Ubuntu.
 
@@ -33,6 +33,8 @@ $ xdg-open fuel-community-6.0.iso.torrent
 $ mv fuel-community-6.0.iso fuel-main-6.0/virtualbox/iso
 
 ```
+
+Warning: be sure to use Fuel version 6.0 exactly.
 
 ### Start node VMs
 
@@ -61,8 +63,8 @@ Click on "Create a new OpenStack environment" and select the following settings:
 In the Nodes tab:
 using Add Nodes button, assign to each discovered node a role as follows:
 
-- Assign "Controller" to a VM
-- Assign "Compute" & "Storage - Ceph OSD" to the two other VMs
+- Assign one VM to the role "Controller"
+- Assign *two roles* to the two remaining VMs: "Compute" & "Storage - Ceph OSD"
 
 In the Networks tab: click on verify.
 
@@ -138,3 +140,4 @@ To stop P4G, just do Ctrl-C.
 To restart: start VirtualBox, and restart all VMs, starting with the fuel-master. You can then connect to OpenStack GUI and restart the OpenStack VMs.
 
 Enjoy!
+
