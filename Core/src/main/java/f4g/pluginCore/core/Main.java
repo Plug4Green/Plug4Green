@@ -40,6 +40,7 @@ import f4g.manager.monitor.Monitor;
 import f4g.commons.optimizer.IOptimizer;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.Optimizer;
+import f4g.optimizer.comm.SLACom;
 import f4g.commons.power.IPowerCalculator;
 import f4g.powerCalculator.power.PowerCalculator;
 
@@ -62,13 +63,13 @@ public class Main implements IMain {
 	//Singleton instance
 	private static IMain me = null;
 	
-	private IOptimizer optimizer= null;
+	private Optimizer optimizer= null;
 	
-	private IMonitor monitor = null;
+	private Monitor monitor = null;
 	
-	private IController controller = null;
+	private Controller controller = null;
 	
-	private IPowerCalculator powerCalculator = null;
+	private PowerCalculator powerCalculator = null;
 
 	// Status flags
 	private boolean running = false;
@@ -82,6 +83,8 @@ public class Main implements IMain {
 	private OptimizationObjective optimizationObjective = OptimizationObjective.Power;
 	
 	private boolean initialized = false;
+
+	private SLACom slaCom;
 	
 	public Main(HashMap<String, ICom> comMap) {
 	    this.comMap =  new HashMap<String, ICom>();
@@ -164,6 +167,10 @@ public class Main implements IMain {
 			optimizer.setOptimizationObjective(optimizationObjective);
 		}
 		powerCalculator = new PowerCalculator(this);
+		
+		//initialize SLA REST API
+		slaCom = new SLACom(optimizer.getOptimizerEngine(), monitor);
+		slaCom.start();
 		
 		Iterator it = comMap.entrySet().iterator();
 		

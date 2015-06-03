@@ -37,7 +37,7 @@ public class Optimizer implements IOptimizer{
 	IController controller = null;
 	IPowerCalculator powerCalculator = null;
 
-	private OptimizerEngineCloud engine;
+	private OptimizerEngineCloud optimizerEngine;
 	private SLACom slaCom;
 
 		
@@ -59,14 +59,11 @@ public class Optimizer implements IOptimizer{
 				
 				
 		//initialization of the three engines
-		engine = new OptimizerEngineCloud(controller, powerCalculator, costEstimator);
+		optimizerEngine = new OptimizerEngineCloud(controller, powerCalculator, costEstimator);
 		 
 		//default objective to power
 		setOptimizationObjective(OptimizationObjective.Power);
 		
-		//initialize SLA REST API
-		slaCom = new SLACom(engine);
-		slaCom.start();
 	}
 	
 
@@ -86,7 +83,7 @@ public class Optimizer implements IOptimizer{
 		if(myDC!=null) {
 			
 			//choose the engine corresponding to computing style.
-			return engine.allocateResource(allocationRequest, model);
+			return optimizerEngine.allocateResource(allocationRequest, model);
 		
 		} else {
 			log.error("performGlobalOptimization: no datacenter or no computing style inside the model");
@@ -112,7 +109,7 @@ public class Optimizer implements IOptimizer{
 		if(myDC!=null) {
 			
 			//choose the engine corresponding to computing style.
-			engine.performGlobalOptimization(model);
+			optimizerEngine.performGlobalOptimization(model);
 		
 			return true;
 		} else {
@@ -128,7 +125,7 @@ public class Optimizer implements IOptimizer{
 	 * set the optimization objective for the 3 computing styles
 	 */
 	public void setOptimizationObjective(OptimizationObjective optiObjective) {
-			engine.setOptiObjective(optiObjective);
+			optimizerEngine.setOptiObjective(optiObjective);
 	}
 	
 	/* (non-Javadoc)
@@ -149,4 +146,13 @@ public class Optimizer implements IOptimizer{
 	public void setPowerCalculator(IPowerCalculator powerCalculator) {
 		this.powerCalculator = powerCalculator;
 	}
+
+	public OptimizerEngineCloud getOptimizerEngine() {
+		return optimizerEngine;
+	}
+
+	public void setOptimizerEngine(OptimizerEngineCloud optimizerEngine) {
+		this.optimizerEngine = optimizerEngine;
+	}
+
 }

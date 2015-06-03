@@ -8,6 +8,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import f4g.manager.monitor.Monitor;
 import f4g.optimizer.cloud.OptimizerEngineCloud;
 
 //SLA REST interface 
@@ -17,9 +18,9 @@ public class SLACom extends Thread {
 	private Server server;
 	private Logger logger = LoggerFactory.getLogger(SLACom.class);
 	
-    public SLACom(OptimizerEngineCloud opti) {
+    public SLACom(OptimizerEngineCloud opti, Monitor monitor) {
 
-        this.svc = new SLAService(opti);
+        this.svc = new SLAService(opti, monitor);
 
         ResourceConfig resourceConfig = new ResourceConfig();
         resourceConfig.register(svc);

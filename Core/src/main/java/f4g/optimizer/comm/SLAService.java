@@ -6,15 +6,17 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import f4g.manager.monitor.Monitor;
 import f4g.optimizer.cloud.OptimizerEngineCloud;
 
 @Path("/{version}/plug4green/{name}")
 public class SLAService {
 	
 	OptimizerEngineCloud opti;
+	Monitor monitor;
 	private Logger logger = LoggerFactory.getLogger(SLAService.class);
 	
-	public SLAService(OptimizerEngineCloud opti) {
+	public SLAService(OptimizerEngineCloud opti, Monitor monitor) {
 		this.opti = opti;
 	}
 
@@ -25,6 +27,7 @@ public class SLAService {
         logger.debug("received cpu overcommit:");
         logger.debug(cpuovercommit.toString());
         opti.setCPUOvercommit(Float.parseFloat(cpuovercommit));
+        monitor.requestGlobalOptimization();
     }
     
     
