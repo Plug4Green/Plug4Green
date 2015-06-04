@@ -14,6 +14,7 @@
 	<modules>
 		<module>Core</module>
 		<module>CommunicatorOpenStack</module>
+                <module>CommunicatorOpenNebula</module>
 		<module>CommunicatorDemo</module>
 		<module>P4GDemo</module>
 		<module>P4GDemoOne</module>
