@@ -1,0 +1,5 @@
+ip : 172.16.0.2
+port: '5000'
+user : admin
+password : admin
+tenant: admin

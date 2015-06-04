@@ -16,6 +16,7 @@
 		<module>CommunicatorOpenStack</module>
 		<module>CommunicatorDemo</module>
 		<module>P4GDemo</module>
+		<module>P4GDemoOne</module>
 	</modules>
 	<dependencies>
 		<dependency>

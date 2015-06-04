@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opticon:FIT4GreenOptimizerConstraint id="devEni" scenario="single" 
+xmlns:f4g="f4g/schemas/java/MetaModel" 
+xmlns:opticon="f4g/schemas/java/constraints/OptimizerConstraints" 
+xmlns:p="http://www.f4g.org/schema/CommonTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas/SlaClusterConstraints.xsd">
+  <VirtualMachines>
+    <VMFlavor>
+      <name>a</name>
+      <capacity>
+        <vCpus>1</vCpus>
+        <vRam>2.0</vRam>
+        <vHardDisk>32.0</vHardDisk>
+      </capacity>
+      <expectedLoad>
+        <vCpuLoad>1.0</vCpuLoad>
+        <vRamUsage>1.0</vRamUsage>
+        <vDiskLoad>50.0</vDiskLoad>
+        <vNetworkLoad>1.0</vNetworkLoad>
+      </expectedLoad>
+    </VMFlavor>
+  </VirtualMachines>
+  
+  
+  <FIT4GreenCluster>
+    <Cluster id="Assago">
+      <Name>Assago</Name>
+      <NodeController>
+        <NodeName>ensv1hba.eni.pri</NodeName>
+        <NodeName>ensv1hbb.eni.pri</NodeName>
+      </NodeController>
+      <BoundedSLAs>
+        <SLA idref="SLAAssago"/>
+      </BoundedSLAs>
+      <BoundedPolicies>
+        <Policy idref="PolAssago"/>
+      </BoundedPolicies>
+    </Cluster>
+  </FIT4GreenCluster>
+  <ListOfSLA>
+    <SLA id="SLAAssago">
+      <HardwareConstraints/>      	      
+      <QoSConstraints>
+ 	 <MaxVirtualCPUPerCore>2</MaxVirtualCPUPerCore>
+	 <Max_vRAMperPhyRAM>0.80</Max_vRAMperPhyRAM>
+      </QoSConstraints>
+	<SecurityConstraints>
+	</SecurityConstraints>
+	<EnergyConstraints>
+	</EnergyConstraints>
+    </SLA>
+  </ListOfSLA>
+  <ListOfPolicies>
+     <policy id="PolAssago">
+     	<PeriodVMThreshold>	    		
+    		<Starts>2001-12-31T12:00:00</Starts>
+    		<Ends>2031-12-31T12:00:00</Ends>
+    		<Duration>P1D</Duration>
+    		<Repeats>DAILY</Repeats>
+    		<Load>
+    		</Load>    		
+    	</PeriodVMThreshold>
+    </policy>
+  </ListOfPolicies>
+</opticon:FIT4GreenOptimizerConstraint>
+
