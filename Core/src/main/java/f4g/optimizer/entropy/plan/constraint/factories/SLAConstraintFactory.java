@@ -1,7 +1,6 @@
 package f4g.optimizer.entropy.plan.constraint.factories;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,22 +10,18 @@ import org.apache.log4j.Logger;
 import org.btrplace.model.constraint.Fence;
 import org.btrplace.model.constraint.Lonely;
 import org.btrplace.model.constraint.SatConstraint;
-import org.btrplace.model.Mapping;
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
 import org.btrplace.model.VM;
 import org.btrplace.model.constraint.ResourceCapacity;
 import org.btrplace.model.constraint.Overbook;
 
-import f4g.optimizer.OptimizerEngine;
-import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.constraint.api.MaxServerPower;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.EnergyConstraintsType;
 import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType;
-import f4g.schemas.java.constraints.optimizerconstraints.HardwareConstraintsType.CompPowerGHz;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType;
 import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
 import f4g.schemas.java.constraints.optimizerconstraints.SecurityConstraintsType;
@@ -35,9 +30,13 @@ import f4g.schemas.java.constraints.optimizerconstraints.BoundedSLAsType.SLA;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType.ServerGroup;
 import f4g.schemas.java.metamodel.FIT4Green;
-import f4g.schemas.java.metamodel.Frequency;
 import f4g.schemas.java.metamodel.Server;
 
+
+
+/**
+ * Constraints linked to the SLAs
+ */
 public class SLAConstraintFactory  extends ConstraintFactory {
 
 	private FIT4Green F4GModel;
@@ -165,7 +164,9 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 		if (qos.getMaxVirtualCPUPerCore() != null) {
 			if (qos.getMaxVirtualCPUPerCore().getPriority() >= minPriority) {
 				if (vms.size() != 0) {
-					v.addAll(Overbook.newOverbooks(nodes, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, (double) qos.getMaxVirtualCPUPerCore().getValue()));
+					for(Node n : nodes) {
+						v.add(new Overbook(n, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, (double) qos.getMaxVirtualCPUPerCore().getValue(), false));
+					}
 				}
 			}
 		}

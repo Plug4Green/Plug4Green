@@ -51,11 +51,10 @@ import f4g.schemas.java.metamodel.VirtualMachine;
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
 import org.btrplace.model.VM;
+
+
 /**
- * {To be completed; use html notation, if necessary}
- * 
- * 
- * @author ts
+ * Constraints linked to the policies
  */
 public class PolicyConstraintFactory {
 

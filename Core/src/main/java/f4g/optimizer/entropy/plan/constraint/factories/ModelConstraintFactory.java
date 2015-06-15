@@ -12,15 +12,14 @@
  */
 package f4g.optimizer.entropy.plan.constraint.factories;
 
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
 import org.btrplace.model.VM;
@@ -28,10 +27,13 @@ import org.btrplace.model.constraint.Ban;
 import org.btrplace.model.constraint.Fence;
 import org.btrplace.model.constraint.Offline;
 import org.btrplace.model.constraint.Online;
+import org.btrplace.model.constraint.Preserve;
 import org.btrplace.model.constraint.Root;
 import org.btrplace.model.constraint.SatConstraint;
 
+import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.utils.Utils;
+import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.metamodel.Datacenter;
 import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.metamodel.FrameworkCapabilities;
@@ -42,21 +44,25 @@ import f4g.schemas.java.metamodel.VirtualMachine;
 
 
 /**
- * {To be completed; use html notation, if necessary}
+ * This class creates all the constraints linked to the model
  * 
  */
 public class ModelConstraintFactory extends ConstraintFactory {
     
 	protected FIT4Green F4GModel;
+	VMFlavorType currentVMFlavor;
+	Map<String, Integer> VMCPUConstraints;
 
 	/**
 	 * Constructor needing an instance of the SLAReader and an entropy
 	 * configuration element.
 	 */
-	public ModelConstraintFactory(Model model, FIT4Green F4GModel) {
+	public ModelConstraintFactory(Model model, FIT4Green F4GModel, VMFlavorType vm, Map<String, Integer> VMCPUConstraints) {
 		super(model);
 		log = Logger.getLogger(this.getClass().getName()); 
 		this.F4GModel = F4GModel;
+		this.currentVMFlavor = vm;
+		this.VMCPUConstraints = VMCPUConstraints;
 		
 	}
 
@@ -64,6 +70,7 @@ public class ModelConstraintFactory extends ConstraintFactory {
 		
 		List<SatConstraint> vs = new ArrayList<SatConstraint>();
 		vs.addAll(getNodeConstraints());
+		vs.addAll(getVMConstraints());
 		vs.addAll(getFrameworkCapabilitiesConstraints());
 	
 		return vs;
@@ -220,4 +227,23 @@ public class ModelConstraintFactory extends ConstraintFactory {
 		
 		return v;
 	}
+	
+	public List<SatConstraint> getVMConstraints() {
+		List<SatConstraint> v = new LinkedList<SatConstraint>();
+		for(VirtualMachine VM : Utils.getAllVMs(F4GModel)) {
+		
+			VM vm = vmNames.getElement(VM.getFrameworkID());	
+			int VMconsumption;
+			if(VMCPUConstraints.containsKey(VM.getFrameworkID())) {
+				VMconsumption = VMCPUConstraints.get(VM.getFrameworkID());
+			} else {
+				VMconsumption = F4GConfigurationAdapter.getVMCPUConsumption(vm, VM, currentVMFlavor);
+			}			
+			
+			v.add(new Preserve(vm, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, VMconsumption));
+			
+		}
+		return v;
+	}
+	
 }

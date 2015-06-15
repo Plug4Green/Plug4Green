@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -35,6 +37,7 @@ import f4g.commons.power.IPowerCalculator;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.util.Util;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
+import f4g.optimizer.entropy.plan.action.F4GDriver;
 import f4g.optimizer.entropy.plan.action.F4GDriverFactory;
 import f4g.optimizer.entropy.plan.constraint.CMaxServerPower;
 import f4g.optimizer.entropy.plan.constraint.CNoStateChange;
@@ -97,58 +100,27 @@ import org.btrplace.model.constraint.SatConstraint;
 
 public class OptimizerEngineCloud extends OptimizerEngine {
 
-	ServerGroupType serverGroups;
+	private ServerGroupType serverGroups;
 
-	public void setServerGroups(ServerGroupType sg) {
-		this.serverGroups = sg;
-	}
-
-	/**
-	 * Virtual Machines types retrieved from SLA
-	 */
+	 //Virtual Machines types retrieved from SLA
 	private VMFlavorType vms;
 
-	/**
-	 * Cluster definition
-	 */
+
+	//Cluster definition
 	private ClusterType clusters;
 
-	/**
-	 * SLA definition
-	 */
+	//SLA definition
 	private PolicyType policies;
 	private FederationType federation;
 	private SLAType SLAs;
-
-
-    public SLAType getSla() {
-		return SLAs;
-	}
-
-	public void setSla(SLAType sla) {
-		this.SLAs = sla;
-	}
-
-	public void setFederation(FederationType federation) {
-		this.federation = federation;
-	}
-
-	public FederationType getFederation() {
-		return federation;
-	}
 	
-	public PolicyType getPolicies() {
-		return policies;
-	}
+	//CPU constraint VM per VM
+	private Map<String, Integer> VMCPUConstraint;
 
-	public void setPolicies(PolicyType policies) {
-		this.policies = policies;
-	}
 
 	/**
 	 * constructor for production
 	 * 
-	 * @param traditional
 	 */
 	public OptimizerEngineCloud(IController controller,
 			IPowerCalculator powerCalculator, ICostEstimator costEstimator) {
@@ -166,8 +138,10 @@ public class OptimizerEngineCloud extends OptimizerEngine {
 			policies = slaReader.getPolicies();
 			federation = slaReader.getFeds();
 			SLAs = slaReader.getSLAs();
-			showVMs(vms);
+			VMCPUConstraint = new HashMap<String, Integer>();
 
+			showVMs(vms);
+		
 		} catch (Exception e) {
 			log.warn("error in SLA");
 			log.warn(e);
@@ -196,8 +170,10 @@ public class OptimizerEngineCloud extends OptimizerEngine {
 		SLAs = null;
 		policies = myPolicies;
 		federation = myFederation;
+		VMCPUConstraint = new HashMap<String, Integer>();
 		
 		showVMs(vms);
+		
 		
 	}
 	
@@ -282,10 +258,14 @@ public class OptimizerEngineCloud extends OptimizerEngine {
 			for (Action action : plan.getActions()) {
     			log.debug("action: " + action.getClass().getName());
 
-    			AbstractBaseAction f4gAction = f4GDriverFactory.transform(action).getActionToExecute();
-    			if(f4gAction != null){
-    				actions.add(f4gAction);	
-    			}    			 
+    			F4GDriver f4gDriver = f4GDriverFactory.transform(action);
+    			if(f4gDriver != null) {
+    				AbstractBaseAction f4gAction = f4gDriver.getActionToExecute();
+        			if(f4gAction != null){
+        				actions.add(f4gAction);	
+        			}	
+    			}
+    			    			 
     		}
     		
     		List<PowerOnAction> powerOns = new ArrayList<PowerOnAction>();
@@ -390,13 +370,11 @@ public class OptimizerEngineCloud extends OptimizerEngine {
 		if (clusters != null) {
 			constraints.addAll(new SLAConstraintFactory(clusters, model, F4Gmodel, -1, serverGroups).createSLAConstraints());
 			constraints.addAll(new ClusterConstraintFactory(clusters, model).createClusterConstraints());
-//			if (ct != null) {
-//				queue.add(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
-//			}
 		}
 
 		constraints.addAll(new PolicyConstraintFactory(clusters, model, F4Gmodel, federation, vms, powerCalculator, costEstimator).createPolicyConstraints());
-		constraints.addAll(new ModelConstraintFactory(model, F4Gmodel).getModelConstraints());
+		constraints.addAll(new ModelConstraintFactory(model, F4Gmodel, vms, VMCPUConstraint).getModelConstraints());
+		
 		return constraints;
 	}
 	
@@ -412,9 +390,6 @@ public class OptimizerEngineCloud extends OptimizerEngine {
 //			queue.addAll(new SLAConstraintFactory(clusters, src, model, minPriority, serverGroups).createSLAConstraints());
 //			ClusterConstraintFactory clusterConstraintFactory = new ClusterConstraintFactory(clusters, src);
 //			queue.addAll(clusterConstraintFactory.createClusterConstraints());
-//			if (ct != null) {
-//				queue.addAll(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
-//			}
 			//queue.addAll(clusterConstraintFactory.restrictPlacementToClusters(request, VMtoAllocate));
 		}
 		
@@ -642,5 +617,37 @@ public class OptimizerEngineCloud extends OptimizerEngine {
 		SLAs.getSLA().get(0).getQoSConstraints().getMaxVirtualCPUPerCore().setValue(cpuovercommit);
 		
 	}
+	
+	public void addVMCPUConstraint(String VMName, int VMConsumption) {
+		VMCPUConstraint.put(VMName, VMConsumption);
+	}
+			
 
+    public SLAType getSla() {
+		return SLAs;
+	}
+
+	public void setSla(SLAType sla) {
+		this.SLAs = sla;
+	}
+
+	public void setFederation(FederationType federation) {
+		this.federation = federation;
+	}
+
+	public FederationType getFederation() {
+		return federation;
+	}
+	
+	public PolicyType getPolicies() {
+		return policies;
+	}
+
+	public void setPolicies(PolicyType policies) {
+		this.policies = policies;
+	}
+
+	public void setServerGroups(ServerGroupType sg) {
+		this.serverGroups = sg;
+	}
 }
