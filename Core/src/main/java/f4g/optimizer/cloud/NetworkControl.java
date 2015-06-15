@@ -8,7 +8,7 @@
 *   Determines which router/switches could be switched off
 * ============================= /Header ==============================
 */
-package f4g.optimizer.cloudTraditional;
+package f4g.optimizer.cloud;
 
 import f4g.schemas.java.metamodel.FrameworkCapabilities;
 import f4g.schemas.java.metamodel.NetworkNode;
@@ -108,25 +108,4 @@ public class NetworkControl {
         
         return newFederation;
     }
-
-    
-  //  protected static NetworkNode findNetworkNodeByName(FIT4Green f4g, final String frameWorkID) {
-    
-  //      Iterator<NetworkNode> it = Utils.getAllNetworkDeviceNodes(f4g).iterator();
-  //      Predicate<NetworkNode> isID = new Predicate<NetworkNode>() {
-  //          @Override public boolean apply(NetworkNode s) {
-  //              return s.getFrameworkID().equals(frameWorkID);
-  //          }
-  //      };
-  //      return Iterators.find(it, isID);
-  //  }
-    
-    
-
-
-
-    
-    
-    
-
 }

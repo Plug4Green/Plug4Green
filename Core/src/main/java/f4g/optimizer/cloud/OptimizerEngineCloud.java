@@ -12,14 +12,16 @@
  * ============================= /Header ==============================
  */
 
-package f4g.optimizer.cloudTraditional;
+package f4g.optimizer.cloud;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -34,8 +36,8 @@ import f4g.commons.core.Constants;
 import f4g.commons.power.IPowerCalculator;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.util.Util;
-import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
+import f4g.optimizer.entropy.plan.action.F4GDriver;
 import f4g.optimizer.entropy.plan.action.F4GDriverFactory;
 import f4g.optimizer.entropy.plan.constraint.CMaxServerPower;
 import f4g.optimizer.entropy.plan.constraint.CNoStateChange;
@@ -46,13 +48,13 @@ import f4g.optimizer.entropy.plan.constraint.factories.PolicyConstraintFactory;
 import f4g.optimizer.entropy.plan.constraint.factories.SLAConstraintFactory;
 import f4g.optimizer.entropy.plan.objective.CPowerObjective;
 import f4g.optimizer.entropy.plan.objective.api.PowerObjective;
+import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.utils.IOptimizerServer;
 import f4g.optimizer.OptimizerEngine;
-import f4g.optimizer.cloudTraditional.SLAReader;
+import f4g.optimizer.cloud.NetworkControl;
+import f4g.optimizer.cloud.SLAReader;
 import f4g.optimizer.utils.Utils;
-import f4g.optimizer.cloudTraditional.NetworkControl;
 import f4g.optimizer.utils.OptimizerWorkload;
-import f4g.optimizer.Optimizer.CloudTradCS;
 import f4g.schemas.java.metamodel.*;
 import f4g.schemas.java.actions.AbstractBaseAction;
 import f4g.schemas.java.actions.ActionRequest;
@@ -66,8 +68,6 @@ import f4g.schemas.java.allocation.Request;
 import f4g.schemas.java.allocation.AllocationResponse;
 import f4g.schemas.java.allocation.CloudVmAllocationResponse;
 import f4g.schemas.java.allocation.CloudVmAllocation;
-import f4g.schemas.java.allocation.TraditionalVmAllocationResponse;
-import f4g.schemas.java.allocation.TraditionalVmAllocation;
 import f4g.schemas.java.allocation.ObjectFactory;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
@@ -96,80 +96,39 @@ import org.btrplace.model.constraint.SatConstraint;
  * This class contains the algorithm for Cloud computing.
  * 
  * @author cdupont
- * @uml.dependency supplier="f4g.optimizer.SLAReader"
  */
 
-public class OptimizerEngineCloudTraditional extends OptimizerEngine {
+public class OptimizerEngineCloud extends OptimizerEngine {
 
+	private ServerGroupType serverGroups;
 
-    public enum AlgoType {
-		CLOUD, TRADITIONAL
-	}
-
-	CloudTradCS computingStyle;
-	ServerGroupType serverGroups;
-
-	public void setServerGroups(ServerGroupType sg) {
-		this.serverGroups = sg;
-	}
-
-	/**
-	 * Virtual Machines types retrieved from SLA
-	 */
+	 //Virtual Machines types retrieved from SLA
 	private VMFlavorType vms;
 
-	/**
-	 * Cluster definition
-	 */
+
+	//Cluster definition
 	private ClusterType clusters;
 
-	/**
-	 * SLA definition
-	 */
+	//SLA definition
 	private PolicyType policies;
 	private FederationType federation;
 	private SLAType SLAs;
-
-
-    public SLAType getSla() {
-		return SLAs;
-	}
-
-	public void setSla(SLAType sla) {
-		this.SLAs = sla;
-	}
-
-	public void setFederation(FederationType federation) {
-		this.federation = federation;
-	}
-
-	public FederationType getFederation() {
-		return federation;
-	}
 	
-	public PolicyType getPolicies() {
-		return policies;
-	}
+	//CPU constraint VM per VM
+	private Map<String, Integer> VMCPUConstraint;
 
-	public void setPolicies(PolicyType policies) {
-		this.policies = policies;
-	}
 
 	/**
 	 * constructor for production
 	 * 
-	 * @param traditional
 	 */
-	public OptimizerEngineCloudTraditional(IController controller,
-			IPowerCalculator powerCalculator, ICostEstimator costEstimator,
-			CloudTradCS cs) {
+	public OptimizerEngineCloud(IController controller,
+			IPowerCalculator powerCalculator, ICostEstimator costEstimator) {
 		super(controller, powerCalculator, costEstimator);
 		log = Logger.getLogger(this.getClass().getName());
-		computingStyle = cs;
 
 		try {
-			String currentSlaClusterPathName = f4g.commons.core.Configuration
-					.get(Constants.SLA_CLUSTER_FILE_PATH);
+			String currentSlaClusterPathName = f4g.commons.core.Configuration.get(Constants.SLA_CLUSTER_FILE_PATH);
 			log.trace("SLA pathname:" + currentSlaClusterPathName);
 			SLAReader slaReader = new SLAReader(currentSlaClusterPathName);
 
@@ -179,8 +138,10 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			policies = slaReader.getPolicies();
 			federation = slaReader.getFeds();
 			SLAs = slaReader.getSLAs();
-			showVMs(vms);
+			VMCPUConstraint = new HashMap<String, Integer>();
 
+			showVMs(vms);
+		
 		} catch (Exception e) {
 			log.warn("error in SLA");
 			log.warn(e);
@@ -190,13 +151,11 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	/**
 	 * constructor for Unit Testing
 	 */
-	public OptimizerEngineCloudTraditional(IController controller,
+	public OptimizerEngineCloud(IController controller,
 			IPowerCalculator powerCalculator, ICostEstimator costEstimator,
 			VMFlavorType theVMFlavors, PolicyType myPolicies, FederationType myFederation) {
 		super(controller, powerCalculator, costEstimator);
 		log = Logger.getLogger(this.getClass().getName());
-		// default to Cloud
-		computingStyle = CloudTradCS.CLOUD;
 
 		vms = theVMFlavors;
 		
@@ -211,8 +170,10 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		SLAs = null;
 		policies = myPolicies;
 		federation = myFederation;
+		VMCPUConstraint = new HashMap<String, Integer>();
 		
 		showVMs(vms);
+		
 		
 	}
 	
@@ -221,12 +182,11 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 	 * 
 	 * @param traditional
 	 */
-	public OptimizerEngineCloudTraditional(IController controller,
+	public OptimizerEngineCloud(IController controller,
 			IPowerCalculator powerCalculator, ICostEstimator costEstimator,
-			CloudTradCS cs, SLAReader slaReader) {
+			SLAReader slaReader) {
 		super(controller, powerCalculator, costEstimator);
 		log = Logger.getLogger(this.getClass().getName());
-		computingStyle = cs;
 		vms = slaReader.getVMtypes();
 		clusters = slaReader.getCluster();
 		serverGroups = slaReader.getServerGroup();
@@ -298,10 +258,14 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			for (Action action : plan.getActions()) {
     			log.debug("action: " + action.getClass().getName());
 
-    			AbstractBaseAction f4gAction = f4GDriverFactory.transform(action).getActionToExecute();
-    			if(f4gAction != null){
-    				actions.add(f4gAction);	
-    			}    			 
+    			F4GDriver f4gDriver = f4GDriverFactory.transform(action);
+    			if(f4gDriver != null) {
+    				AbstractBaseAction f4gAction = f4gDriver.getActionToExecute();
+        			if(f4gAction != null){
+        				actions.add(f4gAction);	
+        			}	
+    			}
+    			    			 
     		}
     		
     		List<PowerOnAction> powerOns = new ArrayList<PowerOnAction>();
@@ -406,13 +370,11 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		if (clusters != null) {
 			constraints.addAll(new SLAConstraintFactory(clusters, model, F4Gmodel, -1, serverGroups).createSLAConstraints());
 			constraints.addAll(new ClusterConstraintFactory(clusters, model).createClusterConstraints());
-//			if (ct != null) {
-//				queue.add(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
-//			}
 		}
 
 		constraints.addAll(new PolicyConstraintFactory(clusters, model, F4Gmodel, federation, vms, powerCalculator, costEstimator).createPolicyConstraints());
-		constraints.addAll(new ModelConstraintFactory(model, F4Gmodel).getModelConstraints());
+		constraints.addAll(new ModelConstraintFactory(model, F4Gmodel, vms, VMCPUConstraint).getModelConstraints());
+		
 		return constraints;
 	}
 	
@@ -421,22 +383,13 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		
 		int minPriority = 1;
 		List<SatConstraint> queue = new LinkedList<SatConstraint>(); 
-		
-		if (computingStyle == CloudTradCS.CLOUD) {
-			if (((CloudVmAllocation) request).getMinPriority() != null)
-				minPriority = ((CloudVmAllocation) request).getMinPriority();
-		} else {
-			if (((TraditionalVmAllocation) request).getMinPriority() != null)
-				minPriority = ((TraditionalVmAllocation) request).getMinPriority();
-		}
-		
+		if (((CloudVmAllocation) request).getMinPriority() != null)
+			minPriority = ((CloudVmAllocation) request).getMinPriority();
+				
 		if (clusters != null) {
 //			queue.addAll(new SLAConstraintFactory(clusters, src, model, minPriority, serverGroups).createSLAConstraints());
 //			ClusterConstraintFactory clusterConstraintFactory = new ClusterConstraintFactory(clusters, src);
 //			queue.addAll(clusterConstraintFactory.createClusterConstraints());
-//			if (ct != null) {
-//				queue.addAll(new PlacementConstraintFactory(src, model, serverGroups).createPCConstraints());
-//			}
 			//queue.addAll(clusterConstraintFactory.restrictPlacementToClusters(request, VMtoAllocate));
 		}
 		
@@ -500,14 +453,9 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
 		if (node != null) {
 
-			if (computingStyle == CloudTradCS.CLOUD) {
-				CloudVmAllocationResponse cloudVmAllocationResponse = getResponse(node, request, ns);
-				response.setResponse((new ObjectFactory()).createCloudVmAllocationResponse(cloudVmAllocationResponse));
-			} else {
-				TraditionalVmAllocationResponse tradVmAllocationResponse = getResponse(node, ns);
-				response.setResponse((new ObjectFactory()).createTradinitionalVmAllocationResponse(tradVmAllocationResponse));
-			}
-
+			CloudVmAllocationResponse cloudVmAllocationResponse = getResponse(node, request, ns);
+			response.setResponse((new ObjectFactory()).createCloudVmAllocationResponse(cloudVmAllocationResponse));
+			
 			log.debug("Allocated on: " + ns.getName(node));
 
 			try {
@@ -526,38 +474,25 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 
 	protected OptimizerWorkload getOptimizerWorkload(Request request) {
 
-		if (computingStyle == CloudTradCS.CLOUD) {
-			// Get the VM type from SLA.
-			VMFlavorType.VMFlavor SLAVM;
-			try {
-				SLAVM = Util.findVMByName(
-						((CloudVmAllocation) request).getVm(), vms);
-			} catch (NoSuchElementException e1) {
-				log.warn("VM type not found in SLA, allocation impossible");
-				return null;
-			}
-
-			OptimizerWorkload WL = new OptimizerWorkload(SLAVM, "No name");
-			return WL;
-		} else {
-			return new OptimizerWorkload((TraditionalVmAllocation) request,
-					"No name");
+		// Get the VM type from SLA.
+		VMFlavorType.VMFlavor SLAVM;
+		try {
+			SLAVM = Util.findVMByName(
+					((CloudVmAllocation) request).getVm(), vms);
+		} catch (NoSuchElementException e1) {
+			log.warn("VM type not found in SLA, allocation impossible");
+			return null;
 		}
+			OptimizerWorkload WL = new OptimizerWorkload(SLAVM, "No name");
+		return WL;
 
 	}
 
 	protected ArrayList<IOptimizerServer> getOptimizerServers(Datacenter datacenter) {
 
-		if (computingStyle == CloudTradCS.CLOUD) {
-			// get translations between F4G types and optimizer types
-			final ArrayList<IOptimizerServer> optimizerServers = Utils.getAllOptimizerServersCloud(datacenter, vms);
-			return optimizerServers;
-		} else {
-			// get translations between F4G types and optimizer types
-			final ArrayList<IOptimizerServer> optimizerServers = Utils.getAllOptimizerServersTradi(datacenter);
-			return optimizerServers;
-		}
-
+		// get translations between F4G types and optimizer types
+		final ArrayList<IOptimizerServer> optimizerServers = Utils.getAllOptimizerServersCloud(datacenter, vms);
+		return optimizerServers;
 	}
 
 	protected ArrayList<IOptimizerServer> getOptimizerServers(FIT4Green federation) {
@@ -585,20 +520,6 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		cloudVmAllocationResponse.setUserId(CloudOperation.getUserId());
 		cloudVmAllocationResponse.setVm(CloudOperation.getVm());
 		return cloudVmAllocationResponse;
-	}
-
-	public TraditionalVmAllocationResponse getResponse(Node node, NamingService<Node> ns) {
-
-		TraditionalVmAllocationResponse traditionalVmAllocationResponse = new TraditionalVmAllocationResponse();
-
-		// setting the response
-		traditionalVmAllocationResponse.setNodeId(ns.getName(node)); 
-
-		traditionalVmAllocationResponse.setClusterId(Utils.getClusterId(ns.getName(node), clusters));  
-		traditionalVmAllocationResponse.setImageId("");
-		traditionalVmAllocationResponse.setUserId("");
-		traditionalVmAllocationResponse.setVm("");
-		return traditionalVmAllocationResponse;
 	}
 
 	/**
@@ -637,14 +558,6 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 		this.clusters = clusterType;
 	}
 
-	public CloudTradCS getComputingStyle() {
-		return computingStyle;
-	}
-
-	public void setComputingStyle(CloudTradCS computingStyle) {
-		this.computingStyle = computingStyle;
-	}
-
 	public void showAllocation(AllocationRequest allocationRequest) {
 		Request request = (Request) allocationRequest.getRequest()
 				.getValue();
@@ -660,22 +573,7 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
 			log.debug("VM type = " + r.getVm());
 			log.debug("User ID = " + r.getUserId());
 
-		} else {
-			TraditionalVmAllocation r = (TraditionalVmAllocation) request;
-			log.debug("allocation type Traditional:");
-			String ids = new String();
-			for (String id : r.getClusterId()) {
-				ids += id + ";";
-			}
-			log.debug("Cluster IDs = " + ids);
-			log.debug("NB of CPU = " + r.getNumberOfCPUs());
-			log.debug("CPU usage = " + r.getCPUUsage());
-			log.debug("Disk IO rate = " + r.getDiskIORate());
-			log.debug("Memory usage = " + r.getMemoryUsage());
-			log.debug("Network usage = " + r.getNetworkUsage());
-			log.debug("Storage usage = " + r.getStorageUsage());
-
-		}
+		} 
 
 		log.debug("Name: " + allocationRequest.getRequest().getValue());
 	}
@@ -712,4 +610,44 @@ public class OptimizerEngineCloudTraditional extends OptimizerEngine {
     	}   	
     }
 
+
+	public void setCPUOvercommit(float cpuovercommit) {
+		
+		log.debug("setting CPU overcommit=" + cpuovercommit);
+		SLAs.getSLA().get(0).getQoSConstraints().getMaxVirtualCPUPerCore().setValue(cpuovercommit);
+		
+	}
+	
+	public void setVMCPUConstraint(String VMName, int VMConsumption) {
+		VMCPUConstraint.put(VMName, VMConsumption);
+	}
+			
+
+    public SLAType getSla() {
+		return SLAs;
+	}
+
+	public void setSla(SLAType sla) {
+		this.SLAs = sla;
+	}
+
+	public void setFederation(FederationType federation) {
+		this.federation = federation;
+	}
+
+	public FederationType getFederation() {
+		return federation;
+	}
+	
+	public PolicyType getPolicies() {
+		return policies;
+	}
+
+	public void setPolicies(PolicyType policies) {
+		this.policies = policies;
+	}
+
+	public void setServerGroups(ServerGroupType sg) {
+		this.serverGroups = sg;
+	}
 }

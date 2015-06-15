@@ -28,10 +28,9 @@ import f4g.schemas.java.constraints.optimizerconstraints.SpareNodes;
 import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
 import f4g.schemas.java.constraints.optimizerconstraints.QoSConstraintsType.MaxVirtualCPUPerCore;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloud.OptimizerEngineCloud;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -61,7 +60,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		bpols.getPolicy().add(bpol);		
 		fed.setBoundedPolicies(bpols);
 		
-		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(),
+		optimizer = new OptimizerEngineCloud(new MockController(), new MockPowerCalculator(), new NetworkCost(),
 				SLAGenerator.createVirtualMachine(), policies, fed);
 	    
 		optimizer.setSla(SLAGenerator.createDefaultSLA());
@@ -338,7 +337,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 	/**
 	 * Test global with CPU constraints not satisfied (model need to be repaired)
 	 */
-    @Ignore @Test //The new BtrPlace does not support anymore the "wrong" situations, where VMs are consuming more than 100% CPUs and must be moved.
+    @Test
     public void testGlobalTooMuchVMs() {
 		
 		ModelGenerator modelGenerator = new ModelGenerator();
@@ -355,13 +354,13 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		List<VirtualMachine> VMs0 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(0).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 		List<VirtualMachine> VMs1 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 
-		VMs0.addAll(VMs1);
 		VMs1.clear();
-				
+		optimizer.setVMCPUConstraint(VMs0.get(0).getFrameworkID(), 130);
+		
 		optimizer.runGlobalOptimization(model);
 
 		//id100000 is too full, 4 VMs should move out
-		assertEquals(4, getMoves().size());
+		assertEquals(1, getMoves().size());
 			
 	}
 }

@@ -14,8 +14,6 @@
 
 package f4g.optimizer;
 
-
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +22,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.log4j.Logger;
+
 import f4g.commons.controller.IController;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.optimizer.OptimizationObjective;
@@ -44,14 +43,9 @@ import f4g.schemas.java.actions.PowerOnAction;
 import f4g.schemas.java.allocation.AllocationRequest;
 import f4g.schemas.java.allocation.AllocationResponse;
 
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.rits.cloning.Cloner;
-import org.jscience.physics.amount.*;
-import org.jscience.economics.money.*;
-import javax.measure.quantity.*;
-import static javax.measure.unit.SI.*;
 
 
 /**
@@ -68,25 +62,9 @@ public abstract class OptimizerEngine implements Runnable  {
 	
 	public Logger log;  
 	
-	/**
-	 * access to controller
-	 */
 	protected IController controller = null;
-	
-
-	/**
-	 * access to power calculator
-	 */
 	protected IPowerCalculator powerCalculator = null;
-
-
-
-	/**
-	 * access to cost estimator
-	 */
 	protected ICostEstimator costEstimator = null;
-
-
 
 	/**
 	 * optimization objective: either Power or CO2

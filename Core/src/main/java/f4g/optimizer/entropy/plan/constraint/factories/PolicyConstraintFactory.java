@@ -29,7 +29,7 @@ import org.btrplace.model.constraint.Root;
 import org.btrplace.model.constraint.SatConstraint;
 
 import f4g.commons.optimizer.ICostEstimator;
-import f4g.optimizer.cloudTraditional.SLAReader;
+import f4g.optimizer.cloud.SLAReader;
 import f4g.optimizer.entropy.NamingService;
 import f4g.optimizer.entropy.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.entropy.plan.constraint.api.NoStateChange;
@@ -51,11 +51,10 @@ import f4g.schemas.java.metamodel.VirtualMachine;
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
 import org.btrplace.model.VM;
+
+
 /**
- * {To be completed; use html notation, if necessary}
- * 
- * 
- * @author ts
+ * Constraints linked to the policies
  */
 public class PolicyConstraintFactory {
 

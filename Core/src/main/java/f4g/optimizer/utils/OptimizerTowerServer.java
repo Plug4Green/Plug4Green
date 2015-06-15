@@ -28,7 +28,6 @@ import org.jvnet.jaxb2_commons.lang.CopyStrategy;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.optimizer.utils.OptimizerServer.CandidateState;
 import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
 
@@ -77,8 +76,8 @@ public class OptimizerTowerServer extends TowerServer implements IOptimizerServe
 	@Override public PowerData               getPower(IPowerCalculator powerCalculator)       { return optimizerServer.getPower(         powerCalculator, this);}		
 	@Override public void                    setCandidateState(CandidateState candState)      {        optimizerServer.setCandidateState(candState);}
 	@Override public String                  getCandidateState()                              { return optimizerServer.getCandidateState();}
-	@Override public double                  getLoadRate(AggregatedUsage ref, AlgoType at)    { return optimizerServer.getLoadRate(      ref, at);}
-	@Override public void                    addVM(OptimizerWorkload WL, AlgoType at)         {        optimizerServer.addVM(            WL, at, this);}
+	@Override public double                  getLoadRate(AggregatedUsage ref)                 { return optimizerServer.getLoadRate(      ref);}
+	@Override public void                    addVM(OptimizerWorkload WL)                      {        optimizerServer.addVM(            WL, this);}
 	@Override public ServerStatus        getServerStatus()                                { return this           .getStatus();}
 	@Override public void                    setServerStatus(ServerStatus value)          {        this           .setStatus(        value);}
 	@Override public List<Mainboard>     getServerMainboard()                             { return this           .getMainboard();}

@@ -80,8 +80,10 @@ public class F4GConfigurationAdapter
 		PowerView powersIdles = new PowerView(VIEW_POWER_IDLES);
 		PowerView powersPerVMs = new PowerView(VIEW_POWER_PER_VM);
 		
+		
 		for(Server server : Utils.getAllServers(currentFit4Green)) {
-					
+			
+			//Add server related resources
 			Node node = model.newNode();
 			NodeNS.putElementName(node, server.getFrameworkID());
 			putServerCPUResource(node, server, cpus);
@@ -95,6 +97,8 @@ public class F4GConfigurationAdapter
 				model.getMapping().addOnlineNode(node);
 			
 				for(VirtualMachine VM : Utils.getVMs(server)) {
+					
+					//Add VM related resources
 					VM vm = model.newVM();	
 					model.getMapping().addRunningVM(vm, node);
 					
@@ -145,30 +149,8 @@ public class F4GConfigurationAdapter
 	}
 	
 	private void putVMCPUConsumption(VM vm, VirtualMachine F4GVM, ShareableResource s) {
-		
-		VMFlavorType.VMFlavor SLA_VM = null;
-		if(F4GVM.getCloudVm() != null) {
-			SLA_VM = Util.findVMByName(F4GVM.getCloudVm(), currentVMFlavor);	
-		}
-					
-		//If the measured values are present in the VM, we take these.
-		//otherwise, we take the specification values from the SLA.
-        int nbCPUs;
-        if(F4GVM.getNumberOfCPUs() != null) {
-                nbCPUs = F4GVM.getNumberOfCPUs().getValue();
-        } else {
-                nbCPUs = SLA_VM.getCapacity().getVCpus().getValue();
-        }
-
-        double CPUUsage;
-        if(F4GVM.getActualCPUUsage() != null) {
-                CPUUsage = F4GVM.getActualCPUUsage().getValue();
-        } else {
-                CPUUsage = SLA_VM.getExpectedLoad().getVCpuLoad().getValue();
-        }
-		
-		s.setConsumption(vm, (int) (CPUUsage * nbCPUs));
-		
+	
+		s.setConsumption(vm, getVMCPUConsumption(vm, F4GVM, currentVMFlavor));
 	}
 
 	private void putVMMemoryConsumption(final VM vm, final VirtualMachine F4GVM, ShareableResource s) {
@@ -207,145 +189,7 @@ public class F4GConfigurationAdapter
 		
 		s.setPowers(n, (int) getPperVM(server));		
 	}
-
-	
-//	private VM getVM(Node node, VirtualMachine VM) {
-//		
-//		//VM type should be set OR some measurements should be present
-//		if(VM.getCloudVmType() == null &&
-//		   (VM.getNumberOfCPUs() == null ||
-//			VM.getActualCPUUsage() == null ||
-//			VM.getActualMemoryUsage() == null)) {
-//			log.error("VM type not set for " + VM.getFrameworkID() + " and no VM measures found");
-//			System.exit(-1);
-//		}
-//		
-//		VMFlavorType.VMFlavor SLA_VM = null;
-//		if(VM.getCloudVmType() != null) {
-//			SLA_VM = Util.findVMByName(VM.getCloudVmType(), currentVMFlavor);	
-//		}
-//		
-//				
-//		//If the measured values are present in the VM, we take these.
-//		//otherwise, we take the specification values from the SLA.
-//		int nbCPUs;
-//		if(VM.getNumberOfCPUs() != null) {
-//			nbCPUs = VM.getNumberOfCPUs().getValue();
-//		} else {
-//			nbCPUs = SLA_VM.getCapacity().getVCpus().getValue();
-//		}
-//		
-//		double CPUUsage;
-//		if(VM.getActualCPUUsage() != null) {
-//			CPUUsage = VM.getActualCPUUsage().getValue();
-//		} else {
-//			CPUUsage = SLA_VM.getExpectedLoad().getVCpuLoad().getValue();
-//		}
-//		
-//		int memory;
-//		if(VM.getActualMemoryUsage() != null) {
-//			memory = (int) (VM.getActualMemoryUsage().getValue() * 1024);
-//		} else {
-//			memory = (int) (SLA_VM.getCapacity().getVRam().getValue() * 1024);
-//		}
-//		
-//		int consumption = (int) (CPUUsage * nbCPUs);
-//				
-//		log.debug("creation of an Entropy VM with name " + VM.getFrameworkID());
-//		log.debug("nbCPUs " + nbCPUs);
-//		log.debug("consumption " + consumption + " %");
-//		log.debug("memory " + memory + " MB");
-//		VirtualMachine vm = new SimpleVirtualMachine(VM.getFrameworkID(), nbCPUs, consumption, memory);                                       
-//		return vm;
-//	}
-//	
-//	public VM getVM(Request request) {
-//		if(request instanceof CloudVmAllocation) {
-//			return getVM((CloudVmAllocation)request);	
-//		} else {
-//			return getVM((TraditionalVmAllocation)request);
-//		}
-//	}
-	
-//	public VM getVM(CloudVmAllocation request) {
-//		
-//		VMFlavorType.VMFlavor SLA_VM;
-//		
-//		try {
-//			SLA_VM = Util.findVMByName(request.getVm(), currentVMFlavor);
-//		} catch (NoSuchElementException e1) {
-//			log.error("VM name " + request.getVm() + " could not be found in SLA");
-//			return null;
-//		}
-//
-//		int nbCPUs = SLA_VM.getCapacity().getVCpus().getValue();
-//		//the consumption of a VM if set as a percentage * number of CPU.
-//		//it should be demanding a certain CPU power instead.
-//		int consumption = (int) (nbCPUs * SLA_VM.getExpectedLoad().getVCpuLoad().getValue()); //(int) (SLA_VM.getExpectedLoad().getVCpuLoad().getValue() * REFERENCE_CPU_SPEED);
-//		int memory = (int) (SLA_VM.getCapacity().getVRam().getValue() * 1024);
-//		
-//		log.debug("creation of an Entropy VM for allocation request");
-//		log.debug("nbCPUs " + nbCPUs);
-//		log.debug("consumption " + consumption + " %");
-//		log.debug("memory " + memory + " MB");
-//		VirtualMachine vm = new SimpleVirtualMachine("new VM", nbCPUs, consumption, memory); 
-//		
-//		return vm;
-//	}
-	
-//	public VM getVM(TraditionalVmAllocation request) {
-//		
-//		int nbCPUs;
-//		if(request.getNumberOfCPUs() != null) nbCPUs = request.getNumberOfCPUs();
-//		else nbCPUs = 1;
-//		//the consumption of a VM if set as a percentage * number of CPU.
-//		//it should be demanding a certain CPU power instead.
-//		
-//		double CPUUsage;
-//		if(request.getCPUUsage() != null) CPUUsage = request.getCPUUsage();
-//		else CPUUsage = 100;
-//		
-//		int consumption = (int) (nbCPUs * CPUUsage);
-//		
-//		int memory;
-//		if(request.getMemoryUsage() != null) memory = (int) (request.getMemoryUsage() * 1.0 * 1024);
-//		else memory = 1;
-//
-//		log.debug("creation of an Entropy VM for allocation request");
-//		log.debug("nbCPUs " + nbCPUs);
-//		log.debug("consumption " + consumption + " %");
-//		log.debug("memory " + memory + " MB");
-//		VM vm = new VM("new VM", nbCPUs, consumption, memory);                                        
-//		return vm;
-//	}
-
-
-	
-//	private Node getNode(Server server) {
-//		
-//		
-//		//freq in Hz
-//		double freq = cores.get(0).getFrequency().getValue();
-//		int nbCPUs = cores.size();
-//		int cpuCapacity = nbCPUs * 100;  // getCPUCapacity ((int) (freq / 1000000), nbCPUs);
-//		int memoryTotal = (int) Utils.getMemory(server) * 1024;
-//		int powerIdle = (int) getPIdle(server);
-//		int powerPerVM = (int) getPperVM(server);
-//		
-//		log.debug("creation of an Entropy Node with name " + server.getFrameworkID());
-//		log.debug("server is " + server.getStatus().toString());
-//		log.debug("nbCPUs " + nbCPUs);
-//		log.debug("freq " + freq + " GHz");
-//		log.debug("cpuCapacity " + cpuCapacity +" %");
-//		log.debug("memoryTotal " + memoryTotal + " MB");
-//		log.debug("powerIdle " + powerIdle + " W");
-//		log.debug("powerPerVM " + powerPerVM + " W");
-//		
-//		Node node = new Node(server.getFrameworkID(), nbCPUs, cpuCapacity, memoryTotal, powerIdle, powerPerVM);
-//		return node;
-//	}
-	
-	 
+		 
 	public float getPIdle(Server server) {
       
 		double ue = getUsageEffectiveness(server);		
@@ -378,6 +222,32 @@ public class F4GConfigurationAdapter
     	} else {
     		return Utils.getServerSite(server, currentFit4Green).getCUE().getValue();
     	}
+	}
+	
+	public static int getVMCPUConsumption(VM vm, VirtualMachine F4GVM, VMFlavorType VMFlavor) {
+		
+		VMFlavorType.VMFlavor SLA_VM = null;
+		if(F4GVM.getCloudVm() != null) {
+			SLA_VM = Util.findVMByName(F4GVM.getCloudVm(), VMFlavor);	
+		}
+					
+		//If the measured values are present in the VM, we take these.
+		//otherwise, we take the specification values from the SLA.
+        int nbCPUs;
+        if(F4GVM.getNumberOfCPUs() != null) {
+                nbCPUs = F4GVM.getNumberOfCPUs().getValue();
+        } else {
+                nbCPUs = SLA_VM.getCapacity().getVCpus().getValue();
+        }
+
+        double CPUUsage;
+        if(F4GVM.getActualCPUUsage() != null) {
+                CPUUsage = F4GVM.getActualCPUUsage().getValue();
+        } else {
+                CPUUsage = SLA_VM.getExpectedLoad().getVCpuLoad().getValue();
+        }
+		
+		return (int) (CPUUsage * nbCPUs);
 	}
 
 	

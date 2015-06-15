@@ -21,7 +21,7 @@ import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
 import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
 import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
 import f4g.schemas.java.constraints.optimizerconstraints.PolicyType.Policy;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloud.OptimizerEngineCloud;
 
 
 public class OptimizerModelConstraintTest extends OptimizerTest {
@@ -48,7 +48,7 @@ public class OptimizerModelConstraintTest extends OptimizerTest {
 		vmMargins.getPolicy().add(pol);
 
 		
-		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
+		optimizer = new OptimizerEngineCloud(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
 				        slaGenerator.createVirtualMachine(), vmMargins, makeSimpleFed(vmMargins, null));
 				
 	}

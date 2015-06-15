@@ -68,49 +68,6 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:element name="TraditionalVmAllocation" type="TraditionalVmAllocation" substitutionGroup="Request" />
-	
-	<xs:complexType name="TraditionalVmAllocation">
-		<xs:annotation>
-			<xs:documentation>VM Allocation request for traditional computing style</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="Request">
-				<xs:sequence>
-					<xs:element name="clusterId" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					<xs:element name="numberOfCPUs" type="xs:int" minOccurs="0" maxOccurs="1" />
-					<xs:element name="CPUUsage" type="xs:double" minOccurs="0" maxOccurs="1" />
-					<xs:element name="StorageUsage" type="xs:double" minOccurs="0" maxOccurs="1" />
-					<xs:element name="DiskIORate" type="xs:double" minOccurs="0" maxOccurs="1" />
-					<xs:element name="MemoryUsage" type="xs:double" minOccurs="0" maxOccurs="1" />
-					<xs:element name="NetworkUsage" type="xs:double" minOccurs="0" maxOccurs="1" />
-					<xs:element name="minPriority" type="xs:int" minOccurs="0" maxOccurs="1" />
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType> 
-	
-	<xs:element name="HpcClusterAllocation" type="HpcClusterAllocation" substitutionGroup="Request" />
-	
-	<xs:complexType name="HpcClusterAllocation">
-		<xs:annotation>
-			<xs:documentation>Cluster Allocation request for HPC style</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="Request">
-				<xs:sequence>
-				 	<xs:element  name="numberOfNodes" type="xs:int" minOccurs="1" maxOccurs="1"/>
-	    				<xs:element  name="neededMemory" type="xs:long" minOccurs="1" maxOccurs="1"/>
-	    				<xs:element  name="neededCoresPerNode" type="xs:int" minOccurs="1" maxOccurs="1"/>
-	    				<xs:element  name="wallTime" type="xs:long" minOccurs="1" maxOccurs="1"/>
-	    				<xs:element  name="energyAware" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
-	    				<xs:element  name="latestFinish" type="xs:long" minOccurs="1" maxOccurs="1"/>
-	    				<xs:element  name="suitableClusters" type="xs:string" minOccurs="1" maxOccurs="1"/>
-	    				<xs:element  name="benchmarkName" type="xs:string" minOccurs="0" maxOccurs="1"/>
-				</xs:sequence>	
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
 	
 	<xs:element name="Response" type="Response"/>
 	
@@ -139,40 +96,5 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
-	<xs:element name="TradinitionalVmAllocationResponse" type="TraditionalVmAllocationResponse" substitutionGroup="Response" />
-	
-	<xs:complexType name="TraditionalVmAllocationResponse">
-		<xs:annotation>
-			<xs:documentation>VM Allocation response for traditional computing style</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="Response">
-				<xs:sequence>
-					<xs:element name="imageId" type="xs:string" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="clusterId" type="xs:string" minOccurs="1" maxOccurs="1"/>
-					<xs:element name="vm" type="xs:string" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="userId" type="xs:string" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="nodeId" type="xs:string" minOccurs="1" maxOccurs="1"/>
-					<xs:element name="minPriority" type="xs:int" minOccurs="0" maxOccurs="1" />
-				</xs:sequence>	
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	
-	<xs:element name="HpcClusterAllocationResponse" type="HpcClusterAllocationResponse" substitutionGroup="Response" />
-	
-	<xs:complexType name="HpcClusterAllocationResponse">
-		<xs:annotation>
-			<xs:documentation>Cluster Allocation response for HPC style</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="Response">
-				<xs:sequence>
-					<xs:element name="clusterId" type="xs:string" minOccurs="1" maxOccurs="1"/>
-				</xs:sequence>	
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	
+		
 </xs:schema>

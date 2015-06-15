@@ -15,7 +15,6 @@ import org.btrplace.model.constraint.Fence;
 import org.btrplace.model.constraint.SatConstraint;
 import f4g.schemas.java.allocation.CloudVmAllocation;
 import f4g.schemas.java.allocation.Request;
-import f4g.schemas.java.allocation.TraditionalVmAllocation;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.metamodel.FIT4Green;
@@ -136,8 +135,6 @@ public class ClusterConstraintFactory extends ConstraintFactory {
 		List<String> clusterList = new ArrayList<String>();
 		if(request instanceof CloudVmAllocation) {
 			clusterList = ((CloudVmAllocation)request).getClusterId();	
-		} else {
-			clusterList = ((TraditionalVmAllocation)request).getClusterId();	
 		}
 		
 		try {

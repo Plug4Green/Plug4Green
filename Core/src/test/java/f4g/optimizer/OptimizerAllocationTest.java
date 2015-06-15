@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cost_estimator.NetworkCost;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloud.OptimizerEngineCloud;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.metamodel.ServerStatus;
@@ -25,7 +25,6 @@ import f4g.schemas.java.allocation.CloudVmAllocation;
 import f4g.schemas.java.allocation.AllocationRequest;
 import f4g.schemas.java.allocation.AllocationResponse;
 import f4g.schemas.java.allocation.ObjectFactory;
-import f4g.schemas.java.allocation.TraditionalVmAllocationResponse;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.Load;
 import f4g.schemas.java.constraints.optimizerconstraints.NodeController;
@@ -64,7 +63,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 
 		vmMargins = new PolicyType(polL);
 		vmMargins.getPolicy().add(pol);
-		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
+		optimizer = new OptimizerEngineCloud(new MockController(), new MockPowerCalculator(), new NetworkCost(), 
 				        SLAGenerator.createVirtualMachine(), vmMargins, makeSimpleFed(vmMargins, null));
 		optimizer.setSla(SLAGenerator.createDefaultSLA());
 	}
@@ -311,7 +310,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		//TEST 1
 		
 		//Create a new optimizer with the special power calculator
-		OptimizerEngineCloudTraditional MyOptimizer = new OptimizerEngineCloudTraditional(new MockController(), new MyPowerCalculator(), new NetworkCost(), 
+		OptimizerEngineCloud MyOptimizer = new OptimizerEngineCloud(new MockController(), new MyPowerCalculator(), new NetworkCost(), 
 		        SLAGenerator.createVirtualMachine(), vmMargins, makeSimpleFed(vmMargins, model));
 		
 		AllocationResponse response = MyOptimizer.allocateResource(allocationRequest, model);
@@ -336,7 +335,7 @@ public class OptimizerAllocationTest extends OptimizerTest {
 		}
 				
 		//Create a new optimizer with the special power calculator
-		OptimizerEngineCloudTraditional MyOptimizer2 = new OptimizerEngineCloudTraditional(new MockController(), new MyPowerCalculator2(), new NetworkCost(), 
+		OptimizerEngineCloud MyOptimizer2 = new OptimizerEngineCloud(new MockController(), new MyPowerCalculator2(), new NetworkCost(), 
 				SLAGenerator.createVirtualMachine(), vmMargins, makeSimpleFed(vmMargins, model));
 		
 		AllocationResponse response2 = MyOptimizer2.allocateResource(allocationRequest, model);

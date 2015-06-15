@@ -20,7 +20,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import f4g.commons.com.util.PowerData;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.schemas.java.metamodel.*;
@@ -82,8 +81,8 @@ public class OptimizerRackServer extends RackableServer implements IOptimizerSer
 	@Override public PowerData               getPower(IPowerCalculator powerCalculator)       { return optimizerServer.getPower(         powerCalculator, this);}		
 	@Override public void                    setCandidateState(CandidateState candState)      {        optimizerServer.setCandidateState(candState);}
 	@Override public String                  getCandidateState()                              { return optimizerServer.getCandidateState();}
-	@Override public double                  getLoadRate(AggregatedUsage ref, AlgoType at)    { return optimizerServer.getLoadRate(      ref, at);}
-	@Override public void                    addVM(OptimizerWorkload WL, AlgoType at)         {        optimizerServer.addVM(            WL, at, this);}
+	@Override public double                  getLoadRate(AggregatedUsage ref)                 { return optimizerServer.getLoadRate(      ref);}
+	@Override public void                    addVM(OptimizerWorkload WL)                      {        optimizerServer.addVM(            WL, this);}
 	@Override public ServerStatus        getServerStatus()                                { return this           .getStatus();}
 	@Override public void                    setServerStatus(ServerStatus value)          {        this           .setStatus(        value);}
 	@Override public List<Mainboard>     getServerMainboard()                             { return this           .getMainboard();}

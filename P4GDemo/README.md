@@ -10,7 +10,7 @@ The Openstack communicator module provides both the actuation of P4G energy and 
 - Git 
 - At least 10Gb of free RAM 
 - At least 1 physical core
-- Internet connection
+- A *cable* Internet connection (no wifi)
 
 Tested on Mac OS and Ubuntu.
 
@@ -33,6 +33,8 @@ $ xdg-open fuel-community-6.0.iso.torrent
 $ mv fuel-community-6.0.iso fuel-main-6.0/virtualbox/iso
 
 ```
+
+Warning: be sure to use Fuel version 6.0 exactly.
 
 ### Start node VMs
 
@@ -61,8 +63,8 @@ Click on "Create a new OpenStack environment" and select the following settings:
 In the Nodes tab:
 using Add Nodes button, assign to each discovered node a role as follows:
 
-- Assign "Controller" to a VM
-- Assign "Compute" & "Storage - Ceph OSD" to the two other VMs
+- Assign one VM to the role "Controller"
+- Assign *two roles* to the two remaining VMs: "Compute" & "Storage - Ceph OSD"
 
 In the Networks tab: click on verify.
 
@@ -118,10 +120,25 @@ Run the demo:
 
 ```
 $ cd P4GDemo
-java -jar target/P4GDemo-1.0-jar-with-dependencies.jar
+$ java -jar target/P4GDemo-1.0-jar-with-dependencies.jar
 ```
 
 After one minute, P4G should migrate one VM to the same node as the second VM, in order to save energy. You can check this using the nova command as shown in the previous section.
+
+###VM CPU Demand REST API
+
+You can change 'live' the value of the CPU demand for each VM using the REST API:
+
+```
+curl -i -X PUT -H "Content-Type: text/plain" -d 200 http://localhost:7777/v1/plug4green/a5939941-1963-4ef0-aa15-aa1ce326e6ce/VMCPUDemand
+```
+
+This command sets a CPU demand of 200 (i.e. two full cores) for the VM a5939941-1963-4ef0-aa15-aa1ce326e6ce.
+The name of the VM should be retrieved from nova as described above.
+After issuing this command, you should see one VM moving to another server, because it consumes too much to be colocated.
+
+
+### P4G config
 
 Plug4Green Demo uses the following configuration files:
 
@@ -135,100 +152,7 @@ Plug4Green Demo uses the following configuration files:
 To shutdown the environment, just issue a "Close/ACPI Shutdown" on all VMs.
 To stop P4G, just do Ctrl-C.
 
-To restart: start VirtualBox, and restart all VMs, starting with the fuel-master. You can then connect to OpenStack GUI and restart the OpenStack VMs.
+To restart: start VirtualBox, and restart all VMs, starting with the fuel-master. You can then connect to [OpenStack GUI](http://172.16.0.2) and restart the OpenStack VMs.
 
 Enjoy!
-
-# Troubleshooting #
-
-## Problems with VLAN network on VirtualBox ##
-
-I had to manually configure several host-only networks on vbox to get
-fuel to properly deploy openstack infrastructure. If
-you are experincing error messages during the openstack installation
-phase on fuel interface (like no route to host, for instance) you may
-try this as well. 
-
-Greate part of content come from this tutorial that
-explains how to install fuel manually.
-
-https://docs.mirantis.com/openstack/fuel/fuel-6.0/virtualbox.html
-
-OpenStack needs at least 5 networks to work properly:
-
-### Step-by-step
-
-Openstack needs to separte traffic over 5 networks to work properly.
-
-These networks are:
-
-1. Fuel network (used to boot PXE) and to deploy the environment
-2. Storage (used by ceph or cinder)
-3. Management (used by nova)
-4. Public (used to access from outside)
-5. VM (network for new created VMs)
-
-
-### Setup virtualbox
-
-Our goal will be to use vbox network adapters instead of the VLAN
-feature to work around the problem.
-Vbox limits to 4 the number of virtual network interfaces per
-VM so we will still have to put one of the networks as a VLAN.
-
-First on virtual box, go to
-
-File -> Preferences -> Network
-
-Choose the Host-only Network tab, assure the following configuration
-to each vboxnet# interface (note that # is actually a number):
-
-vboxnet0: Admin (PXE)
-10.20.0.1
-
-vboxnet1: Public
-172.16.0.1
-
-vboxnet2: Management
-192.168.0.1
-
-vboxnet3: Storage
-192.168.1.1
-
-For all vboxnet interfaces set net mask to 255.255.255.0 and no DHCP.
-
-Now you have to shutdown all your VMs. With the right mouse button
-click on Settings and fin the Network pane. Configure 4 network
-adapters each one for a different vboxnet assure the following order
-
-Adapter 1 - vboxnet0
-Adapter 2 - vboxnet 1
-Adapter 3 - vboxnet 2
-Adapter 4 - vboxnet 3
-
-At each adapter choose:
-
-Host-only Adapter
-in Advanced
-choose the PCnet-FAST III adapter instead of Intel (default)
-Set promicuous Mode to : Allow All
-check the Cable Connected option
-
-
-Now reboot all your nodes. 
-
-### Setup on fuel
-
-Access the fuel-master node create a new deployment. Use Nova as network.
-
-On the nodes tab, configure for each node the network settings as follows:
-
-eth0 : Admin (PXE) and VM (Fixed)
-eth1: Public
-eth2: Management
-eth3: Storage
-
-On the network tab, assure that only the Use VLAN tagging for
-Nova-Network is checked. Put a number as the VLAN tag.
-You can test the network now.
 

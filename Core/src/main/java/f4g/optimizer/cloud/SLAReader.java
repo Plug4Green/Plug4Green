@@ -10,7 +10,7 @@
  *   Reads and validate the SLA instance file.
  * ============================= /Header ==============================
  */
-package f4g.optimizer.cloudTraditional;
+package f4g.optimizer.cloud;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
@@ -122,7 +122,7 @@ public class SLAReader {
 	}
 
 	/**
-	 * get ServerGroupypes from a SLA file
+	 * get ServerGroupTypes from a SLA file
 	 */
 	public ServerGroupType getServerGroup() {
 		if (SLA != null)
@@ -193,7 +193,7 @@ public class SLAReader {
      */
     public FIT4GreenOptimizerConstraint readSLA(File path) throws FileNotFoundException {
     	log.debug("SLA location: " + path);
-    	return this.readSLA(new FileInputStream(path));
+    	return readSLA(new FileInputStream(path));
     }
 
     private FIT4GreenOptimizerConstraint readSLA(InputStream in) {

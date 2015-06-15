@@ -15,7 +15,6 @@ package f4g.optimizer.utils;
 import java.util.List;
 
 import f4g.commons.com.util.PowerData;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional.AlgoType;
 import f4g.optimizer.utils.OptimizerServer.CandidateState;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.metamodel.Mainboard;
@@ -48,9 +47,9 @@ public interface IOptimizerServer extends Cloneable, CopyTo {
 
 	public abstract String getCandidateState();
 
-	public abstract double getLoadRate(AggregatedUsage reference, AlgoType algoType);
+	public abstract double getLoadRate(AggregatedUsage reference);
 
-	public abstract void addVM(OptimizerWorkload WL, AlgoType algoType);
+	public abstract void addVM(OptimizerWorkload WL);
 
     public abstract String getFrameworkID();
     

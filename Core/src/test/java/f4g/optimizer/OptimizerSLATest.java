@@ -2,7 +2,7 @@ package f4g.optimizer;
 
 import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cost_estimator.NetworkCost;
-import f4g.optimizer.cloudTraditional.OptimizerEngineCloudTraditional;
+import f4g.optimizer.cloud.OptimizerEngineCloud;
 import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
@@ -59,7 +59,7 @@ public class OptimizerSLATest extends OptimizerTest {
 		bpols.getPolicy().add(bpol);		
 		fed.setBoundedPolicies(bpols);
 		
-		optimizer = new OptimizerEngineCloudTraditional(new MockController(), new MockPowerCalculator(), new NetworkCost(),
+		optimizer = new OptimizerEngineCloud(new MockController(), new MockPowerCalculator(), new NetworkCost(),
 				SLAGenerator.createVirtualMachine(), policies, fed);
 	    
 		optimizer.setSla(SLAGenerator.createDefaultSLA());

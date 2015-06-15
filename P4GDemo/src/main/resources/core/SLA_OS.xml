@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<opticon:FIT4GreenOptimizerConstraint id="devEni" scenario="single" 
+<opticon:FIT4GreenOptimizerConstraint 
 xmlns:f4g="f4g/schemas/java/MetaModel" 
 xmlns:opticon="f4g/schemas/java/constraints/OptimizerConstraints" 
-xmlns:p="http://www.f4g.org/schema/CommonTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas/SlaClusterConstraints.xsd">
   <VirtualMachines>
     <VMFlavor>
@@ -26,7 +26,7 @@ xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas
     <Cluster id="Assago">
       <Name>Assago</Name>
       <NodeController>
-       <NodeName>node-2.domain.tld</NodeName>
+        <NodeName>node-2.domain.tld</NodeName>
         <NodeName>node-3.domain.tld</NodeName>
       </NodeController>
       <BoundedSLAs>
@@ -41,7 +41,7 @@ xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas
     <SLA id="SLAAssago">
       <HardwareConstraints/>      	      
       <QoSConstraints>
- 	 <MaxVirtualCPUPerCore>4</MaxVirtualCPUPerCore>
+ 	 <!--MaxVirtualCPUPerCore>4</MaxVirtualCPUPerCore-->
 	 <Max_vRAMperPhyRAM>1</Max_vRAMperPhyRAM>
       </QoSConstraints>
 	<SecurityConstraints>

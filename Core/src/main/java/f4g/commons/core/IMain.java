@@ -6,6 +6,10 @@ import f4g.commons.monitor.IMonitor;
 import f4g.commons.optimizer.IOptimizer;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.commons.power.IPowerCalculator;
+import f4g.manager.controller.Controller;
+import f4g.manager.monitor.Monitor;
+import f4g.optimizer.Optimizer;
+import f4g.powerCalculator.power.PowerCalculator;
 
 /**
  * Interface representing the launcher class for the f4g framework.
@@ -46,13 +50,13 @@ public interface IMain {
 	 */
 	public boolean shutdown();
 	
-	public IOptimizer getOptimizer();
+	public Optimizer getOptimizer();
 	
-	public IMonitor getMonitor();
+	public Monitor getMonitor();
 	
-	public IController getController();
+	public Controller getController();
 	
-	public IPowerCalculator getPowerCalculator();	
+	public PowerCalculator getPowerCalculator();	
 	
 	/**
 	 * 
