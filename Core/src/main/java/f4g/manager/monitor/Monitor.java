@@ -22,9 +22,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -58,17 +60,20 @@ import f4g.commons.core.Constants;
 import f4g.commons.core.IMain;
 import f4g.manager.couchDB.ConvertToJSON;
 import f4g.manager.couchDB.DataBase;
+import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.metamodel.FrameworkCapabilities;
 import f4g.schemas.java.metamodel.FrameworkStatus;
 import f4g.schemas.java.metamodel.ObjectFactory;
 import f4g.schemas.java.metamodel.Site;
+import f4g.schemas.java.metamodel.VirtualMachine;
 import f4g.schemas.java.allocation.AllocationRequest;
 import f4g.schemas.java.allocation.AllocationResponse;
 import f4g.commons.util.Util;
 import f4g.commons.util.JXPathCustomFactory;
 
 import com.rits.cloning.Cloner;
+
 
 /**
  * Implements the Monitor component for the FIT4Green framework.
@@ -823,4 +828,24 @@ public class Monitor implements IMonitor {
         log.debug("The total carbon emissions are " + totalCarbonEmissions + " grCO2eq/1000h");
 	}
 	
+	public void setVMCPUConstraint(String VMName, int VMConsumption) {
+		
+		boolean found = false; 
+		List<String> vmNames = new ArrayList<String>();
+		for(VirtualMachine vm : Utils.getAllVMs(model)) {
+			if(vm.getFrameworkID().equals(VMName)) {
+				found = true;
+				vmNames.add(vm.getFrameworkID());
+			}
+		}
+		if(found) {
+			log.debug("setVMCPUConstraint: VM " + VMName + ": "  + VMConsumption);
+			main.getOptimizer().getOptimizerEngine().setVMCPUConstraint(VMName, VMConsumption);
+			requestGlobalOptimization();
+		} else {
+			log.warn("setVMCPUConstraint: VM " + VMName + " not found");
+			log.warn("choice is: " + vmNames.toString());
+		}
+			
+	}
 }

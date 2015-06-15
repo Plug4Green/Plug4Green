@@ -186,22 +186,22 @@ public class Main implements IMain {
 	}
 
 	@Override
-	public IMonitor getMonitor() {
+	public Monitor getMonitor() {
 		return (monitor != null ? monitor : new Monitor(this));
 	}
 
 	@Override
-	public IOptimizer getOptimizer() {
+	public Optimizer getOptimizer() {
 		return (optimizer != null ? optimizer : new Optimizer(this));
 	}
 
 	@Override
-	public IController getController() {
+	public Controller getController() {
 		return (controller != null ? controller : new Controller(this));
 	}
 
 	@Override
-	public IPowerCalculator getPowerCalculator() {
+	public PowerCalculator getPowerCalculator() {
 		return (powerCalculator != null ? powerCalculator : new PowerCalculator(this));
 	}
 
