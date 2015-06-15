@@ -120,10 +120,25 @@ Run the demo:
 
 ```
 $ cd P4GDemo
-java -jar target/P4GDemo-1.0-jar-with-dependencies.jar
+$ java -jar target/P4GDemo-1.0-jar-with-dependencies.jar
 ```
 
 After one minute, P4G should migrate one VM to the same node as the second VM, in order to save energy. You can check this using the nova command as shown in the previous section.
+
+###VM CPU Demand REST API
+
+You can change 'live' the value of the CPU demand for each VM using the REST API:
+
+```
+curl -i -X PUT -H "Content-Type: text/plain" -d 200 http://localhost:7777/v1/plug4green/a5939941-1963-4ef0-aa15-aa1ce326e6ce/VMCPUDemand
+```
+
+This command sets a CPU demand of 200 (i.e. two full cores) for the VM a5939941-1963-4ef0-aa15-aa1ce326e6ce.
+The name of the VM should be retrieved from nova as described above.
+After issuing this command, you should see one VM moving to another server, because it consumes too much to be colocated.
+
+
+### P4G config
 
 Plug4Green Demo uses the following configuration files:
 
@@ -137,7 +152,7 @@ Plug4Green Demo uses the following configuration files:
 To shutdown the environment, just issue a "Close/ACPI Shutdown" on all VMs.
 To stop P4G, just do Ctrl-C.
 
-To restart: start VirtualBox, and restart all VMs, starting with the fuel-master. You can then connect to OpenStack GUI and restart the OpenStack VMs.
+To restart: start VirtualBox, and restart all VMs, starting with the fuel-master. You can then connect to [OpenStack GUI](http://172.16.0.2) and restart the OpenStack VMs.
 
 Enjoy!
 

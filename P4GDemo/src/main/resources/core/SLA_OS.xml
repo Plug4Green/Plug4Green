@@ -41,7 +41,7 @@ xsi:schemaLocation="f4g/schemas/java/constraints/OptimizerConstraints ../schemas
     <SLA id="SLAAssago">
       <HardwareConstraints/>      	      
       <QoSConstraints>
- 	 <MaxVirtualCPUPerCore>4</MaxVirtualCPUPerCore>
+ 	 <!--MaxVirtualCPUPerCore>4</MaxVirtualCPUPerCore-->
 	 <Max_vRAMperPhyRAM>1</Max_vRAMperPhyRAM>
       </QoSConstraints>
 	<SecurityConstraints>
