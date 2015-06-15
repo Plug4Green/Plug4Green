@@ -18,25 +18,26 @@ public class SLAService {
 	
 	public SLAService(OptimizerEngineCloud opti, Monitor monitor) {
 		this.opti = opti;
+		this.monitor = monitor;
 	}
 
-    @PUT
+   /* @PUT
     @Path("/cpuovercommit")
     @Consumes(MediaType.TEXT_PLAIN)
-    public void changeCPUOvercommit(@PathParam("version") String version, @PathParam("name") String name, String cpuovercommit) {
+    public void changeCPUOvercommit(@PathParam("version") String version, String cpuovercommit) {
         logger.debug("received cpu overcommit:");
         logger.debug(cpuovercommit.toString());
         opti.setCPUOvercommit(Float.parseFloat(cpuovercommit));
         monitor.requestGlobalOptimization();
-    }
+    }*/
     
     @PUT
     @Path("/VMCPUDemand")
     @Consumes(MediaType.TEXT_PLAIN)
-    public void changeVMCPUDemand(@PathParam("version") String version, @PathParam("name") String name, String VMName, String VMCPUDemand) {
-        logger.debug("received VM CPU Demand:" + VMName + ": " + VMCPUDemand);
-        opti.setVMCPUConstraint(VMName, Integer.parseInt(VMCPUDemand));
-        monitor.requestGlobalOptimization();
+    public void changeVMCPUDemand(@PathParam("version") String version, @PathParam("name") String name, String VMCPUDemand) {
+        logger.debug("received VM CPU Demand:" + name + ": " + VMCPUDemand);
+        monitor.setVMCPUConstraint(name, Integer.parseInt(VMCPUDemand));
+
     }
     
 }
