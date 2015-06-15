@@ -264,7 +264,7 @@ public class ComOpenstack extends AbstractCom {
 				.simpleUpdateNode(key, operationSet);
 		    }
 
-		    monitor.logModel();
+		    //monitor.logModel();
 		}
 	    }
 	} catch (Exception exception) {
