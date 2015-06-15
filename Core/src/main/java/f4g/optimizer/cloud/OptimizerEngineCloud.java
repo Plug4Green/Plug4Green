@@ -618,7 +618,7 @@ public class OptimizerEngineCloud extends OptimizerEngine {
 		
 	}
 	
-	public void addVMCPUConstraint(String VMName, int VMConsumption) {
+	public void setVMCPUConstraint(String VMName, int VMConsumption) {
 		VMCPUConstraint.put(VMName, VMConsumption);
 	}
 			

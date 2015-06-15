@@ -355,7 +355,7 @@ public class OptimizerGlobalTest extends OptimizerTest {
 		List<VirtualMachine> VMs1 = model.getSite().get(0).getDatacenter().get(0).getRack().get(0).getRackableServer().get(1).getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 
 		VMs1.clear();
-		optimizer.addVMCPUConstraint(VMs0.get(0).getFrameworkID(), 130);
+		optimizer.setVMCPUConstraint(VMs0.get(0).getFrameworkID(), 130);
 		
 		optimizer.runGlobalOptimization(model);
 

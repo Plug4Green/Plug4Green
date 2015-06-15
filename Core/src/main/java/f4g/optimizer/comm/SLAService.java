@@ -30,6 +30,13 @@ public class SLAService {
         monitor.requestGlobalOptimization();
     }
     
-    
+    @PUT
+    @Path("/VMCPUDemand")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public void changeVMCPUDemand(@PathParam("version") String version, @PathParam("name") String name, String VMName, String VMCPUDemand) {
+        logger.debug("received VM CPU Demand:" + VMName + ": " + VMCPUDemand);
+        opti.setVMCPUConstraint(VMName, Integer.parseInt(VMCPUDemand));
+        monitor.requestGlobalOptimization();
+    }
     
 }
