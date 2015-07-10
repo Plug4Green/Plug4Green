@@ -321,24 +321,17 @@ public class ComOpenNebula extends AbstractCom {
 	// get all virtual machines dynamic values from the datacenter
 	// and add an update operation for each value
 
-	// get the power status
-	// TODO:
-	// try {
-	// powerState = retrieveOSInfo.getPowerState();
-	// if ("ON".equals(powerState) == true) {
-	// operationSet.add(new ComOperation(ComOperation.TYPE_UPDATE,
-	// "./status", ServerStatus.ON));
-	// } else {
-	// operationSet.add(new ComOperation(ComOperation.TYPE_UPDATE,
-	// "./status", ServerStatus.OFF));
-	// }
-	//
-	// } catch (NullPointerException exception) {
-	// // in case that is impossible to get the information, whatever the
-	// // reason
-	// // simply don't update the model
-	// log.debug("Cannot retrieve CPU information from the DC");
-	// }
+ 	 try {
+ 	 	String powerState = opennebulaAPI.getPowerState(hyperVisorName);
+ 		 if ("ON".equals(powerState) == true) {
+ 			 operationSet.add(new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.ON));
+ 		 } else {
+ 			 operationSet.add(new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.OFF));
+		 }
+ 	
+ 	} catch (NullPointerException exception) {
+	 log.debug("Cannot retrieve CPU information from the DC");
+	}
 
 	// get the measured power for the host
 	// TODO: not implemented?

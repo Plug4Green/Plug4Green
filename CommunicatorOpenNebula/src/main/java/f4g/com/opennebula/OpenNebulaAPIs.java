@@ -78,7 +78,7 @@ public class OpenNebulaAPIs {
 	Host host = new Host((new Integer(config2.get(hyperVisorId).get("id"))).intValue(), oneClient);
 	host.info();
 
-	String state = host.stateStr();
+	String state = host.shortStateStr();
 
         InputStream input3 = null;
         try {
@@ -97,11 +97,12 @@ public class OpenNebulaAPIs {
 	String status = ipmi.getStatus();
 
 
-	if (state.equals("INIT")||(state.equals("ERROR")&&status.equals("up"))) state="POWERING_ON";
-	else if (state.equals("ERROR")&&status.equals("down")) state="POWERING_OFF";
-	else if (state.equals("DISABLED")) state="OFF";
-	else if (state.startsWith("MONITOR")) state="ON";
+	if ((!state.equals("on"))&&(!state.equals("update"))&&status.equals("up")) state="POWERING_ON";
+	else if ((!state.equals("off"))&&status.equals("down")) state="POWERING_OFF";
+	else if (state.equals("off")) state="OFF";
+	else if (state.equals("on")||(state.equals("update")&&(status.equals("up")))) state="ON";
 
+	ipmi.endSession();
 
 	// TODO: need to keep track of the hypervisor on/off
 	return state;

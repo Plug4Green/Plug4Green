@@ -5,7 +5,6 @@
         <CUE>1.0</CUE>
         <computedPower>0.0</computedPower>
         <ns2:Datacenter>
-            <computingStyle>TRADITIONAL</computingStyle>
             <computedPower>0.0</computedPower>
             <ns2:Rack>
                 <computedPower>0.0</computedPower>
