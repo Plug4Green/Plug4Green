@@ -81,12 +81,16 @@
                         <groupId>org.opennebula.client</groupId>
                         <artifactId>oca</artifactId>
                         <version>4.4.1</version>
+                        <scope>system</scope>
+                        <systemPath>${basedir}/lib/org.opennebula.client.jar</systemPath>
                 </dependency>
 
 		<dependency>
 		       <groupId>verax</groupId>
 	        	<artifactId>vxIPMI</artifactId>
 	        	<version>1.0.17</version>
+                        <scope>system</scope>
+                        <systemPath>${basedir}/lib/vxIPMI.jar</systemPath>
 		</dependency>
 
 		<dependency>
