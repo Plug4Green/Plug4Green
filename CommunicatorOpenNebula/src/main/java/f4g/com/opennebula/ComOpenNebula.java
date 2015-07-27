@@ -42,10 +42,7 @@ public class ComOpenNebula extends AbstractCom {
 
     @Override
     public boolean init(String comName, IMonitor monitor) {
-	// comDemoStatus_ = "STOPPED";
-
-	return super.init(comName, monitor);
-
+    	return super.init(comName, monitor);
     }
 
     @Override
@@ -180,28 +177,16 @@ public class ComOpenNebula extends AbstractCom {
     }
 
     /**
-     * 
-     * get the information from the datacenter and inserts them into FIT4Green
-     * metamodel
-     * 
-     *
-     * @author jclegea
-     */
-    /**
-     * 
      * Creates a list of virtual machines.
-     * 
      * @param actualVMsList
      *            to store the hosts list.
-     *
-     * @author jclegea
      */
     private Set<String> createHostVirtualMachineList(String serverId)
 	    throws Exception {
 	Set<String> actualVMsList = new HashSet<String>();
 	try {
 	    String key = this.comName + "_" + serverId;
-	    HashMap serverMap = monitor.getMonitoredObjectsCopy(this.comName);
+	    Map<String, Object> serverMap = monitor.getMonitoredObjectsCopy(this.comName);
 	    Server server = (Server) serverMap.get(key);
 	    if (server != null) {
 		List<VirtualMachine> virtualMachineList;
@@ -384,7 +369,7 @@ public class ComOpenNebula extends AbstractCom {
      * @return true if successful, false otherwise
      */
     @Override
-    public boolean executeActionList(ArrayList actionList) {
+    public boolean executeActionList(List<AbstractBaseAction> actionList) {
 
 	PowerOnAction powerOnAction;
 	PowerOffAction powerOffAction;

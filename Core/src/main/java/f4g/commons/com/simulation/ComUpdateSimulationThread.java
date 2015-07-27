@@ -34,7 +34,7 @@ public abstract class ComUpdateSimulationThread extends GenericSimulationThread{
 		while(state != STATE_STOPPED){
 			if(state == STATE_RUNNING){
 				
-				Set keys = comObject.getMonitoredObjects().keySet();
+				Set<String> keys = comObject.getMonitoredObjects().keySet();
 				int i = ((int)(Math.random()*10))%(keys.size());
 				String key = ((String[])keys.toArray(new String[0]))[i];
 				simulateDataChange(key);

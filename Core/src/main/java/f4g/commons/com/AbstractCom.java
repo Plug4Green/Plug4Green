@@ -1,11 +1,10 @@
 package f4g.commons.com;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -13,22 +12,14 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import org.apache.commons.jxpath.AbstractFactory;
 import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.Pointer;
 import org.apache.log4j.Logger;
+
 import f4g.commons.com.util.ComOperation;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
-import f4g.schemas.java.metamodel.CpuUsage;
-import f4g.schemas.java.metamodel.HostedHypervisor;
-import f4g.schemas.java.metamodel.IoRate;
-import f4g.schemas.java.metamodel.MemoryUsage;
-import f4g.schemas.java.metamodel.NativeHypervisor;
-import f4g.schemas.java.metamodel.NetworkUsage;
 import f4g.schemas.java.metamodel.NrOfCpus;
 import f4g.schemas.java.metamodel.Server;
-import f4g.schemas.java.metamodel.StorageUsage;
 import f4g.schemas.java.metamodel.VirtualMachine;
 import f4g.schemas.java.actions.AbstractBaseAction;
 import f4g.schemas.java.actions.PowerOffAction;
@@ -51,11 +42,11 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 	// TODO: to be set from configuration
 	protected long interval = 5000;
 
-	HashMap monitoredObjects = null;
+	Map<String, Object> monitoredObjects = null;
 
 	private Thread t = null;
 
-	private HashMap queuesHashMap = new HashMap();
+	private Map<String, ConcurrentLinkedQueue<ComOperationCollector>> queuesHashMap = new HashMap<String, ConcurrentLinkedQueue<ComOperationCollector>>();
 
 	protected IMonitor monitor = null;
 
@@ -86,8 +77,7 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 
 		Iterator iter = monitoredObjects.keySet().iterator();
 		while (iter.hasNext()) {
-			queuesHashMap.put((String) (iter.next()),
-					new ConcurrentLinkedQueue<ComOperationCollector>());
+			queuesHashMap.put((String) (iter.next()), new ConcurrentLinkedQueue<ComOperationCollector>());
 		}
 
 		t = new Thread(this);
@@ -142,7 +132,7 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 	 * @return true if successful, false otherwise
 	 */
 	@Override
-	public boolean executeActionList(ArrayList actionList) {
+	public boolean executeActionList(List<AbstractBaseAction> actionList) {
 
 		log.debug(this.comName + ": executing action list...");
 		JAXBElement<? extends AbstractBaseAction> elem;
@@ -151,8 +141,7 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 		try {
 			while (iter.hasNext()) {
 
-				elem = (JAXBElement<? extends AbstractBaseAction>) iter
-						.next();
+				elem = (JAXBElement<? extends AbstractBaseAction>) iter.next();
 
 				Object action = elem.getValue();
 				action = elem.getValue().getClass().cast(action);
@@ -219,7 +208,6 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 	@Override
 	public boolean executeUpdate(String key, Object obj) {
 		long start = System.currentTimeMillis();
-
 		
 		// Get the type of the object
 		String type = (String) monitoredObjects.get(key);
@@ -229,8 +217,7 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 		log.debug("\t type: " + type);
 		log.debug("\t obj: " + obj);
 
-		ConcurrentLinkedQueue<ComOperationCollector> actionSetsQueue = (ConcurrentLinkedQueue<ComOperationCollector>) (queuesHashMap
-				.get(key));
+		ConcurrentLinkedQueue<ComOperationCollector> actionSetsQueue = (ConcurrentLinkedQueue<ComOperationCollector>) (queuesHashMap.get(key));
 		for (int i = 0; i < actionSetsQueue.size(); i++) {
 			ComOperationCollector operationSet = actionSetsQueue.poll();
 			log.debug("operationSet: " + operationSet.getOperations().size()
@@ -308,25 +295,11 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 		return true;
 	}
 
-	@Override
-	//FIXME sleep action is not an option anymore; find workaround if necessary
-//	public boolean sleep(SleepActionType action) {
-//		log.debug("About to sleep for " + action.getSeconds()
-//				+ " secs. on framework " + action.getFrameworkName());
-//		try {
-//			Thread.sleep((action.getSeconds().longValue()) * 1000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		log.debug("...awaken after sleep");
-//		return true;
-//	}
-
-	public HashMap getMonitoredObjects() {
+	public Map<String, Object> getMonitoredObjects() {
 		return monitoredObjects;
 	}
 
-	public HashMap getQueuesHashMap() {
+	public Map<String, ConcurrentLinkedQueue<ComOperationCollector>> getQueuesHashMap() {
 		return queuesHashMap;
 	}
 

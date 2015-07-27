@@ -1,6 +1,7 @@
 package f4g.commons.monitor;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import f4g.commons.com.ICom;
 import f4g.commons.com.util.ComOperationCollector;
@@ -81,7 +82,7 @@ public interface IMonitor {
 	 * Allows to get a deep copy of the subset of the f4g model related to a com
 	 * @return the object representation of the f4g model
 	 */
-	public HashMap getMonitoredObjectsCopy(String comName);
+	public Map<String, Object> getMonitoredObjectsCopy(String comName);
 	
 	/**
 	 * Provides the set of all the nodes in the model which are handled by a given Com.
@@ -89,7 +90,7 @@ public interface IMonitor {
 	 * @param comName the name of the Com
 	 * @return a map of all the objects handled by the 'comName' Com. 
 	 */
-	public HashMap<String, ICom> getMonitoredObjectsMap(String comName);
+	public Map<String, Object> getMonitoredObjectsMap(String comName);
 	
 	/**
 	 * Utility method for logging the xml representation of the current f4g model instance

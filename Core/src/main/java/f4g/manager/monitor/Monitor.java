@@ -27,6 +27,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -341,9 +342,9 @@ public class Monitor implements IMonitor {
 	 * @return a map of all the objects handled by the 'comName' Com. 
 	 */
 	@Override
-	public HashMap getMonitoredObjectsCopy(String comName) {
+	public Map<String, Object> getMonitoredObjectsCopy(String comName) {
 		
-		HashMap<String, Object> monitoredObjectsCopy = new HashMap<String, Object>();
+		Map<String, Object> monitoredObjectsCopy = new HashMap<String, Object>();
 		
 		Object[] keys = mapping.keySet().toArray();
 		
@@ -806,7 +807,7 @@ public class Monitor implements IMonitor {
 		return status;
 	}
 	
-	private void getMetrics(FIT4Green model) {
+	private void logMetrics(FIT4Green model) {
 	
 		double totalIctPower = 0.0;
 		double totalSitePower = 0.0;

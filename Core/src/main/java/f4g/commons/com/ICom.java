@@ -2,8 +2,13 @@ package f4g.commons.com;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.monitor.IMonitor;
+import f4g.schemas.java.actions.AbstractBaseAction;
 
 
 /**
@@ -70,7 +75,7 @@ public interface ICom {
 	 * @param actionRequest
 	 * @return true if successful, false otherwise
 	 */
-	boolean executeActionList(ArrayList actionRequest);
+	boolean executeActionList(List<AbstractBaseAction> actionRequest);
 	
 	/**
 	 * 
@@ -80,7 +85,7 @@ public interface ICom {
 	 *
 	 * @author FIT4Green
 	 */
-	HashMap getMonitoredObjects();
+	Map<String, Object> getMonitoredObjects();
 	
 	/**
 	 * 
@@ -96,7 +101,7 @@ public interface ICom {
 	 *
 	 * @author FIT4Green
 	 */
-	HashMap getQueuesHashMap();
+	Map<String, ConcurrentLinkedQueue<ComOperationCollector>> getQueuesHashMap();
 	
 	
 }
