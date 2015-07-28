@@ -142,8 +142,8 @@ After issuing this command, you should see one VM moving to another server, beca
 
 Plug4Green Demo uses the following configuration files:
 
-- P4GDemo/src/main/resource/core/f4gmodel_OS.xml: description of the data center
-- P4GDemo/src/main/resource/core/SLA_OS.xml: service-level agreement configuration
+- P4GDemo/src/main/resources/core/f4gmodel_OS.xml: description of the data center
+- P4GDemo/src/main/resources/core/SLA_OS.xml: service-level agreement configuration
 - P4GDemo/src/main/config/core/f4gconfig.properties: contains the reference to the SLA and Datacenter models.
 - P4GDemo/src/main/config/ComOpenstack/config.yaml: provides the instructions to reach the Openstack infrastructure.
 
