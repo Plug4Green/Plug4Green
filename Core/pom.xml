@@ -28,46 +28,6 @@
 		</extensions>
 		<plugins>
 			<plugin>
-				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<strict>false</strict>
-					<extension>true</extension>
-					<schemaDirectory>${basedir}/src/main/resources/schemas</schemaDirectory>
-					<schemaDirectory>${basedir}/src/main/resources/schemas</schemaDirectory>
-					<args>
-						<arg>-Xvisitor</arg>
-						<arg>-Xvisitor-package:com.massfords.humantask</arg>
-						<arg>-Xvalue-constructor</arg>
-						<arg>-Xcopyable</arg>
-					</args>
-					<plugins>
-						<plugin>
-							<groupId>com.massfords</groupId>
-							<artifactId>jaxb-visitor</artifactId>
-							<version>1.13</version>
-						</plugin>
-						<plugin>
-							<groupId>org.jvnet.jaxb2_commons</groupId>
-							<artifactId>jaxb2-value-constructor</artifactId>
-							<version>3.0</version>
-						</plugin>
-						<plugin>
-							<groupId>org.jvnet.jaxb2_commons</groupId>
-							<artifactId>jaxb2-basics</artifactId>
-							<version>0.6.4</version>
-						</plugin>
-					</plugins>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.14.1</version>
