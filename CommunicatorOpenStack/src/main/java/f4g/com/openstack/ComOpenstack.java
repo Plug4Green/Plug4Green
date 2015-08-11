@@ -5,10 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.xml.bind.JAXBElement;
 
 import org.apache.log4j.Logger;
 import org.openstack4j.api.OSClient;
@@ -235,12 +238,16 @@ public class ComOpenstack extends AbstractCom {
 
 		log.debug(this.comName + ": executing action list...");
 		
-		for (AbstractBaseAction elem : actionList) {
-
+		JAXBElement<? extends AbstractBaseAction> elem;
+		Iterator iter = actionList.iterator();
+		while (iter.hasNext()) {
+		    elem = (JAXBElement<? extends AbstractBaseAction>) iter.next();
+		    Object action = elem.getValue();
+		    action = elem.getValue().getClass().cast(action);
 		    try {
-				if (elem instanceof PowerOffAction) {
+				if (action.getClass().equals(PowerOffAction.class)) {
 				    // perform power off action
-					PowerOffAction powerOffAction = (PowerOffAction) elem;
+					PowerOffAction powerOffAction = (PowerOffAction) action;
 		
 				    // set the status of powering on to the servers
 					String key = comName + "_" + powerOffAction.getNodeName();
@@ -251,10 +258,10 @@ public class ComOpenstack extends AbstractCom {
 				    }
 		
 				    powerOff(powerOffAction);
-				} else if (elem instanceof PowerOnAction) {
+				} else if (action.getClass().equals(PowerOnAction.class)) {
 				    // perform power on action
 		
-					PowerOnAction powerOnAction = (PowerOnAction) elem;
+					PowerOnAction powerOnAction = (PowerOnAction) action;
 		
 				    // set the status of powering on to the servers
 					String key = comName + "_" + powerOnAction.getNodeName();
@@ -265,9 +272,9 @@ public class ComOpenstack extends AbstractCom {
 				    }
 				    // call the method to power on
 				    powerOn(powerOnAction);
-				} else if (elem instanceof LiveMigrateVMAction) {
+				} else if (action.getClass().equals(LiveMigrateVMAction.class)) {
 				    // perform migrate vm action
-					LiveMigrateVMAction migrateAction = (LiveMigrateVMAction) elem;
+					LiveMigrateVMAction migrateAction = (LiveMigrateVMAction) action;
 				    liveMigrate(migrateAction);
 				}
 		    } catch (SecurityException e) {
