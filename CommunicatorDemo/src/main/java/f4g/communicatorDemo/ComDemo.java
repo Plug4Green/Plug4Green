@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -522,7 +523,7 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	private void createHostVirtualMachineList(ArrayList actualHostList, int siteIndex,int datacenterIndex, int rackIndex, int enclosureIndex, int hostIndex) 
 	throws Exception{
 		String key;		
-		HashMap serverList;
+		Map<String, Object> serverList;
 		Server serverType = new Server();
 		VirtualMachine serverVirtualMachine;
 		List<VirtualMachine> virtualMachineList;
@@ -554,7 +555,7 @@ public class ComDemo  extends AbstractCom implements Runnable {
 	 * @return true if successful, false otherwise
 	 */	
 	@Override
-	public boolean executeActionList(ArrayList actionList) {
+	public boolean executeActionList(List<AbstractBaseAction> actionList) {
 		
 		PowerOnAction powerOnAction;
 		PowerOffAction powerOffAction;
