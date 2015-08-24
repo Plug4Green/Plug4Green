@@ -39,9 +39,7 @@ public class StaticPowerCalculation {
     
     
     //compute the power overhead induced by one VM on a server
-    // public static double computePowerForVM(Server server, VMFlavorType.VMFlavor vm, IPowerCalculator powerCalculator) 
-    public double computePowerForVM(Server server, VirtualMachine vm, 
-    		IPowerCalculator powerCalculator) {
+    public double computePowerForVM(Server server, VirtualMachine vm, IPowerCalculator powerCalculator) {
     	
     	//boolean previousFlag = powerCalculator.getSimulationFlag();
     	//powerCalculator.setSimulationFlag(true);

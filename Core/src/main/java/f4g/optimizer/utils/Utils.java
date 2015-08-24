@@ -20,10 +20,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import f4g.optimizer.utils.OptimizerRackServer;
-import f4g.optimizer.entropy.NamingService;
+import f4g.optimizer.btrplace.NamingService;
 import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
-import f4g.optimizer.utils.OptimizerBladeServer;
 import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
 import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
 import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
