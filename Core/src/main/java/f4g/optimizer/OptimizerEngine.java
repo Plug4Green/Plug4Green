@@ -300,17 +300,17 @@ public abstract class OptimizerEngine implements Runnable  {
 		//Create action requests
 		ActionRequest actionRequest = new ActionRequest();
 		
-		double powerBefore = powerCalculator.computePowerFIT4Green(fedBefore).getActualConsumption();
-		double powerAfter = powerCalculator.computePowerFIT4Green(fedAfter).getActualConsumption();
-		double powerSaved = powerAfter - powerBefore;
-		log.debug("powerSaved: " + powerSaved);
+//		double powerBefore = powerCalculator.computePowerFIT4Green(fedBefore).getActualConsumption();
+//		double powerAfter = powerCalculator.computePowerFIT4Green(fedAfter).getActualConsumption();
+//		double powerSaved = powerAfter - powerBefore;
+//		log.debug("powerSaved: " + powerSaved);
 		
 		try {
 			GregorianCalendar gcal = (GregorianCalendar) GregorianCalendar.getInstance();
 			actionRequest.setDatetime(DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal));
 			actionRequest.setActionList(actionList);
-			actionRequest.setComputedPowerBefore(new Power(powerBefore));
-			actionRequest.setComputedPowerAfter(new Power(powerAfter));
+//			actionRequest.setComputedPowerBefore(new Power(powerBefore));
+//			actionRequest.setComputedPowerAfter(new Power(powerAfter));
 		} catch (DatatypeConfigurationException e) {
 			log.debug("Error in date");
 		}

@@ -88,7 +88,6 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param model
 	 * @return a data structure containing the power consumption in Watts of the FIT4Green system 
 	 */
-	@Override
 	public PowerData computePowerFIT4Green(FIT4Green model) {
 	
 		if (model == null){
@@ -124,7 +123,6 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param site
 	 * @return a data structure containing the power consumption in Watts of a FIT4Green site 
 	 */
-	@Override
 	public PowerData computePowerSite(Site site){
 	
 		if (site == null){
@@ -154,7 +152,6 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param datacenter
 	 * @return a data structure containing the power consumption in Watts of a FIT4Green datacenter 
 	 */
-	@Override
 	public PowerData computePowerDatacenter(Datacenter datacenter){
 		
 	double totalRackPower=0.0;
@@ -455,7 +452,6 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param mainboard, operatingSystem
 	 * @return a data structure containing the power consumption in Watts of a server's mainboard 
 	 */
-	@Override
 	public PowerData computePowerMainboard(Mainboard mainboard,OperatingSystemType operatingSystem){
 		
 			if (mainboard == null){
@@ -560,7 +556,6 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param raid
 	 * @return a data structure containing the power consumption in Watts of a RAID device  
 	 */
-	@Override
 	public PowerData computePowerRAID(RAID raid){
 	
 		if (raid == null){
@@ -592,7 +587,6 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param hardDisk
 	 * @return a data structure containing the power consumption in Watts of a hard disk   
 	 */
-	@Override
 	public PowerData computePowerHardDisk(HardDisk hardDisk){
 		
 		if (hardDisk == null){
@@ -642,8 +636,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param hardDisk
 	 * @return a data structure currently containing a value of zero for the power consumption of a solid state disk   
 	 */
-	@Override
-	public PowerData computePowerSolidStateDisk(SolidStateDisk ssdisk){		
+	public PowerData computePowerSolidStateDisk(SolidStateDisk ssdisk){
 	     		
 		if (ssdisk == null){
     		log.debug("SolidStateDisk Type is null");
@@ -667,8 +660,6 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param cpu, operatingSystem
 	 * @return a data structure containing the power consumption in Watts of a central processing unit  
 	 */
-	@Override	
-	
 	public PowerData computePowerCPU(CPU cpu,OperatingSystemType operatingSystem){		
 		
 		if (cpu == null){
@@ -702,8 +693,6 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param cpu, operatingSystem
 	 * @return a data structure containing the power consumption in Watts of a central processing unit  
 	 */
-	@Override	
-	
 	public PowerData computePowerCore(Core myCore, CPU cpu, OperatingSystemType os){		
 		
 		if (cpu == null || myCore == null){
@@ -739,8 +728,6 @@ public class PowerCalculator implements IPowerCalculator {
 	 *         
 	 * @return a data structure containing the power consumption in Watts of a core of a specific CPU  
 	 */
-	@Override	
-	
 	public PowerData computePowerMainboardRAMs(Mainboard mainboard){		
 		
 		if (mainboard == null ){
@@ -778,8 +765,6 @@ public class PowerCalculator implements IPowerCalculator {
 	 *         
 	 * @return a data structure containing the power consumption in Watts of a fan of a server
 	 */
-	@Override	
-	
 	public PowerData computePowerFAN(Fan fan){		
 		
 		if (fan == null ){
@@ -1591,7 +1576,7 @@ public class PowerCalculator implements IPowerCalculator {
 	 * @param obj:input object of type Server
 	 * @return double value containing information on power consumption of the mainboards
 	 */
-	private double mainboardPower(Server obj,OperatingSystemType operatingSystem){
+	private double mainboardPower(Server obj, OperatingSystemType operatingSystem){
 		
 		JXPathContext context = JXPathContext.newContext(obj);
 		String mainboardQuery = "mainboard";                                   
@@ -2360,13 +2345,5 @@ public class PowerCalculator implements IPowerCalculator {
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see f4gpower.IPowerCalculator#dispose()
-	 */
-	@Override
-	public boolean dispose() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
 }

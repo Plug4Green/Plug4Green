@@ -236,7 +236,6 @@ public class Main implements IMain {
 		}
 
 		if(powerCalculator != null){
-			powerCalculator.dispose();
 			powerCalculator = null;
 		}
 		
