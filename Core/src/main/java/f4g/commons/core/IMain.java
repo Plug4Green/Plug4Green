@@ -1,15 +1,10 @@
 package f4g.commons.core;
 
 import f4g.commons.com.ICom;
-import f4g.commons.controller.IController;
-import f4g.commons.monitor.IMonitor;
-import f4g.commons.optimizer.IOptimizer;
 import f4g.commons.optimizer.OptimizationObjective;
-import f4g.commons.power.IPowerCalculator;
 import f4g.manager.controller.Controller;
 import f4g.manager.monitor.Monitor;
 import f4g.optimizer.Optimizer;
-import f4g.powerCalculator.power.PowerCalculator;
 import f4g.powerCalculator.power.SimplePowerCalculator;
 
 /**
@@ -40,7 +35,7 @@ public interface IMain {
 	
 	/**
 	 * Returns a reference to a Com object active in the system
-	 * @param the Com object name, as configured in the f4gconfig.properties file
+	 * @param comName the Com object name, as configured in the f4gconfig.properties file
 	 * @return a reference to a Com object active in the system
 	 */
 	public ICom getComByName(String comName);

@@ -14,36 +14,28 @@
 */
 package f4g.pluginCore.core;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-
-import f4g.powerCalculator.power.SimplePowerCalculator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-
 import f4g.commons.com.AbstractCom;
 import f4g.commons.com.ICom;
 import f4g.commons.com.util.PowerData;
-import f4g.manager.controller.Controller;
-import f4g.commons.controller.IController;
 import f4g.commons.core.Configuration;
 import f4g.commons.core.Constants;
 import f4g.commons.core.DatabaseConfiguration;
 import f4g.commons.core.IMain;
-import f4g.commons.monitor.IMonitor;
-import f4g.manager.monitor.Monitor;
-import f4g.commons.optimizer.IOptimizer;
 import f4g.commons.optimizer.OptimizationObjective;
+import f4g.manager.controller.Controller;
+import f4g.manager.monitor.Monitor;
 import f4g.optimizer.Optimizer;
 import f4g.optimizer.comm.SLACom;
-import f4g.commons.power.IPowerCalculator;
-import f4g.powerCalculator.power.PowerCalculator;
+import f4g.powerCalculator.power.SimplePowerCalculator;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Entry point to the FIT4Green framework
