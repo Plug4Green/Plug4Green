@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import f4g.powerCalculator.power.SimplePowerCalculator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -69,7 +70,7 @@ public class Main implements IMain {
 	
 	private Controller controller = null;
 	
-	private PowerCalculator powerCalculator = null;
+	private SimplePowerCalculator powerCalculator = null;
 
 	// Status flags
 	private boolean running = false;
@@ -166,7 +167,7 @@ public class Main implements IMain {
 			optimizer = new Optimizer(this);
 			optimizer.setOptimizationObjective(optimizationObjective);
 		}
-		powerCalculator = new PowerCalculator(this);
+		powerCalculator = new SimplePowerCalculator();
 		
 		//initialize SLA REST API
 		slaCom = new SLACom(optimizer.getOptimizerEngine(), monitor);
@@ -201,8 +202,8 @@ public class Main implements IMain {
 	}
 
 	@Override
-	public PowerCalculator getPowerCalculator() {
-		return (powerCalculator != null ? powerCalculator : new PowerCalculator(this));
+	public SimplePowerCalculator getPowerCalculator() {
+		return (powerCalculator != null ? powerCalculator : new SimplePowerCalculator());
 	}
 
 	/**

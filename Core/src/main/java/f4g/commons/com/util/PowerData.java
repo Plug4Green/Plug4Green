@@ -1,20 +1,15 @@
 package f4g.commons.com.util;
 
 /**
- * Mock implementation representing the information on the power consumption
- * 
- * !THIS IS ONLY A SAMPLE IMPLEMENTATION!
- * 
- * @author FIT4Green
+ * Implementation representing the information on the power consumption
+ *
  *
  */
 public class PowerData {
 
 	private double actualConsumption = 0.0;
 	
-	public PowerData() {
-		
-	}
+	public PowerData() {}
 	public double getActualConsumption() {
 		return actualConsumption;
 	}

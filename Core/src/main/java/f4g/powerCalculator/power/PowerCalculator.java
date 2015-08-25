@@ -56,7 +56,6 @@ import f4g.schemas.java.metamodel.NAS;
 import f4g.schemas.java.metamodel.Controller;
 import f4g.commons.power.IPowerCalculator;
 
-//Repository copy
 /**
  * Class implementing the f4g Power Calculator component
  * 

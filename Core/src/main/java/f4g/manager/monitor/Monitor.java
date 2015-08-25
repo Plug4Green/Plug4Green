@@ -382,9 +382,9 @@ public class Monitor implements IMonitor {
 		FIT4Green modelCopy = getModelCopy();
 		log.debug("Metric: got model copy in " + (System.currentTimeMillis() - start) + " ms.");
 		
-		start = System.currentTimeMillis();
-		main.getPowerCalculator().computePowerFIT4Green(modelCopy);
-		log.debug("Metric: computed power in " + (System.currentTimeMillis() - start) + " ms.");
+//		start = System.currentTimeMillis();
+//		main.getPowerCalculator().computePowerFIT4Green(modelCopy);
+//		log.debug("Metric: computed power in " + (System.currentTimeMillis() - start) + " ms.");
 
 		start = System.currentTimeMillis();
 		createModelDocument(modelCopy);
@@ -411,7 +411,7 @@ public class Monitor implements IMonitor {
 		
 		FIT4Green modelCopy = getModelCopy();
 		
-		main.getPowerCalculator().computePowerFIT4Green(modelCopy);
+//		main.getPowerCalculator().computePowerFIT4Green(modelCopy);
 		createModelDocument(modelCopy);
 		
 		main.getOptimizer().setOptimizationObjective(main.getOptimizationObjective());
@@ -513,8 +513,8 @@ public class Monitor implements IMonitor {
 
 		FIT4Green modelCopyUpdated = getModelCopy();
 		log.debug("Time Metric: getModelCopy took " + (System.currentTimeMillis() - start) + " ms.");
-		main.getPowerCalculator().computePowerFIT4Green(modelCopyUpdated);
-		log.debug("Time Metric: computePowerFIT4Green took " + (System.currentTimeMillis() - start) + " ms.");
+		//main.getPowerCalculator().computePowerFIT4Green(modelCopyUpdated);
+		//log.debug("Time Metric: computePowerFIT4Green took " + (System.currentTimeMillis() - start) + " ms.");
 		createModelDocument(modelCopyUpdated);
 
 		log.debug("Time Metric: framework status set took " + (System.currentTimeMillis() - start) + " ms.");
@@ -654,7 +654,6 @@ public class Monitor implements IMonitor {
 			computedPower = new PowerData();
 			if (main != null && main.isRunning()) {
 				FIT4Green modelCopy = getModelCopy();
-				computedPower = main.getPowerCalculator().computePowerFIT4Green(modelCopy);
 				createModelDocument(modelCopy);
 				//getMetrics(modelCopy);
 				log.debug("The total ICT power consumption is " + computedPower.getActualConsumption() + " W");

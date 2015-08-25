@@ -10,6 +10,7 @@ import f4g.manager.controller.Controller;
 import f4g.manager.monitor.Monitor;
 import f4g.optimizer.Optimizer;
 import f4g.powerCalculator.power.PowerCalculator;
+import f4g.powerCalculator.power.SimplePowerCalculator;
 
 /**
  * Interface representing the launcher class for the f4g framework.
@@ -56,7 +57,7 @@ public interface IMain {
 	
 	public Controller getController();
 	
-	public PowerCalculator getPowerCalculator();	
+	public SimplePowerCalculator getPowerCalculator();
 	
 	/**
 	 * 
