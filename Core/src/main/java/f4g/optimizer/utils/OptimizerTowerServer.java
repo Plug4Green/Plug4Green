@@ -33,7 +33,8 @@ import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
 
 /** 
  *  This class is the internal representation of a server tower used by the optimizer.
- */	
+ */
+@Deprecated
 public class OptimizerTowerServer extends TowerServer implements IOptimizerServer {
 		
 	public Logger log;  

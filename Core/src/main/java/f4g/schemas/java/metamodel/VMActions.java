@@ -5,83 +5,33 @@
 // Generated on: 2015.08.10 at 04:34:50 PM CEST 
 //
 
-
 package f4g.schemas.java.metamodel;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-import com.massfords.humantask.Named;
-import com.massfords.humantask.Visitable;
-import com.massfords.humantask.Visitor;
-import org.jvnet.jaxb2_commons.lang.CopyStrategy;
-import org.jvnet.jaxb2_commons.lang.CopyTo;
-import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
-
-
-/**
- * <p>Java class for VMActions complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="VMActions"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="interLiveMigrate" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
- *         &lt;element name="intraLiveMigrate" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
- *         &lt;element name="interMoveVM" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
- *         &lt;element name="intraMoveVM" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VMActions", propOrder = {
-    "interLiveMigrate",
-    "intraLiveMigrate",
-    "interMoveVM",
-    "intraMoveVM"
-})
-public class VMActions implements Cloneable, Named, Visitable, CopyTo
-{
+public class VMActions {
 
     protected boolean interLiveMigrate;
     protected boolean intraLiveMigrate;
     protected boolean interMoveVM;
     protected boolean intraMoveVM;
-    @XmlTransient
-    private QName jaxbElementName;
 
     /**
      * Default no-arg constructor
      * 
      */
     public VMActions() {
-        super();
+	super();
     }
 
     /**
      * Fully-initialising value constructor
      * 
      */
-    public VMActions(final boolean interLiveMigrate, final boolean intraLiveMigrate, final boolean interMoveVM, final boolean intraMoveVM, final QName jaxbElementName) {
-        this.interLiveMigrate = interLiveMigrate;
-        this.intraLiveMigrate = intraLiveMigrate;
-        this.interMoveVM = interMoveVM;
-        this.intraMoveVM = intraMoveVM;
-        this.jaxbElementName = jaxbElementName;
+    public VMActions(final boolean interLiveMigrate, final boolean intraLiveMigrate, final boolean interMoveVM,
+	    final boolean intraMoveVM) {
+	this.interLiveMigrate = interLiveMigrate;
+	this.intraLiveMigrate = intraLiveMigrate;
+	this.interMoveVM = interMoveVM;
+	this.intraMoveVM = intraMoveVM;
     }
 
     /**
@@ -89,7 +39,7 @@ public class VMActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public boolean isInterLiveMigrate() {
-        return interLiveMigrate;
+	return interLiveMigrate;
     }
 
     /**
@@ -97,7 +47,7 @@ public class VMActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public void setInterLiveMigrate(boolean value) {
-        this.interLiveMigrate = value;
+	this.interLiveMigrate = value;
     }
 
     /**
@@ -105,7 +55,7 @@ public class VMActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public boolean isIntraLiveMigrate() {
-        return intraLiveMigrate;
+	return intraLiveMigrate;
     }
 
     /**
@@ -113,7 +63,7 @@ public class VMActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public void setIntraLiveMigrate(boolean value) {
-        this.intraLiveMigrate = value;
+	this.intraLiveMigrate = value;
     }
 
     /**
@@ -121,7 +71,7 @@ public class VMActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public boolean isInterMoveVM() {
-        return interMoveVM;
+	return interMoveVM;
     }
 
     /**
@@ -129,7 +79,7 @@ public class VMActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public void setInterMoveVM(boolean value) {
-        this.interMoveVM = value;
+	this.interMoveVM = value;
     }
 
     /**
@@ -137,7 +87,7 @@ public class VMActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public boolean isIntraMoveVM() {
-        return intraMoveVM;
+	return intraMoveVM;
     }
 
     /**
@@ -145,62 +95,7 @@ public class VMActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public void setIntraMoveVM(boolean value) {
-        this.intraMoveVM = value;
-    }
-
-    public void setJAXBElementName(QName name) {
-        this.jaxbElementName = name;
-    }
-
-    public QName getJAXBElementName() {
-        return this.jaxbElementName;
-    }
-
-    public void afterUnmarshal(Unmarshaller u, Object parent) {
-        if (parent instanceof JAXBElement) {
-            this.jaxbElementName = ((JAXBElement) parent).getName();
-        }
-    }
-
-    public void accept(Visitor aVisitor) {
-        aVisitor.visit(this);
-    }
-
-    public Object clone() {
-        return copyTo(createNewInstance());
-    }
-
-    public Object copyTo(Object target) {
-        final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
-        return copyTo(null, target, strategy);
-    }
-
-    public Object copyTo(ObjectLocator locator, Object target, CopyStrategy strategy) {
-        final Object draftCopy = ((target == null)?createNewInstance():target);
-        if (draftCopy instanceof VMActions) {
-            final VMActions copy = ((VMActions) draftCopy);
-            boolean sourceInterLiveMigrate;
-            sourceInterLiveMigrate = (true?this.isInterLiveMigrate():false);
-            boolean copyInterLiveMigrate = strategy.copy(LocatorUtils.property(locator, "interLiveMigrate", sourceInterLiveMigrate), sourceInterLiveMigrate);
-            copy.setInterLiveMigrate(copyInterLiveMigrate);
-            boolean sourceIntraLiveMigrate;
-            sourceIntraLiveMigrate = (true?this.isIntraLiveMigrate():false);
-            boolean copyIntraLiveMigrate = strategy.copy(LocatorUtils.property(locator, "intraLiveMigrate", sourceIntraLiveMigrate), sourceIntraLiveMigrate);
-            copy.setIntraLiveMigrate(copyIntraLiveMigrate);
-            boolean sourceInterMoveVM;
-            sourceInterMoveVM = (true?this.isInterMoveVM():false);
-            boolean copyInterMoveVM = strategy.copy(LocatorUtils.property(locator, "interMoveVM", sourceInterMoveVM), sourceInterMoveVM);
-            copy.setInterMoveVM(copyInterMoveVM);
-            boolean sourceIntraMoveVM;
-            sourceIntraMoveVM = (true?this.isIntraMoveVM():false);
-            boolean copyIntraMoveVM = strategy.copy(LocatorUtils.property(locator, "intraMoveVM", sourceIntraMoveVM), sourceIntraMoveVM);
-            copy.setIntraMoveVM(copyIntraMoveVM);
-        }
-        return draftCopy;
-    }
-
-    public Object createNewInstance() {
-        return new VMActions();
+	this.intraMoveVM = value;
     }
 
 }

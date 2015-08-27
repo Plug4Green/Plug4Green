@@ -5,79 +5,30 @@
 // Generated on: 2015.08.10 at 04:34:50 PM CEST 
 //
 
-
 package f4g.schemas.java.metamodel;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-import com.massfords.humantask.Named;
-import com.massfords.humantask.Visitable;
-import com.massfords.humantask.Visitor;
-import org.jvnet.jaxb2_commons.lang.CopyStrategy;
-import org.jvnet.jaxb2_commons.lang.CopyTo;
-import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
-
-
-/**
- * <p>Java class for NodeActions complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="NodeActions"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="powerOn" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
- *         &lt;element name="powerOff" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
- *         &lt;element name="standBy" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "NodeActions", propOrder = {
-    "powerOn",
-    "powerOff",
-    "standBy"
-})
-public class NodeActions implements Cloneable, Named, Visitable, CopyTo
-{
+public class NodeActions {
 
     protected boolean powerOn;
     protected boolean powerOff;
     protected boolean standBy;
-    @XmlTransient
-    private QName jaxbElementName;
 
     /**
      * Default no-arg constructor
      * 
      */
     public NodeActions() {
-        super();
+	super();
     }
 
     /**
      * Fully-initialising value constructor
      * 
      */
-    public NodeActions(final boolean powerOn, final boolean powerOff, final boolean standBy, final QName jaxbElementName) {
-        this.powerOn = powerOn;
-        this.powerOff = powerOff;
-        this.standBy = standBy;
-        this.jaxbElementName = jaxbElementName;
+    public NodeActions(final boolean powerOn, final boolean powerOff, final boolean standBy) {
+	this.powerOn = powerOn;
+	this.powerOff = powerOff;
+	this.standBy = standBy;
     }
 
     /**
@@ -85,7 +36,7 @@ public class NodeActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public boolean isPowerOn() {
-        return powerOn;
+	return powerOn;
     }
 
     /**
@@ -93,7 +44,7 @@ public class NodeActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public void setPowerOn(boolean value) {
-        this.powerOn = value;
+	this.powerOn = value;
     }
 
     /**
@@ -101,7 +52,7 @@ public class NodeActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public boolean isPowerOff() {
-        return powerOff;
+	return powerOff;
     }
 
     /**
@@ -109,7 +60,7 @@ public class NodeActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public void setPowerOff(boolean value) {
-        this.powerOff = value;
+	this.powerOff = value;
     }
 
     /**
@@ -117,7 +68,7 @@ public class NodeActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public boolean isStandBy() {
-        return standBy;
+	return standBy;
     }
 
     /**
@@ -125,58 +76,7 @@ public class NodeActions implements Cloneable, Named, Visitable, CopyTo
      * 
      */
     public void setStandBy(boolean value) {
-        this.standBy = value;
-    }
-
-    public void setJAXBElementName(QName name) {
-        this.jaxbElementName = name;
-    }
-
-    public QName getJAXBElementName() {
-        return this.jaxbElementName;
-    }
-
-    public void afterUnmarshal(Unmarshaller u, Object parent) {
-        if (parent instanceof JAXBElement) {
-            this.jaxbElementName = ((JAXBElement) parent).getName();
-        }
-    }
-
-    public void accept(Visitor aVisitor) {
-        aVisitor.visit(this);
-    }
-
-    public Object clone() {
-        return copyTo(createNewInstance());
-    }
-
-    public Object copyTo(Object target) {
-        final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
-        return copyTo(null, target, strategy);
-    }
-
-    public Object copyTo(ObjectLocator locator, Object target, CopyStrategy strategy) {
-        final Object draftCopy = ((target == null)?createNewInstance():target);
-        if (draftCopy instanceof NodeActions) {
-            final NodeActions copy = ((NodeActions) draftCopy);
-            boolean sourcePowerOn;
-            sourcePowerOn = (true?this.isPowerOn():false);
-            boolean copyPowerOn = strategy.copy(LocatorUtils.property(locator, "powerOn", sourcePowerOn), sourcePowerOn);
-            copy.setPowerOn(copyPowerOn);
-            boolean sourcePowerOff;
-            sourcePowerOff = (true?this.isPowerOff():false);
-            boolean copyPowerOff = strategy.copy(LocatorUtils.property(locator, "powerOff", sourcePowerOff), sourcePowerOff);
-            copy.setPowerOff(copyPowerOff);
-            boolean sourceStandBy;
-            sourceStandBy = (true?this.isStandBy():false);
-            boolean copyStandBy = strategy.copy(LocatorUtils.property(locator, "standBy", sourceStandBy), sourceStandBy);
-            copy.setStandBy(copyStandBy);
-        }
-        return draftCopy;
-    }
-
-    public Object createNewInstance() {
-        return new NodeActions();
+	this.standBy = value;
     }
 
 }

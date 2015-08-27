@@ -5,551 +5,287 @@
 // Generated on: 2015.08.10 at 04:34:50 PM CEST 
 //
 
-
 package f4g.schemas.java.metamodel;
 
-import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+
+import javax.measure.quantity.Power;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-import com.massfords.humantask.Named;
-import com.massfords.humantask.Visitable;
-import com.massfords.humantask.Visitor;
-import org.jvnet.jaxb2_commons.lang.CopyStrategy;
-import org.jvnet.jaxb2_commons.lang.CopyTo;
-import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 
+import org.joda.time.DateTime;
+import org.jscience.physics.amount.Amount;
 
-/**
- * <p>Java class for Server complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="Server"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="name" type="{f4g/schemas/java/MetaModel}ServerRole"/&gt;
- *         &lt;element name="status" type="{f4g/schemas/java/MetaModel}ServerStatus"/&gt;
- *         &lt;element name="frameworkID" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="computedPower" type="{f4g/schemas/java/MetaModel}Power" minOccurs="0"/&gt;
- *         &lt;element name="measuredPower" type="{f4g/schemas/java/MetaModel}Power" minOccurs="0"/&gt;
- *         &lt;element ref="{f4g/schemas/java/MetaModel}LogicalVolume" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element ref="{f4g/schemas/java/MetaModel}Mainboard" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;choice minOccurs="0"&gt;
- *           &lt;element ref="{f4g/schemas/java/MetaModel}NativeOperatingSystem"/&gt;
- *           &lt;element ref="{f4g/schemas/java/MetaModel}NativeHypervisor"/&gt;
- *         &lt;/choice&gt;
- *         &lt;element name="lastOnOffTimestamp" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *       &lt;attribute name="frameworkRef" use="required" type="{http://www.w3.org/2001/XMLSchema}IDREF" /&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Server", propOrder = {
-    "name",
-    "status",
-    "frameworkID",
-    "computedPower",
-    "measuredPower",
-    "logicalVolume",
-    "mainboard",
-    "nativeOperatingSystem",
-    "nativeHypervisor",
-    "lastOnOffTimestamp"
-})
-@XmlSeeAlso({
-    TowerServer.class,
-    BladeServer.class,
-    RackableServer.class
-})
-public class Server implements Cloneable, Named, Visitable, CopyTo
-{
+//TODO: implement CopyTo if needed
+public class Server implements Cloneable /* , CopyTo */ {
 
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "string")
     protected ServerRole name;
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "string")
     protected ServerStatus status;
-    @XmlElement(required = true)
     protected String frameworkID;
-    @XmlSchemaType(name = "double")
-    protected Power computedPower;
-    @XmlSchemaType(name = "double")
-    protected Power measuredPower;
-    @XmlElement(name = "LogicalVolume", namespace = "f4g/schemas/java/MetaModel")
-    protected List<LogicalVolume> logicalVolume;
-    @XmlElement(name = "Mainboard", namespace = "f4g/schemas/java/MetaModel")
-    protected List<Mainboard> mainboard;
-    @XmlElement(name = "NativeOperatingSystem", namespace = "f4g/schemas/java/MetaModel")
-    protected NativeOperatingSystem nativeOperatingSystem;
-    @XmlElement(name = "NativeHypervisor", namespace = "f4g/schemas/java/MetaModel")
-    protected NativeHypervisor nativeHypervisor;
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar lastOnOffTimestamp;
-    @XmlAttribute(name = "frameworkRef", required = true)
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    protected Object frameworkRef;
-    @XmlTransient
-    private QName jaxbElementName;
+    protected Amount<Power> idlePower;
+    protected Amount<Power> maxPower;
+    protected DateTime lastOnOffTimestamp;
+    protected RAMSize ramSize;
+    protected StorageCapacity storageCapacity;
+    protected Cores cores;
+    protected GPU gpu;
+    protected List<VirtualMachine> VMs;
 
-    /**
-     * Default no-arg constructor
-     * 
-     */
-    public Server() {
-        super();
+    public Server(ServerRole name, ServerStatus status, String frameworkID, Amount<Power> idlePower,
+	    Amount<Power> maxPower, DateTime lastOnOffTimestamp, RAMSize ramSize, StorageCapacity storageCapacity,
+	    Cores cores, GPU gpu, List<VirtualMachine> vMs) {
+	super();
+	this.name = name;
+	this.status = status;
+	this.frameworkID = frameworkID;
+	this.idlePower = idlePower;
+	this.maxPower = maxPower;
+	this.lastOnOffTimestamp = lastOnOffTimestamp;
+	this.ramSize = ramSize;
+	this.storageCapacity = storageCapacity;
+	this.cores = cores;
+	this.gpu = gpu;
+	this.VMs = vMs;
     }
 
     /**
-     * Fully-initialising value constructor
-     * 
-     */
-    public Server(final ServerRole name, final ServerStatus status, final String frameworkID, final Power computedPower, final Power measuredPower, final List<LogicalVolume> logicalVolume, final List<Mainboard> mainboard, final NativeOperatingSystem nativeOperatingSystem, final NativeHypervisor nativeHypervisor, final XMLGregorianCalendar lastOnOffTimestamp, final Object frameworkRef, final QName jaxbElementName) {
-        this.name = name;
-        this.status = status;
-        this.frameworkID = frameworkID;
-        this.computedPower = computedPower;
-        this.measuredPower = measuredPower;
-        this.logicalVolume = logicalVolume;
-        this.mainboard = mainboard;
-        this.nativeOperatingSystem = nativeOperatingSystem;
-        this.nativeHypervisor = nativeHypervisor;
-        this.lastOnOffTimestamp = lastOnOffTimestamp;
-        this.frameworkRef = frameworkRef;
-        this.jaxbElementName = jaxbElementName;
-    }
-
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ServerRole }
-     *     
+     * Gets the value of name.
+     *
+     * @return possible object is {@link ServerRole }
      */
     public ServerRole getName() {
-        return name;
+	return name;
     }
 
     /**
-     * Sets the value of the name property.
-     * 
+     * Sets the value of name.
+     *
      * @param value
-     *     allowed object is
-     *     {@link ServerRole }
-     *     
+     *            allowed object is {@link ServerRole }
      */
     public void setName(ServerRole value) {
-        this.name = value;
+	this.name = value;
     }
 
     /**
-     * Gets the value of the status property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ServerStatus }
-     *     
+     * Gets the value of status.
+     *
+     * @return possible object is {@link ServerStatus }
      */
     public ServerStatus getStatus() {
-        return status;
+	return status;
     }
 
     /**
-     * Sets the value of the status property.
-     * 
+     * Sets the value of status.
+     *
      * @param value
-     *     allowed object is
-     *     {@link ServerStatus }
-     *     
+     *            allowed object is {@link ServerStatus }
      */
     public void setStatus(ServerStatus value) {
-        this.status = value;
+	this.status = value;
     }
 
     /**
-     * Gets the value of the frameworkID property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * Gets the value of frameworkID.
+     *
+     * @return possible object is {@link String }
      */
     public String getFrameworkID() {
-        return frameworkID;
+	return frameworkID;
     }
 
     /**
-     * Sets the value of the frameworkID property.
-     * 
+     * Sets the value of frameworkID.
+     *
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is {@link String }
      */
     public void setFrameworkID(String value) {
-        this.frameworkID = value;
+	this.frameworkID = value;
     }
 
     /**
-     * Gets the value of the computedPower property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Power }
-     *     
+     * Gets the value of idlePower.
+     *
+     * @return possible object is {@link Power }
      */
-    public Power getComputedPower() {
-        return computedPower;
+    public Amount<Power> getIdlePower() {
+	return idlePower;
     }
 
     /**
-     * Sets the value of the computedPower property.
-     * 
+     * Sets the value of idlePower.
+     *
      * @param value
-     *     allowed object is
-     *     {@link Power }
-     *     
+     *            allowed object is {@link Power }
      */
-    public void setComputedPower(Power value) {
-        this.computedPower = value;
+    public void setIdlePower(Amount<Power> value) {
+	this.idlePower = value;
     }
 
     /**
-     * Gets the value of the measuredPower property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Power }
-     *     
+     * Gets the value of maxPower.
+     *
+     * @return possible object is {@link Power }
      */
-    public Power getMeasuredPower() {
-        return measuredPower;
+    public Amount<Power> getMaxPower() {
+	return maxPower;
     }
 
     /**
-     * Sets the value of the measuredPower property.
-     * 
+     * Sets the value of maxPower.
+     *
      * @param value
-     *     allowed object is
-     *     {@link Power }
-     *     
+     *            allowed object is {@link Power }
      */
-    public void setMeasuredPower(Power value) {
-        this.measuredPower = value;
+    public void setMeasuredPower(Amount<Power> value) {
+	this.maxPower = value;
     }
 
     /**
-     * Gets the value of the logicalVolume property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the logicalVolume property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getLogicalVolume().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link LogicalVolume }
-     * 
-     * 
+     * Gets the value of ramSize.
+     *
+     * @return possible object is {@link RAMSize }
      */
-    public List<LogicalVolume> getLogicalVolume() {
-        if (logicalVolume == null) {
-            logicalVolume = new ArrayList<LogicalVolume>();
-        }
-        return this.logicalVolume;
+    public RAMSize getRAMSize() {
+	return this.ramSize;
     }
 
     /**
-     * Gets the value of the mainboard property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the mainboard property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getMainboard().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Mainboard }
-     * 
-     * 
-     */
-    public List<Mainboard> getMainboard() {
-        if (mainboard == null) {
-            mainboard = new ArrayList<Mainboard>();
-        }
-        return this.mainboard;
-    }
-
-    /**
-     * Gets the value of the nativeOperatingSystem property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link NativeOperatingSystem }
-     *     
-     */
-    public NativeOperatingSystem getNativeOperatingSystem() {
-        return nativeOperatingSystem;
-    }
-
-    /**
-     * Sets the value of the nativeOperatingSystem property.
-     * 
+     * Sets the value of RAMSize.
+     *
      * @param value
-     *     allowed object is
-     *     {@link NativeOperatingSystem }
-     *     
+     *            allowed object is {@link RAMSize }
      */
-    public void setNativeOperatingSystem(NativeOperatingSystem value) {
-        this.nativeOperatingSystem = value;
+    public void setRAMSize(RAMSize value) {
+	this.ramSize = ramSize;
     }
 
     /**
-     * Gets the value of the nativeHypervisor property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link NativeHypervisor }
-     *     
+     * Gets the value of StorageCapacity.
+     *
+     * @return possible object is {@link StorageCapacity }
      */
-    public NativeHypervisor getNativeHypervisor() {
-        return nativeHypervisor;
+    public StorageCapacity getStorageCapacity() {
+	return this.storageCapacity;
     }
 
     /**
-     * Sets the value of the nativeHypervisor property.
-     * 
+     * Sets the value of StorageCapacity.
+     *
      * @param value
-     *     allowed object is
-     *     {@link NativeHypervisor }
-     *     
+     *            allowed object is {@link StorageCapacity }
      */
-    public void setNativeHypervisor(NativeHypervisor value) {
-        this.nativeHypervisor = value;
+    public StorageCapacity setStorageCapacity(StorageCapacity value) {
+	return this.storageCapacity = value;
     }
 
     /**
-     * Gets the value of the lastOnOffTimestamp property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public XMLGregorianCalendar getLastOnOffTimestamp() {
-        return lastOnOffTimestamp;
-    }
-
-    /**
-     * Sets the value of the lastOnOffTimestamp property.
-     * 
+     * Sets the value of CoreNumber.
+     *
      * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setLastOnOffTimestamp(XMLGregorianCalendar value) {
-        this.lastOnOffTimestamp = value;
-    }
-
-    /**
-     * Gets the value of the frameworkRef property.
-     * 
+     *            allowed object is {@link Cores }
      * @return
-     *     possible object is
-     *     {@link Object }
-     *     
      */
-    public Object getFrameworkRef() {
-        return frameworkRef;
+    public void setCoreNumber(Cores value) {
+	this.cores = value;
     }
 
     /**
-     * Sets the value of the frameworkRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
+     * Gets the value of the lastOnOffTimestamp.
+     *
+     * @return possibile object is {@link XMLGregorianCalendar }
      */
-    public void setFrameworkRef(Object value) {
-        this.frameworkRef = value;
+    public DateTime getLastOnOffTimestamp() {
+	return lastOnOffTimestamp;
     }
 
-    public void setJAXBElementName(QName name) {
-        this.jaxbElementName = name;
+    /**
+     * Sets the value of the lastOnOffTimestamp.
+     *
+     * @param value
+     *            allowed object is {@link XMLGregorianCalendar }
+     */
+    public void setLastOnOffTimestamp(DateTime value) {
+	this.lastOnOffTimestamp = value;
     }
 
-    public QName getJAXBElementName() {
-        return this.jaxbElementName;
-    }
-
-    public void afterUnmarshal(Unmarshaller u, Object parent) {
-        if (parent instanceof JAXBElement) {
-            this.jaxbElementName = ((JAXBElement) parent).getName();
-        }
-    }
-
-    public void accept(Visitor aVisitor) {
-        aVisitor.visit(this);
-    }
-
-    public Object clone() {
-        return copyTo(createNewInstance());
-    }
-
-    public Object copyTo(Object target) {
-        final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
-        return copyTo(null, target, strategy);
-    }
-
-    public Object copyTo(ObjectLocator locator, Object target, CopyStrategy strategy) {
-        final Object draftCopy = ((target == null)?createNewInstance():target);
-        if (draftCopy instanceof Server) {
-            final Server copy = ((Server) draftCopy);
-            if (this.name!= null) {
-                ServerRole sourceName;
-                sourceName = this.getName();
-                ServerRole copyName = ((ServerRole) strategy.copy(LocatorUtils.property(locator, "name", sourceName), sourceName));
-                copy.setName(copyName);
-            } else {
-                copy.name = null;
-            }
-            if (this.status!= null) {
-                ServerStatus sourceStatus;
-                sourceStatus = this.getStatus();
-                ServerStatus copyStatus = ((ServerStatus) strategy.copy(LocatorUtils.property(locator, "status", sourceStatus), sourceStatus));
-                copy.setStatus(copyStatus);
-            } else {
-                copy.status = null;
-            }
-            if (this.frameworkID!= null) {
-                String sourceFrameworkID;
-                sourceFrameworkID = this.getFrameworkID();
-                String copyFrameworkID = ((String) strategy.copy(LocatorUtils.property(locator, "frameworkID", sourceFrameworkID), sourceFrameworkID));
-                copy.setFrameworkID(copyFrameworkID);
-            } else {
-                copy.frameworkID = null;
-            }
-            if (this.computedPower!= null) {
-                Power sourceComputedPower;
-                sourceComputedPower = this.getComputedPower();
-                Power copyComputedPower = ((Power) strategy.copy(LocatorUtils.property(locator, "computedPower", sourceComputedPower), sourceComputedPower));
-                copy.setComputedPower(copyComputedPower);
-            } else {
-                copy.computedPower = null;
-            }
-            if (this.measuredPower!= null) {
-                Power sourceMeasuredPower;
-                sourceMeasuredPower = this.getMeasuredPower();
-                Power copyMeasuredPower = ((Power) strategy.copy(LocatorUtils.property(locator, "measuredPower", sourceMeasuredPower), sourceMeasuredPower));
-                copy.setMeasuredPower(copyMeasuredPower);
-            } else {
-                copy.measuredPower = null;
-            }
-            if ((this.logicalVolume!= null)&&(!this.logicalVolume.isEmpty())) {
-                List<LogicalVolume> sourceLogicalVolume;
-                sourceLogicalVolume = (((this.logicalVolume!= null)&&(!this.logicalVolume.isEmpty()))?this.getLogicalVolume():null);
-                @SuppressWarnings("unchecked")
-                List<LogicalVolume> copyLogicalVolume = ((List<LogicalVolume> ) strategy.copy(LocatorUtils.property(locator, "logicalVolume", sourceLogicalVolume), sourceLogicalVolume));
-                copy.logicalVolume = null;
-                if (copyLogicalVolume!= null) {
-                    List<LogicalVolume> uniqueLogicalVolumel = copy.getLogicalVolume();
-                    uniqueLogicalVolumel.addAll(copyLogicalVolume);
-                }
-            } else {
-                copy.logicalVolume = null;
-            }
-            if ((this.mainboard!= null)&&(!this.mainboard.isEmpty())) {
-                List<Mainboard> sourceMainboard;
-                sourceMainboard = (((this.mainboard!= null)&&(!this.mainboard.isEmpty()))?this.getMainboard():null);
-                @SuppressWarnings("unchecked")
-                List<Mainboard> copyMainboard = ((List<Mainboard> ) strategy.copy(LocatorUtils.property(locator, "mainboard", sourceMainboard), sourceMainboard));
-                copy.mainboard = null;
-                if (copyMainboard!= null) {
-                    List<Mainboard> uniqueMainboardl = copy.getMainboard();
-                    uniqueMainboardl.addAll(copyMainboard);
-                }
-            } else {
-                copy.mainboard = null;
-            }
-            if (this.nativeOperatingSystem!= null) {
-                NativeOperatingSystem sourceNativeOperatingSystem;
-                sourceNativeOperatingSystem = this.getNativeOperatingSystem();
-                NativeOperatingSystem copyNativeOperatingSystem = ((NativeOperatingSystem) strategy.copy(LocatorUtils.property(locator, "nativeOperatingSystem", sourceNativeOperatingSystem), sourceNativeOperatingSystem));
-                copy.setNativeOperatingSystem(copyNativeOperatingSystem);
-            } else {
-                copy.nativeOperatingSystem = null;
-            }
-            if (this.nativeHypervisor!= null) {
-                NativeHypervisor sourceNativeHypervisor;
-                sourceNativeHypervisor = this.getNativeHypervisor();
-                NativeHypervisor copyNativeHypervisor = ((NativeHypervisor) strategy.copy(LocatorUtils.property(locator, "nativeHypervisor", sourceNativeHypervisor), sourceNativeHypervisor));
-                copy.setNativeHypervisor(copyNativeHypervisor);
-            } else {
-                copy.nativeHypervisor = null;
-            }
-            if (this.lastOnOffTimestamp!= null) {
-                XMLGregorianCalendar sourceLastOnOffTimestamp;
-                sourceLastOnOffTimestamp = this.getLastOnOffTimestamp();
-                XMLGregorianCalendar copyLastOnOffTimestamp = ((XMLGregorianCalendar) strategy.copy(LocatorUtils.property(locator, "lastOnOffTimestamp", sourceLastOnOffTimestamp), sourceLastOnOffTimestamp));
-                copy.setLastOnOffTimestamp(copyLastOnOffTimestamp);
-            } else {
-                copy.lastOnOffTimestamp = null;
-            }
-            if (this.frameworkRef!= null) {
-                Object sourceFrameworkRef;
-                sourceFrameworkRef = this.getFrameworkRef();
-                Object copyFrameworkRef = ((Object) strategy.copy(LocatorUtils.property(locator, "frameworkRef", sourceFrameworkRef), sourceFrameworkRef));
-                copy.setFrameworkRef(copyFrameworkRef);
-            } else {
-                copy.frameworkRef = null;
-            }
-        }
-        return draftCopy;
-    }
-
-    public Object createNewInstance() {
-        return new Server();
-    }
-
+    /*
+     * public Object copyTo(ObjectLocator locator, Object target, CopyStrategy
+     * strategy) { final Object draftCopy = ((target == null) ?
+     * createNewInstance() : target); if (draftCopy instanceof Server) { final
+     * Server copy = ((Server) draftCopy); if (this.name != null) { ServerRole
+     * sourceName; sourceName = this.getName(); ServerRole copyName =
+     * ((ServerRole) strategy.copy(LocatorUtils.property(locator, "name",
+     * sourceName), sourceName)); copy.setName(copyName); } else { copy.name =
+     * null; } if (this.status != null) { ServerStatus sourceStatus;
+     * sourceStatus = this.getStatus(); ServerStatus copyStatus =
+     * ((ServerStatus) strategy.copy(LocatorUtils.property(locator, "status",
+     * sourceStatus), sourceStatus)); copy.setStatus(copyStatus); } else {
+     * copy.status = null; } if (this.frameworkID != null) { String
+     * sourceFrameworkID; sourceFrameworkID = this.getFrameworkID(); String
+     * copyFrameworkID = ((String) strategy.copy(LocatorUtils.property(locator,
+     * "frameworkID", sourceFrameworkID), sourceFrameworkID));
+     * copy.setFrameworkID(copyFrameworkID); } else { copy.frameworkID = null; }
+     * if (this.computedPower != null) { Power sourceComputedPower;
+     * sourceComputedPower = this.getComputedPower(); Power copyComputedPower =
+     * ((Power) strategy.copy(LocatorUtils.property(locator, "computedPower",
+     * sourceComputedPower), sourceComputedPower));
+     * copy.setComputedPower(copyComputedPower); } else { copy.computedPower =
+     * null; } if (this.measuredPower != null) { Power sourceMeasuredPower;
+     * sourceMeasuredPower = this.getMeasuredPower(); Power copyMeasuredPower =
+     * ((Power) strategy.copy(LocatorUtils.property(locator, "measuredPower",
+     * sourceMeasuredPower), sourceMeasuredPower));
+     * copy.setMeasuredPower(copyMeasuredPower); } else { copy.measuredPower =
+     * null; } if ((this.logicalVolume != null) &&
+     * (!this.logicalVolume.isEmpty())) { List<LogicalVolume>
+     * sourceLogicalVolume; sourceLogicalVolume = (((this.logicalVolume != null)
+     * && (!this.logicalVolume.isEmpty())) ? this.getLogicalVolume() : null);
+     * 
+     * @SuppressWarnings("unchecked") List<LogicalVolume> copyLogicalVolume =
+     * ((List<LogicalVolume>) strategy.copy(LocatorUtils.property(locator,
+     * "logicalVolume", sourceLogicalVolume), sourceLogicalVolume));
+     * copy.logicalVolume = null; if (copyLogicalVolume != null) {
+     * List<LogicalVolume> uniqueLogicalVolumel = copy.getLogicalVolume();
+     * uniqueLogicalVolumel.addAll(copyLogicalVolume); } } else {
+     * copy.logicalVolume = null; } if ((this.mainboard != null) &&
+     * (!this.mainboard.isEmpty())) { List<Mainboard> sourceMainboard;
+     * sourceMainboard = (((this.mainboard != null) &&
+     * (!this.mainboard.isEmpty())) ? this.getMainboard() : null);
+     * 
+     * @SuppressWarnings("unchecked") List<Mainboard> copyMainboard =
+     * ((List<Mainboard>) strategy.copy(LocatorUtils.property(locator,
+     * "mainboard", sourceMainboard), sourceMainboard)); copy.mainboard = null;
+     * if (copyMainboard != null) { List<Mainboard> uniqueMainboardl =
+     * copy.getMainboard(); uniqueMainboardl.addAll(copyMainboard); } } else {
+     * copy.mainboard = null; } if (this.nativeOperatingSystem != null) {
+     * NativeOperatingSystem sourceNativeOperatingSystem;
+     * sourceNativeOperatingSystem = this.getNativeOperatingSystem();
+     * NativeOperatingSystem copyNativeOperatingSystem =
+     * ((NativeOperatingSystem) strategy.copy(LocatorUtils.property(locator,
+     * "nativeOperatingSystem", sourceNativeOperatingSystem),
+     * sourceNativeOperatingSystem));
+     * copy.setNativeOperatingSystem(copyNativeOperatingSystem); } else {
+     * copy.nativeOperatingSystem = null; } if (this.nativeHypervisor != null) {
+     * NativeHypervisor sourceNativeHypervisor; sourceNativeHypervisor =
+     * this.getNativeHypervisor(); NativeHypervisor copyNativeHypervisor =
+     * ((NativeHypervisor) strategy.copy(LocatorUtils.property(locator,
+     * "nativeHypervisor", sourceNativeHypervisor), sourceNativeHypervisor));
+     * copy.setNativeHypervisor(copyNativeHypervisor); } else {
+     * copy.nativeHypervisor = null; } if (this.lastOnOffTimestamp != null) {
+     * XMLGregorianCalendar sourceLastOnOffTimestamp; sourceLastOnOffTimestamp =
+     * this.getLastOnOffTimestamp(); XMLGregorianCalendar copyLastOnOffTimestamp
+     * = ((XMLGregorianCalendar) strategy.copy(LocatorUtils.property(locator,
+     * "lastOnOffTimestamp", sourceLastOnOffTimestamp),
+     * sourceLastOnOffTimestamp));
+     * copy.setLastOnOffTimestamp(copyLastOnOffTimestamp); } else {
+     * copy.lastOnOffTimestamp = null; } if (this.frameworkRef != null) { Object
+     * sourceFrameworkRef; sourceFrameworkRef = this.getFrameworkRef(); Object
+     * copyFrameworkRef = ((Object) strategy.copy(LocatorUtils.property(locator,
+     * "frameworkRef", sourceFrameworkRef), sourceFrameworkRef));
+     * copy.setFrameworkRef(copyFrameworkRef); } else { copy.frameworkRef =
+     * null; } } return draftCopy; }
+     * 
+     * public Object createNewInstance() { return new Server(); }
+     */
 }

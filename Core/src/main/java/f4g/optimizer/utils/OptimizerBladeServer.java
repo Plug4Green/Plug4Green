@@ -31,7 +31,8 @@ import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
 
 /** 
  *  This class is the internal representation of a server blade used by the optimizer.
- */	
+ */
+@Deprecated
 public class OptimizerBladeServer extends BladeServer implements IOptimizerServer {
 		
 	public Logger log;  

@@ -5,43 +5,17 @@
 // Generated on: 2015.08.10 at 04:34:50 PM CEST 
 //
 
-
 package f4g.schemas.java.metamodel;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
-import com.massfords.humantask.Visitable;
-import com.massfords.humantask.Visitor;
+
 import org.jvnet.jaxb2_commons.lang.CopyStrategy;
 import org.jvnet.jaxb2_commons.lang.CopyTo;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 
-
-/**
- * <p>Java class for CUE simple type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;simpleType name="CUE"&gt;
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}double"&gt;
- *     &lt;minInclusive value="0"/&gt;
- *   &lt;/restriction&gt;
- * &lt;/simpleType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CUE", propOrder = {
-    "value"
-})
-public class CUE implements Cloneable, Visitable, CopyTo
-{
+public class CUE implements Cloneable, CopyTo {
 
     @XmlValue
     protected double value;
@@ -51,7 +25,7 @@ public class CUE implements Cloneable, Visitable, CopyTo
      * 
      */
     public CUE() {
-        super();
+	super();
     }
 
     /**
@@ -59,7 +33,7 @@ public class CUE implements Cloneable, Visitable, CopyTo
      * 
      */
     public CUE(final double value) {
-        this.value = value;
+	this.value = value;
     }
 
     /**
@@ -67,7 +41,7 @@ public class CUE implements Cloneable, Visitable, CopyTo
      * 
      */
     public double getValue() {
-        return value;
+	return value;
     }
 
     /**
@@ -75,36 +49,32 @@ public class CUE implements Cloneable, Visitable, CopyTo
      * 
      */
     public void setValue(double value) {
-        this.value = value;
-    }
-
-    public void accept(Visitor aVisitor) {
-        aVisitor.visit(this);
+	this.value = value;
     }
 
     public Object clone() {
-        return copyTo(createNewInstance());
+	return copyTo(createNewInstance());
     }
 
     public Object copyTo(Object target) {
-        final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
-        return copyTo(null, target, strategy);
+	final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
+	return copyTo(null, target, strategy);
     }
 
     public Object copyTo(ObjectLocator locator, Object target, CopyStrategy strategy) {
-        final Object draftCopy = ((target == null)?createNewInstance():target);
-        if (draftCopy instanceof CUE) {
-            final CUE copy = ((CUE) draftCopy);
-            double sourceValue;
-            sourceValue = (true?this.getValue(): 0.0D);
-            double copyValue = strategy.copy(LocatorUtils.property(locator, "value", sourceValue), sourceValue);
-            copy.setValue(copyValue);
-        }
-        return draftCopy;
+	final Object draftCopy = ((target == null) ? createNewInstance() : target);
+	if (draftCopy instanceof CUE) {
+	    final CUE copy = ((CUE) draftCopy);
+	    double sourceValue;
+	    sourceValue = (true ? this.getValue() : 0.0D);
+	    double copyValue = strategy.copy(LocatorUtils.property(locator, "value", sourceValue), sourceValue);
+	    copy.setValue(copyValue);
+	}
+	return draftCopy;
     }
 
     public Object createNewInstance() {
-        return new CUE();
+	return new CUE();
     }
 
 }

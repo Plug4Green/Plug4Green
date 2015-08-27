@@ -5,146 +5,60 @@
 // Generated on: 2015.08.10 at 04:34:50 PM CEST 
 //
 
-
 package f4g.schemas.java.metamodel;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-import com.massfords.humantask.Named;
-import com.massfords.humantask.Visitable;
-import com.massfords.humantask.Visitor;
-import org.jvnet.jaxb2_commons.lang.CopyStrategy;
-import org.jvnet.jaxb2_commons.lang.CopyTo;
-import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import javax.measure.quantity.Frequency;
 
+import org.jscience.physics.amount.Amount;
 
-/**
- * <p>Java class for GPU complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="GPU"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="coreFrequency" type="{f4g/schemas/java/MetaModel}Frequency"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "GPU", propOrder = {
-    "coreFrequency"
-})
-public class GPU implements Cloneable, Named, Visitable, CopyTo
+public class GPU implements Cloneable /* , CopyTo */
 {
 
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "double")
-    protected Frequency coreFrequency;
-    @XmlTransient
-    private QName jaxbElementName;
+    protected Amount<Frequency> coreFrequency;
+    protected int gpuCores;
 
-    /**
-     * Default no-arg constructor
+    public GPU(Amount<Frequency> coreFrequency, int gpuCores) {
+	super();
+	this.coreFrequency = coreFrequency;
+	this.gpuCores = gpuCores;
+    }
+
+    public void setCoreNumber(int gpuCores) {
+	if (gpuCores >= 0) {
+	    String errorMsg = "CoreNumber " + gpuCores + "is not a positive value";
+	    throw new IllegalArgumentException(errorMsg);
+	}
+    }
+
+    public int toInt() {
+	return this.gpuCores;
+    }
+
+    public Amount<Frequency> getCoreFrequency() {
+	return coreFrequency;
+    }
+
+    public void setCoreFrequency(Amount<Frequency> coreFrequency) {
+	this.coreFrequency = coreFrequency;
+    }
+
+    /*
+     * public Object clone() { return copyTo(createNewInstance()); }
      * 
-     */
-    public GPU() {
-        super();
-    }
-
-    /**
-     * Fully-initialising value constructor
+     * public Object copyTo(Object target) { final CopyStrategy strategy =
+     * JAXBCopyStrategy.INSTANCE; return copyTo(null, target, strategy); }
      * 
-     */
-    public GPU(final Frequency coreFrequency, final QName jaxbElementName) {
-        this.coreFrequency = coreFrequency;
-        this.jaxbElementName = jaxbElementName;
-    }
-
-    /**
-     * Gets the value of the coreFrequency property.
+     * public Object copyTo(ObjectLocator locator, Object target, CopyStrategy
+     * strategy) { final Object draftCopy = ((target ==
+     * null)?createNewInstance():target); if (draftCopy instanceof GPU) { final
+     * GPU copy = ((GPU) draftCopy); if (this.coreFrequency!= null) { Frequency
+     * sourceCoreFrequency; sourceCoreFrequency = this.getCoreFrequency();
+     * Frequency copyCoreFrequency = ((Frequency)
+     * strategy.copy(LocatorUtils.property(locator, "coreFrequency",
+     * sourceCoreFrequency), sourceCoreFrequency));
+     * copy.setCoreFrequency(copyCoreFrequency); } else { copy.coreFrequency =
+     * null; } } return draftCopy; }
      * 
-     * @return
-     *     possible object is
-     *     {@link Frequency }
-     *     
+     * public Object createNewInstance() { return new GPU(); }
      */
-    public Frequency getCoreFrequency() {
-        return coreFrequency;
-    }
-
-    /**
-     * Sets the value of the coreFrequency property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Frequency }
-     *     
-     */
-    public void setCoreFrequency(Frequency value) {
-        this.coreFrequency = value;
-    }
-
-    public void setJAXBElementName(QName name) {
-        this.jaxbElementName = name;
-    }
-
-    public QName getJAXBElementName() {
-        return this.jaxbElementName;
-    }
-
-    public void afterUnmarshal(Unmarshaller u, Object parent) {
-        if (parent instanceof JAXBElement) {
-            this.jaxbElementName = ((JAXBElement) parent).getName();
-        }
-    }
-
-    public void accept(Visitor aVisitor) {
-        aVisitor.visit(this);
-    }
-
-    public Object clone() {
-        return copyTo(createNewInstance());
-    }
-
-    public Object copyTo(Object target) {
-        final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
-        return copyTo(null, target, strategy);
-    }
-
-    public Object copyTo(ObjectLocator locator, Object target, CopyStrategy strategy) {
-        final Object draftCopy = ((target == null)?createNewInstance():target);
-        if (draftCopy instanceof GPU) {
-            final GPU copy = ((GPU) draftCopy);
-            if (this.coreFrequency!= null) {
-                Frequency sourceCoreFrequency;
-                sourceCoreFrequency = this.getCoreFrequency();
-                Frequency copyCoreFrequency = ((Frequency) strategy.copy(LocatorUtils.property(locator, "coreFrequency", sourceCoreFrequency), sourceCoreFrequency));
-                copy.setCoreFrequency(copyCoreFrequency);
-            } else {
-                copy.coreFrequency = null;
-            }
-        }
-        return draftCopy;
-    }
-
-    public Object createNewInstance() {
-        return new GPU();
-    }
-
 }

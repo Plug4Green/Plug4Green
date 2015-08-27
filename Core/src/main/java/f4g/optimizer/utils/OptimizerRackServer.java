@@ -33,7 +33,8 @@ import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
 
 /** 
  *  This class is the internal representation of a rackable server used by the optimizer.
- */	
+ */
+@Deprecated
 public class OptimizerRackServer extends RackableServer implements IOptimizerServer {
 		
 	public Logger log;  	

@@ -5,45 +5,16 @@
 // Generated on: 2015.08.10 at 04:34:50 PM CEST 
 //
 
-
 package f4g.schemas.java.metamodel;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
-import com.massfords.humantask.Visitable;
-import com.massfords.humantask.Visitor;
 import org.jvnet.jaxb2_commons.lang.CopyStrategy;
 import org.jvnet.jaxb2_commons.lang.CopyTo;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 
+public class RAMSize implements Cloneable, CopyTo {
 
-/**
- * <p>Java class for RAMSize simple type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;simpleType name="RAMSize"&gt;
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}double"&gt;
- *     &lt;minInclusive value="0"/&gt;
- *   &lt;/restriction&gt;
- * &lt;/simpleType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RAMSize", propOrder = {
-    "value"
-})
-public class RAMSize implements Cloneable, Visitable, CopyTo
-{
-
-    @XmlValue
     protected double value;
 
     /**
@@ -51,7 +22,7 @@ public class RAMSize implements Cloneable, Visitable, CopyTo
      * 
      */
     public RAMSize() {
-        super();
+	super();
     }
 
     /**
@@ -59,7 +30,7 @@ public class RAMSize implements Cloneable, Visitable, CopyTo
      * 
      */
     public RAMSize(final double value) {
-        this.value = value;
+	this.value = value;
     }
 
     /**
@@ -67,7 +38,7 @@ public class RAMSize implements Cloneable, Visitable, CopyTo
      * 
      */
     public double getValue() {
-        return value;
+	return value;
     }
 
     /**
@@ -75,36 +46,32 @@ public class RAMSize implements Cloneable, Visitable, CopyTo
      * 
      */
     public void setValue(double value) {
-        this.value = value;
-    }
-
-    public void accept(Visitor aVisitor) {
-        aVisitor.visit(this);
+	this.value = value;
     }
 
     public Object clone() {
-        return copyTo(createNewInstance());
+	return copyTo(createNewInstance());
     }
 
     public Object copyTo(Object target) {
-        final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
-        return copyTo(null, target, strategy);
+	final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
+	return copyTo(null, target, strategy);
     }
 
     public Object copyTo(ObjectLocator locator, Object target, CopyStrategy strategy) {
-        final Object draftCopy = ((target == null)?createNewInstance():target);
-        if (draftCopy instanceof RAMSize) {
-            final RAMSize copy = ((RAMSize) draftCopy);
-            double sourceValue;
-            sourceValue = (true?this.getValue(): 0.0D);
-            double copyValue = strategy.copy(LocatorUtils.property(locator, "value", sourceValue), sourceValue);
-            copy.setValue(copyValue);
-        }
-        return draftCopy;
+	final Object draftCopy = ((target == null) ? createNewInstance() : target);
+	if (draftCopy instanceof RAMSize) {
+	    final RAMSize copy = ((RAMSize) draftCopy);
+	    double sourceValue;
+	    sourceValue = (true ? this.getValue() : 0.0D);
+	    double copyValue = strategy.copy(LocatorUtils.property(locator, "value", sourceValue), sourceValue);
+	    copy.setValue(copyValue);
+	}
+	return draftCopy;
     }
 
     public Object createNewInstance() {
-        return new RAMSize();
+	return new RAMSize();
     }
 
 }

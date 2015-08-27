@@ -5,47 +5,18 @@
 // Generated on: 2015.08.10 at 04:34:50 PM CEST 
 //
 
-
 package f4g.schemas.java.metamodel;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlType;
-
-
-/**
- * <p>Java class for ServerStatus.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;simpleType name="ServerStatus"&gt;
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
- *     &lt;enumeration value="ON"/&gt;
- *     &lt;enumeration value="OFF"/&gt;
- *     &lt;enumeration value="STANDBY"/&gt;
- *     &lt;enumeration value="POWERING_ON"/&gt;
- *     &lt;enumeration value="POWERING_OFF"/&gt;
- *   &lt;/restriction&gt;
- * &lt;/simpleType&gt;
- * </pre>
- * 
- */
-@XmlType(name = "ServerStatus")
-@XmlEnum
 public enum ServerStatus {
 
-    ON,
-    OFF,
-    STANDBY,
-    POWERING_ON,
-    POWERING_OFF;
+    ON, OFF, STANDBY, POWERING_ON, POWERING_OFF;
 
     public String value() {
-        return name();
+	return name();
     }
 
     public static ServerStatus fromValue(String v) {
-        return valueOf(v);
+	return valueOf(v);
     }
 
 }

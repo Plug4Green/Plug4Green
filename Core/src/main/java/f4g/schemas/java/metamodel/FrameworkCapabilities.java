@@ -5,370 +5,115 @@
 // Generated on: 2015.08.10 at 04:34:50 PM CEST 
 //
 
-
 package f4g.schemas.java.metamodel;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.namespace.QName;
-import com.massfords.humantask.Named;
-import com.massfords.humantask.Visitable;
-import com.massfords.humantask.Visitor;
-import org.jvnet.jaxb2_commons.lang.CopyStrategy;
-import org.jvnet.jaxb2_commons.lang.CopyTo;
-import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
-
-
-/**
- * <p>Java class for FrameworkCapabilities complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="FrameworkCapabilities"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="frameworkName" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="status" type="{f4g/schemas/java/MetaModel}FrameworkStatus"/&gt;
- *         &lt;element name="node" type="{f4g/schemas/java/MetaModel}NodeActions" minOccurs="0"/&gt;
- *         &lt;element name="vm" type="{f4g/schemas/java/MetaModel}VMActions" minOccurs="0"/&gt;
- *         &lt;element name="job" type="{f4g/schemas/java/MetaModel}JobActions" minOccurs="0"/&gt;
- *         &lt;element name="networkNode" type="{f4g/schemas/java/MetaModel}NodeActions" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}ID" /&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FrameworkCapabilities", propOrder = {
-    "frameworkName",
-    "status",
-    "node",
-    "vm",
-    "job",
-    "networkNode"
-})
-public class FrameworkCapabilities implements Cloneable, Named, Visitable, CopyTo
+public class FrameworkCapabilities implements Cloneable /* , CopyTo */
 {
 
-    @XmlElement(required = true)
     protected String frameworkName;
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "string")
-    protected FrameworkStatus status;
     protected NodeActions node;
     protected VMActions vm;
-    protected JobActions job;
-    protected NodeActions networkNode;
-    @XmlAttribute(name = "id", required = true)
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    @XmlSchemaType(name = "ID")
-    protected String id;
-    @XmlTransient
-    private QName jaxbElementName;
 
     /**
      * Default no-arg constructor
      * 
      */
     public FrameworkCapabilities() {
-        super();
+	super();
     }
 
     /**
      * Fully-initialising value constructor
      * 
      */
-    public FrameworkCapabilities(final String frameworkName, final FrameworkStatus status, final NodeActions node, final VMActions vm, final JobActions job, final NodeActions networkNode, final String id, final QName jaxbElementName) {
-        this.frameworkName = frameworkName;
-        this.status = status;
-        this.node = node;
-        this.vm = vm;
-        this.job = job;
-        this.networkNode = networkNode;
-        this.id = id;
-        this.jaxbElementName = jaxbElementName;
-    }
-
-    /**
-     * Gets the value of the frameworkName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFrameworkName() {
-        return frameworkName;
-    }
-
-    /**
-     * Sets the value of the frameworkName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFrameworkName(String value) {
-        this.frameworkName = value;
-    }
-
-    /**
-     * Gets the value of the status property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link FrameworkStatus }
-     *     
-     */
-    public FrameworkStatus getStatus() {
-        return status;
-    }
-
-    /**
-     * Sets the value of the status property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link FrameworkStatus }
-     *     
-     */
-    public void setStatus(FrameworkStatus value) {
-        this.status = value;
+    public FrameworkCapabilities(final NodeActions node, final VMActions vm) {
+	this.node = node;
+	this.vm = vm;
     }
 
     /**
      * Gets the value of the node property.
      * 
-     * @return
-     *     possible object is
-     *     {@link NodeActions }
-     *     
+     * @return possible object is {@link NodeActions }
+     * 
      */
     public NodeActions getNode() {
-        return node;
+	return node;
     }
 
     /**
      * Sets the value of the node property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link NodeActions }
-     *     
+     *            allowed object is {@link NodeActions }
+     * 
      */
     public void setNode(NodeActions value) {
-        this.node = value;
+	this.node = value;
     }
 
     /**
      * Gets the value of the vm property.
      * 
-     * @return
-     *     possible object is
-     *     {@link VMActions }
-     *     
+     * @return possible object is {@link VMActions }
+     * 
      */
     public VMActions getVm() {
-        return vm;
+	return vm;
     }
 
     /**
      * Sets the value of the vm property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link VMActions }
-     *     
-     */
-    public void setVm(VMActions value) {
-        this.vm = value;
-    }
-
-    /**
-     * Gets the value of the job property.
+     *            allowed object is {@link VMActions }
      * 
-     * @return
-     *     possible object is
-     *     {@link JobActions }
-     *     
      */
-    public JobActions getJob() {
-        return job;
+    public void setVmActions(VMActions value) {
+	this.vm = value;
     }
 
-    /**
-     * Sets the value of the job property.
+    /*
+     * public Object clone() { return copyTo(createNewInstance()); }
      * 
-     * @param value
-     *     allowed object is
-     *     {@link JobActions }
-     *     
-     */
-    public void setJob(JobActions value) {
-        this.job = value;
-    }
-
-    /**
-     * Gets the value of the networkNode property.
+     * public Object copyTo(Object target) { final CopyStrategy strategy =
+     * JAXBCopyStrategy.INSTANCE; return copyTo(null, target, strategy); }
      * 
-     * @return
-     *     possible object is
-     *     {@link NodeActions }
-     *     
-     */
-    public NodeActions getNetworkNode() {
-        return networkNode;
-    }
-
-    /**
-     * Sets the value of the networkNode property.
+     * public Object copyTo(ObjectLocator locator, Object target, CopyStrategy
+     * strategy) { final Object draftCopy = ((target ==
+     * null)?createNewInstance():target); if (draftCopy instanceof
+     * FrameworkCapabilities) { final FrameworkCapabilities copy =
+     * ((FrameworkCapabilities) draftCopy); if (this.frameworkName!= null) {
+     * String sourceFrameworkName; sourceFrameworkName =
+     * this.getFrameworkName(); String copyFrameworkName = ((String)
+     * strategy.copy(LocatorUtils.property(locator, "frameworkName",
+     * sourceFrameworkName), sourceFrameworkName));
+     * copy.setFrameworkName(copyFrameworkName); } else { copy.frameworkName =
+     * null; } if (this.status!= null) { FrameworkStatus sourceStatus;
+     * sourceStatus = this.getStatus(); FrameworkStatus copyStatus =
+     * ((FrameworkStatus) strategy.copy(LocatorUtils.property(locator, "status",
+     * sourceStatus), sourceStatus)); copy.setStatus(copyStatus); } else {
+     * copy.status = null; } if (this.node!= null) { NodeActions sourceNode;
+     * sourceNode = this.getNode(); NodeActions copyNode = ((NodeActions)
+     * strategy.copy(LocatorUtils.property(locator, "node", sourceNode),
+     * sourceNode)); copy.setNode(copyNode); } else { copy.node = null; } if
+     * (this.vm!= null) { VMActions sourceVm; sourceVm = this.getVm(); VMActions
+     * copyVm = ((VMActions) strategy.copy(LocatorUtils.property(locator, "vm",
+     * sourceVm), sourceVm)); copy.setVm(copyVm); } else { copy.vm = null; } if
+     * (this.job!= null) { JobActions sourceJob; sourceJob = this.getJob();
+     * JobActions copyJob = ((JobActions)
+     * strategy.copy(LocatorUtils.property(locator, "job", sourceJob),
+     * sourceJob)); copy.setJob(copyJob); } else { copy.job = null; } if
+     * (this.networkNode!= null) { NodeActions sourceNetworkNode;
+     * sourceNetworkNode = this.getNetworkNode(); NodeActions copyNetworkNode =
+     * ((NodeActions) strategy.copy(LocatorUtils.property(locator,
+     * "networkNode", sourceNetworkNode), sourceNetworkNode));
+     * copy.setNetworkNode(copyNetworkNode); } else { copy.networkNode = null; }
+     * if (this.id!= null) { String sourceId; sourceId = this.getId(); String
+     * copyId = ((String) strategy.copy(LocatorUtils.property(locator, "id",
+     * sourceId), sourceId)); copy.setId(copyId); } else { copy.id = null; } }
+     * return draftCopy; }
      * 
-     * @param value
-     *     allowed object is
-     *     {@link NodeActions }
-     *     
+     * public Object createNewInstance() { return new FrameworkCapabilities(); }
      */
-    public void setNetworkNode(NodeActions value) {
-        this.networkNode = value;
-    }
-
-    /**
-     * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
-
-    public void setJAXBElementName(QName name) {
-        this.jaxbElementName = name;
-    }
-
-    public QName getJAXBElementName() {
-        return this.jaxbElementName;
-    }
-
-    public void afterUnmarshal(Unmarshaller u, Object parent) {
-        if (parent instanceof JAXBElement) {
-            this.jaxbElementName = ((JAXBElement) parent).getName();
-        }
-    }
-
-    public void accept(Visitor aVisitor) {
-        aVisitor.visit(this);
-    }
-
-    public Object clone() {
-        return copyTo(createNewInstance());
-    }
-
-    public Object copyTo(Object target) {
-        final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
-        return copyTo(null, target, strategy);
-    }
-
-    public Object copyTo(ObjectLocator locator, Object target, CopyStrategy strategy) {
-        final Object draftCopy = ((target == null)?createNewInstance():target);
-        if (draftCopy instanceof FrameworkCapabilities) {
-            final FrameworkCapabilities copy = ((FrameworkCapabilities) draftCopy);
-            if (this.frameworkName!= null) {
-                String sourceFrameworkName;
-                sourceFrameworkName = this.getFrameworkName();
-                String copyFrameworkName = ((String) strategy.copy(LocatorUtils.property(locator, "frameworkName", sourceFrameworkName), sourceFrameworkName));
-                copy.setFrameworkName(copyFrameworkName);
-            } else {
-                copy.frameworkName = null;
-            }
-            if (this.status!= null) {
-                FrameworkStatus sourceStatus;
-                sourceStatus = this.getStatus();
-                FrameworkStatus copyStatus = ((FrameworkStatus) strategy.copy(LocatorUtils.property(locator, "status", sourceStatus), sourceStatus));
-                copy.setStatus(copyStatus);
-            } else {
-                copy.status = null;
-            }
-            if (this.node!= null) {
-                NodeActions sourceNode;
-                sourceNode = this.getNode();
-                NodeActions copyNode = ((NodeActions) strategy.copy(LocatorUtils.property(locator, "node", sourceNode), sourceNode));
-                copy.setNode(copyNode);
-            } else {
-                copy.node = null;
-            }
-            if (this.vm!= null) {
-                VMActions sourceVm;
-                sourceVm = this.getVm();
-                VMActions copyVm = ((VMActions) strategy.copy(LocatorUtils.property(locator, "vm", sourceVm), sourceVm));
-                copy.setVm(copyVm);
-            } else {
-                copy.vm = null;
-            }
-            if (this.job!= null) {
-                JobActions sourceJob;
-                sourceJob = this.getJob();
-                JobActions copyJob = ((JobActions) strategy.copy(LocatorUtils.property(locator, "job", sourceJob), sourceJob));
-                copy.setJob(copyJob);
-            } else {
-                copy.job = null;
-            }
-            if (this.networkNode!= null) {
-                NodeActions sourceNetworkNode;
-                sourceNetworkNode = this.getNetworkNode();
-                NodeActions copyNetworkNode = ((NodeActions) strategy.copy(LocatorUtils.property(locator, "networkNode", sourceNetworkNode), sourceNetworkNode));
-                copy.setNetworkNode(copyNetworkNode);
-            } else {
-                copy.networkNode = null;
-            }
-            if (this.id!= null) {
-                String sourceId;
-                sourceId = this.getId();
-                String copyId = ((String) strategy.copy(LocatorUtils.property(locator, "id", sourceId), sourceId));
-                copy.setId(copyId);
-            } else {
-                copy.id = null;
-            }
-        }
-        return draftCopy;
-    }
-
-    public Object createNewInstance() {
-        return new FrameworkCapabilities();
-    }
-
 }

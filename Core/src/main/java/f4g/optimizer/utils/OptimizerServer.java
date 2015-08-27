@@ -34,7 +34,8 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 
 /** 
  *  This class is the internal representation of a server used by the optimizer.
- */	
+ */
+@Deprecated
 public class OptimizerServer {
 		
 	public Logger log;  
