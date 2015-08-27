@@ -133,8 +133,12 @@ public class OptimizerTest {
 	protected class MockPowerCalculator implements IPowerCalculator{
 
 		PowerCalculatorTraverser traverser = new PowerCalculatorTraverser();
+
+		@Override public PowerData computePowerServer(Server server) {
+			return traverser.calculatePower(server);
+		}
 		
-		@Override public PowerData computePowerFIT4Green(FIT4Green model) {
+		/*@Override public PowerData computePowerFIT4Green(FIT4Green model) {
 			return traverser.calculatePower(model);
 		}
 		
@@ -179,9 +183,6 @@ public class OptimizerTest {
 			return traverser.calculatePower(rack);
 		}
 
-		@Override public PowerData computePowerServer(Server server) {
-			return traverser.calculatePower(server);
-		}
 
 		@Override public PowerData computePowerSite(Site site) {
 			return traverser.calculatePower(site);
@@ -227,7 +228,7 @@ public class OptimizerTest {
 		@Override
 		public PowerData computePowerNAS(NAS obj) {
 			return traverser.calculatePower(obj);
-		}
+		}*/
 	}
 	
 	/**

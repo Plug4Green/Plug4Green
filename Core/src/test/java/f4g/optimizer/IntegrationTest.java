@@ -13,7 +13,7 @@ import f4g.optimizer.utils.OptimizerWorkload;
 import f4g.optimizer.utils.OptimizerWorkload.CreationImpossible;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
-import f4g.powerCalculator.power.PowerCalculator;
+import f4g.powerCalculator.power.SimplePowerCalculator;
 import f4g.schemas.java.allocation.AllocationRequest;
 import f4g.schemas.java.allocation.AllocationResponse;
 import f4g.schemas.java.allocation.CloudVmAllocationResponse;
@@ -98,7 +98,7 @@ public class IntegrationTest extends OptimizerTest {
         virtualMachine.setFrameworkID("newVM");
 
 
-        IPowerCalculator powerCalculator = new PowerCalculator();
+        IPowerCalculator powerCalculator = new SimplePowerCalculator();
 
         OptimizerWorkload VM;
         try {
@@ -174,7 +174,7 @@ public class IntegrationTest extends OptimizerTest {
         //TEST 1
 
         //Create a new optimizer with the special power calculator
-        OptimizerEngineCloud MyOptimizer = new OptimizerEngineCloud(new MockController(), new PowerCalculator(), new NetworkCost(),
+        OptimizerEngineCloud MyOptimizer = new OptimizerEngineCloud(new MockController(), new SimplePowerCalculator(), new NetworkCost(),
                 vms, myVmMargins, makeSimpleFed(myVmMargins, model));
 
         AllocationResponse response = MyOptimizer.allocateResource(allocationRequest, model);
@@ -221,7 +221,7 @@ public class IntegrationTest extends OptimizerTest {
         FIT4Green model = modelGenerator.createPopulatedFIT4Green();
 
         //TEST 1
-        optimizer.setPowerCalculator(new PowerCalculator());
+        optimizer.setPowerCalculator(new SimplePowerCalculator());
         optimizer.setCostEstimator(new NetworkCost());
         optimizer.runGlobalOptimization(model);
 
