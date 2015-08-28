@@ -5,260 +5,126 @@
 // Generated on: 2015.08.10 at 04:34:50 PM CEST 
 //
 
-
 package f4g.schemas.java.actions;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-import com.massfords.humantask.Named;
-import com.massfords.humantask.Visitable;
-import org.jvnet.jaxb2_commons.lang.CopyStrategy;
-import org.jvnet.jaxb2_commons.lang.CopyTo;
-import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.joda.time.DateTime;
 
-
-/**
- * <p>Java class for AbstractBaseAction complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="AbstractBaseAction"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="ID" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="FrameworkName" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="Forwarded" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
- *         &lt;element name="ForwardedAt" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbstractBaseAction", propOrder = {
-    "id",
-    "frameworkName",
-    "forwarded",
-    "forwardedAt"
-})
-@XmlSeeAlso({
-    PowerOnAction.class,
-    PowerOffAction.class,
-    StandByAction.class,
-    StartJobAction.class,
-    MoveVMAction.class,
-    LiveMigrateVMAction.class
-})
-public abstract class AbstractBaseAction implements Cloneable, Named, Visitable, CopyTo
+public abstract class AbstractBaseAction implements Cloneable /* , CopyTo */
 {
-
-    @XmlElement(name = "ID", required = true)
-    protected String id;
-    @XmlElement(name = "FrameworkName", required = true)
-    protected String frameworkName;
-    @XmlElement(name = "Forwarded")
+    protected ActionId id;
     protected Boolean forwarded;
-    @XmlElement(name = "ForwardedAt")
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar forwardedAt;
-    @XmlTransient
-    private QName jaxbElementName;
+    protected DateTime forwardedAt;
 
     /**
      * Default no-arg constructor
      * 
      */
     public AbstractBaseAction() {
-        super();
+	super();
     }
 
     /**
      * Fully-initialising value constructor
      * 
      */
-    public AbstractBaseAction(final String id, final String frameworkName, final Boolean forwarded, final XMLGregorianCalendar forwardedAt, final QName jaxbElementName) {
-        this.id = id;
-        this.frameworkName = frameworkName;
-        this.forwarded = forwarded;
-        this.forwardedAt = forwardedAt;
-        this.jaxbElementName = jaxbElementName;
+    public AbstractBaseAction(ActionId id, Boolean forwarded, DateTime forwardedAt) {
+	this.id = id;
+	this.forwarded = forwarded;
+	this.forwardedAt = forwardedAt;
     }
 
     /**
      * Gets the value of the id property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link ActionId }
+     * 
      */
-    public String getID() {
-        return id;
+    public ActionId getID() {
+	return id;
     }
 
     /**
      * Sets the value of the id property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setID(String value) {
-        this.id = value;
-    }
-
-    /**
-     * Gets the value of the frameworkName property.
+     *            allowed object is {@link ActionId }
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
      */
-    public String getFrameworkName() {
-        return frameworkName;
-    }
-
-    /**
-     * Sets the value of the frameworkName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFrameworkName(String value) {
-        this.frameworkName = value;
+    public void setID(ActionId value) {
+	this.id = value;
     }
 
     /**
      * Gets the value of the forwarded property.
      * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
+     * @return possible object is {@link Boolean }
+     * 
      */
     public Boolean isForwarded() {
-        return forwarded;
+	return forwarded;
     }
 
     /**
      * Sets the value of the forwarded property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
+     *            allowed object is {@link Boolean }
+     * 
      */
     public void setForwarded(Boolean value) {
-        this.forwarded = value;
+	this.forwarded = value;
     }
 
     /**
      * Gets the value of the forwardedAt property.
      * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     * @return possible object is {@link DateTime }
+     * 
      */
-    public XMLGregorianCalendar getForwardedAt() {
-        return forwardedAt;
+    public DateTime getForwardedAt() {
+	return forwardedAt;
     }
 
     /**
      * Sets the value of the forwardedAt property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *            allowed object is {@link DateTime }
+     * 
      */
-    public void setForwardedAt(XMLGregorianCalendar value) {
-        this.forwardedAt = value;
+    public void setForwardedAt(DateTime value) {
+	this.forwardedAt = value;
     }
 
-    public void setJAXBElementName(QName name) {
-        this.jaxbElementName = name;
-    }
-
-    public QName getJAXBElementName() {
-        return this.jaxbElementName;
-    }
-
-    public void afterUnmarshal(Unmarshaller u, Object parent) {
-        if (parent instanceof JAXBElement) {
-            this.jaxbElementName = ((JAXBElement) parent).getName();
-        }
-    }
-
-    public Object clone() {
-        return copyTo(createNewInstance());
-    }
-
-    public Object copyTo(Object target) {
-        final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
-        return copyTo(null, target, strategy);
-    }
-
-    public Object copyTo(ObjectLocator locator, Object target, CopyStrategy strategy) {
-        if (null == target) {
-            throw new IllegalArgumentException("Target argument must not be null for abstract copyable classes.");
-        }
-        if (target instanceof AbstractBaseAction) {
-            final AbstractBaseAction copy = ((AbstractBaseAction) target);
-            if (this.id!= null) {
-                String sourceID;
-                sourceID = this.getID();
-                String copyID = ((String) strategy.copy(LocatorUtils.property(locator, "id", sourceID), sourceID));
-                copy.setID(copyID);
-            } else {
-                copy.id = null;
-            }
-            if (this.frameworkName!= null) {
-                String sourceFrameworkName;
-                sourceFrameworkName = this.getFrameworkName();
-                String copyFrameworkName = ((String) strategy.copy(LocatorUtils.property(locator, "frameworkName", sourceFrameworkName), sourceFrameworkName));
-                copy.setFrameworkName(copyFrameworkName);
-            } else {
-                copy.frameworkName = null;
-            }
-            if (this.forwarded!= null) {
-                Boolean sourceForwarded;
-                sourceForwarded = this.isForwarded();
-                Boolean copyForwarded = ((Boolean) strategy.copy(LocatorUtils.property(locator, "forwarded", sourceForwarded), sourceForwarded));
-                copy.setForwarded(copyForwarded);
-            } else {
-                copy.forwarded = null;
-            }
-            if (this.forwardedAt!= null) {
-                XMLGregorianCalendar sourceForwardedAt;
-                sourceForwardedAt = this.getForwardedAt();
-                XMLGregorianCalendar copyForwardedAt = ((XMLGregorianCalendar) strategy.copy(LocatorUtils.property(locator, "forwardedAt", sourceForwardedAt), sourceForwardedAt));
-                copy.setForwardedAt(copyForwardedAt);
-            } else {
-                copy.forwardedAt = null;
-            }
-        }
-        return target;
-    }
-
+    /*
+     * public Object clone() { return copyTo(createNewInstance()); }
+     * 
+     * public Object copyTo(Object target) { final CopyStrategy strategy =
+     * JAXBCopyStrategy.INSTANCE; return copyTo(null, target, strategy); }
+     * 
+     * public Object copyTo(ObjectLocator locator, Object target, CopyStrategy
+     * strategy) { if (null == target) { throw new IllegalArgumentException(
+     * "Target argument must not be null for abstract copyable classes."); } if
+     * (target instanceof AbstractBaseAction) { final AbstractBaseAction copy =
+     * ((AbstractBaseAction) target); if (this.id!= null) { String sourceID;
+     * sourceID = this.getID(); String copyID = ((String)
+     * strategy.copy(LocatorUtils.property(locator, "id", sourceID), sourceID));
+     * copy.setID(copyID); } else { copy.id = null; } if (this.frameworkName!=
+     * null) { String sourceFrameworkName; sourceFrameworkName =
+     * this.getFrameworkName(); String copyFrameworkName = ((String)
+     * strategy.copy(LocatorUtils.property(locator, "frameworkName",
+     * sourceFrameworkName), sourceFrameworkName));
+     * copy.setFrameworkName(copyFrameworkName); } else { copy.frameworkName =
+     * null; } if (this.forwarded!= null) { Boolean sourceForwarded;
+     * sourceForwarded = this.isForwarded(); Boolean copyForwarded = ((Boolean)
+     * strategy.copy(LocatorUtils.property(locator, "forwarded",
+     * sourceForwarded), sourceForwarded)); copy.setForwarded(copyForwarded); }
+     * else { copy.forwarded = null; } if (this.forwardedAt!= null) {
+     * XMLGregorianCalendar sourceForwardedAt; sourceForwardedAt =
+     * this.getForwardedAt(); XMLGregorianCalendar copyForwardedAt =
+     * ((XMLGregorianCalendar) strategy.copy(LocatorUtils.property(locator,
+     * "forwardedAt", sourceForwardedAt), sourceForwardedAt));
+     * copy.setForwardedAt(copyForwardedAt); } else { copy.forwardedAt = null; }
+     * } return target; }
+     */
 }

@@ -10,7 +10,6 @@ package f4g.schemas.java.metamodel;
 public class FrameworkCapabilities implements Cloneable /* , CopyTo */
 {
 
-    protected String frameworkName;
     protected NodeActions node;
     protected VMActions vm;
 

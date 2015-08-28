@@ -5,204 +5,129 @@
 // Generated on: 2015.08.10 at 04:34:50 PM CEST 
 //
 
-
 package f4g.schemas.java.actions;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-import com.massfords.humantask.Visitable;
-import com.massfords.humantask.Visitor;
-import org.jvnet.jaxb2_commons.lang.CopyStrategy;
-import org.jvnet.jaxb2_commons.lang.CopyTo;
-import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.joda.time.DateTime;
 
+import f4g.schemas.java.metamodel.ServerName;
+import f4g.schemas.java.metamodel.VirtualMachineName;
 
-/**
- * Move a Virtual Machine Action Type (cold migration, including inter-/intra- data centre)
- * 
- * <p>Java class for MoveVMAction complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="MoveVMAction"&gt;
- *   &lt;complexContent&gt;
- *     &lt;extension base="{f4g/schemas/java/Actions}AbstractBaseAction"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="VirtualMachine" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="SourceNodeController" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="DestNodeController" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/extension&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MoveVMAction", propOrder = {
-    "virtualMachine",
-    "sourceNodeController",
-    "destNodeController"
-})
-public class MoveVMAction
-    extends AbstractBaseAction
-    implements Cloneable, Visitable, CopyTo
+public class MoveVMAction extends AbstractBaseAction
+	implements Cloneable /* , CopyTo */
 {
 
-    @XmlElement(name = "VirtualMachine", required = true)
-    protected String virtualMachine;
-    @XmlElement(name = "SourceNodeController", required = true)
-    protected String sourceNodeController;
-    @XmlElement(name = "DestNodeController", required = true)
-    protected String destNodeController;
-
-    /**
-     * Default no-arg constructor
-     * 
-     */
-    public MoveVMAction() {
-        super();
-    }
+    protected VirtualMachineName virtualMachineId;
+    protected ServerName srcServer;
+    protected ServerName dstServer;
 
     /**
      * Fully-initialising value constructor
      * 
      */
-    public MoveVMAction(final String id, final String frameworkName, final Boolean forwarded, final XMLGregorianCalendar forwardedAt, final QName jaxbElementName, final String virtualMachine, final String sourceNodeController, final String destNodeController) {
-        super(id, frameworkName, forwarded, forwardedAt, jaxbElementName);
-        this.virtualMachine = virtualMachine;
-        this.sourceNodeController = sourceNodeController;
-        this.destNodeController = destNodeController;
+    public MoveVMAction(ActionId id, Boolean forwarded, DateTime forwardedAt, VirtualMachineName virtualMachine,
+	    ServerName srcServer, String dstServer) {
+	super(id, forwarded, forwardedAt);
+	this.virtualMachineId = virtualMachine;
+	this.srcServer = srcServer;
+	this.srcServer = srcServer;
     }
 
     /**
-     * Gets the value of the virtualMachine property.
+     * Gets the value of VirtualMachineName.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getVirtualMachine() {
-        return virtualMachine;
-    }
-
-    /**
-     * Sets the value of the virtualMachine property.
+     * @return possible object is {@link ActionId }
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
      */
-    public void setVirtualMachine(String value) {
-        this.virtualMachine = value;
+    public VirtualMachineName getVirtualMachine() {
+	return virtualMachineId;
     }
 
     /**
-     * Gets the value of the sourceNodeController property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getSourceNodeController() {
-        return sourceNodeController;
-    }
-
-    /**
-     * Sets the value of the sourceNodeController property.
+     * Sets the value of the virtualMachineName.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSourceNodeController(String value) {
-        this.sourceNodeController = value;
-    }
-
-    /**
-     * Gets the value of the destNodeController property.
+     *            allowed object is {@link VirtualMachineName }
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
      */
-    public String getDestNodeController() {
-        return destNodeController;
+    public void setVirtualMachine(VirtualMachineName value) {
+	this.virtualMachineId = value;
     }
 
     /**
-     * Sets the value of the destNodeController property.
+     * Gets the value of sourceServerName.
+     * 
+     * @return possible object is {@link ServerName }
+     * 
+     */
+    public ServerName getSourceServer() {
+	return srcServer;
+    }
+
+    /**
+     * Sets the value of sourceServerName
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is {@link ServerName }
+     * 
      */
-    public void setDestNodeController(String value) {
-        this.destNodeController = value;
+    public void setSourceServer(ServerName value) {
+	this.srcServer = value;
     }
 
-    public void accept(Visitor aVisitor) {
-        aVisitor.visit(this);
+    /**
+     * Gets the value of DestServerName
+     * 
+     * @return possible object is {@link ServerName }
+     * 
+     */
+    public ServerName getDestServer() {
+	return dstServer;
     }
 
-    public Object clone() {
-        return copyTo(createNewInstance());
+    /**
+     * Sets the value of DestServerName.
+     * 
+     * @param value
+     *            allowed object is {@link ServerName }
+     * 
+     */
+    public void setDestServer(ServerName value) {
+	this.dstServer = value;
     }
 
-    public Object copyTo(Object target) {
-        final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
-        return copyTo(null, target, strategy);
-    }
-
-    public Object copyTo(ObjectLocator locator, Object target, CopyStrategy strategy) {
-        final Object draftCopy = ((target == null)?createNewInstance():target);
-        super.copyTo(locator, draftCopy, strategy);
-        if (draftCopy instanceof MoveVMAction) {
-            final MoveVMAction copy = ((MoveVMAction) draftCopy);
-            if (this.virtualMachine!= null) {
-                String sourceVirtualMachine;
-                sourceVirtualMachine = this.getVirtualMachine();
-                String copyVirtualMachine = ((String) strategy.copy(LocatorUtils.property(locator, "virtualMachine", sourceVirtualMachine), sourceVirtualMachine));
-                copy.setVirtualMachine(copyVirtualMachine);
-            } else {
-                copy.virtualMachine = null;
-            }
-            if (this.sourceNodeController!= null) {
-                String sourceSourceNodeController;
-                sourceSourceNodeController = this.getSourceNodeController();
-                String copySourceNodeController = ((String) strategy.copy(LocatorUtils.property(locator, "sourceNodeController", sourceSourceNodeController), sourceSourceNodeController));
-                copy.setSourceNodeController(copySourceNodeController);
-            } else {
-                copy.sourceNodeController = null;
-            }
-            if (this.destNodeController!= null) {
-                String sourceDestNodeController;
-                sourceDestNodeController = this.getDestNodeController();
-                String copyDestNodeController = ((String) strategy.copy(LocatorUtils.property(locator, "destNodeController", sourceDestNodeController), sourceDestNodeController));
-                copy.setDestNodeController(copyDestNodeController);
-            } else {
-                copy.destNodeController = null;
-            }
-        }
-        return draftCopy;
-    }
-
-    public Object createNewInstance() {
-        return new MoveVMAction();
-    }
+    /*
+     * public Object clone() { return copyTo(createNewInstance()); }
+     * 
+     * public Object copyTo(Object target) { final CopyStrategy strategy =
+     * JAXBCopyStrategy.INSTANCE; return copyTo(null, target, strategy); }
+     * 
+     * public Object copyTo(ObjectLocator locator, Object target, CopyStrategy
+     * strategy) { final Object draftCopy = ((target ==
+     * null)?createNewInstance():target); super.copyTo(locator, draftCopy,
+     * strategy); if (draftCopy instanceof LiveMigrateVMAction) { final
+     * LiveMigrateVMAction copy = ((LiveMigrateVMAction) draftCopy); if
+     * (this.virtualMachine!= null) { String sourceVirtualMachine;
+     * sourceVirtualMachine = this.getVirtualMachine(); String
+     * copyVirtualMachine = ((String)
+     * strategy.copy(LocatorUtils.property(locator, "virtualMachine",
+     * sourceVirtualMachine), sourceVirtualMachine));
+     * copy.setVirtualMachine(copyVirtualMachine); } else { copy.virtualMachine
+     * = null; } if (this.sourceNodeController!= null) { String
+     * sourceSourceNodeController; sourceSourceNodeController =
+     * this.getSourceNodeController(); String copySourceNodeController =
+     * ((String) strategy.copy(LocatorUtils.property(locator,
+     * "sourceNodeController", sourceSourceNodeController),
+     * sourceSourceNodeController));
+     * copy.setSourceNodeController(copySourceNodeController); } else {
+     * copy.sourceNodeController = null; } if (this.destNodeController!= null) {
+     * String sourceDestNodeController; sourceDestNodeController =
+     * this.getDestNodeController(); String copyDestNodeController = ((String)
+     * strategy.copy(LocatorUtils.property(locator, "destNodeController",
+     * sourceDestNodeController), sourceDestNodeController));
+     * copy.setDestNodeController(copyDestNodeController); } else {
+     * copy.destNodeController = null; } } return draftCopy; }
+     * 
+     * public Object createNewInstance() { return new LiveMigrateVMAction(); }
+     */
 
 }

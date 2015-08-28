@@ -5,128 +5,65 @@
 // Generated on: 2015.08.10 at 04:34:50 PM CEST 
 //
 
-
 package f4g.schemas.java.actions;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-import com.massfords.humantask.Visitable;
-import com.massfords.humantask.Visitor;
-import org.jvnet.jaxb2_commons.lang.CopyStrategy;
-import org.jvnet.jaxb2_commons.lang.CopyTo;
-import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import org.joda.time.DateTime;
 
+import f4g.schemas.java.metamodel.ServerName;
 
-/**
- * <p>Java class for PowerOffAction complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="PowerOffAction"&gt;
- *   &lt;complexContent&gt;
- *     &lt;extension base="{f4g/schemas/java/Actions}AbstractBaseAction"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="NodeName" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/extension&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PowerOffAction", propOrder = {
-    "nodeName"
-})
-public class PowerOffAction
-    extends AbstractBaseAction
-    implements Cloneable, Visitable, CopyTo
+public class PowerOffAction extends AbstractBaseAction
+	implements Cloneable /* , CopyTo */
 {
 
-    @XmlElement(name = "NodeName", required = true)
-    protected String nodeName;
-
-    /**
-     * Default no-arg constructor
-     * 
-     */
-    public PowerOffAction() {
-        super();
-    }
+    protected ServerName serverName;
 
     /**
      * Fully-initialising value constructor
      * 
      */
-    public PowerOffAction(final String id, final String frameworkName, final Boolean forwarded, final XMLGregorianCalendar forwardedAt, final QName jaxbElementName, final String nodeName) {
-        super(id, frameworkName, forwarded, forwardedAt, jaxbElementName);
-        this.nodeName = nodeName;
+    public PowerOffAction(ActionId id, Boolean forwarded, DateTime forwardedAt, ServerName servername) {
+	super(id, forwarded, forwardedAt);
+	this.serverName = servername;
     }
 
     /**
-     * Gets the value of the nodeName property.
+     * Gets the value of ServerName.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link ServerName }
+     * 
      */
-    public String getNodeName() {
-        return nodeName;
+    public ServerName getNodeName() {
+	return serverName;
     }
 
     /**
-     * Sets the value of the nodeName property.
+     * Sets the value of ServerName.
      * 
      * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *            allowed object is {@link ServerName }
+     * 
      */
-    public void setNodeName(String value) {
-        this.nodeName = value;
+    public void setNodeName(ServerName value) {
+	this.serverName = value;
     }
 
-    public void accept(Visitor aVisitor) {
-        aVisitor.visit(this);
-    }
-
-    public Object clone() {
-        return copyTo(createNewInstance());
-    }
-
-    public Object copyTo(Object target) {
-        final CopyStrategy strategy = JAXBCopyStrategy.INSTANCE;
-        return copyTo(null, target, strategy);
-    }
-
-    public Object copyTo(ObjectLocator locator, Object target, CopyStrategy strategy) {
-        final Object draftCopy = ((target == null)?createNewInstance():target);
-        super.copyTo(locator, draftCopy, strategy);
-        if (draftCopy instanceof PowerOffAction) {
-            final PowerOffAction copy = ((PowerOffAction) draftCopy);
-            if (this.nodeName!= null) {
-                String sourceNodeName;
-                sourceNodeName = this.getNodeName();
-                String copyNodeName = ((String) strategy.copy(LocatorUtils.property(locator, "nodeName", sourceNodeName), sourceNodeName));
-                copy.setNodeName(copyNodeName);
-            } else {
-                copy.nodeName = null;
-            }
-        }
-        return draftCopy;
-    }
-
-    public Object createNewInstance() {
-        return new PowerOffAction();
-    }
-
+    /*
+     * public Object clone() { return copyTo(createNewInstance()); }
+     * 
+     * public Object copyTo(Object target) { final CopyStrategy strategy =
+     * JAXBCopyStrategy.INSTANCE; return copyTo(null, target, strategy); }
+     * 
+     * public Object copyTo(ObjectLocator locator, Object target, CopyStrategy
+     * strategy) { final Object draftCopy = ((target ==
+     * null)?createNewInstance():target); super.copyTo(locator, draftCopy,
+     * strategy); if (draftCopy instanceof PowerOffAction) { final
+     * PowerOffAction copy = ((PowerOffAction) draftCopy); if (this.nodeName!=
+     * null) { String sourceNodeName; sourceNodeName = this.getNodeName();
+     * String copyNodeName = ((String)
+     * strategy.copy(LocatorUtils.property(locator, "nodeName", sourceNodeName),
+     * sourceNodeName)); copy.setNodeName(copyNodeName); } else { copy.nodeName
+     * = null; } } return draftCopy; }
+     * 
+     * public Object createNewInstance() { return new PowerOffAction(); }
+     */
 }

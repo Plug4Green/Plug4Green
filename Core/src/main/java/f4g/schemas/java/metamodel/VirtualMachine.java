@@ -18,7 +18,7 @@ import f4g.schemas.java.sla.FlavorName;
 public class VirtualMachine implements Cloneable /* , CopyTo */
 {
 
-    protected String name;
+    protected VirtualMachineName name;
     protected Amount<DataAmount> actualCPUUsage;
     protected Amount<DataAmount> actualStorageUsage;
     protected Amount<DataAmount> actualMemoryUsage;
@@ -27,7 +27,7 @@ public class VirtualMachine implements Cloneable /* , CopyTo */
     protected FlavorName flavorName;
 
     
-    public VirtualMachine(String name, Amount<DataAmount> actualCPUUsage, Amount<DataAmount> actualStorageUsage,
+    public VirtualMachine(VirtualMachineName name, Amount<DataAmount> actualCPUUsage, Amount<DataAmount> actualStorageUsage,
 	    Amount<DataAmount> actualMemoryUsage, DateTime startTimestamp, DateTime lastMigrationTimestamp, 
 	    FlavorName flavorName) {
 	super();
@@ -43,10 +43,10 @@ public class VirtualMachine implements Cloneable /* , CopyTo */
     /**
      * Gets the value of the name property.
      * 
-     * @return possible object is {@link String }
+     * @return possible object is {@link VirtualMachineName }
      * 
      */
-    public String getName() {
+    public VirtualMachineName getName() {
 	return name;
     }
 
@@ -54,10 +54,10 @@ public class VirtualMachine implements Cloneable /* , CopyTo */
      * Sets the value of the name property.
      * 
      * @param value
-     *            allowed object is {@link String }
+     *            allowed object is {@link VirtualMachineName }
      * 
      */
-    public void setName(String value) {
+    public void setName(VirtualMachineName value) {
 	this.name = value;
     }
 

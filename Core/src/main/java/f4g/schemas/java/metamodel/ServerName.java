@@ -3,7 +3,7 @@ package f4g.schemas.java.metamodel;
 import java.util.Objects;
 
 
-public class FrameworkID {
+public class ServerName {
     private final String name;
 
     /**
@@ -11,7 +11,7 @@ public class FrameworkID {
      *
      * @param id string identifier
      */
-    public FrameworkID(String name) {
+    public ServerName(String name) {
         this.name = name;
     }
 
@@ -20,8 +20,8 @@ public class FrameworkID {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof FrameworkID) {
-            final FrameworkID other = (FrameworkID) obj;
+        if (obj instanceof ServerName) {
+            final ServerName other = (ServerName) obj;
             return Objects.equals(this.name, other.name);
         }
         return false;
