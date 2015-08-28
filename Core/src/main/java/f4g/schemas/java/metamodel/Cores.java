@@ -9,6 +9,10 @@ public class Cores {
     protected int coreNumber;
     protected Amount<Frequency> frequency;
 
+    public Cores() {
+	super();
+    }
+
     public Cores(int coreNumber, Amount<Frequency> frequency) {
 	this.coreNumber = coreNumber;
 	this.frequency = frequency;

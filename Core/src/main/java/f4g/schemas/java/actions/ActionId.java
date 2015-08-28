@@ -3,14 +3,12 @@ package f4g.schemas.java.actions;
 import java.util.Objects;
 
 public class ActionId {
-    private final String name;
+    private String name;
 
-    /**
-     * Creates a new cluster node identifier from the specified string.
-     *
-     * @param id
-     *            string identifier
-     */
+    public ActionId() {
+	super();
+    }
+
     public ActionId(String name) {
 	this.name = name;
     }

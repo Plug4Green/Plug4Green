@@ -11,58 +11,25 @@ import org.joda.time.DateTime;
 
 import f4g.schemas.java.metamodel.ServerName;
 
-public class PowerOnAction extends AbstractBaseAction
-	implements Cloneable /* , CopyTo */
-{
+public class PowerOnAction extends AbstractBaseAction {
 
     protected ServerName serverName;
 
-    /**
-     * Fully-initialising value constructor
-     * 
-     */
+    public PowerOnAction() {
+	super();
+    }
+
     public PowerOnAction(ActionId id, Boolean forwarded, DateTime forwardedAt, ServerName serverName) {
 	super(id, forwarded, forwardedAt);
 	this.serverName = serverName;
     }
 
-    /**
-     * Gets the value of ServerName.
-     * 
-     * @return possible object is {@link ServerName }
-     * 
-     */
     public ServerName getServerName() {
 	return serverName;
     }
 
-    /**
-     * Sets the value of nodeName.
-     * 
-     * @param value
-     *            allowed object is {@link ServerName }
-     * 
-     */
     public void setNodeName(ServerName value) {
 	this.serverName = value;
     }
 
-    /*
-     * public Object clone() { return copyTo(createNewInstance()); }
-     * 
-     * public Object copyTo(Object target) { final CopyStrategy strategy =
-     * JAXBCopyStrategy.INSTANCE; return copyTo(null, target, strategy); }
-     * 
-     * public Object copyTo(ObjectLocator locator, Object target, CopyStrategy
-     * strategy) { final Object draftCopy = ((target ==
-     * null)?createNewInstance():target); super.copyTo(locator, draftCopy,
-     * strategy); if (draftCopy instanceof PowerOnAction) { final PowerOnAction
-     * copy = ((PowerOnAction) draftCopy); if (this.nodeName!= null) { String
-     * sourceNodeName; sourceNodeName = this.getNodeName(); String copyNodeName
-     * = ((String) strategy.copy(LocatorUtils.property(locator, "nodeName",
-     * sourceNodeName), sourceNodeName)); copy.setNodeName(copyNodeName); } else
-     * { copy.nodeName = null; } } return draftCopy; }
-     * 
-     * public Object createNewInstance() { return new PowerOnAction(); }
-     */
 }
