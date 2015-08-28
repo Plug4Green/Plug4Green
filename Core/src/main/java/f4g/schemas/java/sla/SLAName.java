@@ -2,11 +2,11 @@ package f4g.schemas.java.sla;
 
 import java.util.Objects;
 
-public class FlavorName {
+public class SLAName {
 
     private final String name;
 
-    public FlavorName(String name) {
+    public SLAName(String name) {
         this.name = name;
     }
 
@@ -15,8 +15,8 @@ public class FlavorName {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof FlavorName) {
-            final FlavorName other = (FlavorName) obj;
+        if (obj instanceof SLAName) {
+            final SLAName other = (SLAName) obj;
             return Objects.equals(this.name, other.name);
         }
         return false;

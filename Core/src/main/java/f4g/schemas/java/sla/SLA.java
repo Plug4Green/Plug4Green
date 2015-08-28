@@ -3,7 +3,7 @@ package f4g.schemas.java.sla;
 
 public class SLA {
 
-    protected String name;
+    protected SLAName name;
     protected HardwareConstraints hardwareConstraints;
     protected QoSConstraints qosConstraints;
     protected SecurityConstraints securityConstraints;
@@ -12,7 +12,7 @@ public class SLA {
     public SLA() {
     }
 
-    public SLA(String name,
+    public SLA(SLAName name,
                HardwareConstraints hardwareConstraints,
                QoSConstraints qosConstraints,
                SecurityConstraints securityConstraints,
@@ -24,11 +24,11 @@ public class SLA {
         this.energyConstraints = energyConstraints;
     }
 
-    public String getName() {
+    public SLAName getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(SLAName name) {
         this.name = name;
     }
 

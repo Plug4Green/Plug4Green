@@ -5,13 +5,13 @@ import org.jscience.physics.amount.Amount;
 
 public class Policy {
 
-    protected String name;
+    protected PolicyName name;
     protected Amount<Duration> delayBetweenMove;
     protected Amount<Duration> delayBetweenOnOff;
     protected Integer spareNodes;
     protected Integer spareCores;
 
-    public Policy(String name, Amount<Duration> delayBetweenMove, Amount<Duration> delayBetweenOnOff, Integer spareNodes, Integer spareCores) {
+    public Policy(PolicyName name, Amount<Duration> delayBetweenMove, Amount<Duration> delayBetweenOnOff, Integer spareNodes, Integer spareCores) {
         this.name = name;
         this.delayBetweenMove = delayBetweenMove;
         this.delayBetweenOnOff = delayBetweenOnOff;
@@ -55,11 +55,11 @@ public class Policy {
         this.spareCores = spareCores;
     }
 
-    public String getName() {
+    public PolicyName getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(PolicyName name) {
         this.name = name;
     }
 }
