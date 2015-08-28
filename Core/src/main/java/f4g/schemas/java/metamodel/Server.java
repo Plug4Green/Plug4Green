@@ -20,7 +20,7 @@ public class Server implements Cloneable /* , CopyTo */ {
 
     protected ServerRole name;
     protected ServerStatus status;
-    protected String frameworkID;
+    protected FrameworkID frameworkID;
     protected Amount<Power> idlePower;
     protected Amount<Power> maxPower;
     protected DateTime lastOnOffTimestamp;
@@ -30,7 +30,7 @@ public class Server implements Cloneable /* , CopyTo */ {
     protected GPU gpu;
     protected List<VirtualMachine> VMs;
 
-    public Server(ServerRole name, ServerStatus status, String frameworkID, Amount<Power> idlePower,
+    public Server(ServerRole name, ServerStatus status, FrameworkID frameworkID, Amount<Power> idlePower,
 	    Amount<Power> maxPower, DateTime lastOnOffTimestamp, RAMSize ramSize, StorageCapacity storageCapacity,
 	    Cores cores, GPU gpu, List<VirtualMachine> vMs) {
 	super();
@@ -90,7 +90,7 @@ public class Server implements Cloneable /* , CopyTo */ {
      *
      * @return possible object is {@link String }
      */
-    public String getFrameworkID() {
+    public FrameworkID getFrameworkID() {
 	return frameworkID;
     }
 
@@ -100,7 +100,7 @@ public class Server implements Cloneable /* , CopyTo */ {
      * @param value
      *            allowed object is {@link String }
      */
-    public void setFrameworkID(String value) {
+    public void setFrameworkID(FrameworkID value) {
 	this.frameworkID = value;
     }
 

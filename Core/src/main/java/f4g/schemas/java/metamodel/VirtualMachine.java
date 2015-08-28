@@ -12,6 +12,8 @@ import javax.measure.quantity.DataAmount;
 import org.joda.time.DateTime;
 import org.jscience.physics.amount.Amount;
 
+import f4g.schemas.java.sla.FlavorName;
+
 //TODO: implement CopyTo if needed
 public class VirtualMachine implements Cloneable /* , CopyTo */
 {
@@ -22,10 +24,12 @@ public class VirtualMachine implements Cloneable /* , CopyTo */
     protected Amount<DataAmount> actualMemoryUsage;
     protected DateTime startTimestamp;
     protected DateTime lastMigrationTimestamp;
+    protected FlavorName flavorName;
 
     
     public VirtualMachine(String name, Amount<DataAmount> actualCPUUsage, Amount<DataAmount> actualStorageUsage,
-	    Amount<DataAmount> actualMemoryUsage, DateTime startTimestamp, DateTime lastMigrationTimestamp) {
+	    Amount<DataAmount> actualMemoryUsage, DateTime startTimestamp, DateTime lastMigrationTimestamp, 
+	    FlavorName flavorName) {
 	super();
 	this.name = name;
 	this.actualCPUUsage = actualCPUUsage;
@@ -33,6 +37,7 @@ public class VirtualMachine implements Cloneable /* , CopyTo */
 	this.actualMemoryUsage = actualMemoryUsage;
 	this.startTimestamp = startTimestamp;
 	this.lastMigrationTimestamp = lastMigrationTimestamp;
+	this.flavorName = flavorName;
     }
 
     /**

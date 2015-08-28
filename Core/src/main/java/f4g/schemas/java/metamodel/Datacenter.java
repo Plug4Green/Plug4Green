@@ -18,7 +18,7 @@ import org.jscience.physics.amount.Amount;
 public class Datacenter implements Cloneable /* , CopyTo */
 {
 
-    protected String name;
+    protected DatacenterName name;
     protected PUE pue;
     protected CUE cue;
     protected Amount<Energy> evMigration;
@@ -37,7 +37,7 @@ public class Datacenter implements Cloneable /* , CopyTo */
      * Fully-initialising value constructor
      * 
      */
-    public Datacenter(final String name, final PUE pue, final CUE cue, Amount<Energy> evMigration,
+    public Datacenter(DatacenterName name, PUE pue, CUE cue, Amount<Energy> evMigration,
 	    final List<FrameworkCapabilities> frameworkCapabilities, List<Server> servers) {
 	this.name = name;
 	this.pue = pue;
@@ -50,10 +50,10 @@ public class Datacenter implements Cloneable /* , CopyTo */
     /**
      * Gets the value of the name property.
      * 
-     * @return possible object is {@link String }
+     * @return possible object is {@link DatacenterName }
      * 
      */
-    public String getName() {
+    public DatacenterName getName() {
 	return name;
     }
 
@@ -61,10 +61,10 @@ public class Datacenter implements Cloneable /* , CopyTo */
      * Sets the value of the name property.
      * 
      * @param value
-     *            allowed object is {@link String }
+     *            allowed object is {@link DatacenterName }
      * 
      */
-    public void setName(String value) {
+    public void setName(DatacenterName value) {
 	this.name = value;
     }
 

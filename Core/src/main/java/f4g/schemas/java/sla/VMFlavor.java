@@ -3,11 +3,11 @@ package f4g.schemas.java.sla;
 public class VMFlavor
 {
 
-    protected String name;
+    protected FlavorName name;
     protected Capacity capacity;
     protected ExpectedLoad expectedLoad;
 
-    public VMFlavor(String name, Capacity capacity, ExpectedLoad expectedLoad) {
+    public VMFlavor(FlavorName name, Capacity capacity, ExpectedLoad expectedLoad) {
         this.name = name;
         this.capacity = capacity;
         this.expectedLoad = expectedLoad;
@@ -16,11 +16,11 @@ public class VMFlavor
     public VMFlavor() {
     }
 
-    public String getName() {
+    public FlavorName getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(FlavorName name) {
         this.name = name;
     }
 

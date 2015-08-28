@@ -7,53 +7,11 @@
 
 package f4g.schemas.java.metamodel;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
-import javax.xml.bind.annotation.XmlType;
-
-/**
- * <p>
- * Java class for FrameworkStatus.
- * 
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
- * <p>
- * 
- * <pre>
- * &lt;simpleType name="FrameworkStatus"&gt;
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
- *     &lt;enumeration value="Starting"/&gt;
- *     &lt;enumeration value="Running"/&gt;
- *     &lt;enumeration value="Stopped"/&gt;
- *   &lt;/restriction&gt;
- * &lt;/simpleType&gt;
- * </pre>
- * 
- */
-@XmlType(name = "FrameworkStatus")
-@XmlEnum
 public enum FrameworkStatus {
-
-    @XmlEnumValue("Starting") STARTING("Starting"), @XmlEnumValue("Running") RUNNING(
-	    "Running"), @XmlEnumValue("Stopped") STOPPED("Stopped");
-    private final String value;
-
-    FrameworkStatus(String v) {
-	value = v;
-    }
-
-    public String value() {
-	return value;
-    }
-
-    public static FrameworkStatus fromValue(String v) {
-	for (FrameworkStatus c : FrameworkStatus.values()) {
-	    if (c.value.equals(v)) {
-		return c;
-	    }
-	}
-	throw new IllegalArgumentException(v);
-    }
+    
+	STARTING, 
+	STOPPING, 
+	POWERING_ON, 
+	POWERING_OFF;
 
 }

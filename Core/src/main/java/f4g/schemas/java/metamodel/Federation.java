@@ -28,7 +28,7 @@ public class Federation implements Cloneable /* , CopyTo */
      * Fully-initialising value constructor
      * 
      */
-    public Federation(final List<Datacenter> datacenters, final DateTime datetime) {
+    public Federation(List<Datacenter> datacenters, DateTime datetime) {
 	this.datacenters = datacenters;
 	this.currentTime = datetime;
     }
