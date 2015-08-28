@@ -13,7 +13,7 @@ public class Datacenter {
     protected DatacenterName name;
     protected PUE pue;
     protected CUE cue;
-    protected Amount<Energy> evMigration;
+    protected Amount<Energy> eVMMigration;
     protected List<FrameworkCapabilities> frameworkCapabilities;
     protected List<Server> servers;
 
@@ -21,12 +21,12 @@ public class Datacenter {
 	super();
     }
 
-    public Datacenter(DatacenterName name, PUE pue, CUE cue, Amount<Energy> evMigration,
+    public Datacenter(DatacenterName name, PUE pue, CUE cue, Amount<Energy> eVMMigration,
 	    final List<FrameworkCapabilities> frameworkCapabilities, List<Server> servers) {
 	this.name = name;
 	this.pue = pue;
 	this.cue = cue;
-	this.evMigration = evMigration;
+	this.eVMMigration = eVMMigration;
 	this.frameworkCapabilities = frameworkCapabilities;
 	this.servers = servers;
     }
@@ -67,11 +67,11 @@ public class Datacenter {
     }
 
     public Amount<Energy> getEvMigration() {
-	return evMigration;
+	return eVMMigration;
     }
 
     public void setEvMigration(Amount<Energy> evMigration) {
-	this.evMigration = evMigration;
+	this.eVMMigration = evMigration;
     }
 
     public List<Server> getServers() {
