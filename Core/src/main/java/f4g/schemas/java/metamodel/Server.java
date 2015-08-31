@@ -10,9 +10,9 @@ import org.jscience.physics.amount.Amount;
 
 public class Server {
 
-    protected ServerRole name;
-    protected ServerStatus status;
     protected ServerName serverName;
+    protected ServerRole serverRole;
+    protected ServerStatus status;
     protected Amount<Power> idlePower;
     protected Amount<Power> maxPower;
     protected DateTime lastOnOffTimestamp;
@@ -22,13 +22,11 @@ public class Server {
     protected GPU gpu;
     protected List<VirtualMachine> VMs;
 
-    public Server() {
-        super();
-    }
+    public Server() {}
 
-    public Server(ServerRole name,
+    public Server(ServerRole serverRole,
                   ServerStatus status,
-                  ServerName frameworkID,
+                  ServerName serverName,
                   Amount<Power> idlePower,
                   Amount<Power> maxPower,
                   DateTime lastOnOffTimestamp,
@@ -38,9 +36,9 @@ public class Server {
                   GPU gpu,
                   List<VirtualMachine> vMs) {
         super();
-        this.name = name;
+        this.serverRole = serverRole;
         this.status = status;
-        this.serverName = frameworkID;
+        this.serverName = serverName;
         this.idlePower = idlePower;
         this.maxPower = maxPower;
         this.lastOnOffTimestamp = lastOnOffTimestamp;
@@ -52,11 +50,11 @@ public class Server {
     }
 
     public ServerRole getName() {
-        return name;
+        return serverRole;
     }
 
     public void setName(ServerRole value) {
-        this.name = value;
+        this.serverRole = value;
     }
 
     public ServerStatus getStatus() {

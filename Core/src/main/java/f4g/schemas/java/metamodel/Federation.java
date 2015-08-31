@@ -20,7 +20,7 @@ public class Federation {
 	this.currentTime = datetime;
     }
 
-    public List<Datacenter> getDatacenter() {
+    public List<Datacenter> getDatacenters() {
 	if (datacenters == null) {
 	    datacenters = new ArrayList<Datacenter>();
 	}

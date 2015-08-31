@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.measure.quantity.Energy;
 
+import f4g.schemas.java.sla.FlavorName;
+import f4g.schemas.java.sla.SLAName;
 import org.jscience.physics.amount.Amount;
 
 public class Datacenter {
@@ -16,6 +18,9 @@ public class Datacenter {
     protected Amount<Energy> eVMMigration;
     protected List<FrameworkCapabilities> frameworkCapabilities;
     protected List<Server> servers;
+    protected FlavorName VMflavor;
+    protected SLAName sla;
+
 
     public Datacenter() {
 	super();
