@@ -1,9 +1,9 @@
 package f4g.optimizer.btrplace.configuration;
 
-
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+import f4g.schemas.java.metamodel.Federation;
+import f4g.schemas.java.sla.VMFlavors;
 import org.apache.log4j.Logger;
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
@@ -16,10 +16,6 @@ import f4g.optimizer.btrplace.plan.objective.PowerView;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.allocation.CloudVmAllocation;
-import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
-import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType.VMFlavor;
-import f4g.schemas.java.metamodel.Core;
-import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.metamodel.ServerStatus;
 import f4g.schemas.java.metamodel.Server;
 import f4g.schemas.java.metamodel.VirtualMachine;
@@ -40,27 +36,19 @@ public class F4GConfigurationAdapter
 	public static final String NODE_NAMING_SERVICE = "NodeNames";
 	public static final String SHAREABLE_RESOURCE_CPU = "ShareableResourceCPU";
 	public static final String SHAREABLE_RESOURCE_RAM = "ShareableResourceRAM";
-	
-	FIT4Green currentFit4Green;
-	VMFlavorType currentVMFlavor;
+
+	Federation currentFederation;
+	VMFlavors currentVMFlavor;
 		
 	private Logger log;
 	private OptimizationObjective optiObjective;
 	private IPowerCalculator powerCalculator;
 	
 	private StaticPowerCalculation powerCalculation;
-	
-    public FIT4Green getCurrentFIT4Green() {
-		return currentFit4Green;
-	}
 
-	public void setCurrentFIT4Green(FIT4Green currentFIT4Green) {
-		this.currentFit4Green = currentFIT4Green;
-	}
-
-	public F4GConfigurationAdapter(FIT4Green f4g, VMFlavorType vm, IPowerCalculator powerCalculator, OptimizationObjective optiObjective) {
-		currentFit4Green = f4g;
-		currentVMFlavor = vm;
+	public F4GConfigurationAdapter(Federation fed, VMFlavors flavors, IPowerCalculator powerCalculator, OptimizationObjective optiObjective) {
+		currentFederation = fed;
+		currentVMFlavor = flavors;
 		this.powerCalculator = powerCalculator;
 		powerCalculation = new StaticPowerCalculation(null);
 		this.optiObjective = optiObjective;
@@ -81,11 +69,11 @@ public class F4GConfigurationAdapter
 		PowerView powersPerVMs = new PowerView(VIEW_POWER_PER_VM);
 		
 		
-		for(Server server : Utils.getAllServers(currentFit4Green)) {
+		for(Server server : Utils.getAllServers(currentFederation)) {
 			
 			//Add server related resources
 			Node node = model.newNode();
-			NodeNS.putElementName(node, server.getFrameworkID());
+			NodeNS.putElementName(node, server.getFrameworkID().toString());
 			putServerCPUResource(node, server, cpus);
 			putServerMemoryResource(node, server, memories);
 			putServerPowerIdleResource(node, server, powersIdles);
@@ -96,7 +84,7 @@ public class F4GConfigurationAdapter
 				
 				model.getMapping().addOnlineNode(node);
 			
-				for(VirtualMachine VM : Utils.getVMs(server)) {
+				for(VirtualMachine VM : server.get) {
 					
 					//Add VM related resources
 					VM vm = model.newVM();	
@@ -250,5 +238,13 @@ public class F4GConfigurationAdapter
 		return (int) (CPUUsage * nbCPUs);
 	}
 
-	
+	public FIT4Green getCurrentFIT4Green() {
+		return currentFit4Green;
+	}
+
+	public void setCurrentFIT4Green(FIT4Green currentFIT4Green) {
+		this.currentFit4Green = currentFIT4Green;
+	}
+
+
 }

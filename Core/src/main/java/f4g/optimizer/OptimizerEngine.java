@@ -21,6 +21,8 @@ import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
+import f4g.schemas.java.allocation.ObjectFactory;
+import f4g.schemas.java.metamodel.*;
 import org.apache.log4j.Logger;
 
 import f4g.commons.controller.IController;
@@ -28,12 +30,6 @@ import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
-import f4g.schemas.java.metamodel.Datacenter;
-import f4g.schemas.java.metamodel.FIT4Green;
-import f4g.schemas.java.metamodel.Power;
-import f4g.schemas.java.metamodel.ServerStatus;
-import f4g.schemas.java.metamodel.Server;
-import f4g.schemas.java.metamodel.VirtualMachine;
 import f4g.schemas.java.actions.AbstractBaseAction;
 import f4g.schemas.java.actions.ActionRequest;
 import f4g.schemas.java.actions.LiveMigrateVMAction;
@@ -57,7 +53,7 @@ import com.rits.cloning.Cloner;
  */
 public abstract class OptimizerEngine implements Runnable  {
 
-	private FIT4Green globalOptimizationRequest;
+	private Federation globalOptimizationRequest;
 	private Thread engineThread;
 	
 	public Logger log;  
@@ -94,7 +90,7 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * @param allocationRequest Data structure describing the resource allocation request 
 	 * @return A data structure representing the result of the allocation
 	 */
-	public abstract AllocationResponse allocateResource(AllocationRequest allocationRequest, FIT4Green model);
+	public abstract AllocationResponse allocateResource(AllocationRequest allocationRequest, Federation model);
 	
 	/**
 	 * Handles a request for a global optimization
@@ -102,7 +98,7 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * @param model the f4g model
 	 * @return true if successful, false otherwise
 	 */
-	public void performGlobalOptimization(FIT4Green model) {
+	public void performGlobalOptimization(Federation model) {
 		
 		log.debug("OptimizerEngine: performGlobalOptimization: starting global optimization thread run.");
 		
@@ -138,7 +134,7 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * @param model the f4g model
 	 * @return the f4g model
 	 */
-	public abstract void runGlobalOptimization(FIT4Green model);
+	public abstract void runGlobalOptimization(Federation model);
 	
 
 
@@ -146,40 +142,40 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * performs the moves in a data center
 	 * 
 	 */
-	protected FIT4Green performMoves(List<AbstractBaseAction> moves, FIT4Green federation) {
+	protected Federation performMoves(List<AbstractBaseAction> moves, Federation federation) {
 
 		Cloner cloner = new Cloner();
-		FIT4Green newfederation = cloner.deepClone(federation);
+		Federation newfederation = cloner.deepClone(federation);
 		
 		for (AbstractBaseAction move : moves){
-			String source = "";
-			String dest = "";
-			String virtualMachine = "";
+			ServerName source = new ServerName();
+			ServerName dest = new ServerName();
+			VirtualMachineName virtualMachine  = new VirtualMachineName();
 			
 			if (move instanceof MoveVMAction) {
-				source = ((MoveVMAction)move).getSourceNodeController();	
-				dest = ((MoveVMAction)move).getDestNodeController();
+				source = ((MoveVMAction)move).getSourceServer();
+				dest = ((MoveVMAction)move).getDestServer();
 				virtualMachine = ((MoveVMAction)move).getVirtualMachine();
 			} else if (move instanceof LiveMigrateVMAction) {
-				source = ((LiveMigrateVMAction)move).getSourceNodeController();	
-				dest = ((LiveMigrateVMAction)move).getDestNodeController();
+				source = ((LiveMigrateVMAction)move).getSourceServer();
+				dest = ((LiveMigrateVMAction)move).getDestServer();
 				virtualMachine = ((LiveMigrateVMAction)move).getVirtualMachine();
 			}	
 			
 			Server oldServer = Utils.findServerByName(newfederation, source);
 			Server newServer = Utils.findServerByName(newfederation, dest);
 			
-			VirtualMachine VM = Utils.findVirtualMachineByName(Utils.getVMs(oldServer), virtualMachine);
+			VirtualMachine VM = Utils.findVirtualMachineByName(oldServer.getVMs(), virtualMachine);
 					
 			//remove the VM from source server
-			List<VirtualMachine> oldServerVMs = getVMList(oldServer);
+			List<VirtualMachine> oldServerVMs = oldServer.getVMs();
 			if(oldServerVMs != null)
 				oldServerVMs.remove(VM);
 			else
 				log.error("performMoves: No hypervisor found in the source server!");
 
 			//add VM in the destination server
-			List<VirtualMachine> newServerVMs = getVMList(newServer);
+			List<VirtualMachine> newServerVMs = newServer.getVMs();
 			if(newServerVMs != null)
 				newServerVMs.add(VM);
 			else
@@ -190,7 +186,7 @@ public abstract class OptimizerEngine implements Runnable  {
 	
 	}
 	
-	protected FIT4Green performOnOffs(List<PowerOnAction> ons, List<PowerOffAction> offs, FIT4Green federation){
+	protected Federation performOnOffs(List<PowerOnAction> ons, List<PowerOffAction> offs, Federation federation){
 		return performOffs(offs, performOns(ons, federation));
 	}
 	
@@ -200,14 +196,14 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * performs the switchs on in a data center
 	 * 
 	 */
-	protected FIT4Green performOns(List<PowerOnAction> ons, FIT4Green federation) {
+	protected Federation performOns(List<PowerOnAction> ons, Federation federation) {
 
 		Cloner cloner=new Cloner();
-		FIT4Green newFederation = cloner.deepClone(federation);
+		Federation newFederation = cloner.deepClone(federation);
 		
 		for (PowerOnAction on : ons){
 			
-			Server server = Utils.findServerByName(newFederation, on.getNodeName());
+			Server server = Utils.findServerByName(newFederation, on.getServerName());
 			server.setStatus(ServerStatus.ON);
 		}
 		return newFederation;
@@ -218,10 +214,10 @@ public abstract class OptimizerEngine implements Runnable  {
 	 * performs the switchs off in a data center
 	 * 
 	 */
-	protected FIT4Green performOffs(List<PowerOffAction> offs, FIT4Green federation) {
+	protected Federation performOffs(List<PowerOffAction> offs, Federation federation) {
 
 		Cloner cloner=new Cloner();
-		FIT4Green newFederation = cloner.deepClone(federation);
+		Federation newFederation = cloner.deepClone(federation);
 		
 		for (PowerOffAction off : offs){
 			
@@ -240,9 +236,7 @@ public abstract class OptimizerEngine implements Runnable  {
 		//Create action list
 		ActionRequest.ActionList actionList = new ActionRequest.ActionList();
 		actionList.getAction();
-		
-		f4g.schemas.java.actions.ObjectFactory actionFactory = new f4g.schemas.java.actions.ObjectFactory();
-		
+		ObjectFactory actionFactory = new ObjectFactory();
 		
 		for (PowerOffAction off : offs)
 			actionList.getAction().add(actionFactory.createPowerOff(off));
@@ -256,34 +250,17 @@ public abstract class OptimizerEngine implements Runnable  {
 		return actionList;
 		
 	}
-	
-	/**
-	 * returns the first list or VMs available in the server.
-	 * //TODO fix: how to determine where to add the VM?
-	 */
-	public static List<VirtualMachine> getVMList(Server server){
-			
-		if (server.getNativeHypervisor() != null)
-			return server.getNativeHypervisor().getVirtualMachine();
-		
-		else if (server.getNativeOperatingSystem() != null &&
-				server.getNativeOperatingSystem().getHostedHypervisor().size() != 0) 
-			return server.getNativeOperatingSystem().getHostedHypervisor().get(0).getVirtualMachine();
 
-		else
-			return null;
-	}
-	
 	/**
 	 * finds a server name by its ID
 	 * 
 	 */
-	protected Server findServerByName(Datacenter datacenter, final String frameWorkID) {
+	protected Server findServerByName(Datacenter datacenter, final ServerName name) {
 		
-		Iterator<Server> it = Utils.getAllServers(datacenter).iterator();
+		Iterator<Server> it = datacenter.getServers().iterator();
 		Predicate<Server> isID = new Predicate<Server>() {
 	        @Override public boolean apply(Server s) {
-	            return s.getFrameworkID().equals(frameWorkID);
+	            return s.getFrameworkID().equals(name);
 	        }               
 	    };
 	
@@ -295,7 +272,7 @@ public abstract class OptimizerEngine implements Runnable  {
 	/**
 	 * fills an action request.
 	 */
-	protected ActionRequest getActionRequest(ActionRequest.ActionList actionList, FIT4Green fedBefore, FIT4Green fedAfter) {
+	protected ActionRequest getActionRequest(ActionRequest.ActionList actionList, Federation fedBefore, Federation fedAfter) {
 		
 		//Create action requests
 		ActionRequest actionRequest = new ActionRequest();

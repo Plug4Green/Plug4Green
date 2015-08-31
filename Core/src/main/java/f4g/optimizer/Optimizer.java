@@ -104,20 +104,8 @@ public class Optimizer implements IOptimizer{
 		
 		log.debug("Optimizer: performGlobalOptimization");
 		
-		Datacenter myDC = Utils.getFirstDatacenter(model);
-		
-		if(myDC!=null) {
-			
-			//choose the engine corresponding to computing style.
-			optimizerEngine.performGlobalOptimization(model);
-		
-			return true;
-		} else {
-			log.error("performGlobalOptimization: no datacenter or no computing style inside the model");
-			return false;
-		}
-			
-		
+		optimizerEngine.performGlobalOptimization(model);
+
 	}
 
 	

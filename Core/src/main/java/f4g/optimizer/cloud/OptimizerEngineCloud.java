@@ -1,17 +1,3 @@
-/**
- * ============================== Header ============================== 
- * file:          OptimizerEngineCloud.java
- * project:       FIT4Green/Optimizer
- * created:       26 nov. 2010 by cdupont
- * last modified: $LastChangedDate: 2012-05-04 10:34:00 +0200 (vie, 04 may 2012) $ by $LastChangedBy: paolo.barone@hp.com $
- * revision:      $LastChangedRevision: 1422 $
- * 
- * short description:
- *   This class contains the algorithm for Cloud computing.
- *   
- * ============================= /Header ==============================
- */
-
 package f4g.optimizer.cloud;
 
 import java.util.ArrayList;
@@ -27,6 +13,8 @@ import java.util.NoSuchElementException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
+import f4g.schemas.java.sla.Policies;
+import f4g.schemas.java.sla.VMFlavors;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Optional;
@@ -67,13 +55,6 @@ import f4g.schemas.java.allocation.AllocationResponse;
 import f4g.schemas.java.allocation.CloudVmAllocationResponse;
 import f4g.schemas.java.allocation.CloudVmAllocation;
 import f4g.schemas.java.allocation.ObjectFactory;
-import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
-import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
-import f4g.schemas.java.constraints.optimizerconstraints.PolicyType;
-import f4g.schemas.java.constraints.optimizerconstraints.SLAType;
-import f4g.schemas.java.constraints.optimizerconstraints.ServerGroupType;
-import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
-import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType.Cluster;
 
 import org.btrplace.plan.DependencyBasedPlanApplier;
 import org.btrplace.plan.ReconfigurationPlan;
@@ -98,19 +79,12 @@ import org.btrplace.model.constraint.SatConstraint;
 
 public class OptimizerEngineCloud extends OptimizerEngine {
 
-	private ServerGroupType serverGroups;
-
 	 //Virtual Machines types retrieved from SLA
-	private VMFlavorType vms;
-
-
-	//Cluster definition
-	private ClusterType clusters;
+	private VMFlavors vmFlavors;
 
 	//SLA definition
-	private PolicyType policies;
-	private FederationType federation;
-	private SLAType SLAs;
+	private Policies policies;
+	private SLAs SLAs;
 	
 	//CPU constraint VM per VM
 	private Map<String, Integer> VMCPUConstraint;
@@ -120,8 +94,7 @@ public class OptimizerEngineCloud extends OptimizerEngine {
 	 * constructor for production
 	 * 
 	 */
-	public OptimizerEngineCloud(IController controller,
-			IPowerCalculator powerCalculator, ICostEstimator costEstimator) {
+	public OptimizerEngineCloud(IController controller, IPowerCalculator powerCalculator, ICostEstimator costEstimator) {
 		super(controller, powerCalculator, costEstimator);
 		log = Logger.getLogger(this.getClass().getName());
 
