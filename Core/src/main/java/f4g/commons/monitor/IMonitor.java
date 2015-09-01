@@ -1,12 +1,11 @@
 package f4g.commons.monitor;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import f4g.commons.com.ICom;
 import f4g.commons.com.util.ComOperationCollector;
 import f4g.commons.com.util.PowerData;
-import f4g.schemas.java.metamodel.FIT4Green;
+import f4g.schemas.java.metamodel.Federation;
 import f4g.schemas.java.metamodel.FrameworkStatus;
 import f4g.schemas.java.allocation.AllocationRequest;
 import f4g.schemas.java.allocation.AllocationResponse;
@@ -76,7 +75,7 @@ public interface IMonitor {
 	 * Allows to get a deep copy of the f4g model
 	 * @return the object representation of the f4g model
 	 */
-	public FIT4Green getModelCopy();
+	public Federation getModelCopy();
 	
 	/**
 	 * Allows to get a deep copy of the subset of the f4g model related to a com

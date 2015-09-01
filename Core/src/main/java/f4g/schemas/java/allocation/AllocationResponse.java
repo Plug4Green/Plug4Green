@@ -19,11 +19,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import com.massfords.humantask.Named;
-import com.massfords.humantask.Visitable;
-import com.massfords.humantask.Visitor;
 import org.jvnet.jaxb2_commons.lang.CopyStrategy;
-import org.jvnet.jaxb2_commons.lang.CopyTo;
 import org.jvnet.jaxb2_commons.lang.JAXBCopyStrategy;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
@@ -54,7 +50,7 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
     "datetime",
     "response"
 })
-public class AllocationResponse implements Cloneable, Named, Visitable, CopyTo
+public class AllocationResponse
 {
 
     @XmlElement(name = "Datetime")
@@ -145,10 +141,6 @@ public class AllocationResponse implements Cloneable, Named, Visitable, CopyTo
         if (parent instanceof JAXBElement) {
             this.jaxbElementName = ((JAXBElement) parent).getName();
         }
-    }
-
-    public void accept(Visitor aVisitor) {
-        aVisitor.visit(this);
     }
 
     public Object clone() {

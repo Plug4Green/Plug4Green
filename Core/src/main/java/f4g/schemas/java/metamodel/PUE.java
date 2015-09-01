@@ -1,23 +1,27 @@
 
 package f4g.schemas.java.metamodel;
 
+import org.jscience.physics.amount.Amount;
+
+import javax.measure.quantity.Dimensionless;
+
 public class PUE {
 
-    protected double value;
+    protected Amount<Dimensionless> value;
 
     public PUE() {
 	super();
     }
 
-    public PUE(final double value) {
+    public PUE(final Amount<Dimensionless> value) {
 	this.value = value;
     }
 
-    public double getValue() {
+    public Amount<Dimensionless> getValue() {
 	return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(Amount<Dimensionless> value) {
 	this.value = value;
     }
 

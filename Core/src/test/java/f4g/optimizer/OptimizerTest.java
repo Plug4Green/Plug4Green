@@ -6,7 +6,6 @@ import org.apache.log4j.PropertyConfigurator;
 import f4g.commons.com.util.PowerData;
 import f4g.commons.controller.IController;
 import f4g.optimizer.cloud.OptimizerEngineCloud;
-import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;
 import f4g.schemas.java.actions.*;

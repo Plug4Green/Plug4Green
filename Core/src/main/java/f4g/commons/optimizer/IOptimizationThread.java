@@ -1,6 +1,5 @@
 package f4g.commons.optimizer;
 
-import f4g.schemas.java.metamodel.FIT4Green;
 
 /**
  * Interface to be implemented by the component performing optimization

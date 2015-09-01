@@ -1,74 +1,56 @@
 package f4g.optimizer.utils;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
-import f4g.optimizer.btrplace.NamingService;
-import f4g.optimizer.utils.OptimizerServer.CreationImpossible;
-import f4g.schemas.java.constraints.optimizerconstraints.ClusterType;
-import f4g.schemas.java.constraints.optimizerconstraints.FederationType;
-import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
-import f4g.schemas.java.constraints.optimizerconstraints.ClusterType.Cluster;
 import f4g.schemas.java.metamodel.*;
-import f4g.commons.util.Util;
-
-import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.JXPathNotFoundException;
+import f4g.schemas.java.sla.VMFlavor;
+import f4g.schemas.java.sla.VMFlavors;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.btrplace.model.Node;
-
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
 
-import f4g.schemas.java.constraints.optimizerconstraints.BoundedClustersType;
+import javax.measure.unit.Unit;
+
+import static javax.measure.unit.NonSI.BYTE;
 
 public class Utils {
 	
 	static Logger log = Logger.getLogger(Utils.class.getName()); 
- 
+
+	public static Unit KILOBYTE = BYTE.times(1024);
+	public static Unit MEGABYTE = KILOBYTE.times(1024);
+	public static Unit GIGABYTE = MEGABYTE.times(1024);
 
 	public static Datacenter getFirstDatacenter(Federation fed) {
-		return fed.getDatacenter().get(0);
+		return fed.getDatacenters().get(0);
 	}
 	
 	public static Datacenter getServerDatacenter(Server server, Federation fed) {
 		
-		return getServerDatacenterbyName(server.getName(), fed);
+		return getServerDatacenterbyName(server.getServerName(), fed);
 	}
 	
 	public static Datacenter getServerDatacenterbyName(ServerName server, Federation fed) {
 
-		for(Datacenter dc : fed.getDatacenter()) {
-			for(Server myServer : getAllServers(site)) {
-				if (myServer.getFrameworkID().equals(server)) {
+		for(Datacenter dc : fed.getDatacenters()) {
+			for(Server myServer : dc.getServers()) {
+				if (myServer.getServerName().equals(server)) {
 					return dc;
 				}
 			}
 		}
 
 		log.error("DC not found for server " + server);
-		return fed.getDatacenter().stream().fi;
+		return null;
 	}
 
 	
@@ -79,7 +61,7 @@ public class Utils {
 
 	
 	public static List<VirtualMachine> getAllVMs(Federation f4g){
-		return f4g.getDatacenter().stream()
+		return f4g.getDatacenters().stream()
 				.flatMap(l -> l.getServers().stream())
 				.flatMap(l -> l.getVMs().stream())
 				.collect(Collectors.toList());
@@ -90,7 +72,7 @@ public class Utils {
 	 */
 	public static List<Server> getAllServers(Federation f4g) {
 
-		return f4g.getDatacenter().stream().flatMap(l -> l.getServers().stream()).collect(Collectors.toList());
+		return f4g.getDatacenters().stream().flatMap(l -> l.getServers().stream()).collect(Collectors.toList());
 		
 	}
 
@@ -124,7 +106,7 @@ public class Utils {
 		Iterator<Server> it = Utils.getAllServers(f4g).iterator();
 		Predicate<Server> isID = new Predicate<Server>() {
 	        @Override public boolean apply(Server s) {
-	            return s.getFrameworkID().equals(name);
+	            return s.getServerName().equals(name);
 	        }               
 	    };
         
@@ -154,6 +136,27 @@ public class Utils {
 		}
 		
 		return true;
+	}
+
+
+	/**
+	 * finds a VM attributes based on its name.
+	 *
+	 * @author cdupont
+	 */
+	public static VMFlavor findVMByName(final String VMName, VMFlavors myVMFlavors) throws NoSuchElementException {
+
+		if(VMName == null)
+			throw new NoSuchElementException();
+
+		Predicate<VMFlavor> isOfName = new Predicate<VMFlavor>() {
+			@Override
+			public boolean apply(VMFlavor VM) {
+				return VMName.equals(VM.getName());
+			}
+		};
+
+		return Iterators.find(myVMFlavors.getVmFlavors().iterator(), isOfName);
 	}
 	
 }

@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import f4g.schemas.java.metamodel.*;
+import f4g.schemas.java.sla.VMFlavors;
 import org.apache.log4j.Logger;
 import org.btrplace.model.Model;
 import org.btrplace.model.Node;
@@ -33,14 +35,6 @@ import org.btrplace.model.constraint.SatConstraint;
 
 import f4g.optimizer.btrplace.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.utils.Utils;
-import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
-import f4g.schemas.java.metamodel.Datacenter;
-import f4g.schemas.java.metamodel.FIT4Green;
-import f4g.schemas.java.metamodel.FrameworkCapabilities;
-import f4g.schemas.java.metamodel.ServerStatus;
-import f4g.schemas.java.metamodel.Server;
-import f4g.schemas.java.metamodel.VirtualMachine;
-
 
 
 /**
@@ -48,20 +42,20 @@ import f4g.schemas.java.metamodel.VirtualMachine;
  * 
  */
 public class ModelConstraintFactory extends ConstraintFactory {
-    
-	protected FIT4Green F4GModel;
-	VMFlavorType currentVMFlavor;
-	Map<String, Integer> VMCPUConstraints;
+
+	protected Federation fed;
+	protected VMFlavors currentVMFlavors;
+	protected Map<String, Integer> VMCPUConstraints;
 
 	/**
 	 * Constructor needing an instance of the SLAReader and BtrPlace
 	 * configuration element.
 	 */
-	public ModelConstraintFactory(Model model, FIT4Green F4GModel, VMFlavorType vm, Map<String, Integer> VMCPUConstraints) {
+	public ModelConstraintFactory(Model model, Federation fed, VMFlavors vmFlavors, Map<String, Integer> VMCPUConstraints) {
 		super(model);
 		log = Logger.getLogger(this.getClass().getName()); 
-		this.F4GModel = F4GModel;
-		this.currentVMFlavor = vm;
+		this.fed = fed;
+		this.currentVMFlavors = vmFlavors;
 		this.VMCPUConstraints = VMCPUConstraints;
 		
 	}
@@ -86,9 +80,9 @@ public class ModelConstraintFactory extends ConstraintFactory {
 		Set<Node> offlines = new HashSet<Node>();
 		Set<Node> empties = new HashSet<Node>();
 		
-		for(Server s : Utils.getAllServers(F4GModel)) {
+		for(Server s : Utils.getAllServers(fed)) {
 	
-			Node n = nodeNames.getElement(s.getFrameworkID());
+			Node n = nodeNames.getElement(s.getName().toString());
 			if(n!=null)	 {
 				switch(s.getName()) {          
 			    case CLOUD_CONTROLLER          : {
@@ -137,14 +131,14 @@ public class ModelConstraintFactory extends ConstraintFactory {
 	public List<SatConstraint> getFrameworkCapabilitiesConstraints() {
 		List<SatConstraint> v = new LinkedList<SatConstraint>();
 		int i = 0;
-		List<Datacenter> dcs = Utils.getAllDatacenters(F4GModel);
+		List<Datacenter> dcs = fed.getDatacenters();
 		for(Datacenter dc : dcs) {
 			i++;
 			
 			//Get all VMs of the DC
 			Set<VM> vms = new HashSet<VM>();
 			for(VirtualMachine vm : Utils.getAllVMs(dc)) {
-				VM myVM = vmNames.getElement(vm.getFrameworkID());
+				VM myVM = vmNames.getElement(vm.getName().toString());
 				if(myVM != null) {
 					vms.add(myVM);
 				}				
@@ -152,8 +146,8 @@ public class ModelConstraintFactory extends ConstraintFactory {
 						
 			//get all nodes of the DC
 			Set<Node> nodes = new HashSet<Node>();
-			for(Server s : Utils.getAllServers(dc)) {
-				Node n = nodeNames.getElement(s.getFrameworkID());
+			for(Server s : dc.getServers()) {
+				Node n = nodeNames.getElement(s.getName().toString());
 				if(n!=null){
 					nodes.add(n);
 				}
@@ -230,14 +224,14 @@ public class ModelConstraintFactory extends ConstraintFactory {
 	
 	public List<SatConstraint> getVMConstraints() {
 		List<SatConstraint> v = new LinkedList<SatConstraint>();
-		for(VirtualMachine VM : Utils.getAllVMs(F4GModel)) {
+		for(VirtualMachine VM : Utils.getAllVMs(fed)) {
 		
-			VM vm = vmNames.getElement(VM.getFrameworkID());	
+			VM vm = vmNames.getElement(VM.getName().toString());
 			int VMconsumption;
-			if(VMCPUConstraints.containsKey(VM.getFrameworkID())) {
-				VMconsumption = VMCPUConstraints.get(VM.getFrameworkID());
+			if(VMCPUConstraints.containsKey(VM.getName().toString())) {
+				VMconsumption = VMCPUConstraints.get(VM.getName().toString());
 			} else {
-				VMconsumption = F4GConfigurationAdapter.getVMCPUConsumption(vm, VM, currentVMFlavor);
+				VMconsumption = F4GConfigurationAdapter.getVMCPUConsumption(vm, VM, currentVMFlavors);
 			}			
 			
 			v.add(new Preserve(vm, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, VMconsumption));

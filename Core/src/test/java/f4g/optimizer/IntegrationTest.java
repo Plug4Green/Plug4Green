@@ -9,7 +9,6 @@ import org.junit.Test;
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.cloud.OptimizerEngineCloud;
 import f4g.optimizer.cloud.SLAReader;
-import f4g.optimizer.utils.OptimizerWorkload;
 import f4g.optimizer.utils.OptimizerWorkload.CreationImpossible;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;

@@ -1,20 +1,8 @@
 package f4g.commons.power;
 
 import f4g.commons.com.util.PowerData;
-import f4g.schemas.java.metamodel.FIT4Green;
-import f4g.schemas.java.metamodel.Site;
-import f4g.schemas.java.metamodel.Datacenter;
 import f4g.schemas.java.metamodel.Server;
-import f4g.schemas.java.metamodel.Mainboard;
-import f4g.schemas.java.metamodel.OperatingSystemType;
-import f4g.schemas.java.metamodel.RAID;
-import f4g.schemas.java.metamodel.HardDisk;
-import f4g.schemas.java.metamodel.SolidStateDisk;
-import f4g.schemas.java.metamodel.CPU;
-import f4g.schemas.java.metamodel.Core;
-import f4g.schemas.java.metamodel.Fan;
-import f4g.schemas.java.metamodel.Rack;
-import f4g.schemas.java.metamodel.NAS;
+
 /**
  * Interface to be implemented by the Power Calculator component
  * 

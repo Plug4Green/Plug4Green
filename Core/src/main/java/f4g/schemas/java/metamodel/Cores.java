@@ -18,6 +18,10 @@ public class Cores {
 	this.frequency = frequency;
     }
 
+    public int getCoreNumber() {
+        return coreNumber;
+    }
+
     public void setCoreNumber(int coreNumber) {
 	if (coreNumber < 1) {
 	    String errorMsg = "CoreNumber " + coreNumber + "is not major of zero";

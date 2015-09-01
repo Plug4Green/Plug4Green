@@ -26,7 +26,6 @@ import f4g.schemas.java.metamodel.*;
 import org.apache.log4j.Logger;
 
 import f4g.commons.controller.IController;
-import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
 import f4g.commons.power.IPowerCalculator;

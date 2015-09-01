@@ -3,6 +3,7 @@ package f4g.optimizer.btrplace.configuration;
 import java.util.NoSuchElementException;
 
 import f4g.schemas.java.metamodel.Federation;
+import f4g.schemas.java.sla.VMFlavor;
 import f4g.schemas.java.sla.VMFlavors;
 import org.apache.log4j.Logger;
 import org.btrplace.model.Model;
@@ -21,7 +22,15 @@ import f4g.schemas.java.metamodel.Server;
 import f4g.schemas.java.metamodel.VirtualMachine;
 import f4g.commons.util.StaticPowerCalculation;
 import f4g.commons.util.Util;
+import org.jscience.physics.amount.Amount;
 
+import javax.measure.quantity.Dimensionless;
+import javax.measure.quantity.Power;
+
+import static f4g.optimizer.utils.Utils.MEGABYTE;
+import static javax.measure.unit.NonSI.PERCENT;
+import static javax.measure.unit.SI.WATT;
+import static javax.measure.unit.Unit.ONE;
 
 /**
  * Adapter to translate FIT4Green configurations to Entropy
@@ -38,7 +47,7 @@ public class F4GConfigurationAdapter
 	public static final String SHAREABLE_RESOURCE_RAM = "ShareableResourceRAM";
 
 	Federation currentFederation;
-	VMFlavors currentVMFlavor;
+	VMFlavors currentVMFlavors;
 		
 	private Logger log;
 	private OptimizationObjective optiObjective;
@@ -48,7 +57,7 @@ public class F4GConfigurationAdapter
 
 	public F4GConfigurationAdapter(Federation fed, VMFlavors flavors, IPowerCalculator powerCalculator, OptimizationObjective optiObjective) {
 		currentFederation = fed;
-		currentVMFlavor = flavors;
+		currentVMFlavors = flavors;
 		this.powerCalculator = powerCalculator;
 		powerCalculation = new StaticPowerCalculation(null);
 		this.optiObjective = optiObjective;
@@ -73,7 +82,7 @@ public class F4GConfigurationAdapter
 			
 			//Add server related resources
 			Node node = model.newNode();
-			NodeNS.putElementName(node, server.getFrameworkID().toString());
+			NodeNS.putElementName(node, server.getServerName().toString());
 			putServerCPUResource(node, server, cpus);
 			putServerMemoryResource(node, server, memories);
 			putServerPowerIdleResource(node, server, powersIdles);
@@ -84,13 +93,13 @@ public class F4GConfigurationAdapter
 				
 				model.getMapping().addOnlineNode(node);
 			
-				for(VirtualMachine VM : server.get) {
+				for(VirtualMachine VM : server.getVMs()) {
 					
 					//Add VM related resources
 					VM vm = model.newVM();	
 					model.getMapping().addRunningVM(vm, node);
 					
-					VMNS.putElementName(vm, VM.getFrameworkID());
+					VMNS.putElementName(vm, VM.getName().toString());
 					putVMCPUConsumption(vm, VM, cpus);
 					putVMMemoryConsumption(vm, VM, memories);
 					
@@ -119,8 +128,8 @@ public class F4GConfigurationAdapter
 	private void putVMCPUConsumption(VM vm, CloudVmAllocation request, ShareableResource s) {
 		
 		try {
-			VMFlavorType.VMFlavor SLA_VM = Util.findVMByName(request.getVm(), currentVMFlavor);
-			s.setConsumption(vm, SLA_VM.getCapacity().getVCpus().getValue() * 100);
+			VMFlavor vmFlavor = Utils.findVMByName(request.getVm(), currentVMFlavors);
+			s.setConsumption(vm, vmFlavor.getCapacity().getNbOfVCPUs() * 100);
 		} catch (NoSuchElementException e1) {
 			log.error("VM name " + request.getVm() + " could not be found in SLA");
 		}		
@@ -129,8 +138,8 @@ public class F4GConfigurationAdapter
 	private void putVMMemoryConsumption(VM vm, CloudVmAllocation request, ShareableResource s) {
 		
 		try {
-			VMFlavorType.VMFlavor SLA_VM = Util.findVMByName(request.getVm(), currentVMFlavor);
-			s.setConsumption(vm, (int) SLA_VM.getCapacity().getVRam().getValue() * 1024);
+			VMFlavor vmFlavor = Utils.findVMByName(request.getVm(), currentVMFlavors);
+			s.setConsumption(vm, (int) vmFlavor.getCapacity().getVRamSize().doubleValue(MEGABYTE));
 		} catch (NoSuchElementException e1) {
 			log.error("VM name " + request.getVm() + " could not be found in SLA");
 		}
@@ -138,112 +147,97 @@ public class F4GConfigurationAdapter
 	
 	private void putVMCPUConsumption(VM vm, VirtualMachine F4GVM, ShareableResource s) {
 	
-		s.setConsumption(vm, getVMCPUConsumption(vm, F4GVM, currentVMFlavor));
+		s.setConsumption(vm, (int) getVMCPUConsumption(F4GVM, currentVMFlavors).doubleValue(PERCENT));
 	}
 
-	private void putVMMemoryConsumption(final VM vm, final VirtualMachine F4GVM, ShareableResource s) {
+	private void putVMMemoryConsumption(final VM vm, final VirtualMachine P4GVM, ShareableResource s) {
 		
-		VMFlavorType.VMFlavor SLA_VM = null;
-		if(F4GVM.getCloudVm() != null) {
-			SLA_VM = Util.findVMByName(F4GVM.getCloudVm(), currentVMFlavor);	
+		VMFlavor SLA_VM = null;
+		if(P4GVM.getFlavorName() != null) {
+			SLA_VM = Utils.findVMByName(P4GVM.getFlavorName().toString(), currentVMFlavors);
 		}
 		
-		if(F4GVM.getActualMemoryUsage() != null) {
-			s.setConsumption(vm, (int) (F4GVM.getActualMemoryUsage().getValue() * 1024));
+		if(P4GVM.getActualMemoryUsage() != null) {
+			s.setConsumption(vm, (int) (P4GVM.getActualMemoryUsage().doubleValue(MEGABYTE)));
 		} else {
-			s.setConsumption(vm, (int) (SLA_VM.getCapacity().getVRam().getValue() * 1024));
+			s.setConsumption(vm, (int) (SLA_VM.getCapacity().getVRamSize().doubleValue(MEGABYTE)));
 		}
 		
 	}
 		
 	private void putServerCPUResource(final Node n, final Server server, ShareableResource s) {
-		
-		ArrayList<Core> cores = Utils.getAllCores(server.getMainboard().get(0));
+
 		//CPU capacity is a percentage of one core. 4 cores = 400% CPU capacity
-		s.setCapacity(n, cores.size() * 100);		
+		s.setCapacity(n, server.getCores().getCoreNumber() * 100);
 	
 	}
 
 	private void putServerMemoryResource(final Node n, final Server server, ShareableResource s) {
-	     s.setCapacity(n, (int) Utils.getMemory(server) * 1024);		
+	     s.setCapacity(n, (int) server.getRamSize().doubleValue(MEGABYTE));
 	}
 	
 	private void putServerPowerIdleResource(final Node n, final Server server, PowerView s) {
 		
-	    s.setPowers(n, (int) getPIdle(server));		
+	    s.setPowers(n, (int) getPIdle(server).doubleValue(WATT));
 	}
 	
 	private void putServerPowerPerVMResource(final Node n, final Server server, PowerView s) {
 		
-		s.setPowers(n, (int) getPperVM(server));		
+		s.setPowers(n, (int) getPperVM(server).doubleValue(WATT));
 	}
 		 
-	public float getPIdle(Server server) {
-      
-		double ue = getUsageEffectiveness(server);		
-		
-    	ServerStatus status = server.getStatus();
-    	server.setStatus(ServerStatus.ON); //set the server status to ON to avoid a null power
-        float powerIdle = (float) (powerCalculation.computePowerIdle(server, powerCalculator) * ue);
-        server.setStatus(status);
-                    
-        return powerIdle;        
+	public Amount<Power> getPIdle(Server server) {
+
+        return (Amount<Power>) server.getIdlePower().times(getUsageEffectiveness(server));
     }
     
 
-    public float getPperVM(Server server) {
-                
-    	double ue = getUsageEffectiveness(server);	
+    public Amount<Power> getPperVM(Server server) {
+
+		Amount<Dimensionless> ue = getUsageEffectiveness(server);	
     	
-    	VMFlavor vm = currentVMFlavor.getVMFlavor().get(0);
-    	ServerStatus status = server.getStatus();
-    	server.setStatus(ServerStatus.ON); //set the server status to ON to avoid a null power
-    	float PperVM = (float) (powerCalculation.computePowerForVM(server, vm, powerCalculator) * ue);
-        server.setStatus(status);
-            
-        return PperVM;        
+    	VMFlavor vmFlavor = currentVMFlavors.getVmFlavors().get(0); //TODO check
+		Amount<Power> dynPower = server.getMaxPower().minus(server.getIdlePower());
+
+		Amount<Dimensionless> VMCPUConsumption = vmFlavor.getExpectedLoad().getvCPULoad().times(vmFlavor.getCapacity().getNbOfVCPUs());
+
+        return (Amount<Power>) VMCPUConsumption.times(dynPower).divide(server.getCores().getCoreNumber());
     }
 
-	private double getUsageEffectiveness(Server server) {
+	private Amount<Dimensionless> getUsageEffectiveness(Server server) {
     	if(optiObjective == OptimizationObjective.Power) {
-    		return Utils.getServerSite(server, currentFit4Green).getPUE().getValue();
+    		return Utils.getServerDatacenter(server, currentFederation).getPue().getValue();
     	} else {
-    		return Utils.getServerSite(server, currentFit4Green).getCUE().getValue();
+    		return Utils.getServerDatacenter(server, currentFederation).getCue().getValue();
     	}
 	}
 	
-	public static int getVMCPUConsumption(VM vm, VirtualMachine F4GVM, VMFlavorType VMFlavor) {
+	public static Amount<Dimensionless> getVMCPUConsumption(VirtualMachine F4GVM, VMFlavors VMFlavors) {
 		
-		VMFlavorType.VMFlavor SLA_VM = null;
-		if(F4GVM.getCloudVm() != null) {
-			SLA_VM = Util.findVMByName(F4GVM.getCloudVm(), VMFlavor);	
+		VMFlavor SLA_VM = null;
+		if(F4GVM.getFlavorName() != null) {
+			SLA_VM = Utils.findVMByName(F4GVM.getFlavorName().toString(), VMFlavors);
 		}
 					
-		//If the measured values are present in the VM, we take these.
-		//otherwise, we take the specification values from the SLA.
-        int nbCPUs;
-        if(F4GVM.getNumberOfCPUs() != null) {
-                nbCPUs = F4GVM.getNumberOfCPUs().getValue();
-        } else {
-                nbCPUs = SLA_VM.getCapacity().getVCpus().getValue();
-        }
+		//We take the specification values from the SLA.
+        int nbCPUs = SLA_VM.getCapacity().getNbOfVCPUs();
 
-        double CPUUsage;
+        Amount<Dimensionless> CPUUsage;
         if(F4GVM.getActualCPUUsage() != null) {
-                CPUUsage = F4GVM.getActualCPUUsage().getValue();
+                CPUUsage = F4GVM.getActualCPUUsage();
         } else {
-                CPUUsage = SLA_VM.getExpectedLoad().getVCpuLoad().getValue();
+                CPUUsage = SLA_VM.getExpectedLoad().getvCPULoad();
         }
 		
-		return (int) (CPUUsage * nbCPUs);
+		return CPUUsage.times(nbCPUs);
 	}
 
-	public FIT4Green getCurrentFIT4Green() {
-		return currentFit4Green;
+	public Federation getCurrentFederation() {
+		return currentFederation;
 	}
 
-	public void setCurrentFIT4Green(FIT4Green currentFIT4Green) {
-		this.currentFit4Green = currentFIT4Green;
+	public void getCurrentFederation(Federation currentFederation) {
+		this.currentFederation = currentFederation;
 	}
 
 

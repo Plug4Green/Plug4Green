@@ -1,8 +1,13 @@
 
 package f4g.schemas.java.metamodel;
 
+import org.jscience.physics.amount.Amount;
+
+import javax.measure.quantity.Dimensionless;
+
 public class CUE {
-    protected double value;
+
+    protected Amount<Dimensionless> value;
 
     /**
      * Default no-arg constructor
@@ -16,7 +21,7 @@ public class CUE {
      * Fully-initialising value constructor
      * 
      */
-    public CUE(final double value) {
+    public CUE(final Amount<Dimensionless> value) {
 	this.value = value;
     }
 
@@ -24,7 +29,7 @@ public class CUE {
      * Gets the value of the value property.
      * 
      */
-    public double getValue() {
+    public Amount<Dimensionless> getValue() {
 	return value;
     }
 
@@ -32,7 +37,7 @@ public class CUE {
      * Sets the value of the value property.
      * 
      */
-    public void setValue(double value) {
+    public void setValue(Amount<Dimensionless> value) {
 	this.value = value;
     }
 }

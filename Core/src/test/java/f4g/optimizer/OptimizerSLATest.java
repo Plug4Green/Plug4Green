@@ -3,7 +3,6 @@ package f4g.optimizer;
 import f4g.commons.com.util.PowerData;
 import f4g.optimizer.cost_estimator.NetworkCost;
 import f4g.optimizer.cloud.OptimizerEngineCloud;
-import f4g.commons.optimizer.ICostEstimator;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.constraints.optimizerconstraints.*;
@@ -25,7 +24,6 @@ import java.util.*;
 import org.jscience.physics.amount.*;
 import org.jscience.economics.money.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.measure.quantity.*;

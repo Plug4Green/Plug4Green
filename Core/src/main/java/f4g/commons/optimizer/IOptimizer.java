@@ -1,8 +1,8 @@
 package f4g.commons.optimizer;
 
-import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.allocation.AllocationRequest;
 import f4g.schemas.java.allocation.AllocationResponse;
+import f4g.schemas.java.metamodel.Federation;
 
 /**
  * Interface for the f4g Optimizer component
@@ -19,7 +19,7 @@ public interface IOptimizer {
 	 * @param allocationRequest Data structure describing the resource allocation request 
 	 * @return A data structure representing the result of the allocation
 	 */
-	public AllocationResponse allocateResource(AllocationRequest allocationRequest, FIT4Green model);
+	public AllocationResponse allocateResource(AllocationRequest allocationRequest, Federation fed);
 
 	/**
 	 * Handles a request for a global optimization
@@ -27,7 +27,7 @@ public interface IOptimizer {
 	 * @param model the f4g model
 	 * @return true if successful, false otherwise
 	 */
-	public boolean performGlobalOptimization(FIT4Green model);
+	public boolean performGlobalOptimization(Federation model);
 	
 	/**
 	 * 

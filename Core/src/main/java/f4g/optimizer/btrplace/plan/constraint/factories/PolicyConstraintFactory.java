@@ -28,7 +28,6 @@ import org.btrplace.model.Mapping;
 import org.btrplace.model.constraint.Root;
 import org.btrplace.model.constraint.SatConstraint;
 
-import f4g.commons.optimizer.ICostEstimator;
 import f4g.optimizer.cloud.SLAReader;
 import f4g.optimizer.btrplace.NamingService;
 import f4g.optimizer.btrplace.configuration.F4GConfigurationAdapter;

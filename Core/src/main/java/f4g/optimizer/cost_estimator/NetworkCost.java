@@ -20,12 +20,9 @@ import f4g.schemas.java.metamodel.NetworkNode;
 import f4g.schemas.java.metamodel.NetworkPort;
 import f4g.schemas.java.metamodel.VirtualMachine;
 import f4g.schemas.java.metamodel.Site;
-import f4g.commons.optimizer.ICostEstimator;
-import f4g.commons.power.IPowerCalculator;
 import f4g.powerCalculator.power.PoweredNetworkNode;
 import f4g.commons.optimizer.OptimizationObjective;
 import f4g.optimizer.utils.Utils;
-import f4g.optimizer.cloud.SLAReader;
 import f4g.schemas.java.constraints.optimizerconstraints.VMFlavorType;
 import f4g.commons.util.Util;
 

@@ -3,6 +3,7 @@ package f4g.schemas.java.metamodel;
 
 import java.util.List;
 
+import javax.measure.quantity.DataAmount;
 import javax.measure.quantity.Power;
 
 import org.joda.time.DateTime;
@@ -15,9 +16,9 @@ public class Server {
     protected ServerStatus status;
     protected Amount<Power> idlePower;
     protected Amount<Power> maxPower;
-    protected DateTime lastOnOffTimestamp;
-    protected RAMSize ramSize;
-    protected StorageCapacity storageCapacity;
+    protected DateTime lastOnOff;
+    protected Amount<DataAmount> ramSize;
+    protected Amount<DataAmount> storageCapacity;
     protected Cores cores;
     protected GPU gpu;
     protected List<VirtualMachine> VMs;
@@ -29,9 +30,9 @@ public class Server {
                   ServerName serverName,
                   Amount<Power> idlePower,
                   Amount<Power> maxPower,
-                  DateTime lastOnOffTimestamp,
-                  RAMSize ramSize,
-                  StorageCapacity storageCapacity,
+                  DateTime lastOnOff,
+                  Amount<DataAmount> ramSize,
+                  Amount<DataAmount> storageCapacity,
                   Cores cores,
                   GPU gpu,
                   List<VirtualMachine> vMs) {
@@ -41,84 +42,12 @@ public class Server {
         this.serverName = serverName;
         this.idlePower = idlePower;
         this.maxPower = maxPower;
-        this.lastOnOffTimestamp = lastOnOffTimestamp;
+        this.lastOnOff = lastOnOff;
         this.ramSize = ramSize;
         this.storageCapacity = storageCapacity;
         this.cores = cores;
         this.gpu = gpu;
         this.VMs = vMs;
-    }
-
-    public ServerRole getName() {
-        return serverRole;
-    }
-
-    public void setName(ServerRole value) {
-        this.serverRole = value;
-    }
-
-    public ServerStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ServerStatus value) {
-        this.status = value;
-    }
-
-    public ServerName getFrameworkID() {
-        return serverName;
-    }
-
-    public void setFrameworkID(ServerName value) {
-        this.serverName = value;
-    }
-
-    public Amount<Power> getIdlePower() {
-        return idlePower;
-    }
-
-    public void setIdlePower(Amount<Power> value) {
-        this.idlePower = value;
-    }
-
-    public Amount<Power> getMaxPower() {
-        return maxPower;
-    }
-
-    public void setMaxPower(Amount<Power> maxPower) {
-        this.maxPower = maxPower;
-    }
-
-    public void setMeasuredPower(Amount<Power> value) {
-        this.maxPower = value;
-    }
-
-    public RAMSize getRAMSize() {
-        return this.ramSize;
-    }
-
-    public void setRAMSize(RAMSize value) {
-        this.ramSize = value;
-    }
-
-    public StorageCapacity getStorageCapacity() {
-        return this.storageCapacity;
-    }
-
-    public StorageCapacity setStorageCapacity(StorageCapacity value) {
-        return this.storageCapacity = value;
-    }
-
-    public void setCoreNumber(Cores value) {
-        this.cores = value;
-    }
-
-    public DateTime getLastOnOffTimestamp() {
-        return lastOnOffTimestamp;
-    }
-
-    public void setLastOnOffTimestamp(DateTime value) {
-        this.lastOnOffTimestamp = value;
     }
 
     public ServerName getServerName() {
@@ -129,12 +58,60 @@ public class Server {
         this.serverName = serverName;
     }
 
-    public RAMSize getRamSize() {
+    public ServerRole getServerRole() {
+        return serverRole;
+    }
+
+    public void setServerRole(ServerRole serverRole) {
+        this.serverRole = serverRole;
+    }
+
+    public ServerStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ServerStatus status) {
+        this.status = status;
+    }
+
+    public Amount<Power> getIdlePower() {
+        return idlePower;
+    }
+
+    public void setIdlePower(Amount<Power> idlePower) {
+        this.idlePower = idlePower;
+    }
+
+    public Amount<Power> getMaxPower() {
+        return maxPower;
+    }
+
+    public void setMaxPower(Amount<Power> maxPower) {
+        this.maxPower = maxPower;
+    }
+
+    public DateTime getLastOnOff() {
+        return lastOnOff;
+    }
+
+    public void setLastOnOff(DateTime lastOnOff) {
+        this.lastOnOff = lastOnOff;
+    }
+
+    public Amount<DataAmount> getRamSize() {
         return ramSize;
     }
 
-    public void setRamSize(RAMSize ramSize) {
+    public void setRamSize(Amount<DataAmount> ramSize) {
         this.ramSize = ramSize;
+    }
+
+    public Amount<DataAmount> getStorageCapacity() {
+        return storageCapacity;
+    }
+
+    public void setStorageCapacity(Amount<DataAmount> storageCapacity) {
+        this.storageCapacity = storageCapacity;
     }
 
     public Cores getCores() {
@@ -160,6 +137,4 @@ public class Server {
     public void setVMs(List<VirtualMachine> VMs) {
         this.VMs = VMs;
     }
-
-
 }

@@ -17,7 +17,6 @@
 package f4g.optimizer;
 
 import org.apache.log4j.Logger;
-import f4g.optimizer.utils.AggregatedUsage;
 import f4g.optimizer.utils.Utils;
 import f4g.schemas.java.metamodel.*;
 import f4g.commons.util.Util;
