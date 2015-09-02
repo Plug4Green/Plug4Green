@@ -20,8 +20,6 @@ import f4g.schemas.java.allocation.CloudVmAllocation;
 import f4g.schemas.java.metamodel.ServerStatus;
 import f4g.schemas.java.metamodel.Server;
 import f4g.schemas.java.metamodel.VirtualMachine;
-import f4g.commons.util.StaticPowerCalculation;
-import f4g.commons.util.Util;
 import org.jscience.physics.amount.Amount;
 
 import javax.measure.quantity.Dimensionless;
@@ -30,7 +28,6 @@ import javax.measure.quantity.Power;
 import static f4g.optimizer.utils.Utils.MEGABYTE;
 import static javax.measure.unit.NonSI.PERCENT;
 import static javax.measure.unit.SI.WATT;
-import static javax.measure.unit.Unit.ONE;
 
 /**
  * Adapter to translate FIT4Green configurations to Entropy
@@ -51,15 +48,10 @@ public class F4GConfigurationAdapter
 		
 	private Logger log;
 	private OptimizationObjective optiObjective;
-	private IPowerCalculator powerCalculator;
-	
-	private StaticPowerCalculation powerCalculation;
 
 	public F4GConfigurationAdapter(Federation fed, VMFlavors flavors, IPowerCalculator powerCalculator, OptimizationObjective optiObjective) {
 		currentFederation = fed;
 		currentVMFlavors = flavors;
-		this.powerCalculator = powerCalculator;
-		powerCalculation = new StaticPowerCalculation(null);
 		this.optiObjective = optiObjective;
 		log = Logger.getLogger(F4GConfigurationAdapter.class.getName());
 	}

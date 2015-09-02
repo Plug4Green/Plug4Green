@@ -35,6 +35,12 @@ import org.btrplace.model.constraint.SatConstraint;
 
 import f4g.optimizer.btrplace.configuration.F4GConfigurationAdapter;
 import f4g.optimizer.utils.Utils;
+import org.jscience.physics.amount.Amount;
+
+import javax.measure.quantity.Dimensionless;
+import javax.measure.unit.Unit;
+
+import static f4g.schemas.java.metamodel.ServerRole.CLOUD_CONTROLLER;
 
 
 /**
@@ -45,13 +51,13 @@ public class ModelConstraintFactory extends ConstraintFactory {
 
 	protected Federation fed;
 	protected VMFlavors currentVMFlavors;
-	protected Map<String, Integer> VMCPUConstraints;
+	protected Map<String, Amount<Dimensionless>> VMCPUConstraints;
 
 	/**
 	 * Constructor needing an instance of the SLAReader and BtrPlace
 	 * configuration element.
 	 */
-	public ModelConstraintFactory(Model model, Federation fed, VMFlavors vmFlavors, Map<String, Integer> VMCPUConstraints) {
+	public ModelConstraintFactory(Model model, Federation fed, VMFlavors vmFlavors, Map<String, Amount<Dimensionless>> VMCPUConstraints) {
 		super(model);
 		log = Logger.getLogger(this.getClass().getName()); 
 		this.fed = fed;
@@ -82,9 +88,9 @@ public class ModelConstraintFactory extends ConstraintFactory {
 		
 		for(Server s : Utils.getAllServers(fed)) {
 	
-			Node n = nodeNames.getElement(s.getName().toString());
+			Node n = nodeNames.getElement(s.getServerName().toString());
 			if(n!=null)	 {
-				switch(s.getName()) {          
+				switch(s.getServerRole()) {
 			    case CLOUD_CONTROLLER          : {
 			    	log.debug("Cloud controller " + n.id());
 			    	onlines.add(n); 
@@ -147,7 +153,7 @@ public class ModelConstraintFactory extends ConstraintFactory {
 			//get all nodes of the DC
 			Set<Node> nodes = new HashSet<Node>();
 			for(Server s : dc.getServers()) {
-				Node n = nodeNames.getElement(s.getName().toString());
+				Node n = nodeNames.getElement(s.getServerName().toString());
 				if(n!=null){
 					nodes.add(n);
 				}
@@ -224,17 +230,17 @@ public class ModelConstraintFactory extends ConstraintFactory {
 	
 	public List<SatConstraint> getVMConstraints() {
 		List<SatConstraint> v = new LinkedList<SatConstraint>();
-		for(VirtualMachine VM : Utils.getAllVMs(fed)) {
+		for(VirtualMachine P4GVM : Utils.getAllVMs(fed)) {
 		
-			VM vm = vmNames.getElement(VM.getName().toString());
-			int VMconsumption;
-			if(VMCPUConstraints.containsKey(VM.getName().toString())) {
-				VMconsumption = VMCPUConstraints.get(VM.getName().toString());
+			VM vm = vmNames.getElement(P4GVM.getName().toString());
+			Amount<Dimensionless> VMConsumption;
+			if(VMCPUConstraints.containsKey(P4GVM.getName().toString())) {
+				VMConsumption = VMCPUConstraints.get(P4GVM.getName().toString());
 			} else {
-				VMconsumption = F4GConfigurationAdapter.getVMCPUConsumption(vm, VM, currentVMFlavors);
+				VMConsumption = F4GConfigurationAdapter.getVMCPUConsumption(P4GVM, currentVMFlavors);
 			}			
 			
-			v.add(new Preserve(vm, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, VMconsumption));
+			v.add(new Preserve(vm, F4GConfigurationAdapter.SHAREABLE_RESOURCE_CPU, (int) VMConsumption.doubleValue(Unit.ONE)));
 			
 		}
 		return v;
