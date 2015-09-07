@@ -103,14 +103,14 @@ public class OpenStackAPIs {
 	return Optional.empty();
     }
 
-    public Optional<Integer> getUsedRAM(String hyperVisorName) {
+    public Optional<Double> getUsedRAM(String hyperVisorName) {
 
 	for (Hypervisor hyperVisor : admin.compute().hypervisors().list()) {
 	    log.info("hypervisor name: " + hyperVisor.getHypervisorHostname());
 	    if (hyperVisor.getHypervisorHostname().equals(hyperVisorName)) {
 		log.info("Local RAM: " + hyperVisor.getLocalMemory()
-			+ "Used RAM: " + hyperVisor.getLocalMemoryUsed());
-		return Optional.ofNullable(hyperVisor.getLocalMemoryUsed());
+			+ "Used RAM: " + hyperVisor.getLocalMemoryUsed()/(1.5));
+		return Optional.ofNullable(hyperVisor.getLocalMemoryUsed()/(1.5));
 	    }
 	}
 	return Optional.empty();
@@ -150,10 +150,13 @@ public class OpenStackAPIs {
     }
 
     public Optional<Integer> getVMCPUs(String vmId) {
-	log.info("Vcpu..."
-		+ admin.compute().servers().get(vmId).getFlavor().getVcpus());
+	log.debug("vCPU " + admin.compute().servers().get(vmId).getFlavor().getVcpus() + " for VM " + vmId);
 	return Optional.ofNullable(admin.compute().servers().get(vmId)
 		.getFlavor().getVcpus());
+    }
+    
+    public Optional<String> getFlavorName(String vmId){
+	return Optional.ofNullable( admin.compute().servers().get(vmId).getFlavor().getName());
     }
 
 

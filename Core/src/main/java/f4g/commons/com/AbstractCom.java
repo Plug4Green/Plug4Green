@@ -328,7 +328,7 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 		
 		//HINT! Here we add by convention in 4th position the number of CPUs
 		//assuming that they are passed in the xpath query
-		if(values.length > 3){
+		if(values.length > 3 && values[3] != null){
 			NrOfCpus nOfCpus = new NrOfCpus();
 			nOfCpus.setValue(Integer.valueOf(values[3]));
 			vm.setNumberOfCPUs(nOfCpus);
