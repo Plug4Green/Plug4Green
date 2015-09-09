@@ -33,6 +33,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.BlockAction;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -62,6 +63,7 @@ import f4g.commons.core.IMain;
 import f4g.manager.couchDB.ConvertToJSON;
 import f4g.manager.couchDB.DataBase;
 import f4g.optimizer.utils.Utils;
+import f4g.schemas.java.metamodel.BladeServer;
 import f4g.schemas.java.metamodel.FIT4Green;
 import f4g.schemas.java.metamodel.FrameworkCapabilities;
 import f4g.schemas.java.metamodel.FrameworkStatus;
@@ -328,7 +330,13 @@ public class Monitor implements IMonitor {
 			if(((String)keys[i]).contains(comName)){
 				
 				monitoredObjectsMap.put((String)keys[i], mapping.get(keys[i]).getClass().getCanonicalName());
-				log.debug("Inserted elem: " + keys[i] + ", " + monitoredObjectsMap.get(keys[i]));
+				
+				if(mapping.get(keys[i]) instanceof BladeServer){
+				    BladeServer server = (BladeServer) mapping.get(keys[i]);
+				    log.debug("Inserted elem: "  + keys[i] + ", " + server.getFrameworkID());
+				}else{
+				    log.debug("Inserted elem: " + keys[i] + ", " + monitoredObjectsMap.get(keys[i]));
+				}
 			}
 		}
 		
@@ -685,7 +693,7 @@ public class Monitor implements IMonitor {
 			log.error(e);
 		}
 		
-		ConvertToJSON con = new ConvertToJSON();
+		/*ConvertToJSON con = new ConvertToJSON();
 		String data = con.convert(model);
 	
 		// check database current size and delete oldest document if applicable
@@ -727,7 +735,7 @@ public class Monitor implements IMonitor {
 			log.debug("Document " + id + " created");
 		} else {
 			log.error("Error while creating document " + id + "; " + db.getMessage());
-		}
+		}*/
 	}
 	
 	private String createDesignBody () {

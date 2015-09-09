@@ -12,61 +12,25 @@
 					<powerIdle>20</powerIdle>
 					<powerMax>150</powerMax>
 					<frameworkID>Assago</frameworkID>
-					<!--<ns2:BladeServer frameworkRef="PLUG4GREEN_APSS"> <name>TRADITIONAL_HOST</name> 
-						<frameworkID>node-8.domain.tld</frameworkID> <status>ON</status> <ns2:Mainboard> 
-						<powerIdle>10.0</powerIdle> <powerMax>20.0</powerMax> <ns2:CPU> <transistorNumber>1170</transistorNumber> 
-						<architecture>INTEL</architecture> <powerIdle>20.0</powerIdle> <powerMax>95.0</powerMax> 
-						<ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> <frequencyMin>2.66</frequencyMin> 
-						<frequencyMax>3.06</frequencyMax> <totalPstates>1</totalPstates> <lastPstate>1</lastPstate> 
-						</ns2:Core> <ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> 
-						<frequencyMin>2.66</frequencyMin> <frequencyMax>3.06</frequencyMax> </ns2:Core> 
-						<ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> <frequencyMin>2.66</frequencyMin> 
-						<frequencyMax>3.06</frequencyMax> </ns2:Core> <ns2:Core> <voltage>1.1</voltage> 
-						<frequency>3.06</frequency> <frequencyMin>2.66</frequencyMin> <frequencyMax>3.06</frequencyMax> 
-						</ns2:Core> <ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> 
-						<frequencyMin>2.66</frequencyMin> <frequencyMax>3.06</frequencyMax> </ns2:Core> 
-						<ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> <frequencyMin>2.66</frequencyMin> 
-						<frequencyMax>3.06</frequencyMax> </ns2:Core> <ns2:Core> <voltage>1.1</voltage> 
-						<frequency>3.06</frequency> <frequencyMin>2.66</frequencyMin> <frequencyMax>3.06</frequencyMax> 
-						</ns2:Core> <ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> 
-						<frequencyMin>2.66</frequencyMin> <frequencyMax>3.06</frequencyMax> </ns2:Core> 
-						<ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> <frequencyMin>2.66</frequencyMin> 
-						<frequencyMax>3.06</frequencyMax> <totalPstates>1</totalPstates> <lastPstate>1</lastPstate> 
-						</ns2:Core> <ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> 
-						<frequencyMin>2.66</frequencyMin> <frequencyMax>3.06</frequencyMax> </ns2:Core> 
-						<ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> <frequencyMin>2.66</frequencyMin> 
-						<frequencyMax>3.06</frequencyMax> </ns2:Core> <ns2:Core> <voltage>1.1</voltage> 
-						<frequency>3.06</frequency> <frequencyMin>2.66</frequencyMin> <frequencyMax>3.06</frequencyMax> 
-						</ns2:Core> <ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> 
-						<frequencyMin>2.66</frequencyMin> <frequencyMax>3.06</frequencyMax> </ns2:Core> 
-						<ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> <frequencyMin>2.66</frequencyMin> 
-						<frequencyMax>3.06</frequencyMax> </ns2:Core> <ns2:Core> <voltage>1.1</voltage> 
-						<frequency>3.06</frequency> <frequencyMin>2.66</frequencyMin> <frequencyMax>3.06</frequencyMax> 
-						</ns2:Core> <ns2:Core> <voltage>1.1</voltage> <frequency>3.06</frequency> 
-						<frequencyMin>2.66</frequencyMin> <frequencyMax>3.06</frequencyMax> </ns2:Core> 
-						</ns2:CPU> <ns2:RAMStick> <voltage>1.35</voltage> <size>47</size> <type>DDR3</type> 
-						<frequency>1333.0</frequency> <bufferType>Buffered</bufferType> <vendor>KINGSTON</vendor> 
-						<computedPower>0.0</computedPower> </ns2:RAMStick> </ns2:Mainboard> <ns2:NativeHypervisor> 
-						<name>LINUX</name> <hypervisorName>ESX</hypervisorName> </ns2:NativeHypervisor> 
-						</ns2:BladeServer> -->
-
 					<ns2:BladeServer frameworkRef="PLUG4GREEN_APSS">
 						<name>TRADITIONAL_HOST</name>
-						<frameworkID>node-9.domain.tld</frameworkID>
+						<frameworkID>node-8.domain.tld</frameworkID>
 						<status>ON</status>
 						<ns2:Mainboard>
-							<powerIdle>10.0</powerIdle>
+							<powerIdle>0.0</powerIdle>
 							<powerMax>20.0</powerMax>
 							<ns2:CPU>
 								<transistorNumber>1170</transistorNumber>
 								<architecture>INTEL</architecture>
-								<powerIdle>20.0</powerIdle>
+								<powerIdle>0.0</powerIdle>
 								<powerMax>95.0</powerMax>
 								<ns2:Core>
 									<voltage>1.1</voltage>
 									<frequency>3.06</frequency>
 									<frequencyMin>2.66</frequencyMin>
 									<frequencyMax>3.06</frequencyMax>
+									<totalPstates>1</totalPstates>
+									<lastPstate>1</lastPstate>
 								</ns2:Core>
 								<ns2:Core>
 									<voltage>1.1</voltage>
@@ -113,7 +77,60 @@
 							</ns2:CPU>
 							<ns2:RAMStick>
 								<voltage>1.35</voltage>
-								<size>11</size>
+								<size>32</size>
+								<type>DDR3</type>
+								<frequency>1333.0</frequency>
+								<bufferType>Buffered</bufferType>
+								<vendor>KINGSTON</vendor>
+								<computedPower>0.0</computedPower>
+							</ns2:RAMStick>
+						</ns2:Mainboard>
+						<ns2:NativeHypervisor>
+							<name>LINUX</name>
+							<hypervisorName>ESX</hypervisorName>
+						</ns2:NativeHypervisor>
+					</ns2:BladeServer>
+
+					<ns2:BladeServer frameworkRef="PLUG4GREEN_APSS">
+						<name>TRADITIONAL_HOST</name>
+						<frameworkID>node-9.domain.tld</frameworkID>
+						<status>ON</status>
+						<ns2:Mainboard>
+							<powerIdle>0.0</powerIdle>
+							<powerMax>20.0</powerMax>
+							<ns2:CPU>
+								<transistorNumber>1170</transistorNumber>
+								<architecture>INTEL</architecture>
+								<powerIdle>0.0</powerIdle>
+								<powerMax>95.0</powerMax>
+								<ns2:Core>
+									<voltage>1.1</voltage>
+									<frequency>3.06</frequency>
+									<frequencyMin>2.66</frequencyMin>
+									<frequencyMax>3.06</frequencyMax>
+								</ns2:Core>
+								<ns2:Core>
+									<voltage>1.1</voltage>
+									<frequency>3.06</frequency>
+									<frequencyMin>2.66</frequencyMin>
+									<frequencyMax>3.06</frequencyMax>
+								</ns2:Core>
+								<ns2:Core>
+									<voltage>1.1</voltage>
+									<frequency>3.06</frequency>
+									<frequencyMin>2.66</frequencyMin>
+									<frequencyMax>3.06</frequencyMax>
+								</ns2:Core>
+								<ns2:Core>
+									<voltage>1.1</voltage>
+									<frequency>3.06</frequency>
+									<frequencyMin>2.66</frequencyMin>
+									<frequencyMax>3.06</frequencyMax>
+								</ns2:Core>
+							</ns2:CPU>
+							<ns2:RAMStick>
+								<voltage>1.35</voltage>
+								<size>8</size>
 								<type>DDR3</type>
 								<frequency>1333.0</frequency>
 								<bufferType>Buffered</bufferType>
@@ -132,61 +149,13 @@
 						<frameworkID>node-11.domain.tld</frameworkID>
 						<status>ON</status>
 						<ns2:Mainboard>
-							<powerIdle>10.0</powerIdle>
+							<powerIdle>0.0</powerIdle>
 							<powerMax>20.0</powerMax>
 							<ns2:CPU>
 								<transistorNumber>1170</transistorNumber>
 								<architecture>INTEL</architecture>
-								<powerIdle>20.0</powerIdle>
+								<powerIdle>0.0</powerIdle>
 								<powerMax>95.0</powerMax>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
 								<ns2:Core>
 									<voltage>1.1</voltage>
 									<frequency>3.06</frequency>
@@ -238,7 +207,7 @@
 							</ns2:CPU>
 							<ns2:RAMStick>
 								<voltage>1.35</voltage>
-								<size>11</size>
+								<size>8</size>
 								<type>DDR3</type>
 								<frequency>1333.0</frequency>
 								<bufferType>Buffered</bufferType>
@@ -257,110 +226,13 @@
 						<frameworkID>node-12.domain.tld</frameworkID>
 						<status>ON</status>
 						<ns2:Mainboard>
-							<powerIdle>10.0</powerIdle>
+							<powerIdle>0.0</powerIdle>
 							<powerMax>20.0</powerMax>
 							<ns2:CPU>
 								<transistorNumber>1170</transistorNumber>
 								<architecture>INTEL</architecture>
-								<powerIdle>20.0</powerIdle>
+								<powerIdle>0.0</powerIdle>
 								<powerMax>95.0</powerMax>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<frameworkID>node-12.domain.tld</frameworkID>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
 								<ns2:Core>
 									<voltage>1.1</voltage>
 									<frequency>3.06</frequency>
@@ -461,7 +333,7 @@
 							</ns2:CPU>
 							<ns2:RAMStick>
 								<voltage>1.35</voltage>
-								<size>47</size>
+								<size>32</size>
 								<type>DDR3</type>
 								<frequency>1333.0</frequency>
 								<bufferType>Buffered</bufferType>
@@ -480,61 +352,13 @@
 						<frameworkID>node-13.domain.tld</frameworkID>
 						<status>ON</status>
 						<ns2:Mainboard>
-							<powerIdle>10.0</powerIdle>
+							<powerIdle>0.0</powerIdle>
 							<powerMax>20.0</powerMax>
 							<ns2:CPU>
 								<transistorNumber>1170</transistorNumber>
 								<architecture>INTEL</architecture>
-								<powerIdle>20.0</powerIdle>
+								<powerIdle>0.0</powerIdle>
 								<powerMax>95.0</powerMax>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
-								<ns2:Core>
-									<voltage>1.1</voltage>
-									<frequency>3.06</frequency>
-									<frequencyMin>2.66</frequencyMin>
-									<frequencyMax>3.06</frequencyMax>
-								</ns2:Core>
 								<ns2:Core>
 									<voltage>1.1</voltage>
 									<frequency>3.06</frequency>
@@ -586,7 +410,7 @@
 							</ns2:CPU>
 							<ns2:RAMStick>
 								<voltage>1.35</voltage>
-								<size>11</size>
+								<size>8</size>
 								<type>DDR3</type>
 								<frequency>1333.0</frequency>
 								<bufferType>Buffered</bufferType>

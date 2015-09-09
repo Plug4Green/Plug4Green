@@ -77,17 +77,17 @@ public class ComOpenstack extends AbstractCom {
     @Override
     public boolean powerOff(PowerOffAction action) {
 	if (openstackAPI.getVMsId(action.getNodeName()).isEmpty()) {
-	    log.info("No VMs in the server, we can power off");
+	    log.debug("No VMs in the server, we can power off");
 	} else {
-	    log.info("####### VMs in the server: " + openstackAPI.getVMsId(action.getNodeName()));
+	    log.debug("VMs in the server: " + openstackAPI.getVMsId(action.getNodeName()));
 	}
-	log.info("PowerOff action for id:" + action.getNodeName());
+	log.debug("PowerOff action for id:" + action.getNodeName());
 	return false;
     }
 
     @Override
     public boolean liveMigrate(LiveMigrateVMAction action) {
-	log.info("Livemigrate action for id:" + action.getVirtualMachine() + " to dest "
+	log.debug("Livemigrate action for id:" + action.getVirtualMachine() + " to dest "
 		+ action.getDestNodeController());
 	return liveMigrate(action.getDestNodeController(), action.getVirtualMachine());
     }
@@ -129,7 +129,6 @@ public class ComOpenstack extends AbstractCom {
 
 		for (VirtualMachine serverVirtualMachine : virtualMachineList) {
 		    actualVMsList.add(serverVirtualMachine.getFrameworkID());
-		    log.info("VMs size from monitor" + actualVMsList.size());
 		}
 	    }
 
@@ -148,7 +147,6 @@ public class ComOpenstack extends AbstractCom {
     private boolean insertInformationDatamodel() {
 
 	boolean isInserted = false;
-	log.debug("insertInformationDataModel");
 
 	try {
 	    for (String hyperVisorName : openstackAPI.getComputeNames()) {
@@ -189,11 +187,12 @@ public class ComOpenstack extends AbstractCom {
 
 				((ConcurrentLinkedQueue<ComOperationCollector>) this.getQueuesHashMap().get(key))
 					.add(operations);
-				log.info("Adding VM: " + vmId);
+				log.debug("Adding VM: " + vmId);
 				monitor.updateNode(key, this);
 				operations.remove(operation);
 			    ((ConcurrentLinkedQueue<ComOperationCollector>) this.getQueuesHashMap().get(key)).poll();
 			    actualVMsList.remove(vmId);
+			    Thread.sleep(100);
 			}
 
 		    // DELETE virtual machines for host in fit4green model
@@ -213,17 +212,19 @@ public class ComOpenstack extends AbstractCom {
 			operations.add(operation);
 			((ConcurrentLinkedQueue<ComOperationCollector>) this.getQueuesHashMap().get(key))
 				.add(operations);
-			log.info("Removing VM: " + vmId);
+			log.debug("Removing VM: " + vmId);
 			monitor.updateNode(key, this);
 			operations.remove(operation);
 			((ConcurrentLinkedQueue<ComOperationCollector>) this.getQueuesHashMap().get(key)).poll();
 		    }
 
-//		    ComOperationCollector operationSet = updateServerDynamicValues(hyperVisorName);
-//
-//		    if (operationSet != null) {
-//			isInserted = monitor.simpleUpdateNode(key, operationSet);
-//		    }
+		    ComOperationCollector operationSet = updateServerDynamicValues(hyperVisorName);
+
+		    if (operationSet != null) {
+			isInserted = monitor.simpleUpdateNode(key, operationSet);
+		    }
+		    
+		    
 
 		}
 	    }
@@ -242,7 +243,6 @@ public class ComOpenstack extends AbstractCom {
 
 	// Update the memory usage
 	try {
-	    log.error("##### memory " + openstackAPI.getUsedRAM(hyperVisorName).get());
 	    openstackAPI.getUsedRAM(hyperVisorName)
 		    .ifPresent(mem -> operationSet.add(new ComOperation(ComOperation.TYPE_UPDATE,
 			    ".[frameworkID='" + hyperVisorName + "']/mainboard/memoryUsage", String.valueOf(mem))));
