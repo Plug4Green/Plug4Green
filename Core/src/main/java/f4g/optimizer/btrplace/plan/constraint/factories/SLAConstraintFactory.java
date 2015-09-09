@@ -189,12 +189,16 @@ public class SLAConstraintFactory  extends ConstraintFactory {
 			}
 		}
 		
-//		// Memory Overbooking on Server Level
-//		if (type.getMaxVRAMperPhyRAM() != null && type.getMaxVRAMperPhyRAM().getValue() != 0) {
-//			if (type.getMaxVRAMperPhyRAM().getPriority() >= minPriority) {
-//				v.add(new F4GMemoryOverbookingConstraint(nodes,	model, (double) type.getMaxVRAMperPhyRAM().getValue(), clusters));
-//			}
-//		}
+		// Memory Overbooking on Server Level
+		if (qos.getMaxVRAMperPhyRAM() != null && qos.getMaxVRAMperPhyRAM().getValue() != 0) {
+			if (qos.getMaxVRAMperPhyRAM().getPriority() >= minPriority) {
+				if (vms.size() != 0) {
+					for(Node n : nodes) {
+						v.add(new Overbook(n, F4GConfigurationAdapter.SHAREABLE_RESOURCE_RAM, (double) qos.getMaxVRAMperPhyRAM().getValue(), false));
+					}
+				}
+			}
+		}
 //		
 //		// CPU Overbooking on Cluster Level
 //		if (type.getMaxServerAvgVCPUperCore() != null && type.getMaxServerAvgVCPUperCore().getValue() != 0) {
