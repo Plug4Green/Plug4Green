@@ -34,6 +34,7 @@ import java.util.*;
 
 import f4g.schemas.java.constraints.optimizerconstraints.SpareCPUs;
 import f4g.schemas.java.constraints.optimizerconstraints.UnitType;
+import f4g.schemas.java.metamodel.VirtualMachine;
 
 /**
  * Integration with the power calculator tests
@@ -294,7 +295,7 @@ public class IntegrationTest extends OptimizerTest {
         //TEST 2
 
         optimizer.runGlobalOptimization(model);
-      
+
         assertEquals(8, getPowerOffs().size());
 
         //TEST 3
@@ -320,9 +321,82 @@ public class IntegrationTest extends OptimizerTest {
         }
 
         optimizer.runGlobalOptimization(model);
-   
+
         assertEquals(getMoves().size(), 0);
 
+    }
+
+    /**
+     * Test for APSS
+     */
+    @Test
+    public void testAPSS() {
+
+        String sep = System.getProperty("file.separator");
+        File modelFile = new File("src" + sep + "main" + sep + "resources" + sep + "optimizer" + sep + "f4gmodel_OS_APSS.xml");
+        assertTrue(modelFile.exists());
+        FIT4Green model = null;
+        try {
+            model = modelGenerator.getModel(modelFile.getCanonicalPath());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            Date date = new Date();
+            GregorianCalendar gCalendar = new GregorianCalendar();
+            gCalendar.setTime(date);
+            XMLGregorianCalendar xmlCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gCalendar);
+            model.setDatetime(xmlCalendar);
+        } catch (DatatypeConfigurationException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        SLAReader sla = new SLAReader("src" + sep + "main" + sep + "resources" + sep + "optimizer" + sep + "SLA_OS_APSS.xml");
+        optimizer.setClusters(sla.getCluster());
+        optimizer.setSla(sla.getSLAs());
+        optimizer.setFederation(sla.getFeds());
+        optimizer.setClusters(sla.getCluster());
+        optimizer.setPolicies(sla.getPolicies());
+        optimizer.setVmTypes(sla.getVMtypes());
+
+
+        //TEST
+
+        List<Server> servers = Utils.getAllServers(model.getSite().get(0).getDatacenter().get(0));
+
+        addVM("vm#0", "m1.cfmedium", servers.get(0));
+        addVM("vm#1", "m1.cfmedium", servers.get(0));
+        addVM("vm#2", "m1.cfmedium", servers.get(0));
+        addVM("vm#3", "m1.cfmedium", servers.get(0));
+        addVM("vm#4", "m1.cflarge" , servers.get(0));
+        addVM("vm#5", "m1.cfsmall" , servers.get(0));
+        addVM("vm#6", "m1.cfmedium", servers.get(0));
+
+        addVM("vm#7", "m1.cfsmall" , servers.get(2));
+
+        addVM("vm#8", "m1.cfsmall" , servers.get(3));
+        addVM("vm#9", "m1.cfmedium", servers.get(3));
+        addVM("vm#10","m1.cfmedium", servers.get(3));
+        addVM("vm#11","m1.cfsmall" , servers.get(3));
+        addVM("vm#12","m1.cfmedium", servers.get(3));
+        addVM("vm#13","m1.cfmedium", servers.get(3));
+        addVM("vm#14","m1.cflarge" , servers.get(3));
+
+        addVM("vm#15","m1.cfmedium", servers.get(4));
+        addVM("vm#16","m1.cfmedium", servers.get(4));
+        addVM("vm#17","m1.cfmedium", servers.get(4));
+
+        optimizer.runGlobalOptimization(model);
+    }
+
+    void addVM(String name, String flavor, Server toAdd){
+        VirtualMachine vm = new VirtualMachine();
+        vm.setFrameworkID(name);
+        vm.setCloudVm(flavor);
+        toAdd.getNativeHypervisor().getVirtualMachine().add(vm);
     }
 
     public static boolean deleteDir(File dir) {
