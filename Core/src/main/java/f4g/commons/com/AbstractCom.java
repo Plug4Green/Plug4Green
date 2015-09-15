@@ -175,6 +175,8 @@ public abstract class AbstractCom implements ICom, IComOperationSet, Runnable {
 							log.error("Error in setting 'forwardedAt' datetime");
 							log.error(e);
 						}
+					}else {
+					    return false;
 					}
 				
 

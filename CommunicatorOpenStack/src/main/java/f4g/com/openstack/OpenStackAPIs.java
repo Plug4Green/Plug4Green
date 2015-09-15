@@ -138,7 +138,6 @@ public class OpenStackAPIs {
 	    if (vm.getHypervisorHostname().equals(hyperVisorName)) {
 		log.info("VM founded: " + vm.getId());
 		vmNames.add(vm.getId());
-		
 	    }
 	}
 	return vmNames;

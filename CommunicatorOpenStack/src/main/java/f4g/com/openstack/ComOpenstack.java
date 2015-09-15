@@ -3,6 +3,7 @@ package f4g.com.openstack;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,10 @@ import f4g.schemas.java.actions.StartJobAction;
 import f4g.schemas.java.metamodel.Server;
 import f4g.schemas.java.metamodel.ServerStatus;
 import f4g.schemas.java.metamodel.VirtualMachine;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.IOUtils;
+import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.connection.channel.direct.Session.Command;
 
 public class ComOpenstack extends AbstractCom {
     private final Logger log = Logger.getLogger(getClass());
@@ -71,18 +77,18 @@ public class ComOpenstack extends AbstractCom {
     @Override
     public boolean powerOn(PowerOnAction action) {
 	log.info("PowerOn action for id:" + action.getNodeName());
-	return false;
+	return manageComputeService(action.getNodeName(), Type.enable);
     }
 
     @Override
     public boolean powerOff(PowerOffAction action) {
-	if (openstackAPI.getVMsId(action.getNodeName()).isEmpty()) {
-	    log.debug("No VMs in the server, we can power off");
-	} else {
-	    log.debug("VMs in the server: " + openstackAPI.getVMsId(action.getNodeName()));
+	    log.debug("PowerOff action for id:" + action.getNodeName());
+	if (!openstackAPI.getVMsId(action.getNodeName()).isEmpty()) {
+	    log.error("VMs in the server: " + openstackAPI.getVMsId(action.getNodeName()));
+	    return false;
 	}
-	log.debug("PowerOff action for id:" + action.getNodeName());
-	return false;
+	    log.debug("No VMs in the server, we can power off");
+	    return manageComputeService(action.getNodeName(), Type.disable);	
     }
 
     @Override
@@ -160,54 +166,54 @@ public class ComOpenstack extends AbstractCom {
 
 		    // ADD virtual machines for host in model
 		    Set<String> hypervisorVMs = openstackAPI.getVMsId(hyperVisorName);
-		    Set <String> vmTobeAdded = new HashSet<>(hypervisorVMs);
+		    Set<String> vmTobeAdded = new HashSet<>(hypervisorVMs);
 		    vmTobeAdded.removeAll(actualVMsList);
-		    
-		    Set <String> vmTobeRemoved = new HashSet<>(actualVMsList);
+
+		    Set<String> vmTobeRemoved = new HashSet<>(actualVMsList);
 		    vmTobeRemoved.removeAll(hypervisorVMs);
-		    
+
 		    for (String vmId : vmTobeAdded) {
 
-			    // ADD a virtual machine to the model
-				
-				String flavor = " default";
-				String vCPUs = " ";
-				if (openstackAPI.getFlavorName(vmId).isPresent()){
-				    flavor = " " + openstackAPI.getFlavorName(vmId).get();
-				}
-				
-				if (openstackAPI.getVMCPUs(vmId).isPresent()) {
-				    vCPUs = " " + openstackAPI.getVMCPUs(vmId).get();
-				}
-				
-				    ComOperation operation = new ComOperation(ComOperation.TYPE_ADD, ComOperation.VM_ON_HYPERVISOR_PATH,
-					    vmId + flavor + flavor + vCPUs);
+			// ADD a virtual machine to the model
 
-				operations.add(operation);
-
-				((ConcurrentLinkedQueue<ComOperationCollector>) this.getQueuesHashMap().get(key))
-					.add(operations);
-				log.debug("Adding VM: " + vmId);
-				monitor.updateNode(key, this);
-				operations.remove(operation);
-			    ((ConcurrentLinkedQueue<ComOperationCollector>) this.getQueuesHashMap().get(key)).poll();
-			    actualVMsList.remove(vmId);
-			    Thread.sleep(100);
+			String flavor = " default";
+			String vCPUs = " ";
+			if (openstackAPI.getFlavorName(vmId).isPresent()) {
+			    flavor = " " + openstackAPI.getFlavorName(vmId).get();
 			}
+
+			if (openstackAPI.getVMCPUs(vmId).isPresent()) {
+			    vCPUs = " " + openstackAPI.getVMCPUs(vmId).get();
+			}
+
+			ComOperation operation = new ComOperation(ComOperation.TYPE_ADD,
+				ComOperation.VM_ON_HYPERVISOR_PATH, vmId + flavor + flavor + vCPUs);
+
+			operations.add(operation);
+
+			((ConcurrentLinkedQueue<ComOperationCollector>) this.getQueuesHashMap().get(key))
+				.add(operations);
+			log.debug("Adding VM: " + vmId);
+			monitor.updateNode(key, this);
+			operations.remove(operation);
+			((ConcurrentLinkedQueue<ComOperationCollector>) this.getQueuesHashMap().get(key)).poll();
+			actualVMsList.remove(vmId);
+			Thread.sleep(100);
+		    }
 
 		    // DELETE virtual machines for host in fit4green model
 		    for (String vmId : vmTobeRemoved) {
 			String flavor = " default";
 			String vCPUs = " ";
-			if (openstackAPI.getFlavorName(vmId).isPresent()){
+			if (openstackAPI.getFlavorName(vmId).isPresent()) {
 			    flavor = " " + openstackAPI.getFlavorName(vmId).get();
 			}
-			
+
 			if (openstackAPI.getVMCPUs(vmId).isPresent()) {
 			    vCPUs = " " + openstackAPI.getVMCPUs(vmId).get();
 			}
-			ComOperation operation = new ComOperation(ComOperation.TYPE_REMOVE, ComOperation.VM_ON_HYPERVISOR_PATH,
-				    vmId  + flavor + flavor);
+			ComOperation operation = new ComOperation(ComOperation.TYPE_REMOVE,
+				ComOperation.VM_ON_HYPERVISOR_PATH, vmId + flavor + flavor);
 
 			operations.add(operation);
 			((ConcurrentLinkedQueue<ComOperationCollector>) this.getQueuesHashMap().get(key))
@@ -223,8 +229,6 @@ public class ComOpenstack extends AbstractCom {
 		    if (operationSet != null) {
 			isInserted = monitor.simpleUpdateNode(key, operationSet);
 		    }
-		    
-		    
 
 		}
 	    }
@@ -342,7 +346,7 @@ public class ComOpenstack extends AbstractCom {
 	LiveMigrateOptions options = LiveMigrateOptions.create().host(dstServerIdClean);
 	admin.compute().servers().liveMigrate(vmId, options);
 	int i = 1;
-	while (i < 120) {
+	while (i < 240) {
 	    i++;
 	    log.info("########################################################");
 	    admin.compute().servers().get(vmId.trim());
@@ -358,5 +362,50 @@ public class ComOpenstack extends AbstractCom {
 	}
 	log.warn("Not successfully migrated");
 	return false;
+    }
+    
+    enum Type {
+	enable,
+	disable
+    } 
+    
+    private boolean manageComputeService(String nodeName, Type type){
+        final SSHClient ssh = new SSHClient();
+        try {
+	    ssh.loadKnownHosts();
+        ssh.connect("172.16.0.4");
+        
+        try {
+            ssh.authPublickey("root");
+            final Session session = ssh.startSession();
+            try {
+        	
+        	String host = nodeName.replace(".domain.tld", "");
+        	String cmd = ". openrc && nova-manage service " + type.toString() + " --host=" + host + " --service=nova-compute";
+        	System.out.println(cmd);
+        	final Command auth = session.exec(cmd);
+                String output = IOUtils.readFully(auth.getInputStream()).toString();
+                if(!output.equals("Service nova-compute on host " + host + " enabled.")){
+                    return false;
+                }
+                System.out.println(output);
+                auth.join(15, TimeUnit.SECONDS);
+                if(auth.getExitStatus() !=0){
+                   
+                }
+
+
+            } finally {
+                session.close();
+            }
+        } finally {
+            ssh.disconnect();
+        }
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	    return false;
+	}
+	return true;
     }
 }

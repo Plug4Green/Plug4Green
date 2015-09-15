@@ -115,8 +115,8 @@
 		<SLA id="SLAAssago">
 			<HardwareConstraints />
 			<QoSConstraints>
-<!-- 				<MaxVirtualCPUPerCore>8</MaxVirtualCPUPerCore>
-				<Max_vRAMperPhyRAM>1.5</Max_vRAMperPhyRAM> -->
+				<MaxVirtualCPUPerCore>8</MaxVirtualCPUPerCore>
+				<Max_vRAMperPhyRAM>1.5</Max_vRAMperPhyRAM>
 			</QoSConstraints>
 			<SecurityConstraints>
 			</SecurityConstraints>
