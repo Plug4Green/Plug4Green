@@ -39,10 +39,6 @@ import f4g.schemas.java.actions.StartJobAction;
 import f4g.schemas.java.metamodel.Server;
 import f4g.schemas.java.metamodel.ServerStatus;
 import f4g.schemas.java.metamodel.VirtualMachine;
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.common.IOUtils;
-import net.schmizz.sshj.connection.channel.direct.Session;
-import net.schmizz.sshj.connection.channel.direct.Session.Command;
 
 public class ComOpenstack extends AbstractCom {
     private final Logger log = Logger.getLogger(getClass());
@@ -77,7 +73,7 @@ public class ComOpenstack extends AbstractCom {
     @Override
     public boolean powerOn(PowerOnAction action) {
 	log.info("PowerOn action for id:" + action.getNodeName());
-	return manageComputeService(action.getNodeName(), Type.enable);
+	return manageCompute(action.getNodeName(), Type.enable);
     }
 
     @Override
@@ -88,7 +84,7 @@ public class ComOpenstack extends AbstractCom {
 	    return false;
 	}
 	    log.debug("No VMs in the server, we can power off");
-	    return manageComputeService(action.getNodeName(), Type.disable);	
+	    return manageCompute(action.getNodeName(), Type.disable);	
     }
 
     @Override
@@ -348,7 +344,6 @@ public class ComOpenstack extends AbstractCom {
 	int i = 1;
 	while (i < 240) {
 	    i++;
-	    log.info("########################################################");
 	    admin.compute().servers().get(vmId.trim());
 	    if (admin.compute().servers().get(vmId).getHypervisorHostname().equals(dstServerId)) {
 		log.debug("Migration for VM " + vmId + " finished");
@@ -369,43 +364,41 @@ public class ComOpenstack extends AbstractCom {
 	disable
     } 
     
-    private boolean manageComputeService(String nodeName, Type type){
-        final SSHClient ssh = new SSHClient();
-        try {
-	    ssh.loadKnownHosts();
-        ssh.connect("172.16.0.4");
-        
-        try {
-            ssh.authPublickey("root");
-            final Session session = ssh.startSession();
-            try {
-        	
-        	String host = nodeName.replace(".domain.tld", "");
-        	String cmd = ". openrc && nova-manage service " + type.toString() + " --host=" + host + " --service=nova-compute";
-        	System.out.println(cmd);
-        	final Command auth = session.exec(cmd);
-                String output = IOUtils.readFully(auth.getInputStream()).toString();
-                if(!output.equals("Service nova-compute on host " + host + " enabled.")){
-                    return false;
-                }
-                System.out.println(output);
-                auth.join(15, TimeUnit.SECONDS);
-                if(auth.getExitStatus() !=0){
-                   
-                }
-
-
-            } finally {
-                session.close();
-            }
-        } finally {
-            ssh.disconnect();
-        }
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	    return false;
+    private boolean manageCompute(String nodeName, Type type){
+	InputStream input = null;
+	OSClient admin = null;
+	File configFile = new File("./config.yaml");
+	if (!configFile.exists()) {
+	    configFile = new File("src/main/config/ComOpenstack/config.yaml");
 	}
-	return true;
+	try {
+	    input = new FileInputStream(configFile);
+	} catch (FileNotFoundException e) {
+	    e.printStackTrace();
+	}
+
+	Yaml yaml = new Yaml();
+	Map<String, String> config = (Map<String, String>) yaml.load(input);
+	try {
+	    admin = OSFactory.builder().endpoint("http://" + config.get("ip") + ":" + config.get("port") + "/v2.0")
+		    .credentials(config.get("user"), config.get("password")).tenantName(config.get("tenant"))
+		    .authenticate();
+	} catch (AuthenticationException e) {
+	    log.error("Connection to OpenStack datacenter fails: {}", e);
+	}
+
+	if(type == Type.enable){
+	    admin.compute().hostAggregates().addHost("4", nodeName.replace(".domain.tld", ""));
+	    return true;
+	}
+	
+	if(type == Type.disable){
+	    admin.compute().hostAggregates().removeHost("4", nodeName.replace(".domain.tld", ""));
+	    return true;
+	}
+	
+	log.error("No action has been taken");
+
+	return false;
     }
 }
