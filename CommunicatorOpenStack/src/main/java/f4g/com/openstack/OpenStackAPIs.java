@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.api.exceptions.AuthenticationException;
 import org.openstack4j.model.compute.Server;
+import org.openstack4j.model.compute.Server.Status;
 import org.openstack4j.model.compute.actions.LiveMigrateOptions;
 import org.openstack4j.model.compute.ext.Hypervisor;
 import org.openstack4j.openstack.OSFactory;
@@ -136,8 +137,10 @@ public class OpenStackAPIs {
 	Set<String> vmNames = new HashSet<String>();
 	for (Server vm : admin.compute().servers().list()) {
 	    if (vm.getHypervisorHostname().equals(hyperVisorName)) {
+		if(!vm.getId().isEmpty() && vm.getStatus()==Status.ACTIVE) {
 		log.info("VM founded: " + vm.getId());
 		vmNames.add(vm.getId());
+		}
 	    }
 	}
 	return vmNames;
