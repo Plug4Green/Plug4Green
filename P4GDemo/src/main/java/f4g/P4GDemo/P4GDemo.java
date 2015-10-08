@@ -23,10 +23,8 @@ public class P4GDemo {
 	if(f4gProp.exists()) {
 		p4g.init(f4gProp.getAbsolutePath());
 		p4g.startup();
-    	} else {
-		p4g.init("src/main/config/core/f4gconfig.properties");
-		p4g.startup();
-    	}
-
+	} else {
+	    throw new RuntimeException("Expected configuration file in " + f4gProp.getAbsolutePath() + "not found");
+	}
     }
 }
