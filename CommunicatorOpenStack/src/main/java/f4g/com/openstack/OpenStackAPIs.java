@@ -147,8 +147,11 @@ public class OpenStackAPIs {
     }
 
     public Optional<Integer> getVMCPUs(String vmId) {
-	return Optional.ofNullable(admin.compute().servers().get(vmId)
-		.getFlavor().getVcpus());
+        if(admin.compute().servers().get(vmId) != null) {
+            return Optional.of(admin.compute().servers().get(vmId).getFlavor().getVcpus());
+        } else {
+            return Optional.empty();
+        }
     }
     
     public Optional<String> getFlavorName(String vmId){
