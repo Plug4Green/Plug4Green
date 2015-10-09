@@ -201,9 +201,6 @@ public class ComOpenstack extends AbstractCom {
 		    for (String vmId : vmTobeRemoved) {
 			String flavor = " default";
 			String vCPUs = " ";
-			if (openstackAPI.getFlavorName(vmId).isPresent()) {
-			    flavor = " " + openstackAPI.getFlavorName(vmId).get();
-			}
 
 			if (openstackAPI.getVMCPUs(vmId).isPresent()) {
 			    vCPUs = " " + openstackAPI.getVMCPUs(vmId).get();
