@@ -73,7 +73,7 @@ public class ComOpenstack extends AbstractCom {
     @Override
     public boolean powerOn(PowerOnAction action) {
 	log.info("PowerOn action for id:" + action.getNodeName());
-	return manageCompute(action.getNodeName(), Type.enable);
+	return true; //manageCompute(action.getNodeName(), Type.enable);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ComOpenstack extends AbstractCom {
 	    return false;
 	}
 	    log.debug("No VMs in the server, we can power off");
-	    return manageCompute(action.getNodeName(), Type.disable);	
+	    return true; //manageCompute(action.getNodeName(), Type.disable);
     }
 
     @Override
@@ -282,9 +282,11 @@ public class ComOpenstack extends AbstractCom {
 		    ComOperation operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.OFF);
 		    operationSet.add(operation);
 		    if (operationSet != null) {
-			monitor.simpleUpdateNode(key, operationSet);
+		    //Update of the model
+			//monitor.simpleUpdateNode(key, operationSet);
 		    }
 
+			//enact on infrastructure
 		    powerOff(powerOffAction);
 		} else if (action.getClass().equals(PowerOnAction.class)) {
 		    // perform power on action
@@ -296,7 +298,7 @@ public class ComOpenstack extends AbstractCom {
 		    ComOperation operation = new ComOperation(ComOperation.TYPE_UPDATE, "./status", ServerStatus.ON);
 		    operationSet.add(operation);
 		    if (operationSet != null) {
-			monitor.simpleUpdateNode(key, operationSet);
+			//monitor.simpleUpdateNode(key, operationSet);
 		    }
 		    // call the method to power on
 		    powerOn(powerOnAction);
