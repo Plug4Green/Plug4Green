@@ -136,8 +136,8 @@ public class OpenStackAPIs {
     public Set<String> getVMsId(String hyperVisorName) {
 	Set<String> vmNames = new HashSet<String>();
 	for (Server vm : admin.compute().servers().list()) {
-	    if (vm.getHypervisorHostname().equals(hyperVisorName)) {
-		if(!vm.getId().isEmpty() && vm.getStatus()==Status.ACTIVE) {
+	    if(!vm.getId().isEmpty() && vm.getStatus()==Status.ACTIVE) {
+	        if (vm.getHypervisorHostname().equals(hyperVisorName)) {
 		log.info("VM founded: " + vm.getId());
 		vmNames.add(vm.getId());
 		}
