@@ -125,9 +125,34 @@ $ java -jar target/P4GDemo-1.0-jar-with-dependencies.jar
 
 After one minute, P4G should migrate one VM to the same node as the second VM, in order to save energy. You can check this using the nova command as shown in the previous section.
 
-###VM CPU Demand REST API
+
+### REST APIs
+
+#### trigger optimization
+
+An optimization can be triggered manually using this rest API:
+
+```
+POST
+http://<P4G host>:<P4G port>/<version>/plug4green/plug4green/startoptimization
+```
+
+For example it can be started with this command:
+
+```
+curl -i -X POST -H "Content-Type: text/plain" http://localhost:7777/v1/plug4green/plug4green/startoptimization
+```
+
+#### VM CPU Demand
 
 You can change 'live' the value of the CPU demand for each VM using the REST API:
+
+```
+PUT
+http://<P4G host>:<P4G port>/<version>/plug4green/<VM name>/VMCPUDemand
+```
+
+For example:
 
 ```
 curl -i -X PUT -H "Content-Type: text/plain" -d 200 http://localhost:7777/v1/plug4green/a5939941-1963-4ef0-aa15-aa1ce326e6ce/VMCPUDemand
