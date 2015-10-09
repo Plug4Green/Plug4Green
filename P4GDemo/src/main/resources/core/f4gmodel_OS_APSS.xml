@@ -52,7 +52,7 @@
 							</ns2:CPU>
 							<ns2:RAMStick>
 								<voltage>1.35</voltage>
-								<size>16</size>
+								<size>10</size>
 								<type>DDR3</type>
 								<frequency>1333.0</frequency>
 								<bufferType>Buffered</bufferType>
@@ -254,7 +254,7 @@
 							</ns2:CPU>
 							<ns2:RAMStick>
 								<voltage>1.35</voltage>
-								<size>32</size>
+								<size>25</size>
 								<type>DDR3</type>
 								<frequency>1333.0</frequency>
 								<bufferType>Buffered</bufferType>
