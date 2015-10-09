@@ -88,6 +88,21 @@
 				<vNetworkLoad>1.0</vNetworkLoad>
 			</expectedLoad>
 		</VMFlavor>
+                <VMFlavor>
+                        <name>m1.cfrunner</name>
+                        <capacity>
+                                <vCpus>4</vCpus>
+                                <vRam>6.0</vRam>
+                                <vHardDisk>40.0</vHardDisk>
+                        </capacity>
+                        <expectedLoad>
+                                <vCpuLoad>1.0</vCpuLoad>
+                                <vRamUsage>1.0</vRamUsage>
+                                <vDiskLoad>1.0</vDiskLoad>
+                                <vNetworkLoad>1.0</vNetworkLoad>
+                        </expectedLoad>
+                </VMFlavor>
+
 	</VirtualMachines>
 
 
@@ -101,7 +116,6 @@
 				<NodeName>node-12.domain.tld</NodeName>
 				<NodeName>node-11.domain.tld</NodeName>
 				<NodeName>node-9.domain.tld</NodeName>
-				<NodeName>node-8.domain.tld</NodeName>
 			</NodeController>
 			<BoundedSLAs>
 				<SLA idref="SLAAssago" />
@@ -116,7 +130,7 @@
 			<HardwareConstraints />
 			<QoSConstraints>
 				<MaxVirtualCPUPerCore>8</MaxVirtualCPUPerCore>
-				<Max_vRAMperPhyRAM>1.5</Max_vRAMperPhyRAM>
+				<Max_vRAMperPhyRAM>1</Max_vRAMperPhyRAM>
 			</QoSConstraints>
 			<SecurityConstraints>
 			</SecurityConstraints>
