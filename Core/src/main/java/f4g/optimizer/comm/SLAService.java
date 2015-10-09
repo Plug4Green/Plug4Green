@@ -37,7 +37,14 @@ public class SLAService {
     public void changeVMCPUDemand(@PathParam("version") String version, @PathParam("name") String name, String VMCPUDemand) {
         logger.debug("received VM CPU Demand:" + name + ": " + VMCPUDemand);
         monitor.setVMCPUConstraint(name, Integer.parseInt(VMCPUDemand));
+    }
+
+    @POST
+    @Path("/startoptimization")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public void triggerOptimization(@PathParam("version") String version) {
+        logger.debug("received request for optimization");
+        monitor.requestGlobalOptimization();
 
     }
-    
 }
