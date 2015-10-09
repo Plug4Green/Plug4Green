@@ -152,7 +152,13 @@ public class OpenStackAPIs {
     }
     
     public Optional<String> getFlavorName(String vmId){
-	return Optional.ofNullable( admin.compute().servers().get(vmId).getFlavor().getName());
+		String flavorName;
+		try {
+			return Optional.ofNullable(admin.compute().servers().get(vmId).getFlavor().getName());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
     }
 
 
