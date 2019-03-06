@@ -22,7 +22,7 @@ To skip the tests, you can type:
 Run
 ---
 
-[This module](https://github.com/Plug4Green/Plug4Green/tree/master/P4GDemo) contains a full procedure to install an OpenStack environment and demontrate the features of Plug4Green.
+[This module](https://github.com/Plug4Green/Plug4Green/tree/master/P4GDemo) contains a full procedure to install an OpenStack environment and demonstrate the features of Plug4Green.
 
 
 Copyright
